@@ -1,0 +1,66 @@
+{
+  "index": 6,
+  "split": "train",
+  "original": {
+    "question": "Albert is wondering how much pizza he can eat in one day. He buys 2 large pizzas and 2 small pizzas. A large pizza has 16 slices and a small pizza has 8 slices. If he eats it all, how many pieces does he eat that day?",
+    "answer": "He eats 32 from the largest pizzas because 2 x 16 = <<2*16=32>>32\nHe eats 16 from the small pizza because 2 x 8 = <<2*8=16>>16\nHe eats 48 pieces because 32 + 16 = <<32+16=48>>48\n#### 48"
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics_list):\n    \"\"\"\n    Converts extracted metrics from a math problem into appropriate SI or Indian units,\n    only if the original unit is associated with a country other than India.\n\n    Args:\n        metrics_list (list): A list of dictionaries, each with \"variable\", \"value\", and \"unit\".\n\n    Returns:\n        list: A list of dictionaries, each with \"variable\", \"original_value\",\n              \"original_unit\", \"converted_value\", and \"converted_unit\".\n    \"\"\"\n    converted_metrics = []\n\n    for metric in metrics_list:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit == \"pounds\":\n            converted_value = round(original_value * 0.453592, 2)\n            converted_unit = \"kilograms\"\n        elif original_unit == \"ounces\":\n            converted_value = round(original_value * 28.3495, 2)\n            converted_unit = \"grams\"\n        elif original_unit == \"miles\":\n            converted_value = round(original_value * 1.60934, 2)\n            converted_unit = \"kilometers\"\n        elif original_unit == \"feet\":\n            converted_value = round(original_value * 0.3048, 2)\n            converted_unit = \"meters\"\n        elif original_unit == \"gallons\":\n            converted_value = round(original_value * 3.78541, 2)\n            converted_unit = \"liters\"\n        elif original_unit == \"cups\":\n            converted_value = round(original_value * 236.588, 2)\n            converted_unit = \"milliliters\"\n        elif original_unit == \"dollars\":\n            converted_value = round(original_value * 87, 2)\n            converted_unit = \"rupees\"\n        # Units like \"rupees\", \"kilometers\", \"kilograms\", \"minutes\", \"hour\", \"grams\", \"meters\", \"liters\", \"milliliters\"\n        # are already SI or Indian, so they remain unchanged by default.\n\n        converted_metrics.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return converted_metrics\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Albert is wondering how much pizza he can eat in one day. He buys {num_large_pizzas} large pizzas and {num_small_pizzas} small pizzas. A large pizza has {slices_per_large_pizza} slices and a small pizza has {slices_per_small_pizza} slices. If he eats it all, how many pieces does he eat that day?",
+    "templatized_answer": [
+      "He eats {slices_from_large_pizzas} from the largest pizzas because {num_large_pizzas} x {slices_per_large_pizza} = <<{num_large_pizzas}*{slices_per_large_pizza}={slices_from_large_pizzas}>>{slices_from_large_pizzas}",
+      "He eats {slices_from_small_pizzas} from the small pizza because {num_small_pizzas} x {slices_per_small_pizza} = <<{num_small_pizzas}*{slices_per_small_pizza}={slices_from_small_pizzas}>>{slices_from_small_pizzas}",
+      "He eats {total_slices_eaten} pieces because {slices_from_large_pizzas} + {slices_from_small_pizzas} = <<{slices_from_large_pizzas}+{slices_from_small_pizzas}={total_slices_eaten}>>{total_slices_eaten}",
+      "#### {total_slices_eaten}"
+    ],
+    "factual_assignment": {
+      "num_large_pizzas": 2,
+      "num_small_pizzas": 2,
+      "slices_per_large_pizza": 16,
+      "slices_per_small_pizza": 8,
+      "slices_from_large_pizzas": 32,
+      "slices_from_small_pizzas": 16,
+      "total_slices_eaten": 48
+    }
+  },
+  "merged_assignment": {
+    "num_large_pizzas": 2,
+    "num_small_pizzas": 2,
+    "slices_per_large_pizza": 16,
+    "slices_per_small_pizza": 8,
+    "slices_from_large_pizzas": 32,
+    "slices_from_small_pizzas": 16,
+    "total_slices_eaten": 48
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    d = {\n        \"num_large_pizzas\": 2,\n        \"num_small_pizzas\": 2,\n        \"slices_per_large_pizza\": 16,\n        \"slices_per_small_pizza\": 8,\n    }\n\n    # Recompute slices_from_large_pizzas\n    d[\"slices_from_large_pizzas\"] = d[\"num_large_pizzas\"] * d[\"slices_per_large_pizza\"]\n\n    # Recompute slices_from_small_pizzas\n    d[\"slices_from_small_pizzas\"] = d[\"num_small_pizzas\"] * d[\"slices_per_small_pizza\"]\n\n    # Recompute total_slices_eaten\n    d[\"total_slices_eaten\"] = d[\"slices_from_large_pizzas\"] + d[\"slices_from_small_pizzas\"]\n\n    return d\n",
+    "results": {
+      "num_large_pizzas": 2,
+      "num_small_pizzas": 2,
+      "slices_per_large_pizza": 16,
+      "slices_per_small_pizza": 8,
+      "slices_from_large_pizzas": 32,
+      "slices_from_small_pizzas": 16,
+      "total_slices_eaten": 48
+    }
+  },
+  "final": {
+    "question": "Albert is wondering how much pizza he can eat in one day. He buys 2 large pizzas and 2 small pizzas. A large pizza has 16 slices and a small pizza has 8 slices. If he eats it all, how many pieces does he eat that day?",
+    "answer_lines": [
+      "He eats 32 from the largest pizzas because 2 x 16 = <<2*16=32>>32",
+      "He eats 16 from the small pizza because 2 x 8 = <<2*8=16>>16",
+      "He eats 48 pieces because 32 + 16 = <<32+16=48>>48",
+      "#### 48"
+    ],
+    "final_scalar": 48,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

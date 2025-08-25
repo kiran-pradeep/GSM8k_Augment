@@ -1,0 +1,153 @@
+{
+  "index": 7,
+  "split": "train",
+  "original": {
+    "question": "Ken created a care package to send to his brother, who was away at boarding school.  Ken placed a box on a scale, and then he poured into the box enough jelly beans to bring the weight to 2 pounds.  Then, he added enough brownies to cause the weight to triple.  Next, he added another 2 pounds of jelly beans.  And finally, he added enough gummy worms to double the weight once again.  What was the final weight of the box of goodies, in pounds?",
+    "answer": "To the initial 2 pounds of jelly beans, he added enough brownies to cause the weight to triple, bringing the weight to 2*3=<<2*3=6>>6 pounds.\nNext, he added another 2 pounds of jelly beans, bringing the weight to 6+2=<<6+2=8>>8 pounds.\nAnd finally, he added enough gummy worms to double the weight once again, to a final weight of 8*2=<<8*2=16>>16 pounds.\n#### 16"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_jelly_beans_weight_q",
+      "value": 2.0,
+      "unit": "pounds",
+      "context": "question"
+    },
+    {
+      "variable": "additional_jelly_beans_weight_q",
+      "value": 2.0,
+      "unit": "pounds",
+      "context": "question"
+    },
+    {
+      "variable": "initial_jelly_beans_weight_a",
+      "value": 2.0,
+      "unit": "pounds",
+      "context": "answer"
+    },
+    {
+      "variable": "weight_after_brownies",
+      "value": 6.0,
+      "unit": "pounds",
+      "context": "answer"
+    },
+    {
+      "variable": "added_jelly_beans_weight_a",
+      "value": 2.0,
+      "unit": "pounds",
+      "context": "answer"
+    },
+    {
+      "variable": "weight_after_more_jelly_beans",
+      "value": 8.0,
+      "unit": "pounds",
+      "context": "answer"
+    },
+    {
+      "variable": "final_weight",
+      "value": 16.0,
+      "unit": "pounds",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics_list):\n    \"\"\"\n    Converts values in a list of metrics to appropriate SI or Indian units\n    if the original unit is associated with a country other than India.\n\n    Args:\n        metrics_list (list): A list of dictionaries, each containing:\n            - \"variable\" (str)\n            - \"value\" (float)\n            - \"unit\" (str)\n            - \"context\" (str)\n\n    Returns:\n        list: A new list of dictionaries, each with:\n            - \"variable\" (str)\n            - \"original_value\" (float)\n            - \"original_unit\" (str)\n            - \"converted_value\" (float)\n            - \"converted_unit\" (str)\n    \"\"\"\n    converted_metrics = []\n\n    for metric in metrics_list:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        converted_value = original_value\n        converted_unit = original_unit\n\n        # Mass conversions\n        if original_unit == \"pounds\":\n            converted_value = round(original_value * 0.453592, 2)\n            converted_unit = \"kilograms\"\n        elif original_unit == \"ounces\":\n            converted_value = round(original_value * 28.3495, 2)\n            converted_unit = \"grams\"\n        \n        # Length conversions\n        elif original_unit == \"miles\":\n            converted_value = round(original_value * 1.60934, 2)\n            converted_unit = \"kilometers\"\n        elif original_unit == \"feet\":\n            converted_value = round(original_value * 0.3048, 2)\n            converted_unit = \"meters\"\n        \n        # Volume conversions\n        elif original_unit == \"gallons\":\n            converted_value = round(original_value * 3.78541, 2)\n            converted_unit = \"liters\"\n        elif original_unit == \"cups\":\n            converted_value = round(original_value * 236.588, 2)\n            converted_unit = \"milliliters\"\n        \n        # Money conversions\n        elif original_unit == \"dollars\":\n            converted_value = round(original_value * 87.0, 2)\n            converted_unit = \"rupees\"\n        \n        # Units that are already SI or Indian (e.g., kilograms, kilometers, rupees, minutes, hour)\n        # are implicitly handled by not entering any of the above if/elif blocks,\n        # thus retaining their original_value and original_unit.\n\n        converted_metrics.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    \n    return converted_metrics\n",
+    "results": [
+      {
+        "variable": "initial_jelly_beans_weight_q",
+        "original_value": 2.0,
+        "original_unit": "pounds",
+        "converted_value": 0.91,
+        "converted_unit": "kilograms"
+      },
+      {
+        "variable": "additional_jelly_beans_weight_q",
+        "original_value": 2.0,
+        "original_unit": "pounds",
+        "converted_value": 0.91,
+        "converted_unit": "kilograms"
+      },
+      {
+        "variable": "initial_jelly_beans_weight_a",
+        "original_value": 2.0,
+        "original_unit": "pounds",
+        "converted_value": 0.91,
+        "converted_unit": "kilograms"
+      },
+      {
+        "variable": "weight_after_brownies",
+        "original_value": 6.0,
+        "original_unit": "pounds",
+        "converted_value": 2.72,
+        "converted_unit": "kilograms"
+      },
+      {
+        "variable": "added_jelly_beans_weight_a",
+        "original_value": 2.0,
+        "original_unit": "pounds",
+        "converted_value": 0.91,
+        "converted_unit": "kilograms"
+      },
+      {
+        "variable": "weight_after_more_jelly_beans",
+        "original_value": 8.0,
+        "original_unit": "pounds",
+        "converted_value": 3.63,
+        "converted_unit": "kilograms"
+      },
+      {
+        "variable": "final_weight",
+        "original_value": 16.0,
+        "original_unit": "pounds",
+        "converted_value": 7.26,
+        "converted_unit": "kilograms"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ken created a care package to send to his brother, who was away at boarding school. Ken placed a box on a scale, and then he poured into the box enough jelly beans to bring the weight to {initial_jelly_beans_weight} pounds. Then, he added enough brownies to cause the weight to triple. Next, he added another {additional_jelly_beans_added} pounds of jelly beans. And finally, he added enough gummy worms to double the weight once again. What was the final weight of the box of goodies, in pounds?",
+    "templatized_answer": [
+      "To the initial {initial_jelly_beans_weight} pounds of jelly beans, he added enough brownies to cause the weight to triple, bringing the weight to {initial_jelly_beans_weight}*3=<<{initial_jelly_beans_weight}*3={weight_after_brownies}>>{weight_after_brownies} pounds.",
+      "Next, he added another {additional_jelly_beans_added} pounds of jelly beans, bringing the weight to {weight_after_brownies}+{additional_jelly_beans_added}=<<{weight_after_brownies}+{additional_jelly_beans_added}={weight_after_more_jelly_beans}>>{weight_after_more_jelly_beans} pounds.",
+      "And finally, he added enough gummy worms to double the weight once again, to a final weight of {weight_after_more_jelly_beans}*2=<<{weight_after_more_jelly_beans}*2={final_weight}>>{final_weight} pounds.",
+      "#### {final_weight}"
+    ],
+    "factual_assignment": {
+      "initial_jelly_beans_weight": 2,
+      "additional_jelly_beans_added": 2,
+      "weight_after_brownies": 6,
+      "weight_after_more_jelly_beans": 8,
+      "final_weight": 16
+    }
+  },
+  "merged_assignment": {
+    "initial_jelly_beans_weight": 2,
+    "additional_jelly_beans_added": 2,
+    "weight_after_brownies": 2.72,
+    "weight_after_more_jelly_beans": 3.63,
+    "final_weight": 7.26
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given converted values from factual_assignment\n    initial_jelly_beans_weight = 2.00\n    additional_jelly_beans_added = 2.00\n\n    # Recompute placeholders based on templatized_answer logic\n    # Step 1: Calculate weight after adding brownies\n    # \"To the initial {initial_jelly_beans_weight} pounds of jelly beans, he added enough brownies to cause the weight to triple,\n    # bringing the weight to {initial_jelly_beans_weight}*3=<<{initial_jelly_beans_weight}*3={weight_after_brownies}>>{weight_after_brownies} pounds.\"\n    weight_after_brownies = round(initial_jelly_beans_weight * 3, 2)\n\n    # Step 2: Calculate weight after adding more jelly beans\n    # \"Next, he added another {additional_jelly_beans_added} pounds of jelly beans,\n    # bringing the weight to {weight_after_brownies}+{additional_jelly_beans_added}=<<{weight_after_brownies}+{additional_jelly_beans_added}={weight_after_more_jelly_beans}>>{weight_after_more_jelly_beans} pounds.\"\n    weight_after_more_jelly_beans = round(weight_after_brownies + additional_jelly_beans_added, 2)\n\n    # Step 3: Calculate final weight after adding gummy worms\n    # \"And finally, he added enough gummy worms to double the weight once again,\n    # to a final weight of {weight_after_more_jelly_beans}*2=<<{weight_after_more_jelly_beans}*2={final_weight}>>{final_weight} pounds.\"\n    final_weight = round(weight_after_more_jelly_beans * 2, 2)\n\n    return {\n        \"initial_jelly_beans_weight\": initial_jelly_beans_weight,\n        \"additional_jelly_beans_added\": additional_jelly_beans_added,\n        \"weight_after_brownies\": weight_after_brownies,\n        \"weight_after_more_jelly_beans\": weight_after_more_jelly_beans,\n        \"final_weight\": final_weight\n    }\n",
+    "results": {
+      "initial_jelly_beans_weight": 2.0,
+      "additional_jelly_beans_added": 2.0,
+      "weight_after_brownies": 6.0,
+      "weight_after_more_jelly_beans": 8.0,
+      "final_weight": 16.0
+    }
+  },
+  "final": {
+    "question": "Ken created a care package to send to his brother, who was away at boarding school. Ken placed a box on a scale, and then he poured into the box enough jelly beans to bring the weight to 0.91 kilograms. Then, he added enough brownies to cause the weight to triple. Next, he added another 0.91 kilograms of jelly beans. And finally, he added enough gummy worms to double the weight once again. What was the final weight of the box of goodies, in kilograms?",
+    "answer_lines": [
+      "To the initial 0.91 kilograms of jelly beans, he added enough brownies to cause the weight to triple, bringing the weight to 0.91*3=<<0.91*3=2.72>>2.72 kilograms.",
+      "Next, he added another 0.91 kilograms of jelly beans, bringing the weight to 2.72+0.91=<<2.72+0.91=3.63>>3.63 kilograms.",
+      "And finally, he added enough gummy worms to double the weight once again, to a final weight of 3.63*2=<<3.63*2=7.26>>7.26 kilograms.",
+      "#### 7.26"
+    ],
+    "final_scalar": 7.26,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

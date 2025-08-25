@@ -1,0 +1,117 @@
+{
+  "index": 3,
+  "split": "train",
+  "original": {
+    "question": "Julie is reading a 120-page book. Yesterday, she was able to read 12 pages and today, she read twice as many pages as yesterday. If she wants to read half of the remaining pages tomorrow, how many pages should she read?",
+    "answer": "Maila read 12 x 2 = <<12*2=24>>24 pages today.\nSo she was able to read a total of 12 + 24 = <<12+24=36>>36 pages since yesterday.\nThere are 120 - 36 = <<120-36=84>>84 pages left to be read.\nSince she wants to read half of the remaining pages tomorrow, then she should read 84/2 = <<84/2=42>>42 pages.\n#### 42"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pages_yesterday",
+      "value": 12,
+      "unit": "page",
+      "context": "question"
+    },
+    {
+      "variable": "pages_today",
+      "value": 24,
+      "unit": "page",
+      "context": "answer"
+    },
+    {
+      "variable": "total_pages_read",
+      "value": 36,
+      "unit": "page",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_pages",
+      "value": 84,
+      "unit": "page",
+      "context": "answer"
+    },
+    {
+      "variable": "pages_to_read_tomorrow",
+      "value": 42,
+      "unit": "page",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversion_rates = {\n        \"pounds\": {\"to\": \"kilograms\", \"rate\": 0.453592},\n        \"ounces\": {\"to\": \"grams\", \"rate\": 28.3495},\n        \"miles\": {\"to\": \"kilometers\", \"rate\": 1.60934},\n        \"feet\": {\"to\": \"meters\", \"rate\": 0.3048},\n        \"gallons\": {\"to\": \"liters\", \"rate\": 3.78541},\n        \"cups\": {\"to\": \"milliliters\", \"rate\": 236.588},\n        \"dollars\": {\"to\": \"rupees\", \"rate\": 87}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversion_rates:\n            converted_unit = conversion_rates[original_unit][\"to\"]\n            converted_value = round(original_value * conversion_rates[original_unit][\"rate\"], 2)\n            result.append({\n                \"variable\": variable,\n                \"original_value\": original_value,\n                \"original_unit\": original_unit,\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": variable,\n                \"original_value\": original_value,\n                \"original_unit\": original_unit,\n                \"converted_value\": original_value,\n                \"converted_unit\": original_unit\n            })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"pages_yesterday\",\n    \"value\": 12,\n    \"unit\": \"page\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"pages_today\",\n    \"value\": 24,\n    \"unit\": \"page\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_pages_read\",\n    \"value\": 36,\n    \"unit\": \"page\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"remaining_pages\",\n    \"value\": 84,\n    \"unit\": \"page\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"pages_to_read_tomorrow\",\n    \"value\": 42,\n    \"unit\": \"page\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pages_yesterday",
+        "original_value": 12,
+        "original_unit": "page",
+        "converted_value": 12,
+        "converted_unit": "page"
+      },
+      {
+        "variable": "pages_today",
+        "original_value": 24,
+        "original_unit": "page",
+        "converted_value": 24,
+        "converted_unit": "page"
+      },
+      {
+        "variable": "total_pages_read",
+        "original_value": 36,
+        "original_unit": "page",
+        "converted_value": 36,
+        "converted_unit": "page"
+      },
+      {
+        "variable": "remaining_pages",
+        "original_value": 84,
+        "original_unit": "page",
+        "converted_value": 84,
+        "converted_unit": "page"
+      },
+      {
+        "variable": "pages_to_read_tomorrow",
+        "original_value": 42,
+        "original_unit": "page",
+        "converted_value": 42,
+        "converted_unit": "page"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Julie is reading a {book_pages} book. Yesterday, she was able to read {pages_yesterday} pages and today, she read twice as many pages as yesterday. If she wants to read half of the remaining pages tomorrow, how many pages should she read?",
+    "templatized_answer": [
+      "Maila read {pages_yesterday} x 2 = {pages_today} pages today.",
+      "So she was able to read a total of {pages_yesterday} + {pages_today} = {total_pages_read} pages since yesterday.",
+      "There are {book_pages} - {total_pages_read} = {remaining_pages} pages left to be read.",
+      "Since she wants to read half of the remaining pages tomorrow, then she should read {remaining_pages}/2 = {pages_to_read_tomorrow} pages."
+    ],
+    "factual_assignment": {
+      "book_pages": "120",
+      "pages_yesterday": "12",
+      "pages_today": "{pages_yesterday} x 2",
+      "total_pages_read": "{pages_yesterday} + {pages_today}",
+      "remaining_pages": "{book_pages} - {total_pages_read}",
+      "pages_to_read_tomorrow": "{remaining_pages}/2"
+    }
+  },
+  "merged_assignment": {
+    "book_pages": "120",
+    "pages_yesterday": 12,
+    "pages_today": 24,
+    "total_pages_read": 36,
+    "remaining_pages": 84,
+    "pages_to_read_tomorrow": 42
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Define the factual assignment\n    factual_assignment = {\n        \"book_pages\": 120,\n        \"pages_yesterday\": 12,\n        \"pages_today\": 24,\n        \"total_pages_read\": 36,\n        \"remaining_pages\": 84,\n        \"pages_to_read_tomorrow\": 42\n    }\n\n    # Recompute pages_today\n    pages_today = factual_assignment[\"pages_yesterday\"] * 2\n\n    # Recompute total_pages_read\n    total_pages_read = factual_assignment[\"pages_yesterday\"] + pages_today\n\n    # Recompute remaining_pages\n    remaining_pages = factual_assignment[\"book_pages\"] - total_pages_read\n\n    # Recompute pages_to_read_tomorrow\n    pages_to_read_tomorrow = remaining_pages / 2\n\n    # Create a dictionary mapping placeholder to numeric value\n    recompute_dict = {\n        \"{book_pages}\": round(factual_assignment[\"book_pages\"], 2),\n        \"{pages_yesterday}\": factual_assignment[\"pages_yesterday\"],\n        \"{pages_today}\": round(pages_today, 2),\n        \"{total_pages_read}\": round(total_pages_read, 2),\n        \"{remaining_pages}\": round(remaining_pages, 2),\n        \"{pages_to_read_tomorrow}\": round(pages_to_read_tomorrow, 2)\n    }\n\n    return recompute_dict\n\n# Print the recompute dictionary\nprint(recompute())\n",
+    "results": {
+      "{book_pages}": 120,
+      "{pages_yesterday}": 12,
+      "{pages_today}": 24,
+      "{total_pages_read}": 36,
+      "{remaining_pages}": 84,
+      "{pages_to_read_tomorrow}": 42.0
+    }
+  },
+  "final": null
+}

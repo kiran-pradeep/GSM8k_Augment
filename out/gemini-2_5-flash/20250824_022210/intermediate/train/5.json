@@ -1,0 +1,73 @@
+{
+  "index": 5,
+  "split": "train",
+  "original": {
+    "question": "Mark has a garden with flowers. He planted plants of three different colors in it. Ten of them are yellow, and there are 80% more of those in purple. There are only 25% as many green flowers as there are yellow and purple flowers. How many flowers does Mark have in his garden?",
+    "answer": "There are 80/100 * 10 = <<80/100*10=8>>8 more purple flowers than yellow flowers.\nSo in Mark's garden, there are 10 + 8 = <<10+8=18>>18 purple flowers.\nPurple and yellow flowers sum up to 10 + 18 = <<10+18=28>>28 flowers.\nThat means in Mark's garden there are 25/100 * 28 = <<25/100*28=7>>7 green flowers.\nSo in total Mark has 28 + 7 = <<28+7=35>>35 plants in his garden.\n#### 35"
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics_list):\n    \"\"\"\n    Converts values in a list of metrics to appropriate SI or Indian units\n    if the original unit is associated with a country other than India.\n\n    Args:\n        metrics_list (list): A list of dictionaries, where each dictionary\n                             represents a metric with \"variable\", \"value\",\n                             and \"unit\" fields.\n\n    Returns:\n        list: A list of dictionaries, each containing:\n              - \"variable\"\n              - \"original_value\"\n              - \"original_unit\"\n              - \"converted_value\"\n              - \"converted_unit\"\n    \"\"\"\n    converted_metrics = []\n    for metric in metrics_list:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        converted_value = original_value\n        converted_unit = original_unit\n        \n        unit_lower = original_unit.lower()\n        conversion_needed = False\n\n        if unit_lower in [\"pounds\", \"lb\"]:\n            converted_value = original_value * 0.453592\n            converted_unit = \"kg\"\n            conversion_needed = True\n        elif unit_lower in [\"ounces\", \"oz\"]:\n            converted_value = original_value * 28.3495\n            converted_unit = \"g\"\n            conversion_needed = True\n        elif unit_lower in [\"miles\", \"mi\"]:\n            converted_value = original_value * 1.60934\n            converted_unit = \"km\"\n            conversion_needed = True\n        elif unit_lower in [\"feet\", \"ft\"]:\n            converted_value = original_value * 0.3048\n            converted_unit = \"m\"\n            conversion_needed = True\n        elif unit_lower in [\"gallons\", \"gal\"]:\n            converted_value = original_value * 3.78541\n            converted_unit = \"L\"\n            conversion_needed = True\n        elif unit_lower in [\"cups\", \"cup\"]:\n            converted_value = original_value * 236.588\n            converted_unit = \"ml\"\n            conversion_needed = True\n        elif unit_lower in [\"dollars\", \"$\"]:\n            converted_value = original_value * 87\n            converted_unit = \"INR\"\n            conversion_needed = True\n        # Units like \"rupees\", \"kilometers\", \"kilograms\", \"minutes\", \"hour\",\n        # \"meters\", \"liters\", \"grams\", \"milliliters\" are already SI or Indian\n        # and will fall through, remaining unchanged.\n\n        if conversion_needed:\n            converted_value = round(converted_value, 2)\n\n        converted_metrics.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return converted_metrics\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Mark has a garden with flowers. He planted plants of three different colors in it. {num_yellow_flowers} of them are yellow, and there are {purple_increase_percentage}% more of those in purple. There are only {green_fraction_percentage}% as many green flowers as there are yellow and purple flowers. How many flowers does Mark have in his garden?",
+    "templatized_answer": [
+      "There are {purple_increase_percentage}/100 * {num_yellow_flowers} = <<{purple_increase_percentage}/100*{num_yellow_flowers}={num_additional_purple_flowers}>>{num_additional_purple_flowers} more purple flowers than yellow flowers.",
+      "So in Mark's garden, there are {num_yellow_flowers} + {num_additional_purple_flowers} = <<{num_yellow_flowers}+{num_additional_purple_flowers}={num_purple_flowers}>>{num_purple_flowers} purple flowers.",
+      "Purple and yellow flowers sum up to {num_yellow_flowers} + {num_purple_flowers} = <<{num_yellow_flowers}+{num_purple_flowers}={num_yellow_and_purple_flowers}>>{num_yellow_and_purple_flowers} flowers.",
+      "That means in Mark's garden there are {green_fraction_percentage}/100 * {num_yellow_and_purple_flowers} = <<{green_fraction_percentage}/100*{num_yellow_and_purple_flowers}={num_green_flowers}>>{num_green_flowers} green flowers.",
+      "So in total Mark has {num_yellow_and_purple_flowers} + {num_green_flowers} = <<{num_yellow_and_purple_flowers}+{num_green_flowers}={total_flowers}>>{total_flowers} plants in his garden.",
+      "#### {total_flowers}"
+    ],
+    "factual_assignment": {
+      "num_yellow_flowers": 10,
+      "purple_increase_percentage": 80,
+      "green_fraction_percentage": 25,
+      "num_additional_purple_flowers": 8,
+      "num_purple_flowers": 18,
+      "num_yellow_and_purple_flowers": 28,
+      "num_green_flowers": 7,
+      "total_flowers": 35
+    }
+  },
+  "merged_assignment": {
+    "num_yellow_flowers": 10,
+    "purple_increase_percentage": 80,
+    "green_fraction_percentage": 25,
+    "num_additional_purple_flowers": 8,
+    "num_purple_flowers": 18,
+    "num_yellow_and_purple_flowers": 28,
+    "num_green_flowers": 7,
+    "total_flowers": 35
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Initial values from factual_assignment\n    num_yellow_flowers = 10\n    purple_increase_percentage = 80\n    green_fraction_percentage = 25\n\n    recomputed_values = {\n        \"num_yellow_flowers\": num_yellow_flowers,\n        \"purple_increase_percentage\": purple_increase_percentage,\n        \"green_fraction_percentage\": green_fraction_percentage,\n    }\n\n    # Step 1: Calculate num_additional_purple_flowers\n    # There are {purple_increase_percentage}/100 * {num_yellow_flowers} = {num_additional_purple_flowers} more purple flowers than yellow flowers.\n    num_additional_purple_flowers = (purple_increase_percentage / 100) * num_yellow_flowers\n    recomputed_values[\"num_additional_purple_flowers\"] = round(num_additional_purple_flowers, 2)\n\n    # Step 2: Calculate num_purple_flowers\n    # So in Mark's garden, there are {num_yellow_flowers} + {num_additional_purple_flowers} = {num_purple_flowers} purple flowers.\n    num_purple_flowers = num_yellow_flowers + recomputed_values[\"num_additional_purple_flowers\"]\n    recomputed_values[\"num_purple_flowers\"] = round(num_purple_flowers, 2)\n\n    # Step 3: Calculate num_yellow_and_purple_flowers\n    # Purple and yellow flowers sum up to {num_yellow_flowers} + {num_purple_flowers} = {num_yellow_and_purple_flowers} flowers.\n    num_yellow_and_purple_flowers = num_yellow_flowers + recomputed_values[\"num_purple_flowers\"]\n    recomputed_values[\"num_yellow_and_purple_flowers\"] = round(num_yellow_and_purple_flowers, 2)\n\n    # Step 4: Calculate num_green_flowers\n    # That means in Mark's garden there are {green_fraction_percentage}/100 * {num_yellow_and_purple_flowers} = {num_green_flowers} green flowers.\n    num_green_flowers = (green_fraction_percentage / 100) * recomputed_values[\"num_yellow_and_purple_flowers\"]\n    recomputed_values[\"num_green_flowers\"] = round(num_green_flowers, 2)\n\n    # Step 5: Calculate total_flowers\n    # So in total Mark has {num_yellow_and_purple_flowers} + {num_green_flowers} = {total_flowers} plants in his garden.\n    total_flowers = recomputed_values[\"num_yellow_and_purple_flowers\"] + recomputed_values[\"num_green_flowers\"]\n    recomputed_values[\"total_flowers\"] = round(total_flowers, 2)\n\n    return recomputed_values\n\n",
+    "results": {
+      "num_yellow_flowers": 10,
+      "purple_increase_percentage": 80,
+      "green_fraction_percentage": 25,
+      "num_additional_purple_flowers": 8.0,
+      "num_purple_flowers": 18.0,
+      "num_yellow_and_purple_flowers": 28.0,
+      "num_green_flowers": 7.0,
+      "total_flowers": 35.0
+    }
+  },
+  "final": {
+    "question": "Mark has a garden with flowers. He planted plants of three different colors in it. 10 of them are yellow, and there are 80% more of those in purple. There are only 25% as many green flowers as there are yellow and purple flowers. How many flowers does Mark have in his garden?",
+    "answer_lines": [
+      "There are 80/100 * 10 = <<80/100*10=8>>8 more purple flowers than yellow flowers.",
+      "So in Mark's garden, there are 10 + 8 = <<10+8=18>>18 purple flowers.",
+      "Purple and yellow flowers sum up to 10 + 18 = <<10+18=28>>28 flowers.",
+      "That means in Mark's garden there are 25/100 * 28 = <<25/100*28=7>>7 green flowers.",
+      "So in total Mark has 28 + 7 = <<28+7=35>>35 plants in his garden.",
+      "#### 35"
+    ],
+    "final_scalar": 35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "index": 2,
+  "split": "train",
+  "original": {
+    "question": "Betty is saving money for a new wallet which costs $100. Betty has only half of the money she needs. Her parents decided to give her $15 for that purpose, and her grandparents twice as much as her parents. How much more money does Betty need to buy the wallet?",
+    "answer": "In the beginning, Betty has only 100 / 2 = $<<100/2=50>>50.\nBetty's grandparents gave her 15 * 2 = $<<15*2=30>>30.\nThis means, Betty needs 100 - 50 - 30 - 15 = $<<100-50-30-15=5>>5 more.\n#### 5"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "wallet_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "parents_gift",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "grandparents_gift",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "betty_savings",
+      "value": 50,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "more_money_needed",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversion_rates = {\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 87}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversion_rates:\n            converted_unit = conversion_rates[original_unit][\"to\"]\n            converted_value = round(original_value * conversion_rates[original_unit][\"rate\"], 2)\n            result.append({\n                \"variable\": variable,\n                \"original_value\": original_value,\n                \"original_unit\": original_unit,\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": variable,\n                \"original_value\": original_value,\n                \"original_unit\": original_unit,\n                \"converted_value\": original_value,\n                \"converted_unit\": original_unit\n            })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"wallet_cost\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"parents_gift\",\n    \"value\": 15,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"grandparents_gift\",\n    \"value\": 30,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"betty_savings\",\n    \"value\": 50,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"more_money_needed\",\n    \"value\": 5,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "wallet_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 8700,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "parents_gift",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1305,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "grandparents_gift",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 2610,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "betty_savings",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 4350,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "more_money_needed",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Betty is saving money for a new {wallet_cost}. Betty has only half of the money she needs. Her parents decided to give her {parents_gift} for that purpose, and her grandparents twice as much as her parents. How much more money does Betty need to buy the wallet?",
+    "templatized_answer": [
+      "In the beginning, Betty has only {wallet_cost} / 2 = ${wallet_cost/2}.",
+      "Betty's grandparents gave her {parents_gift} * 2 = ${parents_gift*2}.",
+      "This means, Betty needs {wallet_cost} - {wallet_cost/2} - {parents_gift*2} - {parents_gift} = ${wallet_cost - wallet_cost/2 - parents_gift*2 - parents_gift}.",
+      "#### {wallet_cost - wallet_cost/2 - parents_gift*2 - parents_gift}"
+    ],
+    "factual_assignment": {
+      "wallet_cost": "{wallet_cost}",
+      "parents_gift": "{parents_gift}",
+      "grandparents_gift": "{parents_gift*2}",
+      "betty_savings": "{wallet_cost/2}",
+      "more_money_needed": "{wallet_cost - wallet_cost/2 - parents_gift*2 - parents_gift}"
+    }
+  },
+  "merged_assignment": {
+    "wallet_cost": 8700,
+    "parents_gift": 1305,
+    "grandparents_gift": 2610,
+    "betty_savings": 4350,
+    "more_money_needed": 435
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    wallet_cost = 8700\n    parents_gift = 1305\n    grandparents_gift = 2610\n    betty_savings = 4350\n    more_money_needed = 435\n\n    # Recompute wallet_cost / 2\n    betty_initial_savings = wallet_cost / 2\n\n    # Recompute parents_gift * 2\n    grandparents_gift_value = parents_gift * 2\n\n    # Recompute wallet_cost - wallet_cost / 2 - parents_gift * 2 - parents_gift\n    more_money_needed_value = wallet_cost - betty_initial_savings - grandparents_gift_value - parents_gift\n\n    return {\n        \"{wallet_cost}\": round(wallet_cost, 2),\n        \"{wallet_cost/2}\": round(betty_initial_savings, 2),\n        \"{parents_gift*2}\": round(grandparents_gift_value, 2),\n        \"{wallet_cost - wallet_cost/2 - parents_gift*2 - parents_gift}\": round(more_money_needed_value, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "{wallet_cost}": 8700,
+      "{wallet_cost/2}": 4350.0,
+      "{parents_gift*2}": 2610,
+      "{wallet_cost - wallet_cost/2 - parents_gift*2 - parents_gift}": 435.0
+    }
+  },
+  "final": {
+    "question": "Betty is saving money for a new wallet which costs ₹8,700. Betty has only half of the money she needs. Her parents decided to give her ₹1,305 for that purpose, and her grandparents twice as much as her parents. How much more money does Betty need to buy the wallet?",
+    "answer_lines": [
+      "In the beginning, Betty has only ₹8,700 / 2 = ₹4,350.",
+      "Betty's grandparents gave her ₹1,305 * 2 = ₹2,610.",
+      "This means, Betty needs ₹8,700 - ₹4,350 - ₹2,610 - ₹1,305 = ₹435.",
+      "#### 435"
+    ],
+    "final_scalar": 435,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

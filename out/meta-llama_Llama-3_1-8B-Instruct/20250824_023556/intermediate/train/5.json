@@ -1,0 +1,107 @@
+{
+  "index": 5,
+  "split": "train",
+  "original": {
+    "question": "Mark has a garden with flowers. He planted plants of three different colors in it. Ten of them are yellow, and there are 80% more of those in purple. There are only 25% as many green flowers as there are yellow and purple flowers. How many flowers does Mark have in his garden?",
+    "answer": "There are 80/100 * 10 = <<80/100*10=8>>8 more purple flowers than yellow flowers.\nSo in Mark's garden, there are 10 + 8 = <<10+8=18>>18 purple flowers.\nPurple and yellow flowers sum up to 10 + 18 = <<10+18=28>>28 flowers.\nThat means in Mark's garden there are 25/100 * 28 = <<25/100*28=7>>7 green flowers.\nSo in total Mark has 28 + 7 = <<28+7=35>>35 plants in his garden.\n#### 35"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "yellow_flowers",
+      "value": 10,
+      "unit": "flower",
+      "context": "question"
+    },
+    {
+      "variable": "purple_flowers",
+      "value": 18,
+      "unit": "flower",
+      "context": "answer"
+    },
+    {
+      "variable": "total_flowers",
+      "value": 35,
+      "unit": "flower",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversion_rates = {\n        \"pounds\": {\"to\": \"kilograms\", \"rate\": 0.453592},\n        \"ounces\": {\"to\": \"grams\", \"rate\": 28.3495},\n        \"miles\": {\"to\": \"kilometers\", \"rate\": 1.60934},\n        \"feet\": {\"to\": \"meters\", \"rate\": 0.3048},\n        \"gallons\": {\"to\": \"liters\", \"rate\": 3.78541},\n        \"cups\": {\"to\": \"milliliters\", \"rate\": 236.588},\n        \"dollars\": {\"to\": \"rupees\", \"rate\": 87}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversion_rates:\n            converted_value = original_value * conversion_rates[original_unit][\"rate\"]\n            converted_unit = conversion_rates[original_unit][\"to\"]\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": round(original_value, 2),\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"yellow_flowers\",\n    \"value\": 10,\n    \"unit\": \"flower\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"purple_flowers\",\n    \"value\": 18,\n    \"unit\": \"flower\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_flowers\",\n    \"value\": 35,\n    \"unit\": \"flower\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"weight\",\n    \"value\": 5,\n    \"unit\": \"pounds\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"height\",\n    \"value\": 10,\n    \"unit\": \"miles\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"volume\",\n    \"value\": 2,\n    \"unit\": \"gallons\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"price\",\n    \"value\": 100,\n    \"unit\": \"dollars\",\n    \"context\": \"question\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "yellow_flowers",
+        "original_value": 10,
+        "original_unit": "flower",
+        "converted_value": 10,
+        "converted_unit": "flower"
+      },
+      {
+        "variable": "purple_flowers",
+        "original_value": 18,
+        "original_unit": "flower",
+        "converted_value": 18,
+        "converted_unit": "flower"
+      },
+      {
+        "variable": "total_flowers",
+        "original_value": 35,
+        "original_unit": "flower",
+        "converted_value": 35,
+        "converted_unit": "flower"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark has a garden with flowers. He planted plants of three different colors in it. {yellow_flowers} of them are yellow, and there are {purple_yellow_ratio}% more of those in purple. There are only {green_ratio}% as many green flowers as there are yellow and purple flowers. How many flowers does Mark have in his garden?",
+    "templatized_answer": [
+      "There are {purple_yellow_ratio}/100 * {yellow_flowers} = <<{purple_yellow_ratio}/100*{yellow_flowers}={purple_yellow_ratio}*{yellow_flowers}/{purple_yellow_ratio}>>{purple_yellow_ratio}*{yellow_flowers}/{purple_yellow_ratio} more purple flowers than yellow flowers.",
+      "So in Mark's garden, there are {yellow_flowers} + {purple_yellow_ratio}*{yellow_flowers}/{purple_yellow_ratio} = <<{yellow_flowers}+{purple_yellow_ratio}*{yellow_flowers}/{purple_yellow_ratio}={yellow_flowers}+{purple_yellow_ratio}*{yellow_flowers}>>{yellow_flowers}+{purple_yellow_ratio}*{yellow_flowers} purple flowers.",
+      "Purple and yellow flowers sum up to {yellow_flowers} + {yellow_flowers}+{purple_yellow_ratio}*{yellow_flowers} = <<{yellow_flowers}+{yellow_flowers}+{purple_yellow_ratio}*{yellow_flowers}={yellow_flowers}*{purple_yellow_ratio+1}>>{yellow_flowers}*{purple_yellow_ratio+1} flowers.",
+      "That means in Mark's garden there are {green_ratio}/100 * {yellow_flowers}*{purple_yellow_ratio+1} = <<{green_ratio}/100*{yellow_flowers}*{purple_yellow_ratio+1}={green_ratio}*{yellow_flowers}*{purple_yellow_ratio+1}/{green_ratio}>>{green_ratio}*{yellow_flowers}*{purple_yellow_ratio+1}/{green_ratio} green flowers.",
+      "So in total Mark has {yellow_flowers}*{purple_yellow_ratio+1} + {green_ratio}*{yellow_flowers}*{purple_yellow_ratio+1}/{green_ratio} = <<{yellow_flowers}*{purple_yellow_ratio+1}+{green_ratio}*{yellow_flowers}*{purple_yellow_ratio+1}/{green_ratio}={yellow_flowers}*{purple_yellow_ratio+1}*{green_ratio+1}/{green_ratio}>>{yellow_flowers}*{purple_yellow_ratio+1}*{green_ratio+1}/{green_ratio} plants in his garden.",
+      "#### {total_flowers}"
+    ],
+    "factual_assignment": {
+      "{yellow_flowers}": "10",
+      "{purple_yellow_ratio}": "80",
+      "{green_ratio}": "25",
+      "{total_flowers}": "35"
+    }
+  },
+  "merged_assignment": {
+    "yellow_flowers": 10,
+    "purple_yellow_ratio": "80",
+    "green_ratio": "25",
+    "total_flowers": 35
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Define the factual assignment\n    factual_assignment = {\n        \"yellow_flowers\": 10,\n        \"purple_yellow_ratio\": 80,\n        \"green_ratio\": 25,\n        \"total_flowers\": 35\n    }\n\n    # Recompute purple flowers\n    purple_yellow_ratio = factual_assignment[\"purple_yellow_ratio\"] / 100\n    purple_flowers = factual_assignment[\"yellow_flowers\"] * purple_yellow_ratio\n    purple_flowers = round(purple_flowers, 2)\n\n    # Recompute total purple flowers\n    total_purple_flowers = factual_assignment[\"yellow_flowers\"] + purple_flowers\n    total_purple_flowers = round(total_purple_flowers, 2)\n\n    # Recompute green flowers\n    green_ratio = factual_assignment[\"green_ratio\"] / 100\n    green_flowers = green_ratio * total_purple_flowers\n    green_flowers = round(green_flowers, 2)\n\n    # Recompute total flowers\n    total_flowers = total_purple_flowers + green_flowers\n    total_flowers = round(total_flowers, 2)\n\n    # Create a dictionary mapping placeholder to numeric value\n    recompute_dict = {\n        \"{yellow_flowers}\": factual_assignment[\"yellow_flowers\"],\n        \"{purple_yellow_ratio}\": factual_assignment[\"purple_yellow_ratio\"],\n        \"{green_ratio}\": factual_assignment[\"green_ratio\"],\n        \"{purple_yellow_ratio}*{yellow_flowers}/{purple_yellow_ratio}\": purple_flowers,\n        \"{yellow_flowers}+{purple_yellow_ratio}*{yellow_flowers}\": total_purple_flowers,\n        \"{yellow_flowers}*{purple_yellow_ratio+1}\": total_purple_flowers,\n        \"{green_ratio}*{yellow_flowers}*{purple_yellow_ratio+1}/{green_ratio}\": green_flowers,\n        \"{yellow_flowers}*{purple_yellow_ratio+1}*{green_ratio+1}/{green_ratio}\": total_flowers,\n        \"{total_flowers}\": factual_assignment[\"total_flowers\"]\n    }\n\n    return recompute_dict\n",
+    "results": {
+      "{yellow_flowers}": 10,
+      "{purple_yellow_ratio}": 80,
+      "{green_ratio}": 25,
+      "{purple_yellow_ratio}*{yellow_flowers}/{purple_yellow_ratio}": 8.0,
+      "{yellow_flowers}+{purple_yellow_ratio}*{yellow_flowers}": 18.0,
+      "{yellow_flowers}*{purple_yellow_ratio+1}": 18.0,
+      "{green_ratio}*{yellow_flowers}*{purple_yellow_ratio+1}/{green_ratio}": 4.5,
+      "{yellow_flowers}*{purple_yellow_ratio+1}*{green_ratio+1}/{green_ratio}": 22.5,
+      "{total_flowers}": 35
+    }
+  },
+  "final": {
+    "question": "Mark has a garden with flowers. He planted plants of three different colors in it. 10 of them are yellow, and there are 80% more of those in purple. There are only 25% as many green flowers as there are yellow and purple flowers. How many flowers does Mark have in his garden?",
+    "answer_lines": [
+      "There are 80/100 * 10 = <<80/100*10=8>>8 more purple flowers than yellow flowers.",
+      "So in Mark's garden, there are 10 + 8 = <<10+8=18>>18 purple flowers.",
+      "Purple and yellow flowers sum up to 10 + 18 = <<10+18=28>>28 flowers.",
+      "That means in Mark's garden there are 25/100 * 28 = <<25/100*28=7>>7 green flowers.",
+      "So in total Mark has 28 + 7 = <<28+7=35>>35 plants in his garden.",
+      "#### 35"
+    ],
+    "final_scalar": 35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

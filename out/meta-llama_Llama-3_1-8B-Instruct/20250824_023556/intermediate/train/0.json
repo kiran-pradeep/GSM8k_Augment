@@ -1,0 +1,94 @@
+{
+  "index": 0,
+  "split": "train",
+  "original": {
+    "question": "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?",
+    "answer": "Natalia sold 48/2 = <<48/2=24>>24 clips in May.\nNatalia sold 48+24 = <<48+24=72>>72 clips altogether in April and May.\n#### 72"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "friends_in_april",
+      "value": 48,
+      "unit": "",
+      "context": "question"
+    },
+    {
+      "variable": "clips_sold_in_may",
+      "value": 24,
+      "unit": "",
+      "context": "answer"
+    },
+    {
+      "variable": "clips_sold_altogether",
+      "value": 72,
+      "unit": "",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversion_rates = {\n        \"pounds\": {\"to\": \"kilograms\", \"rate\": 0.453592},\n        \"ounces\": {\"to\": \"grams\", \"rate\": 28.3495},\n        \"miles\": {\"to\": \"kilometers\", \"rate\": 1.60934},\n        \"feet\": {\"to\": \"meters\", \"rate\": 0.3048},\n        \"gallons\": {\"to\": \"liters\", \"rate\": 3.78541},\n        \"cups\": {\"to\": \"milliliters\", \"rate\": 236.588},\n        \"dollars\": {\"to\": \"rupees\", \"rate\": 87}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversion_rates:\n            converted_value = original_value * conversion_rates[original_unit][\"rate\"]\n            converted_unit = conversion_rates[original_unit][\"to\"]\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": round(original_value, 2),\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"friends_in_april\",\n    \"value\": 48,\n    \"unit\": \"\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"clips_sold_in_may\",\n    \"value\": 24,\n    \"unit\": \"pounds\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"clips_sold_altogether\",\n    \"value\": 72,\n    \"unit\": \"dollars\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "friends_in_april",
+        "original_value": 48,
+        "original_unit": "",
+        "converted_value": 48,
+        "converted_unit": ""
+      },
+      {
+        "variable": "clips_sold_in_may",
+        "original_value": 24,
+        "original_unit": "",
+        "converted_value": 24,
+        "converted_unit": ""
+      },
+      {
+        "variable": "clips_sold_altogether",
+        "original_value": 72,
+        "original_unit": "",
+        "converted_value": 72,
+        "converted_unit": ""
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Natalia sold clips to {friends_in_april} of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?",
+    "templatized_answer": [
+      "Natalia sold {friends_in_april}/2 = {clips_sold_in_may} clips in May.",
+      "Natalia sold {friends_in_april}+{clips_sold_in_may} = {clips_sold_altogether} clips altogether in April and May.",
+      "#### {clips_sold_altogether}"
+    ],
+    "factual_assignment": {
+      "friends_in_april": "48",
+      "clips_sold_in_may": "{friends_in_april}/2",
+      "clips_sold_altogether": "{friends_in_april}+{clips_sold_in_may}"
+    }
+  },
+  "merged_assignment": {
+    "friends_in_april": 48,
+    "clips_sold_in_may": 24,
+    "clips_sold_altogether": 72
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given factual assignment\n    factual_assignment = {\n        \"friends_in_april\": 48,\n        \"clips_sold_in_may\": 24,\n        \"clips_sold_altogether\": 72\n    }\n\n    # Recompute clips_sold_in_april\n    clips_sold_in_april = factual_assignment[\"clips_sold_altogether\"] - factual_assignment[\"clips_sold_in_may\"]\n    \n    # Recompute clips_sold_in_may\n    clips_sold_in_may = factual_assignment[\"clips_sold_in_may\"]\n    \n    # Recompute clips_sold_altogether\n    clips_sold_altogether = factual_assignment[\"clips_sold_altogether\"]\n    \n    # Recompute friends_in_april\n    friends_in_april = factual_assignment[\"friends_in_april\"]\n    \n    # Recompute clips_sold_in_april using friends_in_april\n    clips_sold_in_april = friends_in_april / 2\n    \n    # Recompute clips_sold_in_may using friends_in_april\n    clips_sold_in_may = friends_in_april / 2\n    \n    # Recompute clips_sold_altogether using friends_in_april and clips_sold_in_may\n    clips_sold_altogether = friends_in_april + clips_sold_in_may\n    \n    # Return a dictionary mapping placeholder to numeric value\n    return {\n        \"{friends_in_april}\": round(friends_in_april, 2),\n        \"{clips_sold_in_april}\": round(clips_sold_in_april, 2),\n        \"{clips_sold_in_may}\": round(clips_sold_in_may, 2),\n        \"{clips_sold_altogether}\": round(clips_sold_altogether, 2)\n    }\n\n# Print the result\nprint(recompute())\n",
+    "results": {
+      "{friends_in_april}": 48,
+      "{clips_sold_in_april}": 24.0,
+      "{clips_sold_in_may}": 24.0,
+      "{clips_sold_altogether}": 72.0
+    }
+  },
+  "final": {
+    "question": "Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?",
+    "answer_lines": [
+      "Natalia sold 48/2 = 24 clips in May.",
+      "Natalia sold 48+24 = 72 clips altogether in April and May.",
+      "#### 72"
+    ],
+    "final_scalar": 72,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

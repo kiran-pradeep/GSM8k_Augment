@@ -1,0 +1,93 @@
+{
+  "index": 4,
+  "split": "train",
+  "original": {
+    "question": "James writes a 3-page letter to 2 different friends twice a week.  How many pages does he write a year?",
+    "answer": "He writes each friend 3*2=<<3*2=6>>6 pages a week\nSo he writes 6*2=<<6*2=12>>12 pages every week\nThat means he writes 12*52=<<12*52=624>>624 pages a year\n#### 624"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pages_per_week",
+      "value": 6,
+      "unit": "page",
+      "context": "question"
+    },
+    {
+      "variable": "pages_per_week",
+      "value": 12,
+      "unit": "page",
+      "context": "answer"
+    },
+    {
+      "variable": "pages_per_year",
+      "value": 624,
+      "unit": "page",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversion_rates = {\n        \"pounds\": {\"to\": \"kilograms\", \"rate\": 0.453592},\n        \"ounces\": {\"to\": \"grams\", \"rate\": 28.3495},\n        \"miles\": {\"to\": \"kilometers\", \"rate\": 1.60934},\n        \"feet\": {\"to\": \"meters\", \"rate\": 0.3048},\n        \"gallons\": {\"to\": \"liters\", \"rate\": 3.78541},\n        \"cups\": {\"to\": \"milliliters\", \"rate\": 236.588},\n        \"dollars\": {\"to\": \"rupees\", \"rate\": 87}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversion_rates:\n            converted_value = original_value * conversion_rates[original_unit][\"rate\"]\n            converted_unit = conversion_rates[original_unit][\"to\"]\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": round(original_value, 2),\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"pages_per_week\",\n    \"value\": 6,\n    \"unit\": \"page\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"pages_per_week\",\n    \"value\": 12,\n    \"unit\": \"page\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"pages_per_year\",\n    \"value\": 624,\n    \"unit\": \"page\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pages_per_week",
+        "original_value": 6,
+        "original_unit": "page",
+        "converted_value": 6,
+        "converted_unit": "page"
+      },
+      {
+        "variable": "pages_per_week",
+        "original_value": 12,
+        "original_unit": "page",
+        "converted_value": 12,
+        "converted_unit": "page"
+      },
+      {
+        "variable": "pages_per_year",
+        "original_value": 624,
+        "original_unit": "page",
+        "converted_value": 624,
+        "converted_unit": "page"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James writes a {pages_per_letter} page letter to {friends_count} different friends {times_per_week}.  How many pages does he write a year?",
+    "templatized_answer": [
+      "He writes each friend {pages_per_letter}*{friends_count}={pages_per_week} pages a week",
+      "So he writes {pages_per_week}*{times_per_week}={pages_per_week_times} pages every week",
+      "That means he writes {pages_per_week_times}*{weeks_per_year}={pages_per_year} pages a year"
+    ],
+    "factual_assignment": {
+      "pages_per_letter": "3",
+      "friends_count": "2",
+      "times_per_week": "2",
+      "pages_per_week": "{pages_per_letter}*{friends_count}",
+      "pages_per_week_times": "{pages_per_week}*{times_per_week}",
+      "weeks_per_year": "52",
+      "pages_per_year": "{pages_per_week_times}*{weeks_per_year}"
+    }
+  },
+  "merged_assignment": {
+    "pages_per_letter": "3",
+    "friends_count": "2",
+    "times_per_week": "2",
+    "pages_per_week": 12,
+    "pages_per_week_times": "{pages_per_week}*{times_per_week}",
+    "weeks_per_year": "52",
+    "pages_per_year": 624
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pages_per_letter = 3\n    friends_count = 2\n    times_per_week = 2\n    pages_per_week = pages_per_letter * friends_count\n    pages_per_week_times = pages_per_week * times_per_week\n    weeks_per_year = 52\n    pages_per_year = pages_per_week_times * weeks_per_year\n\n    return {\n        \"pages_per_letter\": round(pages_per_letter, 2),\n        \"friends_count\": round(friends_count, 2),\n        \"times_per_week\": round(times_per_week, 2),\n        \"pages_per_week\": round(pages_per_week, 2),\n        \"pages_per_week_times\": round(pages_per_week_times, 2),\n        \"weeks_per_year\": weeks_per_year,\n        \"pages_per_year\": round(pages_per_year, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "pages_per_letter": 3,
+      "friends_count": 2,
+      "times_per_week": 2,
+      "pages_per_week": 6,
+      "pages_per_week_times": 12,
+      "weeks_per_year": 52,
+      "pages_per_year": 624
+    }
+  },
+  "final": null
+}
