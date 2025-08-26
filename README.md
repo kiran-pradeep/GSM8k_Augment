@@ -17,6 +17,7 @@ The pipeline leverages LLMs for metric extraction, conversion, templating, recom
 
 ## Directory Structure
 
+```sh
 ├── src/ # Source code
 │ ├── utils/ # Helper utilities (LLM client, IO, dataset loader)
 │ ├── extractor.py # Metric extraction with LLM
@@ -37,7 +38,7 @@ The pipeline leverages LLMs for metric extraction, conversion, templating, recom
 │   └── intermediate/{split}/{idx}.json # Step-by-step intermediates
 ├── requirements.txt # Python dependencies
 └── README.md
-
+```
 
 ## Installation
 1. Clone the repository.
@@ -75,7 +76,7 @@ Or manually:
 
 ## Output
 Augmented results:
-out/{VLLM_MODEL}/{timestamp}/augmented/{split}.jsonl
+`out/{VLLM_MODEL}/{timestamp}/augmented/{split}.jsonl`
 
 Intermediate stepwise outputs per item:
-out/{VLLM_MODEL}/{timestamp}/intermediate/{split}/{idx}.json
+`out/{VLLM_MODEL}/{timestamp}/intermediate/{split}/{idx}.json`
