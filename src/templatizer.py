@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 from utils.llm_client import render_template
 
 
-def templatize_qa(chat, question: str, answer: str, variable_names: List[str], templates_dir: str) -> Dict[str, Any]:
+def templatize_qa(chat, question: str, answer: str, variables: List[Dict[str, Any]], templates_dir: str) -> Dict[str, Any]:
     """
     Ask the LLM to templatize question and CoT answer.
 
@@ -40,7 +40,7 @@ def templatize_qa(chat, question: str, answer: str, variable_names: List[str], t
         "templatize.txt",
         question=question,
         answer=answer,
-        variable_names=variable_names
+        variables=variables
     )
     resp = chat.invoke(prompt)
     text = resp.content.strip()

@@ -1,8 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """
 Main orchestrator for GSM8K metric-conversion augmentation.
+
+- Multiprocessing pool with configurable workers.
+- Progressive saving of intermediates even if later steps fail.
+- Timestamped output directories: out/{VLLM_MODEL}/{IST-timestamp}/...
 
 Pipeline:
 1) Load GSM8k dataset item
@@ -11,7 +12,7 @@ Pipeline:
 4) LLM-generated conversion code -> execute -> structured conversions
 5) LLM-based templatization (Q, CoT, mapping)
 6) LLM-generated recomputation code for new values -> execute safely
-7) Style-preserving final CoT (unit policy) + save outputs
+7) Style-preserving final CoT + save outputs
 
 Environment:
 - VLLM_BASE_URL, VLLM_API_KEY, VLLM_MODEL
@@ -20,10 +21,6 @@ Outputs:
 - out/intermediate/{split}/{idx}.json
 - out/augmented/{split}.jsonl
 
-Now supports:
-- Multiprocessing pool with configurable workers.
-- Progressive saving of intermediates even if later steps fail.
-- Timestamped output directories: out/{VLLM_MODEL}/{IST-timestamp}/...
 """
 
 from __future__ import annotations
@@ -37,9 +34,10 @@ from dotenv import load_dotenv
 from multiprocessing import Pool
 from datetime import datetime
 import pytz
+from tqdm import tqdm
 
 # ---- Local modules ----
-from cultural_adaptor import adapt_cultural_entities
+from cultural_adapter import adapt_cultural_entities
 from cultural_filter import check_cultural_bias
 from utils.llm_client import get_chat_model
 from utils.data_loader import load_gsm8k
@@ -75,6 +73,7 @@ def build_intermediate_record(
         "index": idx,
         "split": split,
         "original": {"question": question, "answer": answer},
+        "cultural_check": None,
         "metrics_extracted": metrics_extracted,
         "conversion": {"code": conversion_code, "results": conversions_result},
         "templatization": templated,
@@ -150,7 +149,7 @@ def process_item(args_tuple):
             chat=chat,
             question=question,
             answer=answer,
-            variable_names=[info["variable"] for info in conversions_result],
+            variables=conversions_result,
             templates_dir=args.templates,
         )
         intermediate_record["templatization"] = templated
@@ -197,14 +196,17 @@ def process_item(args_tuple):
             cultural_check=cultural_check["matched_entities"] if cultural_check["is_cultural"] else "None",
             templates_dir=args.templates
         )
+        intermediate_record["cultural_adapted"] = cultural_adapted
+        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+
 
         # Save augmented JSONL
         augmented_record = {
             "index": i,
             "split": args.split,
-            "cultural_check": cultural_check,
-            "augmented_question": cultural_adapted["question"],
-            "augmented_answer": cultural_adapted["answer_lines"],
+            "is_cultural": cultural_check["is_cultural"],
+            "augmented_question": cultural_adapted["adapted_question"],
+            "augmented_answer": cultural_adapted["adapted_answer"],
             "final_answer": final["final_scalar"],
             # "style": final["style_meta"],
         }
@@ -239,6 +241,9 @@ def main():
 
     # Make timestamped output directory
     model_name = os.getenv("VLLM_MODEL", "NA").replace("/", "_").replace(".", "_")
+    if "snapshot" in model_name:
+        model_name = model_name.split("_snapshots")[0]
+        model_name = model_name.split("_models--")[1]
     ist = pytz.timezone("Asia/Kolkata")
     timestamp = datetime.now(ist).strftime("%Y%m%d_%H%M%S")
     outdir = Path("out") / model_name / timestamp
@@ -260,10 +265,12 @@ def main():
 
     if args.workers > 1:
         with Pool(processes=args.workers) as pool:
-            pool.map(process_item, tasks)
+            for _ in tqdm(pool.imap_unordered(process_item, tasks), total=len(tasks), desc="Processing items"):
+                pass
     else:
-        for t in tasks:
+        for t in tqdm(tasks, desc="Processing items"):
             process_item(t)
+
 
     print(f"[DONE] Augmented JSONL: {augmented_path}")
     print(f"[DONE] Intermediates in: {intermediate_dir}")
