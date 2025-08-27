@@ -40,7 +40,7 @@ def templatize_qa(chat, question: str, answer: str, variables: List[Dict[str, An
         "templatize.txt",
         question=question,
         answer=answer,
-        variables=variables
+        variable_names=json.dumps(variables, indent=2, ensure_ascii=False)
     )
     resp = chat.invoke(prompt)
     text = resp.content.strip()

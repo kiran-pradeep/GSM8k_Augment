@@ -149,7 +149,7 @@ def process_item(args_tuple):
             chat=chat,
             question=question,
             answer=answer,
-            variables=conversions_result,
+            variables=metrics_extracted,
             templates_dir=args.templates,
         )
         intermediate_record["templatization"] = templated
@@ -230,13 +230,13 @@ def process_item(args_tuple):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="main", choices=["main", "socratic"])
-    parser.add_argument("--split", default="train", choices=["train", "test"])
-    parser.add_argument("--limit", type=int, default=50)
-    parser.add_argument("--start", type=int, default=0)
-    parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers.")
-    parser.add_argument("--templates", default="templates")
-    parser.add_argument("--failfast", action="store_true")
+    parser.add_argument("--config", default="main", choices=["main", "socratic"], help="Which prompt config to use.")
+    parser.add_argument("--split", default="train", choices=["train", "test"], help="Dataset split to process.")
+    parser.add_argument("--limit", type=int, default=-1, help="-1 for all, else max number of items to process.")
+    parser.add_argument("--start", type=int, default=0, help="Start index (0-based).")
+    parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers (LLM clients).")
+    parser.add_argument("--templates", default="templates", help="Directory with prompt templates.")
+    parser.add_argument("--failfast", action="store_true", help="Whether to stop on first error.")
     args = parser.parse_args()
 
     # Make timestamped output directory
@@ -255,7 +255,10 @@ def main():
     # Load dataset
     ds = load_gsm8k(args.config, args.split)
     n = len(ds)
-    end = min(args.start + args.limit, n)
+    if args.limit == -1:
+        end = n
+    else:
+        end = min(args.start + args.limit, n)
     print(f"[INFO] Processing {args.split} from {args.start} to {end-1} (total {n})")
 
     tasks = [
