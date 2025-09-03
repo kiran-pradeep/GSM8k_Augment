@@ -33,7 +33,7 @@ The pipeline leverages LLMs for metric extraction, conversion, templating, recom
 ├── run/ # Run scripts
 │ └── run.sh
 ├── out/ # Output directory
-│ └── {MODEL}/{timestamp}/
+│ └── {MODEL}/{timestamp}/{country}/
 │   ├── augmented/{split}.jsonl # Final augmented outputs
 │   └── intermediate/{split}/{idx}.json # Step-by-step intermediates
 ├── requirements.txt # Python dependencies
@@ -67,16 +67,24 @@ Or manually:
 
 ## Key Arguments
    ```sh
-   --config : GSM8k config (main or socratic)
-   --split : Dataset split (train or test)
-   --limit : Number of items to process
-   --start : Starting index
-   --workers : Number of parallel processes
+   --config                    Which prompt config to use (choices: main, socratic) (default: main)
+   --split                     Dataset split to process (choices: train, test) (default: train)
+   --limit                     Maximum number of items to process (-1 for all) (default: -1)
+   --start                     Starting index (0-based) (default: 0)
+   --workers                   Number of parallel workers (LLM clients) (default: 1)
+   --templates                 Directory with prompt templates (default: templates)
+   --failfast                  Stop on first error (flag, default: false)
+   --country                   Country for cultural adaptation (default: India)
+   --demonym                   Demonym for cultural adaptation (default: Indian)
+   --currency                  Currency name for cultural adaptation (default: rupee)
+   --currency_symbol           Currency symbol for cultural adaptation (default: ₹)
+   --currency_conversion_rate  Conversion rate to 1 USD (default: 87.0)
+   --currency_abbreviation     Currency abbreviation (default: INR)
    ```
 
 ## Output
 Augmented results:
-`out/{VLLM_MODEL}/{timestamp}/augmented/{split}.jsonl`
+`out/{VLLM_MODEL}/{timestamp}/{country}/augmented/{split}.jsonl`
 
 Intermediate stepwise outputs per item:
-`out/{VLLM_MODEL}/{timestamp}/intermediate/{split}/{idx}.json`
+`out/{VLLM_MODEL}/{timestamp}/{country}/intermediate/{split}/{idx}.json`

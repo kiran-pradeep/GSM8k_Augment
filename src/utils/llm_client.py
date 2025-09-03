@@ -47,8 +47,6 @@ def get_chat_model():
             temperature=0,
         )
 
-    
-
 
 # ---------------- Template Renderer ---------------- #
 
@@ -65,6 +63,21 @@ def render_template(templates_dir: str, filename: str, **kwargs) -> str:
 
     # Replace our {{var}} with str.format() placeholders
     for k, v in kwargs.items():
+        text = text.replace(f"{{{{{k}}}}}", str(v))
+
+
+    # Common variables for all templates
+    # These can be set in .env file or will use the defaults below
+    common_vars = {
+        "country": os.getenv("COUNTRY", "India"),
+        "demonym": os.getenv("DEMONYM", "Indian"),
+        "currency": os.getenv("CURRENCY", "rupee"),
+        "currency_symbol": os.getenv("CURRENCY_SYMBOL", "₹"),
+        "currency_conversion_rate": float(os.getenv("CURRENCY_CONVERSION_RATE", "87")),  # to 1 USD,
+        "currency_abbreviation": os.getenv("CURRENCY_ABBREVIATION", "INR"),
+    }
+
+    for k, v in common_vars.items():
         text = text.replace(f"{{{{{k}}}}}", str(v))
 
     return text

@@ -237,7 +237,27 @@ def main():
     parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers (LLM clients).")
     parser.add_argument("--templates", default="templates", help="Directory with prompt templates.")
     parser.add_argument("--failfast", action="store_true", help="Whether to stop on first error.")
+    parser.add_argument("--country", type=str, default="India", help="Country for cultural adaptation.")
+    parser.add_argument("--demonym", type=str, default="Indian", help="Demonym for cultural adaptation.")
+    parser.add_argument("--currency", type=str, default="rupee", help="Currency name for cultural adaptation.")
+    parser.add_argument("--currency_symbol", type=str, default="₹", help="Currency symbol for cultural adaptation.")
+    parser.add_argument("--currency_conversion_rate", type=float, default=87.0, help="Conversion rate to 1 USD.")
+    parser.add_argument("--currency_abbreviation", type=str, default="INR", help="Currency abbreviation.")
+
+
     args = parser.parse_args()
+
+    os.environ["COUNTRY"] = args.country
+    os.environ["DEMONYM"] = args.demonym
+    os.environ["CURRENCY"] = args.currency
+    os.environ["CURRENCY_SYMBOL"] = args.currency_symbol
+    os.environ["CURRENCY_CONVERSION_RATE"] = str(args.currency_conversion_rate)
+    os.environ["CURRENCY_ABBREVIATION"] = args.currency_abbreviation 
+
+    print(f"[INFO] Using config: {args.config}, split: {args.split}, start: {args.start}, limit: {args.limit}, workers: {args.workers}")
+    print(f"[INFO] Cultural context: country={args.country}, demonym={args.demonym}, currency={args.currency}, currency_symbol={args.currency_symbol}, currency_conversion_rate={args.currency_conversion_rate}, currency_abbreviation={args.currency_abbreviation}")
+    print(f"[INFO] Templates dir: {args.templates}")
+    print(f"[INFO] Failfast: {args.failfast}")  
 
     # Make timestamped output directory
     model_name = os.getenv("VLLM_MODEL", "NA").replace("/", "_").replace(".", "_")
@@ -247,8 +267,8 @@ def main():
     ist = pytz.timezone("Asia/Kolkata")
     timestamp = datetime.now(ist).strftime("%Y%m%d_%H%M%S")
     outdir = Path("out") / model_name / timestamp
-    intermediate_dir = outdir / "intermediate" / args.split
-    augmented_path = outdir / "augmented" / f"{args.split}.jsonl"
+    intermediate_dir = outdir / str(args.country) / "intermediate" / args.split
+    augmented_path = outdir / str(args.country) / "augmented" / f"{args.split}.jsonl"
     ensure_dir(intermediate_dir)
     ensure_dir(augmented_path.parent)
 
