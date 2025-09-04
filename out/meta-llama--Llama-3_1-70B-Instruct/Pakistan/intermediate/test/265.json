@@ -1,0 +1,156 @@
+{
+  "index": 265,
+  "split": "test",
+  "original": {
+    "question": "Mrs. Cruz is looking for a house that will not go beyond her $400 000 budget. She saw a property that has a selling price of $350 000. On top of that, the buyer has to pay a brokerage fee which is 5% of the selling price, and also the transfer fee that is 12% of the selling price. How much more is the total price of the house than Mrs. Cruz's budget?",
+    "answer": "The brokerage fee is $350 000 x 5/100 = $<<350000*5/100=17500>>17500.\nThe transfer fee is $350 000 x 12/100 = $<<350000*12/100=42000>>42000.\nThe total price of the house is $350 000 + $17500 + $42000 = $409 500.\nSo, it is $409 500 - $400 000 = $<<409500-400000=9500>>9500 more than Mrs. Cruz's budget.\n#### 9500"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mrs. Cruz",
+      "dollars"
+    ],
+    "notes": "Name 'Mrs. Cruz' is culturally specific to regions other than Pakistan, and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "budget",
+      "value": 400000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "house_price",
+      "value": 350000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "brokerage_fee",
+      "value": 17500,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "transfer_fee",
+      "value": 42000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_price",
+      "value": 409500,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "price_difference",
+      "value": 9500,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"budget\", \"value\": 400000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"house_price\", \"value\": 350000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"brokerage_fee\", \"value\": 17500, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"transfer_fee\", \"value\": 42000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_price\", \"value\": 409500, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"price_difference\", \"value\": 9500, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "budget",
+        "original_value": 400000,
+        "original_unit": "dollar",
+        "converted_value": 112740000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "house_price",
+        "original_value": 350000,
+        "original_unit": "dollar",
+        "converted_value": 98647500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "brokerage_fee",
+        "original_value": 17500,
+        "original_unit": "dollar",
+        "converted_value": 4932375.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "transfer_fee",
+        "original_value": 42000,
+        "original_unit": "dollar",
+        "converted_value": 11837700.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_price",
+        "original_value": 409500,
+        "original_unit": "dollar",
+        "converted_value": 115417575.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "price_difference",
+        "original_value": 9500,
+        "original_unit": "dollar",
+        "converted_value": 2677575.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mrs. Cruz is looking for a house that will not go beyond her ${budget} budget. She saw a property that has a selling price of ${house_price}. On top of that, the buyer has to pay a brokerage fee which is 5% of the selling price, and also the transfer fee that is 12% of the selling price. How much more is the total price of the house than Mrs. Cruz's budget?",
+    "templatized_answer": [
+      "The brokerage fee is ${house_price} x 5/100 = ${house_price} * 5/100.",
+      "The transfer fee is ${house_price} x 12/100 = ${house_price} * 12/100.",
+      "The total price of the house is ${house_price} + ${house_price} * 5/100 + ${house_price} * 12/100 = ${house_price} + ${house_price} * 5/100 + ${house_price} * 12/100.",
+      "So, it is ${house_price} + ${house_price} * 5/100 + ${house_price} * 12/100 - ${budget} = ${house_price} + ${house_price} * 5/100 + ${house_price} * 12/100 - ${budget} more than Mrs. Cruz's budget.",
+      "#### ${house_price} + ${house_price} * 5/100 + ${house_price} * 12/100 - ${budget}"
+    ],
+    "factual_assignment": {
+      "budget": 400000,
+      "house_price": 350000
+    }
+  },
+  "merged_assignment": {
+    "budget": 112740000.0,
+    "house_price": 98647500.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    budget = 112740000.0\n    house_price = 98647500.0\n\n    brokerage_fee = house_price * 5 / 100\n    transfer_fee = house_price * 12 / 100\n    total_price = house_price + brokerage_fee + transfer_fee\n    difference = total_price - budget\n\n    return {\n        \"budget\": budget,\n        \"house_price\": house_price,\n        \"brokerage_fee\": round(brokerage_fee, 2),\n        \"transfer_fee\": round(transfer_fee, 2),\n        \"total_price\": round(total_price, 2),\n        \"difference\": round(difference, 2)\n    }\n\nresult = recompute()\nprint(result)\n",
+    "results": {
+      "budget": 112740000.0,
+      "house_price": 98647500.0,
+      "brokerage_fee": 4932375.0,
+      "transfer_fee": 11837700.0,
+      "total_price": 115417575.0,
+      "difference": 2677575.0
+    }
+  },
+  "final": {
+    "question": "Mrs. Cruz is looking for a house that will not go beyond her 112740000.0 budget. She saw a property that has a selling price of 98647500.0. On top of that, the buyer has to pay a brokerage fee which is 5% of the selling price, and also the transfer fee that is 12% of the selling price. How much more is the total price of the house than Mrs. Cruz's budget?",
+    "answer_lines": [
+      "The brokerage fee is 98647500.0 x 5/100 = 98647500.0 * 5/100 = 4932375.0.",
+      "The transfer fee is 98647500.0 x 12/100 = 98647500.0 * 12/100 = 11837700.0.",
+      "The total price of the house is 98647500.0 + 4932375.0 + 11837700.0 = 115417575.0.",
+      "So, it is 115417575.0 - 112740000.0 = 2677575.0 more than Mrs. Cruz's budget.",
+      "#### 2677575.0"
+    ],
+    "final_scalar": 2677575.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mrs. Khan is looking for a house that will not go beyond her 112740000.0 budget. She saw a property that has a selling price of 98647500.0. On top of that, the buyer has to pay a brokerage fee which is 5% of the selling price, and also the transfer fee that is 12% of the selling price. How much more is the total price of the house than Mrs. Khan's budget?",
+    "adapted_answer": [
+      "The brokerage fee is 98647500.0 x 5/100 = 98647500.0 * 5/100 = 4932375.0.",
+      "The transfer fee is 98647500.0 x 12/100 = 98647500.0 * 12/100 = 11837700.0.",
+      "The total price of the house is 98647500.0 + 4932375.0 + 11837700.0 = 115417575.0.",
+      "So, it is 115417575.0 - 112740000.0 = 2677575.0 more than Mrs. Khan's budget.",
+      "#### 2677575.0"
+    ],
+    "adaptation_notes": "Replaced 'Mrs. Cruz' with 'Mrs. Khan' to give the question a Pakistani context."
+  }
+}

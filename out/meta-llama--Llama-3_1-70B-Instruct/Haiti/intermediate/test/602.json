@@ -1,0 +1,115 @@
+{
+  "index": 602,
+  "split": "test",
+  "original": {
+    "question": "A plane travels 1200 miles in 3 hours. At the same rate, how many additional hours would it take to travel an additional 2000 miles?",
+    "answer": "The rate is 1200/3=<<1200/3=400>>400 mph.\nThen it would take 2000/400=<<2000/400=5>>5 hours more.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles",
+      "mph"
+    ],
+    "notes": "The units 'miles' and 'mph' are commonly used in the United States, but not in Haiti, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_distance",
+      "value": 1200.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "additional_distance",
+      "value": 2000.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "additional_time",
+      "value": 5.0,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_distance\", \"value\": 1200.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"additional_distance\", \"value\": 2000.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"additional_time\", \"value\": 5.0, \"unit\": \"hour\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_distance",
+        "original_value": 1200.0,
+        "original_unit": "mile",
+        "converted_value": 1931.21,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "additional_distance",
+        "original_value": 2000.0,
+        "original_unit": "mile",
+        "converted_value": 3218.68,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "additional_time",
+        "original_value": 5.0,
+        "original_unit": "hour",
+        "converted_value": 5.0,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A plane travels {initial_distance} miles in {time} hours. At the same rate, how many additional hours would it take to travel an additional {additional_distance} miles?",
+    "templatized_answer": [
+      "The rate is {initial_distance}/{time}={rate} mph.",
+      "Then it would take {additional_distance}/{rate}={additional_time} hours more.",
+      "#### {additional_time}"
+    ],
+    "factual_assignment": {
+      "initial_distance": 1200.0,
+      "additional_distance": 2000.0,
+      "additional_time": 5.0,
+      "time": 3.0,
+      "rate": 400.0
+    }
+  },
+  "merged_assignment": {
+    "initial_distance": 1931.21,
+    "additional_distance": 3218.68,
+    "additional_time": 5.0,
+    "time": 3.0,
+    "rate": 400.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_distance = 1931.21\n    time = 3.0\n    additional_distance = 3218.68\n    additional_time = 5.0\n\n    rate = initial_distance / time\n    additional_time_computed = additional_distance / rate\n\n    return {\n        \"initial_distance\": round(initial_distance, 2),\n        \"time\": round(time, 2),\n        \"additional_distance\": round(additional_distance, 2),\n        \"rate\": round(rate, 2),\n        \"additional_time\": round(additional_time_computed, 2)\n    }\n",
+    "results": {
+      "initial_distance": 1931.21,
+      "time": 3.0,
+      "additional_distance": 3218.68,
+      "rate": 643.74,
+      "additional_time": 5.0
+    }
+  },
+  "final": {
+    "question": "A plane travels 1931.21 kilometers in 3 hours. At the same rate, how many additional hours would it take to travel an additional 3218.68 kilometers?",
+    "answer_lines": [
+      "The rate is 1931.21/3=643.74 km/h.",
+      "Then it would take 3218.68/643.74=5 hours more.",
+      "#### 5"
+    ],
+    "final_scalar": 5.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A plane travels 1931.21 kilometers in 3 hours. At the same rate, how many additional hours would it take to travel an additional 3218.68 kilometers?",
+    "adapted_answer": [
+      "The rate is 1931.21/3=643.74 km/h.",
+      "Then it would take 3218.68/643.74=5 hours more."
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

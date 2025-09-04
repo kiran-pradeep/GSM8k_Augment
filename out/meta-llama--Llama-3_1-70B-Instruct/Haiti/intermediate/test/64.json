@@ -1,0 +1,142 @@
+{
+  "index": 64,
+  "split": "test",
+  "original": {
+    "question": "Sophia is thinking of taking a road trip in her car, and would like to know how far she can drive on a single tank of gas. She has traveled 100 miles since last filling her tank, and she needed to put in 4 gallons of gas to fill it up again. The owner's manual for her car says that her tank holds 12 gallons of gas. How many miles can Sophia drive on a single tank of gas?",
+    "answer": "To find miles per gallon divide 100 miles / 4 gallons = <<100/4=25>>25 miles per gallon\nTo find how far Olivia can go on a single tank, multiply 25 miles per gallon x 12 gallons = <<25*12=300>>300 miles\n#### 300"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles",
+      "gallons"
+    ],
+    "notes": "The units miles and gallons are commonly used in the United States, but not in Haiti, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "miles_driven",
+      "value": 100,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "gallons_filled",
+      "value": 4,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "tank_capacity",
+      "value": 12,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "miles_per_gallon",
+      "value": 25,
+      "unit": "mile/gallon",
+      "context": "answer"
+    },
+    {
+      "variable": "total_miles",
+      "value": 300,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"]\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": round(converted_value, 2),\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"miles_driven\",\n    \"value\": 100,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"gallons_filled\",\n    \"value\": 4,\n    \"unit\": \"gallon\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"tank_capacity\",\n    \"value\": 12,\n    \"unit\": \"gallon\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"miles_per_gallon\",\n    \"value\": 25,\n    \"unit\": \"mile/gallon\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_miles\",\n    \"value\": 300,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "miles_driven",
+        "original_value": 100,
+        "original_unit": "mile",
+        "converted_value": 160.93,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "gallons_filled",
+        "original_value": 4,
+        "original_unit": "gallon",
+        "converted_value": 15.14,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "tank_capacity",
+        "original_value": 12,
+        "original_unit": "gallon",
+        "converted_value": 45.42,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "miles_per_gallon",
+        "original_value": 25,
+        "original_unit": "mile/gallon",
+        "converted_value": 25,
+        "converted_unit": "mile/gallon"
+      },
+      {
+        "variable": "total_miles",
+        "original_value": 300,
+        "original_unit": "mile",
+        "converted_value": 482.8,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sophia is thinking of taking a road trip in her car, and would like to know how far she can drive on a single tank of gas. She has traveled {miles_driven} miles since last filling her tank, and she needed to put in {gallons_filled} gallons of gas to fill it up again. The owner's manual for her car says that her tank holds {tank_capacity} gallons of gas. How many miles can Sophia drive on a single tank of gas?",
+    "templatized_answer": [
+      "To find miles per gallon divide {miles_driven} miles / {gallons_filled} gallons = {miles_per_gallon} miles per gallon",
+      "To find how far Sophia can go on a single tank, multiply {miles_per_gallon} miles per gallon x {tank_capacity} gallons = {total_miles} miles",
+      "#### {total_miles}"
+    ],
+    "factual_assignment": {
+      "miles_driven": 100,
+      "gallons_filled": 4,
+      "tank_capacity": 12,
+      "miles_per_gallon": 25,
+      "total_miles": 300
+    }
+  },
+  "merged_assignment": {
+    "miles_driven": 160.93,
+    "gallons_filled": 15.14,
+    "tank_capacity": 45.42,
+    "miles_per_gallon": 25,
+    "total_miles": 482.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    miles_driven = 160.93\n    gallons_filled = 15.14\n    tank_capacity = 45.42\n\n    miles_per_gallon = miles_driven / gallons_filled\n    miles_per_gallon = round(miles_per_gallon, 2)\n\n    total_miles = miles_per_gallon * tank_capacity\n    total_miles = round(total_miles, 2)\n\n    return {\n        \"miles_driven\": miles_driven,\n        \"gallons_filled\": gallons_filled,\n        \"tank_capacity\": tank_capacity,\n        \"miles_per_gallon\": miles_per_gallon,\n        \"total_miles\": total_miles\n    }\n\nprint(recompute())\n",
+    "results": {
+      "miles_driven": 160.93,
+      "gallons_filled": 15.14,
+      "tank_capacity": 45.42,
+      "miles_per_gallon": 10.63,
+      "total_miles": 482.81
+    }
+  },
+  "final": {
+    "question": "Sophia is thinking of taking a road trip in her car, and would like to know how far she can drive on a single tank of gas. She has traveled 160.93 kilometers since last filling her tank, and she needed to put in 15.14 liters of gas to fill it up again. The owner's manual for her car says that her tank holds 45.42 liters of gas. How many kilometers can Sophia drive on a single tank of gas?",
+    "answer_lines": [
+      "To find kilometers per liter divide 160.93 kilometers / 15.14 liters = 10.63 kilometers per liter",
+      "To find how far Sophia can go on a single tank, multiply 10.63 kilometers per liter x 45.42 liters = 482.81 kilometers",
+      "#### 482.81"
+    ],
+    "final_scalar": 482.81,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine ap panse pran yon vwayaj wout nan machin li, e li ta renmen konnen ki jan lwen li ka kondwi sou yon sèl rezèvwa gaz. Li te vwayaje 160.93 kilomèt depi dènye fwa li te ranpli rezèvwa li, e li te bezwen mete 15.14 lit gaz nan li pou ranpli ankò. Maniyèl pou machin li di ke rezèvwa li gen kapasite 45.42 lit gaz. Konbyen kilomèt Nadine ka kondwi sou yon sèl rezèvwa gaz?",
+    "adapted_answer": [
+      "Pou jwenn kilomèt pa lit, divize 160.93 kilomèt / 15.14 lit = 10.63 kilomèt pa lit",
+      "Pou jwenn ki jan lwen Nadine ka ale sou yon sèl rezèvwa, multipliye 10.63 kilomèt pa lit x 45.42 lit = 482.81 kilomèt",
+      "#### 482.81"
+    ],
+    "adaptation_notes": "Replaced 'Sophia' with 'Nadine' (Haitian name), 'road trip' with 'vwayaj wout', 'car' with 'machin', 'gas' with 'gaz', 'tank' with 'rezèvwa', 'kilometers' and 'liters' were left unchanged as they are part of the metric system used in Haiti."
+  }
+}

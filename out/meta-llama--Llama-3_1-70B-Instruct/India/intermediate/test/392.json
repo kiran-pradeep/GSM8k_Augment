@@ -1,0 +1,185 @@
+{
+  "index": 392,
+  "split": "test",
+  "original": {
+    "question": "Tim decides to cancel his cable subscription and get streaming services.  He gets Netflix for $10 a month.  Hulu and Disney Plus normally cost $10 a month each but he saves 20% for bundling.  How much money does he save by cancelling his $60 cable package?",
+    "answer": "Hulu and Disney Plus normally cost 10+10=$<<10+10=20>>20\nBy bundling he saves 20*.2=$<<20*.2=4>>4\nSo in total it cost 20-4=$<<20-4=16>>16\nSo he pays 16+10=$<<16+10=26>>26 for streaming\nThat means he saves 60-26=$<<60-26=34>>34 a month\n#### 34"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Netflix",
+      "Hulu",
+      "Disney Plus",
+      "dollars"
+    ],
+    "notes": "The text contains culturally specific entities from the US, including popular American streaming services and the US dollar unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "netflix_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hulu_disney_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bundling_savings",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "streaming_cost",
+      "value": 16,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_streaming_cost",
+      "value": 26,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cable_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_savings",
+      "value": 34,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"netflix_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hulu_disney_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bundling_savings\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"streaming_cost\", \"value\": 16, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_streaming_cost\", \"value\": 26, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cable_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_savings\", \"value\": 34, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "netflix_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 870,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "hulu_disney_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 1740,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "bundling_savings",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 348,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "streaming_cost",
+        "original_value": 16,
+        "original_unit": "dollar",
+        "converted_value": 1392,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_streaming_cost",
+        "original_value": 26,
+        "original_unit": "dollar",
+        "converted_value": 2262,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cable_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 5220,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "monthly_savings",
+        "original_value": 34,
+        "original_unit": "dollar",
+        "converted_value": 2958,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tim decides to cancel his cable subscription and get streaming services.  He gets Netflix for ${netflix_cost} a month.  Hulu and Disney Plus normally cost ${hulu_disney_cost} a month each but he saves 20% for bundling.  How much money does he save by cancelling his ${cable_cost} cable package?",
+    "templatized_answer": [
+      "Hulu and Disney Plus normally cost {netflix_cost}+{netflix_cost}=${{netflix_cost}+{netflix_cost}}",
+      "By bundling he saves {hulu_disney_cost}*.2=${{hulu_disney_cost}*.2}",
+      "So in total it cost {hulu_disney_cost}-{bundling_savings}=${{hulu_disney_cost}-{bundling_savings}}",
+      "So he pays {streaming_cost}+{netflix_cost}=${{streaming_cost}+{netflix_cost}} for streaming",
+      "That means he saves {cable_cost}-{total_streaming_cost}=${{cable_cost}-{total_streaming_cost}} a month",
+      "#### {monthly_savings}"
+    ],
+    "factual_assignment": {
+      "netflix_cost": 10,
+      "hulu_disney_cost": 20,
+      "bundling_savings": 4,
+      "streaming_cost": 16,
+      "total_streaming_cost": 26,
+      "cable_cost": 60,
+      "monthly_savings": 34
+    }
+  },
+  "merged_assignment": {
+    "netflix_cost": 870,
+    "hulu_disney_cost": 1740,
+    "bundling_savings": 348,
+    "streaming_cost": 1392,
+    "total_streaming_cost": 2262,
+    "cable_cost": 5220,
+    "monthly_savings": 2958
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    netflix_cost = 870\n    hulu_disney_cost = 1740\n    bundling_savings = round(hulu_disney_cost * 0.2, 2)\n    streaming_cost = round(hulu_disney_cost - bundling_savings, 2)\n    total_streaming_cost = round(streaming_cost + netflix_cost, 2)\n    cable_cost = 5220\n    monthly_savings = round(cable_cost - total_streaming_cost, 2)\n\n    return {\n        \"netflix_cost\": netflix_cost,\n        \"hulu_disney_cost\": hulu_disney_cost,\n        \"bundling_savings\": bundling_savings,\n        \"streaming_cost\": streaming_cost,\n        \"total_streaming_cost\": total_streaming_cost,\n        \"cable_cost\": cable_cost,\n        \"monthly_savings\": monthly_savings\n    }\n",
+    "results": {
+      "netflix_cost": 870,
+      "hulu_disney_cost": 1740,
+      "bundling_savings": 348.0,
+      "streaming_cost": 1392.0,
+      "total_streaming_cost": 2262.0,
+      "cable_cost": 5220,
+      "monthly_savings": 2958.0
+    }
+  },
+  "final": {
+    "question": "Tim decides to cancel his cable subscription and get streaming services.  He gets Netflix for 870 a month.  Hulu and Disney Plus normally cost 1740 a month each but he saves 20% for bundling.  How much money does he save by cancelling his 5220 cable package?",
+    "answer_lines": [
+      "Hulu and Disney Plus normally cost 1740+1740=3480",
+      "By bundling he saves 3480*.2=696",
+      "So in total it cost 3480-696=2784",
+      "So he pays 2784+870=3654 for streaming",
+      "That means he saves 5220-3654=1566 a month",
+      "#### 1566"
+    ],
+    "final_scalar": 1566,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan decides to cancel his cable subscription and get streaming services.  He gets ZEE5 for 870 a month.  Hotstar and SonyLIV normally cost 1740 a month each but he saves 20% for bundling.  How much money does he save by cancelling his 5220 cable package?",
+    "adapted_answer": [
+      "Hotstar and SonyLIV normally cost 1740+1740=3480",
+      "By bundling he saves 3480*.2=696",
+      "So in total it cost 3480-696=2784",
+      "So he pays 2784+870=3654 for streaming",
+      "That means he saves 5220-3654=1566 a month",
+      "#### 1566"
+    ],
+    "adaptation_notes": "Replaced Netflix with ZEE5, Hulu with Hotstar, and Disney Plus with SonyLIV to provide an Indian context."
+  }
+}

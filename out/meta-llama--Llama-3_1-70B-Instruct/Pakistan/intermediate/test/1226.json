@@ -1,0 +1,150 @@
+{
+  "index": 1226,
+  "split": "test",
+  "original": {
+    "question": "A basic manicure starts at $35 while a pedicure starts at $40. A certain salon offers 20% off if you get both. Suppose Karen chooses to do both and would also like to add nail art on each of her fingers, which costs $3 per nail. How much would she pay in all?",
+    "answer": "The cost for both manicure and pedicure is $35+$40=$<<35+40=75>>75.\nThe discount is $75*0.2=$<<75*0.2=15>>15.\nSo, Karen would only pay $75-$15=$<<75-15=60>>60 for both services.\nThe cost of the nail art for 10 fingers is $3*$10=$<<3*10=30>>30.\nTherefore, Karen would pay a total of $60+$30=$<<60+30=90>>90.\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Karen"
+    ],
+    "notes": "The text contains a non-Pakistani unit of currency (dollars) and a Western name (Karen)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "manicure_cost",
+      "value": 35.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pedicure_cost",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "nail_art_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"manicure_cost\", \"value\": 35.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pedicure_cost\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"nail_art_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discount\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "manicure_cost",
+        "original_value": 35.0,
+        "original_unit": "dollar",
+        "converted_value": 9864.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "pedicure_cost",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 11274.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "nail_art_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 845.55,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "discount",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 4227.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 25366.5,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A basic manicure starts at ${manicure_cost} while a pedicure starts at ${pedicure_cost}. A certain salon offers 20% off if you get both. Suppose Karen chooses to do both and would also like to add nail art on each of her fingers, which costs ${nail_art_cost} per nail. How much would she pay in all?",
+    "templatized_answer": [
+      "The cost for both manicure and pedicure is ${manicure_cost}+${pedicure_cost}=${{manicure_cost + pedicure_cost}}.",
+      "The discount is ${{{manicure_cost + pedicure_cost}}}*0.2=${{0.2 * (manicure_cost + pedicure_cost)}}.",
+      "So, Karen would only pay ${{{manicure_cost + pedicure_cost}}}-${{0.2 * (manicure_cost + pedicure_cost)}}=${{(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost)}} for both services.",
+      "The cost of the nail art for 10 fingers is ${nail_art_cost}*$10=${{{nail_art_cost} * 10}}.",
+      "Therefore, Karen would pay a total of ${{{(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost)}}}+${{{nail_art_cost} * 10}}=${{(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost) + nail_art_cost * 10}}.",
+      "#### ${(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost) + nail_art_cost * 10}"
+    ],
+    "factual_assignment": {
+      "manicure_cost": 35.0,
+      "pedicure_cost": 40.0,
+      "nail_art_cost": 3.0
+    }
+  },
+  "merged_assignment": {
+    "manicure_cost": 9864.75,
+    "pedicure_cost": 11274.0,
+    "nail_art_cost": 845.55
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    manicure_cost = 9864.75\n    pedicure_cost = 11274.0\n    nail_art_cost = 845.55\n\n    # Recompute placeholders\n    total_cost = manicure_cost + pedicure_cost\n    discount = 0.2 * total_cost\n    discounted_cost = total_cost - discount\n    nail_art_total_cost = nail_art_cost * 10\n    final_cost = discounted_cost + nail_art_total_cost\n\n    # Round to 2 decimal places where appropriate\n    total_cost = round(total_cost, 2)\n    discount = round(discount, 2)\n    discounted_cost = round(discounted_cost, 2)\n    nail_art_total_cost = round(nail_art_total_cost, 2)\n    final_cost = round(final_cost, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"manicure_cost\": manicure_cost,\n        \"pedicure_cost\": pedicure_cost,\n        \"nail_art_cost\": nail_art_cost,\n        \"manicure_cost + pedicure_cost\": total_cost,\n        \"0.2 * (manicure_cost + pedicure_cost)\": discount,\n        \"(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost)\": discounted_cost,\n        \"nail_art_cost * 10\": nail_art_total_cost,\n        \"(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost) + nail_art_cost * 10\": final_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "manicure_cost": 9864.75,
+      "pedicure_cost": 11274.0,
+      "nail_art_cost": 845.55,
+      "manicure_cost + pedicure_cost": 21138.75,
+      "0.2 * (manicure_cost + pedicure_cost)": 4227.75,
+      "(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost)": 16911.0,
+      "nail_art_cost * 10": 8455.5,
+      "(manicure_cost + pedicure_cost) - 0.2 * (manicure_cost + pedicure_cost) + nail_art_cost * 10": 25366.5
+    }
+  },
+  "final": {
+    "question": "A basic manicure starts at 9864.75 while a pedicure starts at 11274.0. A certain salon offers 20% off if you get both. Suppose Karen chooses to do both and would also like to add nail art on each of her fingers, which costs 845.55 per nail. How much would she pay in all?",
+    "answer_lines": [
+      "The cost for both manicure and pedicure is 9864.75+11274.0=21138.75.",
+      "The discount is 21138.75*0.2=4227.75.",
+      "So, Karen would only pay 21138.75-4227.75=16911.0 for both services.",
+      "The cost of the nail art for 10 fingers is 845.55*10=8455.5.",
+      "Therefore, Karen would pay a total of 16911.0+8455.5=25366.5.",
+      "#### 25366.5"
+    ],
+    "final_scalar": 25366.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A basic manicure starts at 9864.75 while a pedicure starts at 11274.0. A certain salon in Lahore offers 20% off if you get both. Suppose Ayesha chooses to do both and would also like to add nail art on each of her fingers, which costs 845.55 per nail. How much would she pay in all?",
+    "adapted_answer": [
+      "The cost for both manicure and pedicure is 9864.75+11274.0=21138.75.",
+      "The discount is 21138.75*0.2=4227.75.",
+      "So, Ayesha would only pay 21138.75-4227.75=16911.0 for both services.",
+      "The cost of the nail art for 10 fingers is 845.55*10=8455.5.",
+      "Therefore, Ayesha would pay a total of 16911.0+8455.5=25366.5.",
+      "#### 25366.5"
+    ],
+    "adaptation_notes": "Replaced 'Karen' with 'Ayesha' and added 'in Lahore' to give the text a Pakistani context."
+  }
+}

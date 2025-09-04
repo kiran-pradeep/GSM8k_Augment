@@ -1,0 +1,172 @@
+{
+  "index": 1230,
+  "split": "test",
+  "original": {
+    "question": "Charlie is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is $80 per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Charlie has 4 1-hour lessons at his standard rate and 2 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in dollars?",
+    "answer": "4 1-hour lessons at his standard rate cost 4*$80=$<<4*80=320>>320.\nReducing the rate by 25% for veterans means he takes $80/4=$<<80/4=20>>20 off his standard fee.\nThus, for veterans, he charges the reduced rate of $80-$20=$<<80-20=60>>60 per hour,\nThus, 2 1-hour lessons with veterans cost 2*$60=$<<2*60=120>>120.\nAll together, Charlie will make $320+$120=$<<320+120=440>>440 for the day.\n#### 440"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "standard_fee",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "veteran_discount",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "reduced_rate",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "standard_lessons_earnings",
+      "value": 320,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "veteran_lessons_earnings",
+      "value": 120,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 440,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"standard_fee\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"veteran_discount\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"reduced_rate\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"standard_lessons_earnings\", \"value\": 320, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"veteran_lessons_earnings\", \"value\": 120, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 440, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "standard_fee",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 1329.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "veteran_discount",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "reduced_rate",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 997.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "standard_lessons_earnings",
+        "original_value": 320,
+        "original_unit": "dollar",
+        "converted_value": 5318.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "veteran_lessons_earnings",
+        "original_value": 120,
+        "original_unit": "dollar",
+        "converted_value": 1994.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 440,
+        "original_unit": "dollar",
+        "converted_value": 7312.8,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Charlie is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is ${standard_fee} per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Charlie has {standard_lessons} 1-hour lessons at his standard rate and {veteran_lessons} 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in dollars?",
+    "templatized_answer": [
+      "{standard_lessons} 1-hour lessons at his standard rate cost {standard_lessons}*${standard_fee}=${standard_lessons_earnings}.",
+      "Reducing the rate by 25% for veterans means he takes ${standard_fee}/4=${veteran_discount} off his standard fee.",
+      "Thus, for veterans, he charges the reduced rate of ${standard_fee}-${veteran_discount}=${reduced_rate} per hour,",
+      "Thus, {veteran_lessons} 1-hour lessons with veterans cost {veteran_lessons}*${reduced_rate}=${veteran_lessons_earnings}.",
+      "All together, Charlie will make ${standard_lessons_earnings}+${veteran_lessons_earnings}=${total_earnings} for the day.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "standard_fee": 80,
+      "standard_lessons": 4,
+      "veteran_lessons": 2,
+      "standard_lessons_earnings": 320,
+      "veteran_discount": 20,
+      "reduced_rate": 60,
+      "veteran_lessons_earnings": 120,
+      "total_earnings": 440
+    }
+  },
+  "merged_assignment": {
+    "standard_fee": 1329.6,
+    "standard_lessons": 4,
+    "veteran_lessons": 2,
+    "standard_lessons_earnings": 5318.4,
+    "veteran_discount": 332.4,
+    "reduced_rate": 997.2,
+    "veteran_lessons_earnings": 1994.4,
+    "total_earnings": 7312.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    standard_fee = 1329.6\n    standard_lessons = 4\n    veteran_lessons = 2\n\n    standard_lessons_earnings = round(standard_fee * standard_lessons, 2)\n    veteran_discount = round(standard_fee / 4, 2)\n    reduced_rate = round(standard_fee - veteran_discount, 2)\n    veteran_lessons_earnings = round(veteran_lessons * reduced_rate, 2)\n    total_earnings = round(standard_lessons_earnings + veteran_lessons_earnings, 2)\n\n    return {\n        \"standard_fee\": standard_fee,\n        \"standard_lessons\": standard_lessons,\n        \"veteran_lessons\": veteran_lessons,\n        \"standard_lessons_earnings\": standard_lessons_earnings,\n        \"veteran_discount\": veteran_discount,\n        \"reduced_rate\": reduced_rate,\n        \"veteran_lessons_earnings\": veteran_lessons_earnings,\n        \"total_earnings\": total_earnings\n    }\n",
+    "results": {
+      "standard_fee": 1329.6,
+      "standard_lessons": 4,
+      "veteran_lessons": 2,
+      "standard_lessons_earnings": 5318.4,
+      "veteran_discount": 332.4,
+      "reduced_rate": 997.2,
+      "veteran_lessons_earnings": 1994.4,
+      "total_earnings": 7312.8
+    }
+  },
+  "final": {
+    "question": "Charlie is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is 1329.6 leu per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Charlie has 4 1-hour lessons at his standard rate and 2 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in leu?",
+    "answer_lines": [
+      "4 1-hour lessons at his standard rate cost 4*1329.6=5318.4.",
+      "Reducing the rate by 25% for veterans means he takes 1329.6/4=332.4 off his standard fee.",
+      "Thus, for veterans, he charges the reduced rate of 1329.6-332.4=997.2 per hour,",
+      "Thus, 2 1-hour lessons with veterans cost 2*997.2=1994.4.",
+      "All together, Charlie will make 5318.4+1994.4=7312.8 for the day.",
+      "#### 7312.8"
+    ],
+    "final_scalar": 7312.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is 1329.6 lei per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Ion has 4 1-hour lessons at his standard rate and 2 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in lei?",
+    "adapted_answer": [
+      "4 1-hour lessons at his standard rate cost 4*1329.6=5318.4.",
+      "Reducing the rate by 25% for veterans means he takes 1329.6/4=332.4 off his standard fee.",
+      "Thus, for veterans, he charges the reduced rate of 1329.6-332.4=997.2 per hour,",
+      "Thus, 2 1-hour lessons with veterans cost 2*997.2=1994.4.",
+      "All together, Ion will make 5318.4+1994.4=7312.8 for the day.",
+      "#### 7312.8"
+    ],
+    "adaptation_notes": "Replaced 'Charlie' with 'Ion' and 'leu' with 'lei' to better fit the Moldovan context."
+  }
+}

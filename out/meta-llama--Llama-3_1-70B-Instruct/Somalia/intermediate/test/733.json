@@ -1,0 +1,74 @@
+{
+  "index": 733,
+  "split": "test",
+  "original": {
+    "question": "While walking down the street with his 3 younger siblings, Greg found $20. To be fair to his siblings, he decided to split the money equally. How much money did each of them get?",
+    "answer": "Greg and his 3 siblings equal 3 people + 1 person = <<3+1=4>>4 people.\nThe 20 dollars were divided equally, so each of them received $20 / 4 people = <<20/4=5>>5 dollars/person\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "found_money",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "split_money",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"found_money\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"split_money\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "found_money",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 11387.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "split_money",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "While walking down the street with his 3 younger siblings, Greg found ${found_money}. To be fair to his siblings, he decided to split the money equally. How much money did each of them get?",
+    "templatized_answer": [
+      "Greg and his 3 siblings equal 3 people + 1 person = {number_of_people} people.",
+      "The {found_money} dollars were divided equally, so each of them received ${found_money} / {number_of_people} people = ${split_money} dollars/person"
+    ],
+    "factual_assignment": {
+      "found_money": 20.0,
+      "split_money": 5.0,
+      "number_of_people": 4
+    }
+  },
+  "merged_assignment": {
+    "found_money": 11387.6,
+    "split_money": 2846.9,
+    "number_of_people": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    found_money = 11387.6\n    number_of_people = 4\n    split_money = round(found_money / number_of_people, 2)\n    \n    return {\n        \"found_money\": found_money,\n        \"number_of_people\": number_of_people,\n        \"split_money\": split_money\n    }\n",
+    "results": {
+      "found_money": 11387.6,
+      "number_of_people": 4,
+      "split_money": 2846.9
+    }
+  },
+  "final": null
+}

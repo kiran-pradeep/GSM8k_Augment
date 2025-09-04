@@ -1,0 +1,168 @@
+{
+  "index": 361,
+  "split": "test",
+  "original": {
+    "question": "A train travels between 3 different cities.  It goes 75 miles from the first city to the second city, 100 miles from the second city to the third city, and 50 miles less than that combined distance to go from the third city to the first city.  It does this trip 3 times a day.  The train needs service every 18,000 miles so how many days does it go between services?",
+    "answer": "It takes 100+75=<<100+75=175>>175 miles for the first two legs of the trip\nThe third leg is 175-50=<<175-50=125>>125 miles\nSo the total trip is 175+125=<<175+125=300>>300 miles\nSo it goes 3*300=<<3*300=900>>900 miles per day\nSo it can go 18000/900=<<18000/900=20>>20 days between services.\n#### 20"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles"
+    ],
+    "notes": "The unit of distance 'miles' is commonly used in the US and other Western countries, but not in India where 'kilometers' is the standard unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_leg_distance",
+      "value": 75.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "second_leg_distance",
+      "value": 100.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "third_leg_distance",
+      "value": 50.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "service_interval_distance",
+      "value": 18000.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "total_trip_distance",
+      "value": 300.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "daily_distance",
+      "value": 900.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_leg_distance\", \"value\": 75.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"second_leg_distance\", \"value\": 100.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"third_leg_distance\", \"value\": 50.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"service_interval_distance\", \"value\": 18000.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"total_trip_distance\", \"value\": 300.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"daily_distance\", \"value\": 900.0, \"unit\": \"mile\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_leg_distance",
+        "original_value": 75.0,
+        "original_unit": "mile",
+        "converted_value": 120.7,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "second_leg_distance",
+        "original_value": 100.0,
+        "original_unit": "mile",
+        "converted_value": 160.93,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "third_leg_distance",
+        "original_value": 50.0,
+        "original_unit": "mile",
+        "converted_value": 80.47,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "service_interval_distance",
+        "original_value": 18000.0,
+        "original_unit": "mile",
+        "converted_value": 28968.12,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "total_trip_distance",
+        "original_value": 300.0,
+        "original_unit": "mile",
+        "converted_value": 482.8,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "daily_distance",
+        "original_value": 900.0,
+        "original_unit": "mile",
+        "converted_value": 1448.41,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A train travels between 3 different cities.  It goes {first_leg_distance} miles from the first city to the second city, {second_leg_distance} miles from the second city to the third city, and {third_leg_distance} miles less than that combined distance to go from the third city to the first city.  It does this trip {trip_count} times a day.  The train needs service every {service_interval_distance} miles so how many days does it go between services?",
+    "templatized_answer": [
+      "It takes {second_leg_distance}+{first_leg_distance}={second_leg_distance}+{first_leg_distance} miles for the first two legs of the trip",
+      "The third leg is {second_leg_distance}+{first_leg_distance}-{third_leg_distance}={second_leg_distance}+{first_leg_distance}-{third_leg_distance} miles",
+      "So the total trip is {second_leg_distance}+{first_leg_distance}+{second_leg_distance}+{first_leg_distance}-{third_leg_distance}={second_leg_distance}+{first_leg_distance}+{second_leg_distance}+{first_leg_distance}-{third_leg_distance} miles",
+      "So it goes {trip_count}*({second_leg_distance}+{first_leg_distance}+{second_leg_distance}+{first_leg_distance}-{third_leg_distance})={trip_count}*({second_leg_distance}+{first_leg_distance}+{second_leg_distance}+{first_leg_distance}-{third_leg_distance}) miles per day",
+      "So it can go {service_interval_distance}/({trip_count}*({second_leg_distance}+{first_leg_distance}+{second_leg_distance}+{first_leg_distance}-{third_leg_distance}))={service_interval_distance}/({trip_count}*({second_leg_distance}+{first_leg_distance}+{second_leg_distance}+{first_leg_distance}-{third_leg_distance})) days between services.",
+      "#### {service_interval_distance}/({trip_count}*({second_leg_distance}+{first_leg_distance}+{second_leg_distance}+{first_leg_distance}-{third_leg_distance}))"
+    ],
+    "factual_assignment": {
+      "first_leg_distance": 75.0,
+      "second_leg_distance": 100.0,
+      "third_leg_distance": 50.0,
+      "service_interval_distance": 18000.0,
+      "trip_count": 3
+    }
+  },
+  "merged_assignment": {
+    "first_leg_distance": 120.7,
+    "second_leg_distance": 160.93,
+    "third_leg_distance": 80.47,
+    "service_interval_distance": 28968.12,
+    "trip_count": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_leg_distance = 120.7\n    second_leg_distance = 160.93\n    third_leg_distance = 80.47\n    service_interval_distance = 28968.12\n    trip_count = 3\n\n    first_two_legs_distance = round(second_leg_distance + first_leg_distance, 2)\n    third_leg_distance_computed = round(second_leg_distance + first_leg_distance - third_leg_distance, 2)\n    total_trip_distance = round(first_two_legs_distance + third_leg_distance_computed, 2)\n    daily_distance = round(trip_count * total_trip_distance, 2)\n    days_between_services = round(service_interval_distance / daily_distance, 2)\n\n    return {\n        \"first_leg_distance\": first_leg_distance,\n        \"second_leg_distance\": second_leg_distance,\n        \"third_leg_distance\": third_leg_distance,\n        \"service_interval_distance\": service_interval_distance,\n        \"trip_count\": trip_count,\n        \"second_leg_distance+first_leg_distance\": first_two_legs_distance,\n        \"second_leg_distance+first_leg_distance-third_leg_distance\": third_leg_distance_computed,\n        \"second_leg_distance+first_leg_distance+second_leg_distance+first_leg_distance-third_leg_distance\": total_trip_distance,\n        \"trip_count*(second_leg_distance+first_leg_distance+second_leg_distance+first_leg_distance-third_leg_distance)\": daily_distance,\n        \"service_interval_distance/(trip_count*(second_leg_distance+first_leg_distance+second_leg_distance+first_leg_distance-third_leg_distance))\": days_between_services\n    }\n",
+    "results": {
+      "first_leg_distance": 120.7,
+      "second_leg_distance": 160.93,
+      "third_leg_distance": 80.47,
+      "service_interval_distance": 28968.12,
+      "trip_count": 3,
+      "second_leg_distance+first_leg_distance": 281.63,
+      "second_leg_distance+first_leg_distance-third_leg_distance": 201.16,
+      "second_leg_distance+first_leg_distance+second_leg_distance+first_leg_distance-third_leg_distance": 482.79,
+      "trip_count*(second_leg_distance+first_leg_distance+second_leg_distance+first_leg_distance-third_leg_distance)": 1448.37,
+      "service_interval_distance/(trip_count*(second_leg_distance+first_leg_distance+second_leg_distance+first_leg_distance-third_leg_distance))": 20.0
+    }
+  },
+  "final": {
+    "question": "A train travels between 3 different cities.  It goes 120.7 kilometers from the first city to the second city, 160.93 kilometers from the second city to the third city, and 80.47 kilometers less than that combined distance to go from the third city to the first city.  It does this trip 3 times a day.  The train needs service every 28968.12 kilometers so how many days does it go between services?",
+    "answer_lines": [
+      "It takes 160.93+120.7=281.63 kilometers for the first two legs of the trip",
+      "The third leg is 281.63-80.47=201.16 kilometers",
+      "So the total trip is 281.63+201.16=482.79 kilometers",
+      "So it goes 3*482.79=1448.37 kilometers per day",
+      "So it can go 28968.12/1448.37=20 days between services.",
+      "#### 20"
+    ],
+    "final_scalar": 20,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A train travels between 3 different cities in India.  It goes 120.7 kilometers from Mumbai to Pune, 160.93 kilometers from Pune to Ahmedabad, and 80.47 kilometers less than that combined distance to go from Ahmedabad to Mumbai.  It does this trip 3 times a day.  The train needs service every 28968.12 kilometers so how many days does it go between services?",
+    "adapted_answer": [
+      "It takes 160.93+120.7=281.63 kilometers for the first two legs of the trip",
+      "The third leg is 281.63-80.47=201.16 kilometers",
+      "So the total trip is 281.63+201.16=482.79 kilometers",
+      "So it goes 3*482.79=1448.37 kilometers per day",
+      "So it can go 28968.12/1448.37=20 days between services.",
+      "#### 20"
+    ],
+    "adaptation_notes": "Replaced cities with Indian cities (Mumbai, Pune, Ahmedabad)"
+  }
+}

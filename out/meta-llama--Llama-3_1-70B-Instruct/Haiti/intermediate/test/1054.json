@@ -1,0 +1,105 @@
+{
+  "index": 1054,
+  "split": "test",
+  "original": {
+    "question": "My kitchen floor has a total area of 200 SqFt. I want to install new square floor tiles that cost $12 each, and each tile side is 1ft in length. How much will it cost me to renovate my kitchen floor?",
+    "answer": "The total area of a square tile is length * width or 1*1 = <<1*1=1>>1 SqFt\nIf the kitchen has a total area of 200 SqFt then my kitchen needs 200/1 = <<200/1=200>>200 square tiles\nIf each tile costs $12, then 200 square tiles will cost $12 * 200 = $<<12*200=2400>>2,400\n#### 2400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "SqFt"
+    ],
+    "notes": "The use of dollars as currency and square feet as a unit of measurement are culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tile_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 2400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tile_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 2400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tile_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1569.72,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 2400,
+        "original_unit": "dollar",
+        "converted_value": 313944.0,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "My kitchen floor has a total area of {total_area} SqFt. I want to install new square floor tiles that cost ${tile_cost} each, and each tile side is {tile_side_length}ft in length. How much will it cost me to renovate my kitchen floor?",
+    "templatized_answer": [
+      "The total area of a square tile is length * width or {tile_side_length}*{tile_side_length} = {tile_side_length} SqFt",
+      "If the kitchen has a total area of {total_area} SqFt then my kitchen needs {total_area}/{tile_side_length} = {total_area} square tiles",
+      "If each tile costs ${tile_cost}, then {total_area} square tiles will cost ${tile_cost} * {total_area} = $",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "tile_cost": 12,
+      "total_cost": 2400,
+      "total_area": 200,
+      "tile_side_length": 1
+    }
+  },
+  "merged_assignment": {
+    "tile_cost": 1569.72,
+    "total_cost": 313944.0,
+    "total_area": 200,
+    "tile_side_length": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"tile_cost\": 1569.72,\n        \"total_cost\": 313944.0,\n        \"total_area\": 200,\n        \"tile_side_length\": 1\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"tile_side_length\"] = factual_assignment[\"tile_side_length\"]\n    recomputed_values[\"tile_side_length_squared\"] = recomputed_values[\"tile_side_length\"] ** 2\n    recomputed_values[\"total_area\"] = factual_assignment[\"total_area\"]\n    recomputed_values[\"num_tiles\"] = recomputed_values[\"total_area\"] / recomputed_values[\"tile_side_length_squared\"]\n    recomputed_values[\"tile_cost\"] = factual_assignment[\"tile_cost\"]\n    recomputed_values[\"total_cost\"] = round(recomputed_values[\"num_tiles\"] * recomputed_values[\"tile_cost\"], 2)\n\n    return recomputed_values\n\nrecomputed_values = recompute()\nprint(recomputed_values)\n",
+    "results": {
+      "tile_side_length": 1,
+      "tile_side_length_squared": 1,
+      "total_area": 200,
+      "num_tiles": 200.0,
+      "tile_cost": 1569.72,
+      "total_cost": 313944.0
+    }
+  },
+  "final": {
+    "question": "My kitchen floor has a total area of 200 SqFt. I want to install new square floor tiles that cost 1569.72 gourde each, and each tile side is 1ft in length. How much will it cost me to renovate my kitchen floor?",
+    "answer_lines": [
+      "The total area of a square tile is length * width or 1*1 = 1 SqFt",
+      "If the kitchen has a total area of 200 SqFt then my kitchen needs 200/1 = 200.0 square tiles",
+      "If each tile costs 1569.72 gourde, then 200.0 square tiles will cost 1569.72 * 200.0 = 313944.0",
+      "#### 313944.0"
+    ],
+    "final_scalar": 313944.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "My kitchen floor has a total area of 200 mèt karre. I want to install new square floor tiles that cost 1569.72 gourde each, and each tile side is 1 pye in length. How much will it cost me to renovate my kitchen floor?",
+    "adapted_answer": [
+      "The total area of a square tile is length * width or 1*1 = 1 mèt karre",
+      "If the kitchen has a total area of 200 mèt karre then my kitchen needs 200/1 = 200.0 square tiles",
+      "If each tile costs 1569.72 gourde, then 200.0 square tiles will cost 1569.72 * 200.0 = 313944.0",
+      "#### 313944.0"
+    ],
+    "adaptation_notes": "Replaced 'SqFt' with 'mèt karre' (Haitian Creole for square meters) and 'ft' with 'pye' (Haitian Creole for feet)."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "index": 995,
+  "split": "test",
+  "original": {
+    "question": "Adam bought himself some new trousers for $30. His mother gave him $6 for this purpose, and his father gave him twice as much. How much money did Adam have to contribute from his savings?",
+    "answer": "Adam's father gave him $6 * 2 = $<<6*2=12>>12.\nSo considering the price Adam needed to pay $30 - $12 - $6 = $<<30-12-6=12>>12 for his trousers from his savings.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is used, which is not the official currency of Moldova (Moldovan leu)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "trousers_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mother_gift",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "father_gift",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "adam_contribution",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"trousers_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"mother_gift\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"father_gift\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"adam_contribution\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "trousers_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 498.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "mother_gift",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 99.72,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "father_gift",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 199.44,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "adam_contribution",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 199.44,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Adam bought himself some new trousers for ${trousers_cost}. His mother gave him ${mother_gift} for this purpose, and his father gave him twice as much. How much money did Adam have to contribute from his savings?",
+    "templatized_answer": [
+      "Adam's father gave him ${mother_gift} * 2 = ${father_gift}.",
+      "So considering the price Adam needed to pay ${trousers_cost} - ${father_gift} - ${mother_gift} = ${adam_contribution} for his trousers from his savings.",
+      "#### {adam_contribution}"
+    ],
+    "factual_assignment": {
+      "trousers_cost": 30.0,
+      "mother_gift": 6.0,
+      "father_gift": 12.0,
+      "adam_contribution": 12.0
+    }
+  },
+  "merged_assignment": {
+    "trousers_cost": 498.6,
+    "mother_gift": 99.72,
+    "father_gift": 199.44,
+    "adam_contribution": 199.44
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    trousers_cost = 498.6\n    mother_gift = 99.72\n\n    # Recompute father's gift\n    father_gift = mother_gift * 2\n\n    # Recompute Adam's contribution\n    adam_contribution = trousers_cost - father_gift - mother_gift\n\n    # Round to 2 decimal places\n    father_gift = round(father_gift, 2)\n    adam_contribution = round(adam_contribution, 2)\n\n    return {\n        \"trousers_cost\": trousers_cost,\n        \"mother_gift\": mother_gift,\n        \"father_gift\": father_gift,\n        \"adam_contribution\": adam_contribution\n    }\n",
+    "results": {
+      "trousers_cost": 498.6,
+      "mother_gift": 99.72,
+      "father_gift": 199.44,
+      "adam_contribution": 199.44
+    }
+  },
+  "final": {
+    "question": "Adam bought himself some new trousers for 498.6 leu. His mother gave him 99.72 leu for this purpose, and his father gave him twice as much. How much money did Adam have to contribute from his savings?",
+    "answer_lines": [
+      "Adam's father gave him 99.72 leu * 2 = 199.44 leu.",
+      "So considering the price Adam needed to pay 498.6 leu - 199.44 leu - 99.72 leu = 199.44 leu for his trousers from his savings.",
+      "#### 199.44"
+    ],
+    "final_scalar": 199.44,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Adam bought himself some new ițe for 498.6 lei. His mother gave him 99.72 lei for this purpose, and his father gave him twice as much. How much money did Adam have to contribute from his savings?",
+    "adapted_answer": [
+      "Adam's father gave him 99.72 lei * 2 = 199.44 lei.",
+      "So considering the price Adam needed to pay 498.6 lei - 199.44 lei - 99.72 lei = 199.44 lei for his ițe from his savings.",
+      "#### 199.44"
+    ],
+    "adaptation_notes": "Replaced 'trousers' with 'ițe' (traditional Moldovan pants) and 'leu' with 'lei' (correct plural form of the Moldovan currency)."
+  }
+}

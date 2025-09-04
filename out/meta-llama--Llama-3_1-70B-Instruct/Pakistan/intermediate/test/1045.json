@@ -1,0 +1,127 @@
+{
+  "index": 1045,
+  "split": "test",
+  "original": {
+    "question": "Three people divided an amount of $1920. The second took $80 more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "answer": "Let X be the amount of what the first took.\nThe second took X+<<+80=80>>80.\nThe third took (X+80)*2.\nThe total amount X + (X+80) + (X+80)*2 = 1920.\nX + X + 80 + 2*X + 80*2 = 1920\nX*4 + 240 = 1920.\nX*4 = 1680.\nX = <<420=420>>420.\n#### 420"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_amount",
+      "value": 1920.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_person_share",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_person_share",
+      "value": 420.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_amount\", \"value\": 1920.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_person_share\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_person_share\", \"value\": 420.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_amount",
+        "original_value": 1920.0,
+        "original_unit": "dollar",
+        "converted_value": 541152.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_person_share",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 22548.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "first_person_share",
+        "original_value": 420.0,
+        "original_unit": "dollar",
+        "converted_value": 118377.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Three people divided an amount of ${total_amount}. The second took ${second_person_share} more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "templatized_answer": [
+      "Let X be the amount of what the first took.",
+      "The second took X+{second_person_share}.",
+      "The third took (X+{second_person_share})*2.",
+      "The total amount X + (X+{second_person_share}) + (X+{second_person_share})*2 = {total_amount}.",
+      "X + X + {second_person_share} + 2*X + {second_person_share}*2 = {total_amount}",
+      "X*4 + {second_person_share}*3 = {total_amount}.",
+      "X*4 = {total_amount} - {second_person_share}*3.",
+      "X = ({total_amount} - {second_person_share}*3)/4.",
+      "#### {first_person_share}"
+    ],
+    "factual_assignment": {
+      "total_amount": 1920.0,
+      "second_person_share": 80.0,
+      "first_person_share": 420.0
+    }
+  },
+  "merged_assignment": {
+    "total_amount": 541152.0,
+    "second_person_share": 22548.0,
+    "first_person_share": 118377.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_amount = 541152.0\n    second_person_share = 22548.0\n    first_person_share = (total_amount - second_person_share * 3) / 4\n\n    return {\n        \"total_amount\": total_amount,\n        \"second_person_share\": second_person_share,\n        \"first_person_share\": round(first_person_share, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_amount": 541152.0,
+      "second_person_share": 22548.0,
+      "first_person_share": 118377.0
+    }
+  },
+  "final": {
+    "question": "Three people divided an amount of 541152. The second took 22548 more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "answer_lines": [
+      "Let X be the amount of what the first took.",
+      "The second took X+22548.",
+      "The third took (X+22548)*2.",
+      "The total amount X + (X+22548) + (X+22548)*2 = 541152.",
+      "X + X + 22548 + 2*X + 22548*2 = 541152",
+      "X*4 + 22548*3 = 541152.",
+      "X*4 = 541152 - 22548*3.",
+      "X = (541152 - 22548*3)/4.",
+      "#### 118377"
+    ],
+    "final_scalar": 118377,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Three people divided an amount of 541152 rupees. The second took 22548 more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "adapted_answer": [
+      "Let X be the amount of what the first took.",
+      "The second took X+22548.",
+      "The third took (X+22548)*2.",
+      "The total amount X + (X+22548) + (X+22548)*2 = 541152.",
+      "X + X + 22548 + 2*X + 22548*2 = 541152",
+      "X*4 + 22548*3 = 541152.",
+      "X*4 = 541152 - 22548*3.",
+      "X = (541152 - 22548*3)/4.",
+      "#### 118377"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to give the question a Pakistani context."
+  }
+}

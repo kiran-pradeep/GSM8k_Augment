@@ -1,0 +1,126 @@
+{
+  "index": 766,
+  "split": "test",
+  "original": {
+    "question": "Marissa bought a ball at the store for $20. If she had $80 on her and used the rest of the money to buy her brother Jimmy, candy bars sold at $5 each, how many candy bars did Marissa buy for Jimmy?",
+    "answer": "If Marissa had $80 on her and used $20 to buy a ball, she remained with $80-$20=$<<80-20=60>>60\nIf she used the rest of the money to buy candy bars for her brother sold ad $5 each, she bought $60/$5=<<60/5=12>>12 candy bars.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Marissa",
+      "Jimmy"
+    ],
+    "notes": "The text contains non-Indian names and currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ball_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_bar_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"to\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ball_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_bar_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 6960,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ball_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 1740,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "candy_bar_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 5220,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Marissa bought a ball at the store for ${ball_cost}. If she had ${initial_money} on her and used the rest of the money to buy her brother Jimmy, candy bars sold at ${candy_bar_cost} each, how many candy bars did Marissa buy for Jimmy?",
+    "templatized_answer": [
+      "If Marissa had ${initial_money} on her and used ${ball_cost} to buy a ball, she remained with ${initial_money}-${ball_cost}=${{initial_money-ball_cost}}",
+      "If she used the rest of the money to buy candy bars for her brother sold at ${candy_bar_cost} each, she bought ${{initial_money-ball_cost}}/${candy_bar_cost}=${{(initial_money-ball_cost)/candy_bar_cost}} candy bars.",
+      "#### {(initial_money-ball_cost)/candy_bar_cost}"
+    ],
+    "factual_assignment": {
+      "initial_money": 80,
+      "ball_cost": 20,
+      "candy_bar_cost": 5
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 6960,
+    "ball_cost": 1740,
+    "candy_bar_cost": 435
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 6960\n    ball_cost = 1740\n    candy_bar_cost = 435\n\n    remaining_money = initial_money - ball_cost\n    num_candy_bars = round(remaining_money / candy_bar_cost, 2)\n\n    return {\n        \"initial_money\": initial_money,\n        \"ball_cost\": ball_cost,\n        \"candy_bar_cost\": candy_bar_cost,\n        \"initial_money-ball_cost\": remaining_money,\n        \"(initial_money-ball_cost)/candy_bar_cost\": num_candy_bars\n    }\n",
+    "results": {
+      "initial_money": 6960,
+      "ball_cost": 1740,
+      "candy_bar_cost": 435,
+      "initial_money-ball_cost": 5220,
+      "(initial_money-ball_cost)/candy_bar_cost": 12.0
+    }
+  },
+  "final": {
+    "question": "Marissa bought a ball at the store for 1740. If she had 6960 on her and used the rest of the money to buy her brother Jimmy, candy bars sold at 435 each, how many candy bars did Marissa buy for Jimmy?",
+    "answer_lines": [
+      "If Marissa had 6960 on her and used 1740 to buy a ball, she remained with 6960-1740=5220",
+      "If she used the rest of the money to buy candy bars for her brother sold at 435 each, she bought 5220/435=12 candy bars.",
+      "#### 12"
+    ],
+    "final_scalar": 12.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Riya bought a cricket ball at the store for 1740. If she had 6960 on her and used the rest of the money to buy her brother Rohan, bars of Mysore Pak sold at 435 each, how many bars of Mysore Pak did Riya buy for Rohan?",
+    "adapted_answer": [
+      "If Riya had 6960 on her and used 1740 to buy a cricket ball, she remained with 6960-1740=5220",
+      "If she used the rest of the money to buy bars of Mysore Pak for her brother sold at 435 each, she bought 5220/435=12 bars of Mysore Pak.",
+      "#### 12"
+    ],
+    "adaptation_notes": "Replaced 'Marissa' with 'Riya', 'Jimmy' with 'Rohan', 'ball' with 'cricket ball', and 'candy bars' with 'bars of Mysore Pak'."
+  }
+}

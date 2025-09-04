@@ -1,0 +1,97 @@
+{
+  "index": 708,
+  "split": "test",
+  "original": {
+    "question": "Given a 7-day week, how much does Alex charge for 2 weeks of tutoring if she charges $12 per day?",
+    "answer": "A week has 7 days, therefore 2 weeks have 2*7= <<2*7=14>>14 days\nIf Alex charges $12 per day, then in $14 days she would charge $12*14 = $<<12*14=168>>168\n#### 168"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The use of dollars as a unit of currency is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_charge",
+      "value": 12,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_charge",
+      "value": 168,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_charge\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_charge\", \"value\": 168, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_charge",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 199.44,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_charge",
+        "original_value": 168,
+        "original_unit": "dollar",
+        "converted_value": 2792.16,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Given a {days_in_week}-day week, how much does Alex charge for {number_of_weeks} weeks of tutoring if she charges ${daily_charge} per day?",
+    "templatized_answer": [
+      "A week has {days_in_week} days, therefore {number_of_weeks} weeks have {number_of_weeks}*{days_in_week}={number_of_weeks}*{days_in_week} days",
+      "If Alex charges ${daily_charge} per day, then in {number_of_weeks}*{days_in_week} days she would charge ${daily_charge}*{number_of_weeks}*{days_in_week} = ${daily_charge}*{number_of_weeks}*{days_in_week}",
+      "#### ${daily_charge}*{number_of_weeks}*{days_in_week}"
+    ],
+    "factual_assignment": {
+      "days_in_week": 7,
+      "number_of_weeks": 2,
+      "daily_charge": 12
+    }
+  },
+  "merged_assignment": {
+    "days_in_week": 7,
+    "number_of_weeks": 2,
+    "daily_charge": 199.44
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    days_in_week = 7\n    number_of_weeks = 2\n    daily_charge = 199.44\n\n    total_days = number_of_weeks * days_in_week\n    total_charge = daily_charge * total_days\n\n    return {\n        \"days_in_week\": days_in_week,\n        \"number_of_weeks\": number_of_weeks,\n        \"daily_charge\": round(daily_charge, 2),\n        \"number_of_weeks*days_in_week\": total_days,\n        \"daily_charge*number_of_weeks*days_in_week\": round(total_charge, 2)\n    }\n",
+    "results": {
+      "days_in_week": 7,
+      "number_of_weeks": 2,
+      "daily_charge": 199.44,
+      "number_of_weeks*days_in_week": 14,
+      "daily_charge*number_of_weeks*days_in_week": 2792.16
+    }
+  },
+  "final": {
+    "question": "Given a 7-day week, how much does Alex charge for 2 weeks of tutoring if she charges 199.44 leu per day?",
+    "answer_lines": [
+      "A week has 7 days, therefore 2 weeks have 2*7=14 days",
+      "If Alex charges 199.44 leu per day, then in 14 days she would charge 199.44*14 = 2792.16 leu",
+      "#### 2792.16"
+    ],
+    "final_scalar": 2792.16,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Given a 7-day week, how much does Alex charge for 2 weeks of tutoring if she charges 199.44 lei per day?",
+    "adapted_answer": [
+      "A week has 7 days, therefore 2 weeks have 2*7=14 days",
+      "If Alex charges 199.44 lei per day, then in 14 days she would charge 199.44*14 = 2792.16 lei"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei', as 'lei' is the correct plural form of the Moldovan currency."
+  }
+}

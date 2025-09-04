@@ -1,0 +1,137 @@
+{
+  "index": 348,
+  "split": "test",
+  "original": {
+    "question": "A factory used to make tractors, but now makes silos. When they made tractors, they sold 10 tractors a day and made $100 per tractor. Now, they sell 5 silos a day, and make $220 per silo. What percentage more are they making per day now?",
+    "answer": "They used to make $1,000 a day because 10 x 100 = <<10*100=1000>>1,000\nThey now make 1,100 a day because 5 x 220 = <<5*220=1100>>1,100\nThey make 10% more per day because 1000 +(1000 x (X/100)) = 1,100 if X = 10\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusive to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tractor_revenue",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "silo_revenue",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_tractor_revenue",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "daily_silo_revenue",
+      "value": 1100.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tractor_revenue\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"silo_revenue\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_tractor_revenue\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"daily_silo_revenue\", \"value\": 1100.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tractor_revenue",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 56938.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "silo_revenue",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 125263.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "daily_tractor_revenue",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 569380.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "daily_silo_revenue",
+        "original_value": 1100.0,
+        "original_unit": "dollar",
+        "converted_value": 626318.0,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A factory used to make tractors, but now makes silos. When they made tractors, they sold {tractors_sold} tractors a day and made ${tractor_revenue} per tractor. Now, they sell {silos_sold} silos a day, and make ${silo_revenue} per silo. What percentage more are they making per day now?",
+    "templatized_answer": [
+      "They used to make ${daily_tractor_revenue} a day because {tractors_sold} x {tractor_revenue} = ${daily_tractor_revenue}",
+      "They now make ${daily_silo_revenue} a day because {silos_sold} x {silo_revenue} = ${daily_silo_revenue}",
+      "They make {percentage_increase}% more per day because {daily_tractor_revenue} + ({daily_tractor_revenue} x ({percentage_increase}/100)) = {daily_silo_revenue}",
+      "#### {percentage_increase}"
+    ],
+    "factual_assignment": {
+      "tractors_sold": 10,
+      "tractor_revenue": 100.0,
+      "silos_sold": 5,
+      "silo_revenue": 220.0,
+      "daily_tractor_revenue": 1000.0,
+      "daily_silo_revenue": 1100.0,
+      "percentage_increase": 10
+    }
+  },
+  "merged_assignment": {
+    "tractors_sold": 10,
+    "tractor_revenue": 56938.0,
+    "silos_sold": 5,
+    "silo_revenue": 125263.6,
+    "daily_tractor_revenue": 569380.0,
+    "daily_silo_revenue": 626318.0,
+    "percentage_increase": 10
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tractors_sold = 10\n    tractor_revenue = 56938.0\n    silos_sold = 5\n    silo_revenue = 125263.6\n\n    daily_tractor_revenue = tractors_sold * tractor_revenue\n    daily_silo_revenue = silos_sold * silo_revenue\n\n    percentage_increase = ((daily_silo_revenue - daily_tractor_revenue) / daily_tractor_revenue) * 100\n\n    return {\n        \"tractors_sold\": tractors_sold,\n        \"tractor_revenue\": round(tractor_revenue, 2),\n        \"silos_sold\": silos_sold,\n        \"silo_revenue\": round(silo_revenue, 2),\n        \"daily_tractor_revenue\": round(daily_tractor_revenue, 2),\n        \"daily_silo_revenue\": round(daily_silo_revenue, 2),\n        \"percentage_increase\": round(percentage_increase, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "tractors_sold": 10,
+      "tractor_revenue": 56938.0,
+      "silos_sold": 5,
+      "silo_revenue": 125263.6,
+      "daily_tractor_revenue": 569380.0,
+      "daily_silo_revenue": 626318.0,
+      "percentage_increase": 10.0
+    }
+  },
+  "final": {
+    "question": "A factory used to make tractors, but now makes silos. When they made tractors, they sold 10 tractors a day and made 56938 shilling per tractor. Now, they sell 5 silos a day, and make 125263.6 shilling per silo. What percentage more are they making per day now?",
+    "answer_lines": [
+      "They used to make 569380 shilling a day because 10 x 56938 = 569380",
+      "They now make 626318 shilling a day because 5 x 125263.6 = 626318",
+      "They make 10% more per day because 569380 + (569380 x (10/100)) = 626318",
+      "#### 10.0"
+    ],
+    "final_scalar": 10.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A factory used to make gaadiid (tractors), but now makes silooyin (silos). When they made gaadiid, they sold 10 gaadiid a day and made 56938 shilling per gaadiid. Now, they sell 5 silooyin a day, and make 125263.6 shilling per silo. What percentage more are they making per day now?",
+    "adapted_answer": [
+      "They used to make 569380 shilling a day because 10 x 56938 = 569380",
+      "They now make 626318 shilling a day because 5 x 125263.6 = 626318",
+      "They make 10% more per day because 569380 + (569380 x (10/100)) = 626318",
+      "#### 10.0"
+    ],
+    "adaptation_notes": "Replaced 'tractors' with 'gaadiid' and 'silos' with 'silooyin' to provide Somali context."
+  }
+}

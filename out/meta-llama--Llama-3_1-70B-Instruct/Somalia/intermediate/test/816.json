@@ -1,0 +1,144 @@
+{
+  "index": 816,
+  "split": "test",
+  "original": {
+    "question": "John goes to the market and buys 3 goats for $500 each and 2 cows for $1500 each.  How much money did he spend?",
+    "answer": "The goats cost 3*500=$<<3*500=1500>>1500\nThe cows cost 2*1500=$<<2*1500=3000>>3000\nSo in total he spends 1500+3000=$<<1500+3000=4500>>4500\n#### 4500"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is a Western name and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "goat_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cow_cost",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "goats_total_cost",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cows_total_cost",
+      "value": 3000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 4500.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"goat_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cow_cost\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"goats_total_cost\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cows_total_cost\", \"value\": 3000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 4500.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "goat_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 284690.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cow_cost",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 854070.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "goats_total_cost",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 854070.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cows_total_cost",
+        "original_value": 3000.0,
+        "original_unit": "dollar",
+        "converted_value": 1708140.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 4500.0,
+        "original_unit": "dollar",
+        "converted_value": 2562210.0,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John goes to the market and buys 3 goats for ${goat_cost} each and 2 cows for ${cow_cost} each.  How much money did he spend?",
+    "templatized_answer": [
+      "The goats cost 3*{goat_cost}=${goats_total_cost}",
+      "The cows cost 2*{cow_cost}=${cows_total_cost}",
+      "So in total he spends {goats_total_cost}+{cows_total_cost}=${total_spent}"
+    ],
+    "factual_assignment": {
+      "goat_cost": 500.0,
+      "cow_cost": 1500.0,
+      "goats_total_cost": 1500.0,
+      "cows_total_cost": 3000.0,
+      "total_spent": 4500.0
+    }
+  },
+  "merged_assignment": {
+    "goat_cost": 284690.0,
+    "cow_cost": 854070.0,
+    "goats_total_cost": 854070.0,
+    "cows_total_cost": 1708140.0,
+    "total_spent": 2562210.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    goat_cost = 284690.0\n    cow_cost = 854070.0\n    goats_total_cost = 3 * goat_cost\n    cows_total_cost = 2 * cow_cost\n    total_spent = goats_total_cost + cows_total_cost\n\n    return {\n        \"goat_cost\": round(goat_cost, 2),\n        \"cow_cost\": round(cow_cost, 2),\n        \"goats_total_cost\": round(goats_total_cost, 2),\n        \"cows_total_cost\": round(cows_total_cost, 2),\n        \"total_spent\": round(total_spent, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "goat_cost": 284690.0,
+      "cow_cost": 854070.0,
+      "goats_total_cost": 854070.0,
+      "cows_total_cost": 1708140.0,
+      "total_spent": 2562210.0
+    }
+  },
+  "final": {
+    "question": "John goes to the market and buys 3 goats for 284690 shilling each and 2 cows for 854070 shilling each.  How much money did he spend?",
+    "answer_lines": [
+      "The goats cost 3*284690=854070",
+      "The cows cost 2*854070=1708140",
+      "So in total he spends 854070+1708140=2562210",
+      "#### 2562210"
+    ],
+    "final_scalar": 2562210,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cali goes to the suuq and buys 3 goats for 284690 shilling each and 2 cows for 854070 shilling each.  How much money did he spend?",
+    "adapted_answer": [
+      "The goats cost 3*284690=854070",
+      "The cows cost 2*854070=1708140",
+      "So in total he spends 854070+1708140=2562210",
+      "#### 2562210"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Cali' and 'market' with 'suuq' to give the text a Somali context."
+  }
+}

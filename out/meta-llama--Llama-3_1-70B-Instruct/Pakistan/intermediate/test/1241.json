@@ -1,0 +1,157 @@
+{
+  "index": 1241,
+  "split": "test",
+  "original": {
+    "question": "Rose bought five dozens of eggs for $2.40 a dozen. She will sell it for $1 for 3 eggs. How much will be Rose's profit?",
+    "answer": "Rose bought five dozens of eggs for $2.40 x 5 = $<<2.40*5=12>>12.\nFive dozens of eggs is equal to 12 x 5 = <<12*5=60>>60 eggs.\nSo there are 60/3 = <<60/3=20>>20 sets of 3 eggs that Rose will sell.\nThus, the total earnings of Rose for selling the eggs are $1 x 20 = $<<20=20>>20.\nTherefore, her profit will be $20 - $12 = $<<20-12=8>>8.\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Rose"
+    ],
+    "notes": "The use of 'dollars' as a unit of currency and the name 'Rose' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cost_per_dozen_eggs",
+      "value": 2.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost_eggs",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "selling_price_eggs",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings_eggs",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "rose_profit",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    converted_metrics = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        converted_metrics.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return converted_metrics\n\nmetrics = [\n    {\"variable\": \"cost_per_dozen_eggs\", \"value\": 2.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost_eggs\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"selling_price_eggs\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings_eggs\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"rose_profit\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cost_per_dozen_eggs",
+        "original_value": 2.4,
+        "original_unit": "dollar",
+        "converted_value": 676.44,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost_eggs",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 3382.2,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "selling_price_eggs",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 281.85,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings_eggs",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 5637.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "rose_profit",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 2254.8,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Rose bought five dozens of eggs for ${cost_per_dozen_eggs} a dozen. She will sell it for ${selling_price_eggs} for 3 eggs. How much will be Rose's profit?",
+    "templatized_answer": [
+      "Rose bought five dozens of eggs for ${cost_per_dozen_eggs} x 5 = ${total_cost_eggs}.",
+      "Five dozens of eggs is equal to 12 x 5 = {number_of_eggs} eggs.",
+      "So there are {number_of_eggs}/3 = {number_of_sets_eggs} sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are ${selling_price_eggs} x {number_of_sets_eggs} = ${total_earnings_eggs}.",
+      "Therefore, her profit will be ${total_earnings_eggs} - ${total_cost_eggs} = ${rose_profit}.",
+      "#### {rose_profit}"
+    ],
+    "factual_assignment": {
+      "cost_per_dozen_eggs": 2.4,
+      "total_cost_eggs": 12.0,
+      "selling_price_eggs": 1.0,
+      "total_earnings_eggs": 20.0,
+      "rose_profit": 8.0,
+      "number_of_eggs": 60,
+      "number_of_sets_eggs": 20
+    }
+  },
+  "merged_assignment": {
+    "cost_per_dozen_eggs": 676.44,
+    "total_cost_eggs": 3382.2,
+    "selling_price_eggs": 281.85,
+    "total_earnings_eggs": 5637.0,
+    "rose_profit": 2254.8,
+    "number_of_eggs": 60,
+    "number_of_sets_eggs": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cost_per_dozen_eggs = 676.44\n    selling_price_eggs = 281.85\n\n    total_cost_eggs = cost_per_dozen_eggs * 5\n    number_of_eggs = 12 * 5\n    number_of_sets_eggs = number_of_eggs / 3\n    total_earnings_eggs = selling_price_eggs * number_of_sets_eggs\n    rose_profit = total_earnings_eggs - total_cost_eggs\n\n    return {\n        \"cost_per_dozen_eggs\": round(cost_per_dozen_eggs, 2),\n        \"total_cost_eggs\": round(total_cost_eggs, 2),\n        \"selling_price_eggs\": round(selling_price_eggs, 2),\n        \"total_earnings_eggs\": round(total_earnings_eggs, 2),\n        \"rose_profit\": round(rose_profit, 2),\n        \"number_of_eggs\": int(number_of_eggs),\n        \"number_of_sets_eggs\": int(number_of_sets_eggs)\n    }\n",
+    "results": {
+      "cost_per_dozen_eggs": 676.44,
+      "total_cost_eggs": 3382.2,
+      "selling_price_eggs": 281.85,
+      "total_earnings_eggs": 5637.0,
+      "rose_profit": 2254.8,
+      "number_of_eggs": 60,
+      "number_of_sets_eggs": 20
+    }
+  },
+  "final": {
+    "question": "Rose bought five dozens of eggs for 676.44 rupee a dozen. She will sell it for 281.85 rupee for 3 eggs. How much will be Rose's profit?",
+    "answer_lines": [
+      "Rose bought five dozens of eggs for 676.44 x 5 = 3382.2 rupee.",
+      "Five dozens of eggs is equal to 12 x 5 = 60 eggs.",
+      "So there are 60/3 = 20 sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are 281.85 x 20 = 5637.0 rupee.",
+      "Therefore, her profit will be 5637.0 - 3382.2 = 2254.8 rupee.",
+      "#### 2254.8"
+    ],
+    "final_scalar": 2254.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha bought five dozens of eggs for 676.44 rupee a dozen. She will sell it for 281.85 rupee for 3 eggs. How much will be Ayesha's profit?",
+    "adapted_answer": [
+      "Ayesha bought five dozens of eggs for 676.44 x 5 = 3382.2 rupee.",
+      "Five dozens of eggs is equal to 12 x 5 = 60 eggs.",
+      "So there are 60/3 = 20 sets of 3 eggs that Ayesha will sell.",
+      "Thus, the total earnings of Ayesha for selling the eggs are 281.85 x 20 = 5637.0 rupee.",
+      "Therefore, her profit will be 5637.0 - 3382.2 = 2254.8 rupee.",
+      "#### 2254.8"
+    ],
+    "adaptation_notes": "Replaced 'Rose' with 'Ayesha' to give the name a Pakistani context."
+  }
+}

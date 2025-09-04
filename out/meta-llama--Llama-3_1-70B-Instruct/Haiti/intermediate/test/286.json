@@ -1,0 +1,155 @@
+{
+  "index": 286,
+  "split": "test",
+  "original": {
+    "question": "Kelly has 5 quarters and 2 dimes. If she buys a can of pop for 55 cents, how many cents will she have left?",
+    "answer": "Her quarters are worth 5 * 25 = <<5*25=125>>125 cents.\nThe dimes are worth 2 * 10 = <<2*10=20>>20 cents\nKelly has a total of 125 + 20 = <<125+20=145>>145 cents\nAfter buying the can of pop, Kelly will have 145 - 55 = <<145-55=90>>90 cents left.\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "quarters",
+      "dimes",
+      "can of pop"
+    ],
+    "notes": "The question contains US-specific currency units (quarters, dimes) and a food item (can of pop) that is not unique to Haitian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dime_value",
+      "value": 0.1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pop_cost",
+      "value": 0.55,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "initial_funds",
+      "value": 1.45,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_funds",
+      "value": 0.9,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"quarter_value\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"dime_value\", \"value\": 0.1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pop_cost\", \"value\": 0.55, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"initial_funds\", \"value\": 1.45, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_funds\", \"value\": 0.9, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 32.7,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "dime_value",
+        "original_value": 0.1,
+        "original_unit": "dollar",
+        "converted_value": 13.08,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "pop_cost",
+        "original_value": 0.55,
+        "original_unit": "dollar",
+        "converted_value": 71.95,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "initial_funds",
+        "original_value": 1.45,
+        "original_unit": "dollar",
+        "converted_value": 189.67,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "remaining_funds",
+        "original_value": 0.9,
+        "original_unit": "dollar",
+        "converted_value": 117.73,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kelly has {number_of_quarters} quarters and {number_of_dimes} dimes. If she buys a can of pop for {pop_cost_cents} cents, how many cents will she have left?",
+    "templatized_answer": [
+      "Her quarters are worth {number_of_quarters} * {quarter_value_cents} = {number_of_quarters} * {quarter_value_cents} cents.",
+      "The dimes are worth {number_of_dimes} * {dime_value_cents} = {number_of_dimes} * {dime_value_cents} cents",
+      "Kelly has a total of {number_of_quarters} * {quarter_value_cents} + {number_of_dimes} * {dime_value_cents} = {initial_funds_cents} cents",
+      "After buying the can of pop, Kelly will have {initial_funds_cents} - {pop_cost_cents} = {remaining_funds_cents} cents left.",
+      "#### {remaining_funds_cents}"
+    ],
+    "factual_assignment": {
+      "number_of_quarters": 5,
+      "number_of_dimes": 2,
+      "quarter_value_cents": 25,
+      "dime_value_cents": 10,
+      "pop_cost_cents": 55,
+      "initial_funds_cents": 145,
+      "remaining_funds_cents": 90
+    }
+  },
+  "merged_assignment": {
+    "number_of_quarters": 5,
+    "number_of_dimes": 2,
+    "quarter_value_cents": 25,
+    "dime_value_cents": 10,
+    "pop_cost_cents": 55,
+    "initial_funds_cents": 145,
+    "remaining_funds_cents": 90
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_quarters = 5\n    number_of_dimes = 2\n    quarter_value_cents = 25\n    dime_value_cents = 10\n    pop_cost_cents = 55\n\n    initial_funds_cents = number_of_quarters * quarter_value_cents + number_of_dimes * dime_value_cents\n    remaining_funds_cents = initial_funds_cents - pop_cost_cents\n\n    return {\n        \"number_of_quarters\": number_of_quarters,\n        \"number_of_dimes\": number_of_dimes,\n        \"quarter_value_cents\": quarter_value_cents,\n        \"dime_value_cents\": dime_value_cents,\n        \"pop_cost_cents\": pop_cost_cents,\n        \"initial_funds_cents\": initial_funds_cents,\n        \"remaining_funds_cents\": remaining_funds_cents\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_quarters": 5,
+      "number_of_dimes": 2,
+      "quarter_value_cents": 25,
+      "dime_value_cents": 10,
+      "pop_cost_cents": 55,
+      "initial_funds_cents": 145,
+      "remaining_funds_cents": 90
+    }
+  },
+  "final": {
+    "question": "Kelly has 5 quarters and 2 dimes. If she buys a can of pop for 71.95 gourde, how many gourde will she have left?",
+    "answer_lines": [
+      "Her quarters are worth 5 * 32.7 = 163.5 gourde.",
+      "The dimes are worth 2 * 13.08 = 26.16 gourde",
+      "Kelly has a total of 163.5 + 26.16 = 189.66 gourde",
+      "After buying the can of pop, Kelly will have 189.66 - 71.95 = 117.71 gourde left.",
+      "#### 117.71"
+    ],
+    "final_scalar": 117.71,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kelly has 5 goudes and 2 dix sous. If she buys a can of fresco for 71.95 gourde, how many gourde will she have left?",
+    "adapted_answer": [
+      "Her goudes are worth 5 * 32.7 = 163.5 gourde.",
+      "The dix sous are worth 2 * 13.08 = 26.16 gourde",
+      "Kelly has a total of 163.5 + 26.16 = 189.66 gourde",
+      "After buying the can of fresco, Kelly will have 189.66 - 71.95 = 117.71 gourde left.",
+      "#### 117.71"
+    ],
+    "adaptation_notes": "Replaced 'quarters' with 'goudes', 'dimes' with 'dix sous', and 'can of pop' with 'can of fresco' to provide Haitian context."
+  }
+}

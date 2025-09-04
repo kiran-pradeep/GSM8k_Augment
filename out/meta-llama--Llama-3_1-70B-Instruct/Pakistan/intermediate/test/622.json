@@ -1,0 +1,99 @@
+{
+  "index": 622,
+  "split": "test",
+  "original": {
+    "question": "Jim has a 20 pack of gum.  He chews 1 piece of gum for every 2 hours he's at school over a school day that lasts 8 hours.  He chews 1 piece on the way home from school and 1 stick after dinner.  He also gives half the gum he has remaining to his sister when she asks for some right before bed.  How many pieces of gum does Jim have left at the end of the day?",
+    "answer": "Jim goes to school for 8 hours, so if he chews 1 stick of gum every 2 hours that means he chews 8/2= <<8/2=4>>4 sticks of gum\nJim chews 1 stick on the way home, plus 2 sticks after dinner for a total of 1+1=2 sticks of gum\nHis sister asks for half his remaining gum. Jim started with 20 and has chewed 6, so he has 20-6=<<20-6=14>>14 sticks left\nThis means Jim gives her 14/2=<<14/2=7>>7 sticks of gum\nJim had 20 sticks of gum to begin with, and gave away 4+2+7=13 sticks away\nThis means Jim has 20-13= <<20-13=7>>7 sticks of gum remaining.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "school day",
+      "gum"
+    ],
+    "notes": "The term 'school day' and the concept of chewing 'gum' are culturally specific to Western regions."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 281.85, 'unit': 'rupee'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Jim has a {initial_gum} pack of gum.  He chews 1 piece of gum for every 2 hours he's at school over a school day that lasts {school_hours} hours.  He chews 1 piece on the way home from school and 1 stick after dinner.  He also gives half the gum he has remaining to his sister when she asks for some right before bed.  How many pieces of gum does Jim have left at the end of the day?",
+    "templatized_answer": [
+      "Jim goes to school for {school_hours} hours, so if he chews 1 stick of gum every 2 hours that means he chews {school_hours}/2={gum_chewed_at_school} sticks of gum",
+      "Jim chews 1 stick on the way home, plus 1 stick after dinner for a total of 1+1={gum_chewed_after_school} sticks of gum",
+      "His sister asks for half his remaining gum. Jim started with {initial_gum} and has chewed {gum_chewed_at_school}+{gum_chewed_after_school}={total_gum_chewed}, so he has {initial_gum}-{total_gum_chewed}={remaining_gum} sticks left",
+      "This means Jim gives her {remaining_gum}/2={gum_given_to_sister} sticks of gum",
+      "Jim had {initial_gum} sticks of gum to begin with, and gave away {gum_chewed_at_school}+{gum_chewed_after_school}+{gum_given_to_sister}={total_gum_given_away} sticks away",
+      "This means Jim has {initial_gum}-{total_gum_given_away}={gum_left} sticks of gum remaining.",
+      "#### {gum_left}"
+    ],
+    "factual_assignment": {
+      "initial_gum": 20,
+      "school_hours": 8,
+      "gum_chewed_at_school": 4,
+      "gum_chewed_after_school": 2,
+      "total_gum_chewed": 6,
+      "remaining_gum": 14,
+      "gum_given_to_sister": 7,
+      "total_gum_given_away": 13,
+      "gum_left": 7
+    }
+  },
+  "merged_assignment": {
+    "initial_gum": 20,
+    "school_hours": 8,
+    "gum_chewed_at_school": 4,
+    "gum_chewed_after_school": 2,
+    "total_gum_chewed": 6,
+    "remaining_gum": 14,
+    "gum_given_to_sister": 7,
+    "total_gum_given_away": 13,
+    "gum_left": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_gum = 20\n    school_hours = 8\n\n    gum_chewed_at_school = school_hours / 2\n    gum_chewed_after_school = 1 + 1\n    total_gum_chewed = gum_chewed_at_school + gum_chewed_after_school\n    remaining_gum = initial_gum - total_gum_chewed\n    gum_given_to_sister = remaining_gum / 2\n    total_gum_given_away = total_gum_chewed + gum_given_to_sister\n    gum_left = initial_gum - total_gum_given_away\n\n    return {\n        \"initial_gum\": initial_gum,\n        \"school_hours\": school_hours,\n        \"gum_chewed_at_school\": round(gum_chewed_at_school, 2),\n        \"gum_chewed_after_school\": gum_chewed_after_school,\n        \"total_gum_chewed\": round(total_gum_chewed, 2),\n        \"remaining_gum\": round(remaining_gum, 2),\n        \"gum_given_to_sister\": round(gum_given_to_sister, 2),\n        \"total_gum_given_away\": round(total_gum_given_away, 2),\n        \"gum_left\": round(gum_left, 2)\n    }\n",
+    "results": {
+      "initial_gum": 20,
+      "school_hours": 8,
+      "gum_chewed_at_school": 4.0,
+      "gum_chewed_after_school": 2,
+      "total_gum_chewed": 6.0,
+      "remaining_gum": 14.0,
+      "gum_given_to_sister": 7.0,
+      "total_gum_given_away": 13.0,
+      "gum_left": 7.0
+    }
+  },
+  "final": {
+    "question": "Jim has a 20 pack of gum.  He chews 1 piece of gum for every 2 hours he's at school over a school day that lasts 8 hours.  He chews 1 piece on the way home from school and 1 stick after dinner.  He also gives half the gum he has remaining to his sister when she asks for some right before bed.  How many pieces of gum does Jim have left at the end of the day?",
+    "answer_lines": [
+      "Jim goes to school for 8 hours, so if he chews 1 stick of gum every 2 hours that means he chews 8/2=4.0 sticks of gum",
+      "Jim chews 1 stick on the way home, plus 1 stick after dinner for a total of 1+1=2 sticks of gum",
+      "His sister asks for half his remaining gum. Jim started with 20 and has chewed 4.0+2=6.0, so he has 20-6.0=14.0 sticks left",
+      "This means Jim gives her 14.0/2=7.0 sticks of gum",
+      "Jim had 20 sticks of gum to begin with, and gave away 4.0+2+7.0=13.0 sticks away",
+      "This means Jim has 20-13.0=7.0 sticks of gum remaining.",
+      "#### 7.0"
+    ],
+    "final_scalar": 7.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran has a 20 pack of paan masala.  He chews 1 piece of paan masala for every 2 hours he's at school over a school day that lasts 8 hours.  He chews 1 piece on the way home from school and 1 piece after dinner.  He also gives half the paan masala he has remaining to his sister when she asks for some right before bed.  How many pieces of paan masala does Kamran have left at the end of the day?",
+    "adapted_answer": [
+      "Kamran goes to school for 8 hours, so if he chews 1 piece of paan masala every 2 hours that means he chews 8/2=4.0 pieces of paan masala",
+      "Kamran chews 1 piece on the way home, plus 1 piece after dinner for a total of 1+1=2 pieces of paan masala",
+      "His sister asks for half his remaining paan masala. Kamran started with 20 and has chewed 4.0+2=6.0, so he has 20-6.0=14.0 pieces left",
+      "This means Kamran gives her 14.0/2=7.0 pieces of paan masala",
+      "Kamran had 20 pieces of paan masala to begin with, and gave away 4.0+2+7.0=13.0 pieces away",
+      "This means Kamran has 20-13.0=7.0 pieces of paan masala remaining.",
+      "#### 7.0"
+    ],
+    "adaptation_notes": "Replaced 'Jim' with 'Kamran', 'gum' with 'paan masala', and 'school day' remains unchanged as it is a neutral term."
+  }
+}

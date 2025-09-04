@@ -1,0 +1,108 @@
+{
+  "index": 506,
+  "split": "test",
+  "original": {
+    "question": "Mario needs to buy snowshoes for his 6 sled dogs.  Assuming his dogs each has four legs and each pair of snowshoes costs $12.00, how much will it cost him to buy snowshoes for all of his dogs?",
+    "answer": "Dogs have 4 legs and a pair is 2 legs so each dog has 4/2 = <<4/2=2>>2 pair of legs\nThere are 6 dogs and they each have 2 pair of legs so they have 6*2 = <<6*2=12>>12 pair of legs\nThe snowshoes cost $12 per pair and he needs to buy 12 pairs so he will spend 12*12 = $<<12*12=144>>144 on snowshoes\n#### 144"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mario",
+      "dollars"
+    ],
+    "notes": "The name 'Mario' is culturally specific to regions other than Haiti, and the unit 'dollars' is also not specific to Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "snowshoes_cost_per_pair",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_snowshoes_cost",
+      "value": 144.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"snowshoes_cost_per_pair\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_snowshoes_cost\", \"value\": 144.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "snowshoes_cost_per_pair",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 1569.72,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_snowshoes_cost",
+        "original_value": 144.0,
+        "original_unit": "dollar",
+        "converted_value": 18836.64,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mario needs to buy snowshoes for his {number_of_dogs} sled dogs.  Assuming his dogs each has four legs and each pair of snowshoes costs ${snowshoes_cost_per_pair}, how much will it cost him to buy snowshoes for all of his dogs?",
+    "templatized_answer": [
+      "Dogs have {number_of_legs_per_dog} legs and a pair is {number_of_legs_per_pair} legs so each dog has {number_of_legs_per_dog}/{number_of_legs_per_pair} = {number_of_legs_per_dog}/{number_of_legs_per_pair} pair of legs",
+      "There are {number_of_dogs} dogs and they each have {number_of_legs_per_dog}/{number_of_legs_per_pair} pair of legs so they have {number_of_dogs}*{number_of_legs_per_dog}/{number_of_legs_per_pair} = {number_of_dogs}*{number_of_legs_per_dog}/{number_of_legs_per_pair} pair of legs",
+      "The snowshoes cost ${snowshoes_cost_per_pair} per pair and he needs to buy {number_of_dogs}*{number_of_legs_per_dog}/{number_of_legs_per_pair} pairs so he will spend {snowshoes_cost_per_pair}*{number_of_dogs}*{number_of_legs_per_dog}/{number_of_legs_per_pair} = ${snowshoes_cost_per_pair}*{number_of_dogs}*{number_of_legs_per_dog}/{number_of_legs_per_pair} on snowshoes",
+      "#### ${snowshoes_cost_per_pair}*{number_of_dogs}*{number_of_legs_per_dog}/{number_of_legs_per_pair}"
+    ],
+    "factual_assignment": {
+      "snowshoes_cost_per_pair": 12.0,
+      "total_snowshoes_cost": 144.0,
+      "number_of_dogs": 6,
+      "number_of_legs_per_dog": 4,
+      "number_of_legs_per_pair": 2
+    }
+  },
+  "merged_assignment": {
+    "snowshoes_cost_per_pair": 1569.72,
+    "total_snowshoes_cost": 18836.64,
+    "number_of_dogs": 6,
+    "number_of_legs_per_dog": 4,
+    "number_of_legs_per_pair": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"snowshoes_cost_per_pair\": 1569.72,\n        \"total_snowshoes_cost\": 18836.64,\n        \"number_of_dogs\": 6,\n        \"number_of_legs_per_dog\": 4,\n        \"number_of_legs_per_pair\": 2\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"number_of_legs_per_dog\"] = factual_assignment[\"number_of_legs_per_dog\"]\n    recomputed_values[\"number_of_legs_per_pair\"] = factual_assignment[\"number_of_legs_per_pair\"]\n    recomputed_values[\"number_of_dogs\"] = factual_assignment[\"number_of_dogs\"]\n    recomputed_values[\"snowshoes_cost_per_pair\"] = factual_assignment[\"snowshoes_cost_per_pair\"]\n\n    recomputed_values[\"number_of_legs_per_dog_divided_by_number_of_legs_per_pair\"] = recomputed_values[\"number_of_legs_per_dog\"] / recomputed_values[\"number_of_legs_per_pair\"]\n    recomputed_values[\"number_of_dogs_times_number_of_legs_per_dog_divided_by_number_of_legs_per_pair\"] = recomputed_values[\"number_of_dogs\"] * recomputed_values[\"number_of_legs_per_dog_divided_by_number_of_legs_per_pair\"]\n    recomputed_values[\"snowshoes_cost_per_pair_times_number_of_dogs_times_number_of_legs_per_dog_divided_by_number_of_legs_per_pair\"] = recomputed_values[\"snowshoes_cost_per_pair\"] * recomputed_values[\"number_of_dogs_times_number_of_legs_per_dog_divided_by_number_of_legs_per_pair\"]\n\n    recomputed_values[\"snowshoes_cost_per_pair_times_number_of_dogs_times_number_of_legs_per_dog_divided_by_number_of_legs_per_pair\"] = round(recomputed_values[\"snowshoes_cost_per_pair_times_number_of_dogs_times_number_of_legs_per_dog_divided_by_number_of_legs_per_pair\"], 2)\n\n    return recomputed_values\n\nrecomputed_values = recompute()\nprint(recomputed_values)\n",
+    "results": {
+      "number_of_legs_per_dog": 4,
+      "number_of_legs_per_pair": 2,
+      "number_of_dogs": 6,
+      "snowshoes_cost_per_pair": 1569.72,
+      "number_of_legs_per_dog_divided_by_number_of_legs_per_pair": 2.0,
+      "number_of_dogs_times_number_of_legs_per_dog_divided_by_number_of_legs_per_pair": 12.0,
+      "snowshoes_cost_per_pair_times_number_of_dogs_times_number_of_legs_per_dog_divided_by_number_of_legs_per_pair": 18836.64
+    }
+  },
+  "final": {
+    "question": "Mario needs to buy snowshoes for his 6 sled dogs.  Assuming his dogs each has four legs and each pair of snowshoes costs 1569.72 gourde, how much will it cost him to buy snowshoes for all of his dogs?",
+    "answer_lines": [
+      "Dogs have 4 legs and a pair is 2 legs so each dog has 4/2 = 2 pair of legs",
+      "There are 6 dogs and they each have 2 pair of legs so they have 6*2 = 12 pair of legs",
+      "The snowshoes cost 1569.72 gourde per pair and he needs to buy 12 pairs so he will spend 1569.72*12 = 18836.64 gourde on snowshoes",
+      "#### 18836.64"
+    ],
+    "final_scalar": 18836.64,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ti-Manno needs to buy snowshoes for his 6 sled dogs.  Assuming his dogs each has four legs and each pair of snowshoes costs 1569.72 gourde, how much will it cost him to buy snowshoes for all of his dogs?",
+    "adapted_answer": [
+      "Dogs have 4 legs and a pair is 2 legs so each dog has 4/2 = 2 pair of legs",
+      "There are 6 dogs and they each have 2 pair of legs so they have 6*2 = 12 pair of legs",
+      "The snowshoes cost 1569.72 gourde per pair and he needs to buy 12 pairs so he will spend 1569.72*12 = 18836.64 gourde on snowshoes",
+      "#### 18836.64"
+    ],
+    "adaptation_notes": "Replaced 'Mario' with 'Ti-Manno', a more Haitian name."
+  }
+}

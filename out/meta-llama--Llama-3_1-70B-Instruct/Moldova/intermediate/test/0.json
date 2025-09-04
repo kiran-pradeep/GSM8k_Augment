@@ -1,0 +1,99 @@
+{
+  "index": 0,
+  "split": "test",
+  "original": {
+    "question": "Janet’s ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?",
+    "answer": "Janet sells 16 - 3 - 4 = <<16-3-4=9>>9 duck eggs a day.\nShe makes 9 * 2 = $<<9*2=18>>18 every day at the farmer’s market.\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "muffins"
+    ],
+    "notes": "The use of dollars as currency and muffins as a baked item are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "egg_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 18,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"egg_price\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_earnings\", \"value\": 18, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "egg_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 299.16,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Janet’s ducks lay {daily_eggs} eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for ${egg_price} per fresh duck egg. How much in dollars does she make every day at the farmers' market?",
+    "templatized_answer": [
+      "Janet sells {daily_eggs} - 3 - 4 = {daily_eggs} - 3 - 4 = {remaining_eggs} duck eggs a day.",
+      "She makes {remaining_eggs} * {egg_price} = ${remaining_eggs} * {egg_price} every day at the farmer’s market.",
+      "#### {daily_earnings}"
+    ],
+    "factual_assignment": {
+      "daily_eggs": 16,
+      "egg_price": 2,
+      "remaining_eggs": 9,
+      "daily_earnings": 18
+    }
+  },
+  "merged_assignment": {
+    "daily_eggs": 16,
+    "egg_price": 33.24,
+    "remaining_eggs": 9,
+    "daily_earnings": 299.16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_eggs = 16\n    egg_price = 33.24\n\n    remaining_eggs = daily_eggs - 3 - 4\n    daily_earnings = round(remaining_eggs * egg_price, 2)\n\n    return {\n        \"daily_eggs\": daily_eggs,\n        \"egg_price\": egg_price,\n        \"remaining_eggs\": remaining_eggs,\n        \"daily_earnings\": daily_earnings\n    }\n",
+    "results": {
+      "daily_eggs": 16,
+      "egg_price": 33.24,
+      "remaining_eggs": 9,
+      "daily_earnings": 299.16
+    }
+  },
+  "final": {
+    "question": "Janet’s ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for 33.24 leu per fresh duck egg. How much in leu does she make every day at the farmers' market?",
+    "answer_lines": [
+      "Janet sells 16 - 3 - 4 = 16 - 3 - 4 = 9 duck eggs a day.",
+      "She makes 9 * 33.24 = 299.16 leu every day at the farmer’s market.",
+      "#### 299.16"
+    ],
+    "final_scalar": 299.16,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Janet’s gâște lay 16 eggs per day. She eats three for mic dejun every morning and bakes papanasi for her friends every day with four. She sells the remainder at the piața daily for 33.24 leu per fresh duck egg. How much in leu does she make every day at the piața?",
+    "adapted_answer": [
+      "Janet sells 16 - 3 - 4 = 16 - 3 - 4 = 9 duck eggs a day.",
+      "She makes 9 * 33.24 = 299.16 leu every day at the piața."
+    ],
+    "adaptation_notes": "Replaced 'ducks' with 'gâște', 'breakfast' with 'mic dejun', 'muffins' with 'papanasi', and 'farmers' market' with 'piața'."
+  }
+}

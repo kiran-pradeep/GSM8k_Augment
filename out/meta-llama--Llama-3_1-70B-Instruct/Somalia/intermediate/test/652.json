@@ -1,0 +1,153 @@
+{
+  "index": 652,
+  "split": "test",
+  "original": {
+    "question": "James hires a horse-drawn carriage from 5 PM to 9 PM.  He gets 1 hour free.  The first paid hour is $15 and each hour after that is twice the cost.  How much did he pay?",
+    "answer": "He got it for 9-5=<<9-5=4>>4 hours\nHe pays for 4-1=<<4-1=3>>3 hours\nThe first hour cost 1*15=$<<1*15=15>>15\nThe other 3-1=2 hours are more expensive\nThey cost 15*2=$<<15*2=30>>30 per hour\nSo those 2 hours cost 2*30=$<<2*30=60>>60\nSo he pays 60+15=$<<60+15=75>>75 per hours\n#### 75"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "dollars"
+    ],
+    "notes": "The name 'James' is a Western name and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_hour_cost",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "other_hours_cost",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "two_hours_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 75,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_hour_cost\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"other_hours_cost\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"two_hours_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 75, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_hour_cost",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 8540.7,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "other_hours_cost",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 17081.4,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "two_hours_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 34162.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 42703.5,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James hires a horse-drawn carriage from 5 PM to 9 PM.  He gets 1 hour free.  The first paid hour is ${first_hour_cost} and each hour after that is twice the cost.  How much did he pay?",
+    "templatized_answer": [
+      "He got it for 9-5={total_hours} hours",
+      "He pays for {total_hours}-{free_hours}={paid_hours} hours",
+      "The first hour cost 1*{first_hour_cost}=${first_hour_cost}",
+      "The other {paid_hours}-1={other_hours} hours are more expensive",
+      "They cost {first_hour_cost}*2=${other_hours_cost} per hour",
+      "So those {other_hours} hours cost {other_hours}*{other_hours_cost}=${two_hours_cost}",
+      "So he pays {two_hours_cost}+{first_hour_cost}=${total_cost} per hours",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "first_hour_cost": 15,
+      "other_hours_cost": 30,
+      "two_hours_cost": 60,
+      "total_cost": 75,
+      "total_hours": 4,
+      "free_hours": 1,
+      "paid_hours": 3,
+      "other_hours": 2
+    }
+  },
+  "merged_assignment": {
+    "first_hour_cost": 8540.7,
+    "other_hours_cost": 17081.4,
+    "two_hours_cost": 34162.8,
+    "total_cost": 42703.5,
+    "total_hours": 4,
+    "free_hours": 1,
+    "paid_hours": 3,
+    "other_hours": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_hour_cost = 8540.7\n    total_hours = 4\n    free_hours = 1\n    paid_hours = total_hours - free_hours\n    other_hours = paid_hours - 1\n    other_hours_cost = first_hour_cost * 2\n    two_hours_cost = other_hours * other_hours_cost\n    total_cost = two_hours_cost + first_hour_cost\n\n    return {\n        \"first_hour_cost\": round(first_hour_cost, 2),\n        \"other_hours_cost\": round(other_hours_cost, 2),\n        \"two_hours_cost\": round(two_hours_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"total_hours\": total_hours,\n        \"free_hours\": free_hours,\n        \"paid_hours\": paid_hours,\n        \"other_hours\": other_hours\n    }\n",
+    "results": {
+      "first_hour_cost": 8540.7,
+      "other_hours_cost": 17081.4,
+      "two_hours_cost": 34162.8,
+      "total_cost": 42703.5,
+      "total_hours": 4,
+      "free_hours": 1,
+      "paid_hours": 3,
+      "other_hours": 2
+    }
+  },
+  "final": {
+    "question": "James hires a horse-drawn carriage from 5 PM to 9 PM.  He gets 1 hour free.  The first paid hour is 8540.7 shilling and each hour after that is twice the cost.  How much did he pay?",
+    "answer_lines": [
+      "He got it for 9-5=4 hours",
+      "He pays for 4-1=3 hours",
+      "The first hour cost 1*8540.7=8540.7 shilling",
+      "The other 3-1=2 hours are more expensive",
+      "They cost 8540.7*2=17081.4 shilling per hour",
+      "So those 2 hours cost 2*17081.4=34162.8 shilling",
+      "So he pays 34162.8+8540.7=42703.5 shilling per hours",
+      "#### 42703.5"
+    ],
+    "final_scalar": 42703.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cabdulle hires a horse-drawn carriage from 5 PM to 9 PM.  He gets 1 hour free.  The first paid hour is 8540.7 shilling and each hour after that is twice the cost.  How much did he pay?",
+    "adapted_answer": [
+      "He got it for 9-5=4 hours",
+      "He pays for 4-1=3 hours",
+      "The first hour cost 1*8540.7=8540.7 shilling",
+      "The other 3-1=2 hours are more expensive",
+      "They cost 8540.7*2=17081.4 shilling per hour",
+      "So those 2 hours cost 2*17081.4=34162.8 shilling",
+      "So he pays 34162.8+8540.7=42703.5 shilling per hours",
+      "#### 42703.5"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Cabdulle' to give the name a Somali context."
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "index": 402,
+  "split": "test",
+  "original": {
+    "question": "Mark is making a quadruple batch of brownies. The normal recipe calls for 3 cups of flour and 1 cup milk. If flour is sold in 2-cup bags and milk is sold in 2-cup bottles, how many more bags of flour than bottles of milk does Mark have to buy?",
+    "answer": "To make 4 brownies, Mark needs: 3 cups * 4 = <<3*4=12>>12 cups of flour.\nTo get 12 cups of flour, Mark needs to buy: 12 cups / 2 cups per bag = <<12/2=6>>6 bags\nTo make 4 brownies, Mark needs: 1 cup * 4 = <<1*4=4>>4 cups of milk\nTo get 4 cups of milk, Mark needs to buy: 4 cups / 2 cups/bottle = <<4/2=2>>2 bottles of milk\nFinally, subtract the number of bottles of milk from the number of bags of flour to find the difference: 6 - 2 = <<6-2=4>>4\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mark",
+      "brownies"
+    ],
+    "notes": "The name 'Mark' and the food item 'brownies' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 281.85, 'unit': 'rupee'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Mark is making a {batch_size} batch of brownies. The normal recipe calls for {flour_cups} cups of flour and {milk_cups} cup milk. If flour is sold in {flour_bag_size}-cup bags and milk is sold in {milk_bottle_size}-cup bottles, how many more bags of flour than bottles of milk does Mark have to buy?",
+    "templatized_answer": [
+      "To make {batch_size} brownies, Mark needs: {flour_cups} cups * {batch_size} = {flour_cups} * {batch_size} cups of flour.",
+      "To get {flour_cups} * {batch_size} cups of flour, Mark needs to buy: ({flour_cups} * {batch_size}) / {flour_bag_size} cups per bag = ({flour_cups} * {batch_size}) / {flour_bag_size} bags",
+      "To make {batch_size} brownies, Mark needs: {milk_cups} cup * {batch_size} = {milk_cups} * {batch_size} cups of milk",
+      "To get {milk_cups} * {batch_size} cups of milk, Mark needs to buy: ({milk_cups} * {batch_size}) / {milk_bottle_size} cups/bottle = ({milk_cups} * {batch_size}) / {milk_bottle_size} bottles of milk",
+      "Finally, subtract the number of bottles of milk from the number of bags of flour to find the difference: ({flour_cups} * {batch_size}) / {flour_bag_size} - ({milk_cups} * {batch_size}) / {milk_bottle_size} = ({flour_cups} * {batch_size}) / {flour_bag_size} - ({milk_cups} * {batch_size}) / {milk_bottle_size}",
+      "#### ({flour_cups} * {batch_size}) / {flour_bag_size} - ({milk_cups} * {batch_size}) / {milk_bottle_size}"
+    ],
+    "factual_assignment": {
+      "batch_size": 4,
+      "flour_cups": 3,
+      "milk_cups": 1,
+      "flour_bag_size": 2,
+      "milk_bottle_size": 2
+    }
+  },
+  "merged_assignment": {
+    "batch_size": 4,
+    "flour_cups": 3,
+    "milk_cups": 1,
+    "flour_bag_size": 2,
+    "milk_bottle_size": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"batch_size\": 4,\n        \"flour_cups\": 3,\n        \"milk_cups\": 1,\n        \"flour_bag_size\": 2,\n        \"milk_bottle_size\": 2\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"flour_cups\"] = factual_assignment[\"flour_cups\"]\n    recomputed_values[\"batch_size\"] = factual_assignment[\"batch_size\"]\n    recomputed_values[\"milk_cups\"] = factual_assignment[\"milk_cups\"]\n    recomputed_values[\"flour_bag_size\"] = factual_assignment[\"flour_bag_size\"]\n    recomputed_values[\"milk_bottle_size\"] = factual_assignment[\"milk_bottle_size\"]\n\n    recomputed_values[\"flour_cups * batch_size\"] = recomputed_values[\"flour_cups\"] * recomputed_values[\"batch_size\"]\n    recomputed_values[\"flour_cups * batch_size / flour_bag_size\"] = round(recomputed_values[\"flour_cups * batch_size\"] / recomputed_values[\"flour_bag_size\"], 2)\n    recomputed_values[\"milk_cups * batch_size\"] = recomputed_values[\"milk_cups\"] * recomputed_values[\"batch_size\"]\n    recomputed_values[\"milk_cups * batch_size / milk_bottle_size\"] = round(recomputed_values[\"milk_cups * batch_size\"] / recomputed_values[\"milk_bottle_size\"], 2)\n    recomputed_values[\"flour_cups * batch_size / flour_bag_size - milk_cups * batch_size / milk_bottle_size\"] = round(recomputed_values[\"flour_cups * batch_size / flour_bag_size\"] - recomputed_values[\"milk_cups * batch_size / milk_bottle_size\"], 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "flour_cups": 3,
+      "batch_size": 4,
+      "milk_cups": 1,
+      "flour_bag_size": 2,
+      "milk_bottle_size": 2,
+      "flour_cups * batch_size": 12,
+      "flour_cups * batch_size / flour_bag_size": 6.0,
+      "milk_cups * batch_size": 4,
+      "milk_cups * batch_size / milk_bottle_size": 2.0,
+      "flour_cups * batch_size / flour_bag_size - milk_cups * batch_size / milk_bottle_size": 4.0
+    }
+  },
+  "final": {
+    "question": "Mark is making a 4 batch of brownies. The normal recipe calls for 3 milliliter of flour and 1 milliliter milk. If flour is sold in 2-milliliter bags and milk is sold in 2-milliliter bottles, how many more bags of flour than bottles of milk does Mark have to buy?",
+    "answer_lines": [
+      "To make 4 brownies, Mark needs: 3 milliliter * 4 = 12 milliliter of flour.",
+      "To get 12 milliliter of flour, Mark needs to buy: 12 milliliter / 2 milliliter per bag = 6 bags",
+      "To make 4 brownies, Mark needs: 1 milliliter * 4 = 4 milliliter of milk",
+      "To get 4 milliliter of milk, Mark needs to buy: 4 milliliter / 2 milliliter/bottle = 2 bottles of milk",
+      "Finally, subtract the number of bottles of milk from the number of bags of flour to find the difference: 6 - 2 = 4",
+      "#### 4"
+    ],
+    "final_scalar": 4.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran is making a 4 batch of kulfi. The normal recipe calls for 3 milliliter of flour and 1 milliliter milk. If flour is sold in 2-milliliter bags and milk is sold in 2-milliliter bottles, how many more bags of flour than bottles of milk does Kamran have to buy?",
+    "adapted_answer": [
+      "To make 4 kulfi, Kamran needs: 3 milliliter * 4 = 12 milliliter of flour.",
+      "To get 12 milliliter of flour, Kamran needs to buy: 12 milliliter / 2 milliliter per bag = 6 bags",
+      "To make 4 kulfi, Kamran needs: 1 milliliter * 4 = 4 milliliter of milk",
+      "To get 4 milliliter of milk, Kamran needs to buy: 4 milliliter / 2 milliliter/bottle = 2 bottles of milk",
+      "Finally, subtract the number of bottles of milk from the number of bags of flour to find the difference: 6 - 2 = 4",
+      "#### 4"
+    ],
+    "adaptation_notes": "Replaced 'Mark' with 'Kamran' and 'brownies' with 'kulfi' to give the text a Pakistani context."
+  }
+}

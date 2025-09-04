@@ -1,0 +1,156 @@
+{
+  "index": 1241,
+  "split": "test",
+  "original": {
+    "question": "Rose bought five dozens of eggs for $2.40 a dozen. She will sell it for $1 for 3 eggs. How much will be Rose's profit?",
+    "answer": "Rose bought five dozens of eggs for $2.40 x 5 = $<<2.40*5=12>>12.\nFive dozens of eggs is equal to 12 x 5 = <<12*5=60>>60 eggs.\nSo there are 60/3 = <<60/3=20>>20 sets of 3 eggs that Rose will sell.\nThus, the total earnings of Rose for selling the eggs are $1 x 20 = $<<20=20>>20.\nTherefore, her profit will be $20 - $12 = $<<20-12=8>>8.\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "dozens_cost",
+      "value": 2.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eggs_selling_price",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"dozens_cost\", \"value\": 2.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"eggs_selling_price\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "dozens_cost",
+        "original_value": 2.4,
+        "original_unit": "dollar",
+        "converted_value": 313.94,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "eggs_selling_price",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 130.81,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1569.72,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2616.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "profit",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 1046.48,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Rose bought five dozens of eggs for ${dozens_cost} a dozen. She will sell it for ${eggs_selling_price} for 3 eggs. How much will be Rose's profit?",
+    "templatized_answer": [
+      "Rose bought five dozens of eggs for ${dozens_cost} x 5 = ${total_cost}.",
+      "Five dozens of eggs is equal to 12 x 5 = {number_of_eggs} eggs.",
+      "So there are {number_of_eggs}/3 = {number_of_sets} sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are ${eggs_selling_price} x {number_of_sets} = ${total_earnings}.",
+      "Therefore, her profit will be ${total_earnings} - ${total_cost} = ${profit}.",
+      "#### {profit}"
+    ],
+    "factual_assignment": {
+      "dozens_cost": 2.4,
+      "eggs_selling_price": 1,
+      "total_cost": 12,
+      "total_earnings": 20,
+      "profit": 8,
+      "number_of_eggs": 60,
+      "number_of_sets": 20
+    }
+  },
+  "merged_assignment": {
+    "dozens_cost": 313.94,
+    "eggs_selling_price": 130.81,
+    "total_cost": 1569.72,
+    "total_earnings": 2616.2,
+    "profit": 1046.48,
+    "number_of_eggs": 60,
+    "number_of_sets": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    dozens_cost = 313.94\n    eggs_selling_price = 130.81\n\n    total_cost = dozens_cost * 5\n    number_of_eggs = 12 * 5\n    number_of_sets = number_of_eggs / 3\n    total_earnings = eggs_selling_price * number_of_sets\n    profit = total_earnings - total_cost\n\n    return {\n        \"dozens_cost\": round(dozens_cost, 2),\n        \"eggs_selling_price\": round(eggs_selling_price, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"total_earnings\": round(total_earnings, 2),\n        \"profit\": round(profit, 2),\n        \"number_of_eggs\": number_of_eggs,\n        \"number_of_sets\": number_of_sets\n    }\n",
+    "results": {
+      "dozens_cost": 313.94,
+      "eggs_selling_price": 130.81,
+      "total_cost": 1569.7,
+      "total_earnings": 2616.2,
+      "profit": 1046.5,
+      "number_of_eggs": 60,
+      "number_of_sets": 20.0
+    }
+  },
+  "final": {
+    "question": "Rose bought five dozens of eggs for 313.94 gourde a dozen. She will sell it for 130.81 gourde for 3 eggs. How much will be Rose's profit?",
+    "answer_lines": [
+      "Rose bought five dozens of eggs for 313.94 gourde x 5 = 1569.7 gourde.",
+      "Five dozens of eggs is equal to 12 x 5 = 60 eggs.",
+      "So there are 60/3 = 20 sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are 130.81 gourde x 20 = 2616.2 gourde.",
+      "Therefore, her profit will be 2616.2 gourde - 1569.7 gourde = 1046.5 gourde.",
+      "#### 1046.5"
+    ],
+    "final_scalar": 1046.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rose bought five dozens of diri ak piman for 313.94 gourde a dozen. She will sell it for 130.81 gourde for 3 diri ak piman. How much will be Rose's profit?",
+    "adapted_answer": [
+      "Rose bought five dozens of diri ak piman for 313.94 gourde x 5 = 1569.7 gourde.",
+      "Five dozens of diri ak piman is equal to 12 x 5 = 60 diri ak piman.",
+      "So there are 60/3 = 20 sets of 3 diri ak piman that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the diri ak piman are 130.81 gourde x 20 = 2616.2 gourde.",
+      "Therefore, her profit will be 2616.2 gourde - 1569.7 gourde = 1046.5 gourde.",
+      "#### 1046.5"
+    ],
+    "adaptation_notes": "Replaced 'eggs' with 'diri ak piman' (a traditional Haitian dish) to provide a Haitian context."
+  }
+}

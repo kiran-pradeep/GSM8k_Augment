@@ -1,0 +1,132 @@
+{
+  "index": 698,
+  "split": "test",
+  "original": {
+    "question": "Greta’s paycheck is $2400.00. She puts 50% of her pay into her retirement account. She then uses 20% of her paycheck to make her monthly car payment. After funding her retirement and paying for her car, how much money does she have left to spend?",
+    "answer": "Her paycheck is $2400.00 and she puts 50% into her retirement so that’s 2400*.50 = $<<2400*.50=1200.00>>1200.00\nHer paycheck is $2400.00 and she puts $1200 into retirement so that leaves 2400-1200 = $<<2400-1200=1200.00>>1200.00\nHer car payment is 20% of 2400 so her car payment is .20*2400 = $<<20*.01*2400=480.00>>480.00\nShe had $1200 left and she uses $480.00 to make her car payment which leaves her with 1200-480 = $<<1200-480=720.00>>720.00 remaining for spending\n#### 720"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Greta",
+      "dollars"
+    ],
+    "notes": "The name 'Greta' is of European origin and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "paycheck",
+      "value": 2400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "retirement_fund",
+      "value": 1200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "car_payment",
+      "value": 480.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_spending",
+      "value": 720.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"paycheck\", \"value\": 2400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"retirement_fund\", \"value\": 1200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"car_payment\", \"value\": 480.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_spending\", \"value\": 720.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "paycheck",
+        "original_value": 2400.0,
+        "original_unit": "dollar",
+        "converted_value": 676440.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "retirement_fund",
+        "original_value": 1200.0,
+        "original_unit": "dollar",
+        "converted_value": 338220.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "car_payment",
+        "original_value": 480.0,
+        "original_unit": "dollar",
+        "converted_value": 135288.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_spending",
+        "original_value": 720.0,
+        "original_unit": "dollar",
+        "converted_value": 202932.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Greta’s paycheck is ${paycheck}. She puts 50% of her pay into her retirement account. She then uses 20% of her paycheck to make her monthly car payment. After funding her retirement and paying for her car, how much money does she have left to spend?",
+    "templatized_answer": [
+      "Her paycheck is ${paycheck} and she puts 50% into her retirement so that’s {paycheck}*.50 = ${retirement_fund}",
+      "Her paycheck is ${paycheck} and she puts ${retirement_fund} into retirement so that leaves {paycheck}-{retirement_fund} = ${retirement_fund}",
+      "Her car payment is 20% of {paycheck} so her car payment is .20*{paycheck} = ${car_payment}",
+      "She had ${retirement_fund} left and she uses ${car_payment}.00 to make her car payment which leaves her with {retirement_fund}-{car_payment} = ${remaining_spending} remaining for spending",
+      "#### {remaining_spending}"
+    ],
+    "factual_assignment": {
+      "paycheck": 2400.0,
+      "retirement_fund": 1200.0,
+      "car_payment": 480.0,
+      "remaining_spending": 720.0
+    }
+  },
+  "merged_assignment": {
+    "paycheck": 676440.0,
+    "retirement_fund": 338220.0,
+    "car_payment": 135288.0,
+    "remaining_spending": 202932.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    paycheck = 676440.0\n    retirement_fund = paycheck * 0.50\n    remaining_after_retirement = paycheck - retirement_fund\n    car_payment = paycheck * 0.20\n    remaining_spending = remaining_after_retirement - car_payment\n\n    return {\n        \"paycheck\": paycheck,\n        \"retirement_fund\": round(retirement_fund, 2),\n        \"car_payment\": round(car_payment, 2),\n        \"remaining_spending\": round(remaining_spending, 2)\n    }\n",
+    "results": {
+      "paycheck": 676440.0,
+      "retirement_fund": 338220.0,
+      "car_payment": 135288.0,
+      "remaining_spending": 202932.0
+    }
+  },
+  "final": {
+    "question": "Greta’s paycheck is 676440. She puts 50% of her pay into her retirement account. She then uses 20% of her paycheck to make her monthly car payment. After funding her retirement and paying for her car, how much money does she have left to spend?",
+    "answer_lines": [
+      "Her paycheck is 676440 and she puts 50% into her retirement so that’s 676440*.50 = 338220",
+      "Her paycheck is 676440 and she puts 338220 into retirement so that leaves 676440-338220 = 338220",
+      "Her car payment is 20% of 676440 so her car payment is .20*676440 = 135288",
+      "She had 338220 left and she uses 135288 to make her car payment which leaves her with 338220-135288 = 202932 remaining for spending",
+      "#### 202932"
+    ],
+    "final_scalar": 202932,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha’s paycheck is 676440. She puts 50% of her pay into her retirement account. She then uses 20% of her paycheck to make her monthly car payment. After funding her retirement and paying for her car, how much money does she have left to spend?",
+    "adapted_answer": [
+      "Her paycheck is 676440 and she puts 50% into her retirement so that’s 676440*.50 = 338220",
+      "Her paycheck is 676440 and she puts 338220 into retirement so that leaves 676440-338220 = 338220",
+      "Her car payment is 20% of 676440 so her car payment is .20*676440 = 135288",
+      "She had 338220 left and she uses 135288 to make her car payment which leaves her with 338220-135288 = 202932 remaining for spending",
+      "#### 202932"
+    ],
+    "adaptation_notes": "Replaced 'Greta' with 'Ayesha' to give the name a Pakistani context."
+  }
+}

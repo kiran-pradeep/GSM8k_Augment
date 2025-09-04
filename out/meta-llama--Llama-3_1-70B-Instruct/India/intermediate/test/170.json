@@ -1,0 +1,131 @@
+{
+  "index": 170,
+  "split": "test",
+  "original": {
+    "question": "The marching band is ordering new uniforms. Each uniform comes with a hat that costs $25, a jacket that costs three times as much as the hat, and pants that cost the average of the costs of the hat and jacket. How much does each uniform cost total?",
+    "answer": "First find the cost of the jacket: $25 * 3 = $<<25*3=75>>75\nThen add the cost of the jacket and hat: $25 + $75 = $<<25+75=100>>100\nThen divide that amount by 2 to find the average cost, which is the cost of the pants: $100 / 2 = $<<100/2=50>>50\nThen add the cost of each item of clothing to find the total cost of the uniform: $25 + $75 + $50 = $<<25+75+50=150>>150\n#### 150"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The question contains a unit of currency (dollars) that is not specific to India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hat_cost",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jacket_cost",
+      "value": 75.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "pants_cost",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "uniform_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hat_cost\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jacket_cost\", \"value\": 75.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"pants_cost\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"uniform_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hat_cost",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 2175.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "jacket_cost",
+        "original_value": 75.0,
+        "original_unit": "dollar",
+        "converted_value": 6525.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "pants_cost",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 4350.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "uniform_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 13050.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The marching band is ordering new uniforms. Each uniform comes with a hat that costs ${hat_cost}, a jacket that costs three times as much as the hat, and pants that cost the average of the costs of the hat and jacket. How much does each uniform cost total?",
+    "templatized_answer": [
+      "First find the cost of the jacket: ${hat_cost} * 3 = ${jacket_cost}",
+      "Then add the cost of the jacket and hat: ${hat_cost} + ${jacket_cost} = ${jacket_cost} + ${hat_cost}",
+      "Then divide that amount by 2 to find the average cost, which is the cost of the pants: (${jacket_cost} + ${hat_cost}) / 2 = ${pants_cost}",
+      "Then add the cost of each item of clothing to find the total cost of the uniform: ${hat_cost} + ${jacket_cost} + ${pants_cost} = ${uniform_cost}",
+      "#### {uniform_cost}"
+    ],
+    "factual_assignment": {
+      "hat_cost": 25.0,
+      "jacket_cost": 75.0,
+      "pants_cost": 50.0,
+      "uniform_cost": 150.0
+    }
+  },
+  "merged_assignment": {
+    "hat_cost": 2175.0,
+    "jacket_cost": 6525.0,
+    "pants_cost": 4350.0,
+    "uniform_cost": 13050.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hat_cost = 2175.0\n    jacket_cost = hat_cost * 3\n    pants_cost = (hat_cost + jacket_cost) / 2\n    uniform_cost = hat_cost + jacket_cost + pants_cost\n\n    return {\n        \"hat_cost\": hat_cost,\n        \"jacket_cost\": jacket_cost,\n        \"pants_cost\": round(pants_cost, 2),\n        \"uniform_cost\": round(uniform_cost, 2)\n    }\n",
+    "results": {
+      "hat_cost": 2175.0,
+      "jacket_cost": 6525.0,
+      "pants_cost": 4350.0,
+      "uniform_cost": 13050.0
+    }
+  },
+  "final": {
+    "question": "The marching band is ordering new uniforms. Each uniform comes with a hat that costs 2175 rupees, a jacket that costs three times as much as the hat, and pants that cost the average of the costs of the hat and jacket. How much does each uniform cost total?",
+    "answer_lines": [
+      "First find the cost of the jacket: 2175 * 3 = 6525",
+      "Then add the cost of the jacket and hat: 2175 + 6525 = 8700",
+      "Then divide that amount by 2 to find the average cost, which is the cost of the pants: 8700 / 2 = 4350",
+      "Then add the cost of each item of clothing to find the total cost of the uniform: 2175 + 6525 + 4350 = 13050",
+      "#### 13050"
+    ],
+    "final_scalar": 13050.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The school band is ordering new uniforms. Each uniform comes with a Gandhi cap that costs 2175 rupees, a sherwani that costs three times as much as the Gandhi cap, and pyjamas that cost the average of the costs of the Gandhi cap and sherwani. How much does each uniform cost total?",
+    "adapted_answer": [
+      "First find the cost of the sherwani: 2175 * 3 = 6525",
+      "Then add the cost of the sherwani and Gandhi cap: 2175 + 6525 = 8700",
+      "Then divide that amount by 2 to find the average cost, which is the cost of the pyjamas: 8700 / 2 = 4350",
+      "Then add the cost of each item of clothing to find the total cost of the uniform: 2175 + 6525 + 4350 = 13050",
+      "#### 13050"
+    ],
+    "adaptation_notes": "Replaced 'hat' with 'Gandhi cap', 'jacket' with 'sherwani', and 'pants' with 'pyjamas' to give the question an Indian context."
+  }
+}

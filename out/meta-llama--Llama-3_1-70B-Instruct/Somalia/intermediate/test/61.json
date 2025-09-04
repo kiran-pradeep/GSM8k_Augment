@@ -1,0 +1,126 @@
+{
+  "index": 61,
+  "split": "test",
+  "original": {
+    "question": "Janet buys a brooch for her daughter.  She pays $500 for the material to make it and then another $800 for the jeweler to construct it.  After that, she pays 10% of that to get it insured.  How much did she pay?",
+    "answer": "The total cost of the broch was 500+800=$<<500+800=1300>>1300\nThe insurance was 1300*.1=$<<1300*.1=130>>130\nSo she pays 1300+130=$<<1300+130=1430>>1430\n#### 1430"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Janet"
+    ],
+    "notes": "The text contains a non-Somali unit of currency (dollars) and a Western name (Janet)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "material_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jeweler_cost",
+      "value": 800.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "insurance_cost",
+      "value": 130.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 1430.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"material_cost\",\n    \"value\": 500.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"jeweler_cost\",\n    \"value\": 800.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"insurance_cost\",\n    \"value\": 130.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cost\",\n    \"value\": 1430.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "material_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 284690.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "jeweler_cost",
+        "original_value": 800.0,
+        "original_unit": "dollar",
+        "converted_value": 455504.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "insurance_cost",
+        "original_value": 130.0,
+        "original_unit": "dollar",
+        "converted_value": 74019.4,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 1430.0,
+        "original_unit": "dollar",
+        "converted_value": 814213.4,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Janet buys a brooch for her daughter.  She pays ${material_cost} for the material to make it and then another ${jeweler_cost} for the jeweler to construct it.  After that, she pays 10% of that to get it insured.  How much did she pay?",
+    "templatized_answer": [
+      "The total cost of the broch was {material_cost}+{jeweler_cost}=${{material_cost}+{jeweler_cost}}",
+      "The insurance was {{material_cost}+{jeweler_cost}}*0.1=${{material_cost}+{jeweler_cost}}*0.1",
+      "So she pays {{material_cost}+{jeweler_cost}}+{{material_cost}+{jeweler_cost}}*0.1=${{material_cost}+{jeweler_cost}}+{{material_cost}+{jeweler_cost}}*0.1",
+      "#### {{material_cost}+{jeweler_cost}}+{{material_cost}+{jeweler_cost}}*0.1"
+    ],
+    "factual_assignment": {
+      "material_cost": 500.0,
+      "jeweler_cost": 800.0
+    }
+  },
+  "merged_assignment": {
+    "material_cost": 284690.0,
+    "jeweler_cost": 455504.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    material_cost = 284690.0\n    jeweler_cost = 455504.0\n\n    total_cost = material_cost + jeweler_cost\n    insurance = total_cost * 0.1\n    total_payment = total_cost + insurance\n\n    return {\n        \"{material_cost}\": material_cost,\n        \"{jeweler_cost}\": jeweler_cost,\n        \"{{material_cost}+{jeweler_cost}}\": total_cost,\n        \"{{material_cost}+{jeweler_cost}}*0.1\": round(insurance, 2),\n        \"{{material_cost}+{jeweler_cost}}+{{material_cost}+{jeweler_cost}}*0.1\": round(total_payment, 2)\n    }\n",
+    "results": {
+      "{material_cost}": 284690.0,
+      "{jeweler_cost}": 455504.0,
+      "{{material_cost}+{jeweler_cost}}": 740194.0,
+      "{{material_cost}+{jeweler_cost}}*0.1": 74019.4,
+      "{{material_cost}+{jeweler_cost}}+{{material_cost}+{jeweler_cost}}*0.1": 814213.4
+    }
+  },
+  "final": {
+    "question": "Janet buys a brooch for her daughter.  She pays 284690 shilling for the material to make it and then another 455504 shilling for the jeweler to construct it.  After that, she pays 10% of that to get it insured.  How much did she pay?",
+    "answer_lines": [
+      "The total cost of the broch was 284690+455504=740194",
+      "The insurance was 740194*0.1=74019.4",
+      "So she pays 740194+74019.4=814213.4",
+      "#### 814213.4"
+    ],
+    "final_scalar": 814213.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aamina buys a brooch for her daughter.  She pays 284690 shilling for the material to make it and then another 455504 shilling for the jeweler to construct it.  After that, she pays 10% of that to get it insured.  How much did she pay?",
+    "adapted_answer": [
+      "The total cost of the brooch was 284690+455504=740194",
+      "The insurance was 740194*0.1=74019.4",
+      "So she pays 740194+74019.4=814213.4",
+      "#### 814213.4"
+    ],
+    "adaptation_notes": "Replaced 'Janet' with 'Aamina' to give the name a Somali context."
+  }
+}

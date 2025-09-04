@@ -1,0 +1,109 @@
+{
+  "index": 1033,
+  "split": "test",
+  "original": {
+    "question": "Melissa is summoned to jury duty. She spends 6 hours a day for 3 days listening to a court case. If Melissa is paid $15 per day but also has to pay $3 for parking each day, how much jury pay does she make per hour after expenses?",
+    "answer": "First find Melissa's net daily pay by subtracting the parking expense from her $15 gross pay: $15/day - $3/day = $<<15-3=12>>12/day\nThen divide this number by the number of hours Melissa spends in court each day to find her hourly pay: $12/day / 6 hours/day = $<<12/6=2>>2/hour\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_pay",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "parking_expense",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "net_daily_pay",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "hourly_pay",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_pay\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"parking_expense\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"net_daily_pay\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"hourly_pay\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_pay",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 249.3,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "parking_expense",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "net_daily_pay",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 199.44,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "hourly_pay",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Melissa is summoned to jury duty. She spends {hours_per_day} hours a day for {days} days listening to a court case. If Melissa is paid ${daily_pay} per day but also has to pay ${parking_expense} for parking each day, how much jury pay does she make per hour after expenses?",
+    "templatized_answer": [
+      "First find Melissa's net daily pay by subtracting the parking expense from her ${daily_pay} gross pay: ${daily_pay}/day - ${parking_expense}/day = ${net_daily_pay}/day",
+      "Then divide this number by the number of hours Melissa spends in court each day to find her hourly pay: ${net_daily_pay}/day / {hours_per_day} hours/day = ${hourly_pay}/hour"
+    ],
+    "factual_assignment": {
+      "daily_pay": 15,
+      "parking_expense": 3,
+      "net_daily_pay": 12,
+      "hourly_pay": 2,
+      "hours_per_day": 6,
+      "days": 3
+    }
+  },
+  "merged_assignment": {
+    "daily_pay": 249.3,
+    "parking_expense": 49.86,
+    "net_daily_pay": 199.44,
+    "hourly_pay": 33.24,
+    "hours_per_day": 6,
+    "days": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_pay = 249.3\n    parking_expense = 49.86\n    hours_per_day = 6\n    days = 3\n\n    net_daily_pay = round(daily_pay - parking_expense, 2)\n    hourly_pay = round(net_daily_pay / hours_per_day, 2)\n\n    return {\n        \"daily_pay\": daily_pay,\n        \"parking_expense\": parking_expense,\n        \"net_daily_pay\": net_daily_pay,\n        \"hourly_pay\": hourly_pay,\n        \"hours_per_day\": hours_per_day,\n        \"days\": days\n    }\n\nprint(recompute())\n",
+    "results": {
+      "daily_pay": 249.3,
+      "parking_expense": 49.86,
+      "net_daily_pay": 199.44,
+      "hourly_pay": 33.24,
+      "hours_per_day": 6,
+      "days": 3
+    }
+  },
+  "final": null
+}

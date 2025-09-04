@@ -1,0 +1,136 @@
+{
+  "index": 427,
+  "split": "test",
+  "original": {
+    "question": "Kenny is selling his Pokemon cards to buy a ticket to an amusement park, which costs $100. He has a collection of cards and plans to sell them for $1.5 each. He keeps 1/3 of them and gets to go to the amusement park with $50 in spending cash. How many cards did he start with?",
+    "answer": "He made $150 selling the cards because 100 + 50 = <<100+50=150>>150\nHe sold 100 cards because 150 / 1.5 = <<150/1.5=100>>100\nThe cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3\nHe started with 150 cards because 100 / (2/3) = <<100/(2/3)=150>>150\n#### 150"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Kenny",
+      "Pokemon",
+      "amusement park",
+      "dollars"
+    ],
+    "notes": "The text contains a culturally specific name, a reference to a popular Japanese media franchise, and a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "amusement_park_ticket",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "card_price",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "spending_cash",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earned",
+      "value": 150,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"amusement_park_ticket\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"card_price\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"spending_cash\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earned\", \"value\": 150, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "amusement_park_ticket",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 13081.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "card_price",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 196.22,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "spending_cash",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 6540.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_earned",
+        "original_value": 150,
+        "original_unit": "dollar",
+        "converted_value": 19621.5,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kenny is selling his Pokemon cards to buy a ticket to an amusement park, which costs ${amusement_park_ticket}. He has a collection of cards and plans to sell them for ${card_price} each. He keeps 1/3 of them and gets to go to the amusement park with ${spending_cash} in spending cash. How many cards did he start with?",
+    "templatized_answer": [
+      "He made ${total_earned} selling the cards because {amusement_park_ticket} + {spending_cash} = {amusement_park_ticket} + {spending_cash}",
+      "He sold {total_earned} / {card_price} cards because {total_earned} / {card_price} = {total_earned} / {card_price}",
+      "The cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3",
+      "He started with ({total_earned} / {card_price}) / (2/3) cards because ({total_earned} / {card_price}) / (2/3) = ({total_earned} / {card_price}) / (2/3)",
+      "#### ({total_earned} / {card_price}) / (2/3)"
+    ],
+    "factual_assignment": {
+      "amusement_park_ticket": 100,
+      "card_price": 1.5,
+      "spending_cash": 50,
+      "total_earned": 150
+    }
+  },
+  "merged_assignment": {
+    "amusement_park_ticket": 13081.0,
+    "card_price": 196.22,
+    "spending_cash": 6540.5,
+    "total_earned": 19621.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"amusement_park_ticket\": 13081.0,\n        \"card_price\": 196.22,\n        \"spending_cash\": 6540.5,\n        \"total_earned\": 19621.5\n    }\n\n    total_earned = factual_assignment[\"amusement_park_ticket\"] + factual_assignment[\"spending_cash\"]\n    cards_sold = total_earned / factual_assignment[\"card_price\"]\n    initial_cards = cards_sold / (2/3)\n\n    recomputed_values = {\n        \"amusement_park_ticket\": factual_assignment[\"amusement_park_ticket\"],\n        \"card_price\": factual_assignment[\"card_price\"],\n        \"spending_cash\": factual_assignment[\"spending_cash\"],\n        \"total_earned\": round(total_earned, 2),\n        \"cards_sold\": round(cards_sold, 2),\n        \"initial_cards\": round(initial_cards, 2)\n    }\n\n    return recomputed_values\n\nrecomputed_values = recompute()\nprint(recomputed_values)\n",
+    "results": {
+      "amusement_park_ticket": 13081.0,
+      "card_price": 196.22,
+      "spending_cash": 6540.5,
+      "total_earned": 19621.5,
+      "cards_sold": 100.0,
+      "initial_cards": 150.0
+    }
+  },
+  "final": {
+    "question": "Kenny is selling his Pokemon cards to buy a ticket to an amusement park, which costs 13081.0 gourde. He has a collection of cards and plans to sell them for 196.22 gourde each. He keeps 1/3 of them and gets to go to the amusement park with 6540.5 gourde in spending cash. How many cards did he start with?",
+    "answer_lines": [
+      "He made 19621.5 gourde selling the cards because 13081.0 + 6540.5 = 19621.5",
+      "He sold 100.0 cards because 19621.5 / 196.22 = 100.0",
+      "The cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3",
+      "He started with 150.0 cards because 100.0 / (2/3) = 150.0",
+      "#### 150.0"
+    ],
+    "final_scalar": 150.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Widley is selling his Bel Football cards to buy a ticket to a Jakmèl festival, which costs 13081.0 gourde. He has a collection of cards and plans to sell them for 196.22 gourde each. He keeps 1/3 of them and gets to go to the festival with 6540.5 gourde in spending cash. How many cards did he start with?",
+    "adapted_answer": [
+      "He made 19621.5 gourde selling the cards because 13081.0 + 6540.5 = 19621.5",
+      "He sold 100.0 cards because 19621.5 / 196.22 = 100.0",
+      "The cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3",
+      "He started with 150.0 cards because 100.0 / (2/3) = 150.0",
+      "#### 150.0"
+    ],
+    "adaptation_notes": "Replaced 'Kenny' with 'Widley', 'Pokemon' with 'Bel Football', and 'amusement park' with 'Jakmèl festival' to give the text a Haitian context."
+  }
+}

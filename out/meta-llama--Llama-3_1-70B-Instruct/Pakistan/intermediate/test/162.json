@@ -1,0 +1,137 @@
+{
+  "index": 162,
+  "split": "test",
+  "original": {
+    "question": "If a bag of marbles costs $20 and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "answer": "When the price of the bag of marble increase by 20%, the price increases by 20/100*20 = $<<20/100*20=4>>4\nIf the price increases after every two months, in 36 months, it will increase 36/2 = <<36/2=18>>18 times.\nIf each increase is $4, the total amount the price of the bag of marbles will have increased by after 36 months is 18*$4 = $<<18*4=72>>72\nAfter the total increase of the price of the bag of marbles after 36 months, the total cost will be $20+$72 = $<<20+72=92>>92\n#### 92"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in Pakistan, where the official currency is the Pakistani rupee."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_marble_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "price_increase",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_price_increase",
+      "value": 72,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_marble_cost",
+      "value": 92,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_marble_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"price_increase\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_price_increase\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_marble_cost\", \"value\": 92, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_marble_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 5637.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "price_increase",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_price_increase",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 20293.2,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "final_marble_cost",
+        "original_value": 92,
+        "original_unit": "dollar",
+        "converted_value": 25930.2,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "If a bag of marbles costs ${initial_marble_cost} and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after {months} months?",
+    "templatized_answer": [
+      "When the price of the bag of marble increase by 20%, the price increases by 20/100*{initial_marble_cost} = ${price_increase}.",
+      "If the price increases after every two months, in {months} months, it will increase {months}/2 = {increase_times} times.",
+      "If each increase is ${price_increase}, the total amount the price of the bag of marbles will have increased by after {months} months is {increase_times}*${price_increase} = ${total_price_increase}.",
+      "After the total increase of the price of the bag of marbles after {months} months, the total cost will be ${initial_marble_cost}+${total_price_increase} = ${final_marble_cost}.",
+      "#### {final_marble_cost}"
+    ],
+    "factual_assignment": {
+      "initial_marble_cost": 20,
+      "price_increase": 4,
+      "total_price_increase": 72,
+      "final_marble_cost": 92,
+      "months": 36,
+      "increase_times": 18
+    }
+  },
+  "merged_assignment": {
+    "initial_marble_cost": 5637.0,
+    "price_increase": 1127.4,
+    "total_price_increase": 20293.2,
+    "final_marble_cost": 25930.2,
+    "months": 36,
+    "increase_times": 18
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_marble_cost = 5637.0\n    months = 36\n\n    price_increase = round(0.20 * initial_marble_cost, 2)\n    increase_times = months // 2\n    total_price_increase = round(price_increase * increase_times, 2)\n    final_marble_cost = round(initial_marble_cost + total_price_increase, 2)\n\n    return {\n        \"initial_marble_cost\": initial_marble_cost,\n        \"price_increase\": price_increase,\n        \"total_price_increase\": total_price_increase,\n        \"final_marble_cost\": final_marble_cost,\n        \"months\": months,\n        \"increase_times\": increase_times\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_marble_cost": 5637.0,
+      "price_increase": 1127.4,
+      "total_price_increase": 20293.2,
+      "final_marble_cost": 25930.2,
+      "months": 36,
+      "increase_times": 18
+    }
+  },
+  "final": {
+    "question": "If a bag of marbles costs 5637.0 and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "answer_lines": [
+      "When the price of the bag of marble increase by 20%, the price increases by 20/100*5637.0 = 1127.4.",
+      "If the price increases after every two months, in 36 months, it will increase 36/2 = 18 times.",
+      "If each increase is 1127.4, the total amount the price of the bag of marbles will have increased by after 36 months is 18*1127.4 = 20293.2.",
+      "After the total increase of the price of the bag of marbles after 36 months, the total cost will be 5637.0+20293.2 = 25930.2.",
+      "#### 25930.2"
+    ],
+    "final_scalar": 25930.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "If a bag of marbles costs 5637.0 rupees and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "adapted_answer": [
+      "When the price of the bag of marbles increases by 20%, the price increases by 20/100*5637.0 = 1127.4 rupees.",
+      "If the price increases after every two months, in 36 months, it will increase 36/2 = 18 times.",
+      "If each increase is 1127.4 rupees, the total amount the price of the bag of marbles will have increased by after 36 months is 18*1127.4 = 20293.2 rupees.",
+      "After the total increase of the price of the bag of marbles after 36 months, the total cost will be 5637.0+20293.2 = 25930.2 rupees.",
+      "#### 25930.2"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to give the question a Pakistani context."
+  }
+}

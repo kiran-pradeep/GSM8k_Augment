@@ -1,0 +1,118 @@
+{
+  "index": 401,
+  "split": "test",
+  "original": {
+    "question": "A builder works for 4 weeks every month and for 6 days every week. If he gets paid $50 every day, how much does he earn if he works for a year?",
+    "answer": "The builder works for 6 days every week and works for 4 weeks every month so he works for 6 days/week * 4 weeks/month = <<6*4=24>>24 days/month\nIf he earns $50 every day he then earns $50/day * 24 days/month = $<<50*24=1200>>1200/month\nA year is equal to 12 months so every year he earns $1200/month * 12 months/year = $<<1200*12=14400>>14400\n#### 14400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the US and other countries, but not in India where the rupee is the standard currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_earnings",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 1200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_earnings",
+      "value": 14400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_earnings\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_earnings\", \"value\": 1200, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_earnings\", \"value\": 14400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_earnings",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 4350,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 1200,
+        "original_unit": "dollar",
+        "converted_value": 104400,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "yearly_earnings",
+        "original_value": 14400,
+        "original_unit": "dollar",
+        "converted_value": 1252800,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A builder works for {weeks_per_month} weeks every month and for {days_per_week} days every week. If he gets paid ${daily_earnings} every day, how much does he earn if he works for a year?",
+    "templatized_answer": [
+      "The builder works for {days_per_week} days every week and works for {weeks_per_month} weeks every month so he works for {days_per_week} days/week * {weeks_per_month} weeks/month = {days_per_week} * {weeks_per_month} days/month",
+      "If he earns ${daily_earnings} every day he then earns ${daily_earnings}/day * {days_per_week} * {weeks_per_month} days/month = ${daily_earnings} * {days_per_week} * {weeks_per_month}/month",
+      "A year is equal to {months_per_year} months so every year he earns ${daily_earnings} * {days_per_week} * {weeks_per_month}/month * {months_per_year} months/year = ${daily_earnings} * {days_per_week} * {weeks_per_month} * {months_per_year}",
+      "#### ${daily_earnings} * {days_per_week} * {weeks_per_month} * {months_per_year}"
+    ],
+    "factual_assignment": {
+      "daily_earnings": 50,
+      "weeks_per_month": 4,
+      "days_per_week": 6,
+      "months_per_year": 12
+    }
+  },
+  "merged_assignment": {
+    "daily_earnings": 4350,
+    "weeks_per_month": 4,
+    "days_per_week": 6,
+    "months_per_year": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_earnings = 4350\n    weeks_per_month = 4\n    days_per_week = 6\n    months_per_year = 12\n\n    days_per_month = days_per_week * weeks_per_month\n    monthly_earnings = daily_earnings * days_per_week * weeks_per_month\n    yearly_earnings = monthly_earnings * months_per_year\n\n    return {\n        \"daily_earnings\": daily_earnings,\n        \"weeks_per_month\": weeks_per_month,\n        \"days_per_week\": days_per_week,\n        \"months_per_year\": months_per_year,\n        \"days_per_month\": days_per_month,\n        \"monthly_earnings\": round(monthly_earnings, 2),\n        \"yearly_earnings\": round(yearly_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "daily_earnings": 4350,
+      "weeks_per_month": 4,
+      "days_per_week": 6,
+      "months_per_year": 12,
+      "days_per_month": 24,
+      "monthly_earnings": 104400,
+      "yearly_earnings": 1252800
+    }
+  },
+  "final": {
+    "question": "A builder works for 4 weeks every month and for 6 days every week. If he gets paid 4350 every day, how much does he earn if he works for a year?",
+    "answer_lines": [
+      "The builder works for 6 days every week and works for 4 weeks every month so he works for 6 days/week * 4 weeks/month = 6 * 4 days/month = 24 days/month",
+      "If he earns 4350 every day he then earns 4350/day * 24 days/month = 4350 * 24/month = 104400/month",
+      "A year is equal to 12 months so every year he earns 104400/month * 12 months/year = 104400 * 12",
+      "#### 1252800"
+    ],
+    "final_scalar": 1252800,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A builder works for 4 weeks every month and for 6 days every week. If he gets paid 4350 rupees every day, how much does he earn if he works for a year?",
+    "adapted_answer": [
+      "The builder works for 6 days every week and works for 4 weeks every month so he works for 6 days/week * 4 weeks/month = 6 * 4 days/month = 24 days/month",
+      "If he earns 4350 rupees every day he then earns 4350 rupees/day * 24 days/month = 4350 * 24/month = 104400 rupees/month",
+      "A year is equal to 12 months so every year he earns 104400 rupees/month * 12 months/year = 104400 * 12",
+      "#### 1252800"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to provide an Indian context."
+  }
+}

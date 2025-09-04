@@ -1,0 +1,115 @@
+{
+  "index": 815,
+  "split": "test",
+  "original": {
+    "question": "Tanya makes a salt scrub from salt, oil, fragrance, citrus zest, and sugar. She makes enough to fill a 10-ounce jar each time. She uses the same amount of citrus zest as fragrance and the same amount of salt as sugar. She uses twice as much oil as salt and twice as much salt as zest. How many ounces of oil does she use?",
+    "answer": "Let Z be the ounces of zest Tanya uses.\nTanya uses the same amount of fragrance as zest, so she uses Z + Z = 2Z fragrance and zest.\nShe uses twice as much salt as zest, so she uses 2Z salt.\nShe uses the same amount of sugar as salt, so she uses 2Z + 2Z + 2Z = <<2+2+2=6>>6Z fragrance, zest, salt, and sugar.\nShe uses twice as much oil as salt, so she uses 2 * 2Z = <<2*2=4>>4Z oil.\nIn all, she uses 6Z + 4Z = 10Z = <<6+4=10>>10 ounces of fragrance, zest, salt, sugar, and oil.\nThus, she uses Z = 10 / 10 = <<10/10=1>>1 ounce of zest.\nThus, Tanya uses 4Z = <<4=4>>4 ounces of oil.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tanya",
+      "ounces"
+    ],
+    "notes": "Name 'Tanya' is culturally specific to regions other than Pakistan, and unit 'ounces' is commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "jar_capacity",
+      "value": 10,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "oil_used",
+      "value": 4,
+      "unit": "ounce",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"jar_capacity\", \"value\": 10, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"oil_used\", \"value\": 4, \"unit\": \"ounce\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "jar_capacity",
+        "original_value": 10,
+        "original_unit": "ounce",
+        "converted_value": 283.5,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "oil_used",
+        "original_value": 4,
+        "original_unit": "ounce",
+        "converted_value": 113.4,
+        "converted_unit": "gram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tanya makes a salt scrub from salt, oil, fragrance, citrus zest, and sugar. She makes enough to fill a {jar_capacity}-ounce jar each time. She uses the same amount of citrus zest as fragrance and the same amount of salt as sugar. She uses twice as much oil as salt and twice as much salt as zest. How many ounces of oil does she use?",
+    "templatized_answer": [
+      "Let Z be the ounces of zest Tanya uses.",
+      "Tanya uses the same amount of fragrance as zest, so she uses Z + Z = 2Z fragrance and zest.",
+      "She uses twice as much salt as zest, so she uses 2Z salt.",
+      "She uses the same amount of sugar as salt, so she uses 2Z + 2Z + 2Z = 6Z fragrance, zest, salt, and sugar.",
+      "She uses twice as much oil as salt, so she uses 2 * 2Z = 4Z oil.",
+      "In all, she uses 6Z + 4Z = 10Z = {jar_capacity} ounces of fragrance, zest, salt, sugar, and oil.",
+      "Thus, she uses Z = {jar_capacity} / 10 = 1 ounce of zest.",
+      "Thus, Tanya uses 4Z = 4 ounces of oil.",
+      "#### {oil_used}"
+    ],
+    "factual_assignment": {
+      "jar_capacity": 10,
+      "oil_used": 4,
+      "Z": 1
+    }
+  },
+  "merged_assignment": {
+    "jar_capacity": 283.5,
+    "oil_used": 113.4,
+    "Z": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    jar_capacity = 283.5\n    Z = jar_capacity / 10\n    fragrance_and_zest = 2 * Z\n    salt = 2 * Z\n    sugar = salt\n    oil = 2 * salt\n    total = fragrance_and_zest + salt + sugar + oil\n    assert round(total, 2) == jar_capacity, \"Total does not match jar capacity\"\n    return {\n        \"jar_capacity\": jar_capacity,\n        \"oil_used\": round(oil, 2),\n        \"Z\": round(Z, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "jar_capacity": 283.5,
+      "oil_used": 113.4,
+      "Z": 28.35
+    }
+  },
+  "final": {
+    "question": "Tanya makes a salt scrub from salt, oil, fragrance, citrus zest, and sugar. She makes enough to fill a 283.5-gram jar each time. She uses the same amount of citrus zest as fragrance and the same amount of salt as sugar. She uses twice as much oil as salt and twice as much salt as zest. How many grams of oil does she use?",
+    "answer_lines": [
+      "Let Z be the grams of zest Tanya uses.",
+      "Tanya uses the same amount of fragrance as zest, so she uses Z + Z = 2Z fragrance and zest.",
+      "She uses twice as much salt as zest, so she uses 2Z salt.",
+      "She uses the same amount of sugar as salt, so she uses 2Z + 2Z + 2Z = 6Z fragrance, zest, salt, and sugar.",
+      "She uses twice as much oil as salt, so she uses 2 * 2Z = 4Z oil.",
+      "In all, she uses 6Z + 4Z = 10Z = 283.5 grams of fragrance, zest, salt, sugar, and oil.",
+      "Thus, she uses Z = 283.5 / 10 = 28.35 grams of zest.",
+      "Thus, Tanya uses 4Z = 113.4 grams of oil.",
+      "#### 113.4"
+    ],
+    "final_scalar": 113.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha makes a salt scrub from salt, oil, fragrance, citrus zest, and sugar. She makes enough to fill a 283.5-gram jar each time. She uses the same amount of citrus zest as fragrance and the same amount of salt as sugar. She uses twice as much oil as salt and twice as much salt as zest. How many grams of oil does she use?",
+    "adapted_answer": [
+      "Let Z be the grams of zest Ayesha uses.",
+      "Ayesha uses the same amount of fragrance as zest, so she uses Z + Z = 2Z fragrance and zest.",
+      "She uses twice as much salt as zest, so she uses 2Z salt.",
+      "She uses the same amount of sugar as salt, so she uses 2Z + 2Z + 2Z = 6Z fragrance, zest, salt, and sugar.",
+      "She uses twice as much oil as salt, so she uses 2 * 2Z = 4Z oil.",
+      "In all, she uses 6Z + 4Z = 10Z = 283.5 grams of fragrance, zest, salt, sugar, and oil.",
+      "Thus, she uses Z = 283.5 / 10 = 28.35 grams of zest.",
+      "Thus, Ayesha uses 4Z = 113.4 grams of oil.",
+      "#### 113.4"
+    ],
+    "adaptation_notes": "Replaced the name 'Tanya' with 'Ayesha' to give it a Pakistani context."
+  }
+}

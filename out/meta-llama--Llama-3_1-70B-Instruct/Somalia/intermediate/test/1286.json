@@ -1,0 +1,132 @@
+{
+  "index": 1286,
+  "split": "test",
+  "original": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in cents does James have?",
+    "answer": "First figure out how much the nickels are worth: 2 * 5 cents = <<2*5=10>>10 cents\nThen figure out how much the dimes are worth: 7 * 10 cents = <<7*10=70>>70 cents\nFinally, add the value of the nickels, dimes and quarter: 25 cents + 10 cents + 70 cents = <<25+10+70=105>>105 cents\n#### 105"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "quarter",
+      "nickels",
+      "dimes",
+      "cents"
+    ],
+    "notes": "The question contains culturally specific entities such as a Western name (James) and US currency units (quarter, nickels, dimes, cents)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 25.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "nickel_value",
+      "value": 5.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "dime_value",
+      "value": 10.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "total_value",
+      "value": 105.0,
+      "unit": "cent",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"cent\": {\"to\": \"shilling\", \"rate\": 1 / 569.38},\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 1},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"quarter_value\", \"value\": 25.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"nickel_value\", \"value\": 5.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"dime_value\", \"value\": 10.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"total_value\", \"value\": 105.0, \"unit\": \"cent\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 25.0,
+        "original_unit": "cent",
+        "converted_value": 0.04,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "nickel_value",
+        "original_value": 5.0,
+        "original_unit": "cent",
+        "converted_value": 0.01,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "dime_value",
+        "original_value": 10.0,
+        "original_unit": "cent",
+        "converted_value": 0.02,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_value",
+        "original_value": 105.0,
+        "original_unit": "cent",
+        "converted_value": 0.18,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in cents does James have?",
+    "templatized_answer": [
+      "First figure out how much the nickels are worth: 2 * {nickel_value} cents = {2*nickel_value} cents",
+      "Then figure out how much the dimes are worth: 7 * {dime_value} cents = {7*dime_value} cents",
+      "Finally, add the value of the nickels, dimes and quarter: {quarter_value} cents + {2*nickel_value} cents + {7*dime_value} cents = {quarter_value+2*nickel_value+7*dime_value} cents",
+      "#### {quarter_value+2*nickel_value+7*dime_value}"
+    ],
+    "factual_assignment": {
+      "quarter_value": 25,
+      "nickel_value": 5,
+      "dime_value": 10
+    }
+  },
+  "merged_assignment": {
+    "quarter_value": 0.04,
+    "nickel_value": 0.01,
+    "dime_value": 0.02
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    quarter_value = 0.04\n    nickel_value = 0.01\n    dime_value = 0.02\n\n    two_nickel_value = 2 * nickel_value\n    seven_dime_value = 7 * dime_value\n    total_value = quarter_value + two_nickel_value + seven_dime_value\n\n    return {\n        \"quarter_value\": round(quarter_value, 2),\n        \"nickel_value\": round(nickel_value, 2),\n        \"dime_value\": round(dime_value, 2),\n        \"2*nickel_value\": round(two_nickel_value, 2),\n        \"7*dime_value\": round(seven_dime_value, 2),\n        \"quarter_value+2*nickel_value+7*dime_value\": round(total_value, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "quarter_value": 0.04,
+      "nickel_value": 0.01,
+      "dime_value": 0.02,
+      "2*nickel_value": 0.02,
+      "7*dime_value": 0.14,
+      "quarter_value+2*nickel_value+7*dime_value": 0.2
+    }
+  },
+  "final": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in shillings does James have?",
+    "answer_lines": [
+      "First figure out how much the nickels are worth: 2 * 0.01 shillings = 0.02 shillings",
+      "Then figure out how much the dimes are worth: 7 * 0.02 shillings = 0.14 shillings",
+      "Finally, add the value of the nickels, dimes and quarter: 0.04 shillings + 0.02 shillings + 0.14 shillings = 0.2 shillings",
+      "#### 0.2"
+    ],
+    "final_scalar": 0.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Axmed likes to check the coin return of the vending machine for change. One day he finds a roob, two shilin, and 7 toon. How much money in shillings does Axmed have?",
+    "adapted_answer": [
+      "First figure out how much the shilin are worth: 2 * 0.01 shillings = 0.02 shillings",
+      "Then figure out how much the toon are worth: 7 * 0.02 shillings = 0.14 shillings",
+      "Finally, add the value of the shilin, toon and roob: 0.04 shillings + 0.02 shillings + 0.14 shillings = 0.2 shillings",
+      "#### 0.2"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Axmed', 'quarter' with 'roob', 'nickels' with 'shilin', and 'dimes' with 'toon' to provide a Somali context."
+  }
+}

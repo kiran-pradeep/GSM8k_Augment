@@ -1,0 +1,127 @@
+{
+  "index": 489,
+  "split": "test",
+  "original": {
+    "question": "The highest temperature ever recorded in Southlandia is -48 degrees Fahrenheit. The highest temperature ever recorded in Northlandia is 21 degrees Fahrenheit. The highest temperature recorded in Midlandia is -3 degrees Fahrenheit. What is the average highest temperature of these 3 countries?",
+    "answer": "-48 + 21 + (-3) = <<-48+21+(-3)=-30>>-30\n-30/3 = <<-30/3=-10>>-10 degrees\nThe average highest temperature recorded in Southlandia, Northlandia, and Midlandia is -10 degrees Fahrenheit.\n#### -10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Fahrenheit"
+    ],
+    "notes": "Temperature unit is specific to the United States and a few other countries, not commonly used in Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "southlandia_temp",
+      "value": -48.0,
+      "unit": "degrees_fahrenheit",
+      "context": "question"
+    },
+    {
+      "variable": "northlandia_temp",
+      "value": 21.0,
+      "unit": "degrees_fahrenheit",
+      "context": "question"
+    },
+    {
+      "variable": "midlandia_temp",
+      "value": -3.0,
+      "unit": "degrees_fahrenheit",
+      "context": "question"
+    },
+    {
+      "variable": "average_temp",
+      "value": -10.0,
+      "unit": "degrees_fahrenheit",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"degrees_fahrenheit\": {\"unit\": \"degrees_celsius\", \"conversion\": lambda x: (x - 32) * 5/9},\n        \"dollars\": {\"unit\": \"gourde\", \"conversion\": lambda x: x * 130.81},\n        \"pounds\": {\"unit\": \"kilograms\", \"conversion\": lambda x: x * 0.453592},\n        \"ounces\": {\"unit\": \"grams\", \"conversion\": lambda x: x * 28.3495},\n        \"miles\": {\"unit\": \"kilometers\", \"conversion\": lambda x: x * 1.60934},\n        \"feet\": {\"unit\": \"meters\", \"conversion\": lambda x: x * 0.3048},\n        \"gallons\": {\"unit\": \"liters\", \"conversion\": lambda x: x * 3.78541},\n        \"cups\": {\"unit\": \"milliliters\", \"conversion\": lambda x: x * 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = conversions[metric[\"unit\"]][\"conversion\"](metric[\"value\"])\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": round(converted_value, 2),\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"southlandia_temp\",\n    \"value\": -48.0,\n    \"unit\": \"degrees_fahrenheit\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"northlandia_temp\",\n    \"value\": 21.0,\n    \"unit\": \"degrees_fahrenheit\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"midlandia_temp\",\n    \"value\": -3.0,\n    \"unit\": \"degrees_fahrenheit\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"average_temp\",\n    \"value\": -10.0,\n    \"unit\": \"degrees_fahrenheit\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "southlandia_temp",
+        "original_value": -48.0,
+        "original_unit": "degrees_fahrenheit",
+        "converted_value": -44.44,
+        "converted_unit": "degrees_celsius"
+      },
+      {
+        "variable": "northlandia_temp",
+        "original_value": 21.0,
+        "original_unit": "degrees_fahrenheit",
+        "converted_value": -6.11,
+        "converted_unit": "degrees_celsius"
+      },
+      {
+        "variable": "midlandia_temp",
+        "original_value": -3.0,
+        "original_unit": "degrees_fahrenheit",
+        "converted_value": -19.44,
+        "converted_unit": "degrees_celsius"
+      },
+      {
+        "variable": "average_temp",
+        "original_value": -10.0,
+        "original_unit": "degrees_fahrenheit",
+        "converted_value": -23.33,
+        "converted_unit": "degrees_celsius"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The highest temperature ever recorded in Southlandia is {southlandia_temp} degrees Fahrenheit. The highest temperature ever recorded in Northlandia is {northlandia_temp} degrees Fahrenheit. The highest temperature recorded in Midlandia is {midlandia_temp} degrees Fahrenheit. What is the average highest temperature of these 3 countries?",
+    "templatized_answer": [
+      "{southlandia_temp} + {northlandia_temp} + ({midlandia_temp}) = {southlandia_temp} + {northlandia_temp} + {midlandia_temp}",
+      "{southlandia_temp} + {northlandia_temp} + {midlandia_temp} / 3 = ({southlandia_temp} + {northlandia_temp} + {midlandia_temp}) / 3",
+      "The average highest temperature recorded in Southlandia, Northlandia, and Midlandia is ({southlandia_temp} + {northlandia_temp} + {midlandia_temp}) / 3 degrees Fahrenheit.",
+      "#### ({southlandia_temp} + {northlandia_temp} + {midlandia_temp}) / 3"
+    ],
+    "factual_assignment": {
+      "southlandia_temp": -48.0,
+      "northlandia_temp": 21.0,
+      "midlandia_temp": -3.0
+    }
+  },
+  "merged_assignment": {
+    "southlandia_temp": -44.44,
+    "northlandia_temp": -6.11,
+    "midlandia_temp": -19.44
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    southlandia_temp = -44.44\n    northlandia_temp = -6.11\n    midlandia_temp = -19.44\n\n    sum_temps = southlandia_temp + northlandia_temp + midlandia_temp\n    avg_temp = sum_temps / 3\n\n    return {\n        \"{southlandia_temp}\": southlandia_temp,\n        \"{northlandia_temp}\": northlandia_temp,\n        \"{midlandia_temp}\": midlandia_temp,\n        \"{southlandia_temp} + {northlandia_temp} + {midlandia_temp}\": sum_temps,\n        \"({southlandia_temp} + {northlandia_temp} + {midlandia_temp}) / 3\": round(avg_temp, 2),\n        \"({southlandia_temp} + {northlandia_temp} + {midlandia_temp})\": sum_temps,\n    }\n\nprint(recompute())\n",
+    "results": {
+      "{southlandia_temp}": -44.44,
+      "{northlandia_temp}": -6.11,
+      "{midlandia_temp}": -19.44,
+      "{southlandia_temp} + {northlandia_temp} + {midlandia_temp}": -69.99,
+      "({southlandia_temp} + {northlandia_temp} + {midlandia_temp}) / 3": -23.33,
+      "({southlandia_temp} + {northlandia_temp} + {midlandia_temp})": -69.99
+    }
+  },
+  "final": {
+    "question": "The highest temperature ever recorded in Southlandia is -44.44 degrees Celsius. The highest temperature ever recorded in Northlandia is -6.11 degrees Celsius. The highest temperature recorded in Midlandia is -19.44 degrees Celsius. What is the average highest temperature of these 3 countries?",
+    "answer_lines": [
+      "-44.44 + (-6.11) + (-19.44) = -69.99",
+      "-69.99 / 3 = -23.33 degrees Celsius",
+      "The average highest temperature recorded in Southlandia, Northlandia, and Midlandia is -23.33 degrees Celsius.",
+      "#### -23.33"
+    ],
+    "final_scalar": -23.33,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The highest temperature ever recorded in Jacmel is -44.44 degrees Celsius. The highest temperature ever recorded in Cap-Haïten is -6.11 degrees Celsius. The highest temperature recorded in Les Cayes is -19.44 degrees Celsius. What is the average highest temperature of these 3 cities?",
+    "adapted_answer": [
+      "-44.44 + (-6.11) + (-19.44) = -69.99",
+      "-69.99 / 3 = -23.33 degrees Celsius",
+      "The average highest temperature recorded in Jacmel, Cap-Haïten, and Les Cayes is -23.33 degrees Celsius."
+    ],
+    "adaptation_notes": "Replaced Southlandia with Jacmel, Northlandia with Cap-Haïten, and Midlandia with Les Cayes to provide Haitian context."
+  }
+}

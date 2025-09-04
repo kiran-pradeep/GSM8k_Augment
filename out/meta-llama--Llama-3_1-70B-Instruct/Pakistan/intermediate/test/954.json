@@ -1,0 +1,90 @@
+{
+  "index": 954,
+  "split": "test",
+  "original": {
+    "question": "Jonathan has 2/3 as many measuring spoons as measuring cups. If he has two dozen cups and gifts Pedro 6 measuring spoons for his birthday, calculate the total number of utensils Jonathan has remaining.",
+    "answer": "A dozen measuring cups are 12, and if Jonathan has two dozens, he has 2*12 = 24 cups.\nJonathan has 2/3 as many measuring spoons as measuring cups, so he has 2/3*24 = <<2/3*24=16>>16 measuring spoons.\nWhen he gifts Pedro 6 measuring spoons, he remains with 16-6 = <<16-6=10>>10 measuring spoons.\nHe now has a total of 10 measuring spoons + 24 measuring cups = <<10+24=34>>34 utensils\n#### 34"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jonathan",
+      "Pedro"
+    ],
+    "notes": "Names Jonathan and Pedro are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 281.85, 'unit': 'rupee'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Jonathan has {fraction_of_spoons_to_cups} as many measuring spoons as measuring cups. If he has {number_of_cups} cups and gifts Pedro {number_of_spoons_gifted} measuring spoons for his birthday, calculate the total number of utensils Jonathan has remaining.",
+    "templatized_answer": [
+      "A dozen measuring cups are {number_of_cups_per_dozen}, and if Jonathan has {number_of_dozen_cups} dozens, he has {number_of_dozen_cups}*{number_of_cups_per_dozen} = {number_of_cups} cups.",
+      "Jonathan has {fraction_of_spoons_to_cups} as many measuring spoons as measuring cups, so he has {fraction_of_spoons_to_cups}*{number_of_cups} = {initial_number_of_spoons} measuring spoons.",
+      "When he gifts Pedro {number_of_spoons_gifted} measuring spoons, he remains with {initial_number_of_spoons}-{number_of_spoons_gifted} = {remaining_number_of_spoons} measuring spoons.",
+      "He now has a total of {remaining_number_of_spoons} measuring spoons + {number_of_cups} measuring cups = {total_number_of_utensils} utensils",
+      "#### {total_number_of_utensils}"
+    ],
+    "factual_assignment": {
+      "fraction_of_spoons_to_cups": "2/3",
+      "number_of_cups": "24",
+      "number_of_spoons_gifted": "6",
+      "number_of_cups_per_dozen": "12",
+      "number_of_dozen_cups": "2",
+      "initial_number_of_spoons": "16",
+      "remaining_number_of_spoons": "10",
+      "total_number_of_utensils": "34"
+    }
+  },
+  "merged_assignment": {
+    "fraction_of_spoons_to_cups": "2/3",
+    "number_of_cups": "24",
+    "number_of_spoons_gifted": "6",
+    "number_of_cups_per_dozen": "12",
+    "number_of_dozen_cups": "2",
+    "initial_number_of_spoons": "16",
+    "remaining_number_of_spoons": "10",
+    "total_number_of_utensils": "34"
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    number_of_cups = 24\n    number_of_spoons_gifted = 6\n    number_of_cups_per_dozen = 12\n    number_of_dozen_cups = 2\n\n    # Recompute number_of_cups\n    number_of_cups = number_of_dozen_cups * number_of_cups_per_dozen\n\n    # Recompute fraction_of_spoons_to_cups\n    initial_number_of_spoons = 16\n    fraction_of_spoons_to_cups = initial_number_of_spoons / number_of_cups\n\n    # Recompute initial_number_of_spoons\n    initial_number_of_spoons = fraction_of_spoons_to_cups * number_of_cups\n\n    # Recompute remaining_number_of_spoons\n    remaining_number_of_spoons = initial_number_of_spoons - number_of_spoons_gifted\n\n    # Recompute total_number_of_utensils\n    total_number_of_utensils = remaining_number_of_spoons + number_of_cups\n\n    # Round to 2 decimal places where appropriate\n    fraction_of_spoons_to_cups = round(fraction_of_spoons_to_cups, 2)\n    initial_number_of_spoons = round(initial_number_of_spoons, 2)\n    remaining_number_of_spoons = round(remaining_number_of_spoons, 2)\n    total_number_of_utensils = round(total_number_of_utensils, 2)\n\n    return {\n        \"fraction_of_spoons_to_cups\": fraction_of_spoons_to_cups,\n        \"number_of_cups\": number_of_cups,\n        \"number_of_spoons_gifted\": number_of_spoons_gifted,\n        \"number_of_cups_per_dozen\": number_of_cups_per_dozen,\n        \"number_of_dozen_cups\": number_of_dozen_cups,\n        \"initial_number_of_spoons\": initial_number_of_spoons,\n        \"remaining_number_of_spoons\": remaining_number_of_spoons,\n        \"total_number_of_utensils\": total_number_of_utensils\n    }\n\nprint(recompute())\n",
+    "results": {
+      "fraction_of_spoons_to_cups": 0.67,
+      "number_of_cups": 24,
+      "number_of_spoons_gifted": 6,
+      "number_of_cups_per_dozen": 12,
+      "number_of_dozen_cups": 2,
+      "initial_number_of_spoons": 16.0,
+      "remaining_number_of_spoons": 10.0,
+      "total_number_of_utensils": 34.0
+    }
+  },
+  "final": {
+    "question": "Jonathan has 0.67 as many measuring spoons as measuring cups. If he has 24 cups and gifts Pedro 6 measuring spoons for his birthday, calculate the total number of utensils Jonathan has remaining.",
+    "answer_lines": [
+      "A dozen measuring cups are 12, and if Jonathan has 2 dozens, he has 2*12 = 24 cups.",
+      "Jonathan has 0.67 as many measuring spoons as measuring cups, so he has 0.67*24 = 16 measuring spoons.",
+      "When he gifts Pedro 6 measuring spoons, he remains with 16-6 = 10 measuring spoons.",
+      "He now has a total of 10 measuring spoons + 24 measuring cups = 34 utensils",
+      "#### 34"
+    ],
+    "final_scalar": 34.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran has 0.67 as many measuring spoons as measuring cups. If he has 24 cups and gifts Fahad 6 measuring spoons for his birthday, calculate the total number of utensils Kamran has remaining.",
+    "adapted_answer": [
+      "A dozen measuring cups are 12, and if Kamran has 2 dozens, he has 2*12 = 24 cups.",
+      "Kamran has 0.67 as many measuring spoons as measuring cups, so he has 0.67*24 = 16 measuring spoons.",
+      "When he gifts Fahad 6 measuring spoons, he remains with 16-6 = 10 measuring spoons.",
+      "He now has a total of 10 measuring spoons + 24 measuring cups = 34 utensils",
+      "#### 34"
+    ],
+    "adaptation_notes": "Replaced 'Jonathan' with 'Kamran' and 'Pedro' with 'Fahad' to give the text a Pakistani context."
+  }
+}

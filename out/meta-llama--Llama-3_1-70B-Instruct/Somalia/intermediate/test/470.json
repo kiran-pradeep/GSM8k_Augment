@@ -1,0 +1,141 @@
+{
+  "index": 470,
+  "split": "test",
+  "original": {
+    "question": "Theo bought a pen for $2 and a piece of paper that cost $1 less than three times the price of the pen. She gave the cashier $10. What is the amount of change Theo received?",
+    "answer": "Three times the cost of pen is $2 x 3 = $<<2*3=6>>6.\nThe cost of paper is $6 - $1 = $<<6-1=5>>5.\nThe total cost for the pen and paper is $2 + $5 = $<<2+5=7>>7.\nTheo received $10 - $7 = $<<10-7=3>>3 change.\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pen_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "paper_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cash_given",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change_received",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pen_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"paper_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cash_given\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change_received\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pen_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 1138.76,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "paper_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 3985.66,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cash_given",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 5693.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "change_received",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 1708.14,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Theo bought a pen for ${pen_cost} and a piece of paper that cost ${pen_cost} less than three times the price of the pen. She gave the cashier ${cash_given}. What is the amount of change Theo received?",
+    "templatized_answer": [
+      "Three times the cost of pen is ${pen_cost} x 3 = ${3*pen_cost}.",
+      "The cost of paper is ${3*pen_cost} - ${pen_cost} = ${2*pen_cost}.",
+      "The total cost for the pen and paper is ${pen_cost} + ${2*pen_cost} = ${3*pen_cost}.",
+      "Theo received ${cash_given} - ${3*pen_cost} = ${cash_given - 3*pen_cost} change.",
+      "#### {cash_given - 3*pen_cost}"
+    ],
+    "factual_assignment": {
+      "pen_cost": 2,
+      "cash_given": 10
+    }
+  },
+  "merged_assignment": {
+    "pen_cost": 1138.76,
+    "cash_given": 5693.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pen_cost = 1138.76\n    cash_given = 5693.8\n\n    three_times_pen_cost = pen_cost * 3\n    paper_cost = three_times_pen_cost - pen_cost\n    total_cost = pen_cost + paper_cost\n    change = cash_given - total_cost\n\n    return {\n        \"pen_cost\": round(pen_cost, 2),\n        \"3*pen_cost\": round(three_times_pen_cost, 2),\n        \"2*pen_cost\": round(paper_cost, 2),\n        \"cash_given\": round(cash_given, 2),\n        \"cash_given - 3*pen_cost\": round(change, 2)\n    }\n",
+    "results": {
+      "pen_cost": 1138.76,
+      "3*pen_cost": 3416.28,
+      "2*pen_cost": 2277.52,
+      "cash_given": 5693.8,
+      "cash_given - 3*pen_cost": 2277.52
+    }
+  },
+  "final": {
+    "question": "Theo bought a pen for 1138.76 shilling and a piece of paper that cost 1138.76 shilling less than three times the price of the pen. She gave the cashier 5693.8 shilling. What is the amount of change Theo received?",
+    "answer_lines": [
+      "Three times the cost of pen is 1138.76 x 3 = 3416.28.",
+      "The cost of paper is 3416.28 - 1138.76 = 2277.52.",
+      "The total cost for the pen and paper is 1138.76 + 2277.52 = 3416.28.",
+      "Theo received 5693.8 - 3416.28 = 2277.52 change.",
+      "#### 2277.52"
+    ],
+    "final_scalar": 2277.52,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cali baxsaday qalin ka 1138.76 shilling iyo warqad ka 1138.76 shilling ka yar saddex jeer qiimaha qalinka. Waxay siisay kasshinka 5693.8 shilling. Maxay tahay kala saraha ee Cali heshay?",
+    "adapted_answer": [
+      "Saddex jeer qiimaha qalinka waa 1138.76 x 3 = 3416.28.",
+      "Qiimaha warqada waa 3416.28 - 1138.76 = 2277.52.",
+      "Qiimaha guud ee qalinka iyo warqada waa 1138.76 + 2277.52 = 3416.28.",
+      "Cali waxay heshay 5693.8 - 3416.28 = 2277.52 kala sar.",
+      "#### 2277.52"
+    ],
+    "adaptation_notes": "Replaced 'Theo' with 'Cali' (a Somali name), 'pen' with 'qalin', and 'paper' with 'warqad'."
+  }
+}

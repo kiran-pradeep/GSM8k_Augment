@@ -1,0 +1,166 @@
+{
+  "index": 1042,
+  "split": "test",
+  "original": {
+    "question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost $5. On the second race, he won $1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "answer": "On the second race he won $11 because 1+ 5 x 2 = <<1+5*2=11>>11\nOn the third race he lost $15 because 10 x 1.5 = <<10*1.5=15>>15\nHe lost a total of $20 on the first and third races because 15 + 5 = <<15+5=20>>20\n\nHe lost $9 that day because 11 - 20 = <<11-20=-9>>-9\nHe lost an average of $3 per race because 9 / 3 = <<9/3=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The use of dollars as a unit of currency is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_race_loss",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_race_win",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "third_race_loss",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_loss",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_net_loss",
+      "value": 9,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "average_loss",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_race_loss\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_race_win\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"third_race_loss\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_loss\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_net_loss\", \"value\": 9, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"average_loss\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_race_loss",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "second_race_win",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 182.82,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "third_race_loss",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 249.3,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_loss",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_net_loss",
+        "original_value": 9,
+        "original_unit": "dollar",
+        "converted_value": 149.58,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "average_loss",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost ${first_race_loss}. On the second race, he won $1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "templatized_answer": [
+      "On the second race he won ${second_race_win} because 1+ {first_race_loss} x 2 = {second_race_win}",
+      "On the third race he lost ${third_race_loss} because {second_race_win} x 1.5 = {third_race_loss}",
+      "He lost a total of ${total_loss} on the first and third races because {third_race_loss} + {first_race_loss} = {total_loss}",
+      "He lost ${total_net_loss} that day because {second_race_win} - {total_loss} = {total_net_loss}",
+      "He lost an average of ${average_loss} per race because {total_net_loss} / 3 = {average_loss}",
+      "#### {average_loss}"
+    ],
+    "factual_assignment": {
+      "first_race_loss": 5,
+      "second_race_win": 11,
+      "third_race_loss": 15,
+      "total_loss": 20,
+      "total_net_loss": 9,
+      "average_loss": 3
+    }
+  },
+  "merged_assignment": {
+    "first_race_loss": 83.1,
+    "second_race_win": 182.82,
+    "third_race_loss": 249.3,
+    "total_loss": 332.4,
+    "total_net_loss": 149.58,
+    "average_loss": 49.86
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_race_loss = 83.1\n    second_race_win = 1 + 2 * first_race_loss\n    third_race_loss = 1.5 * second_race_win\n    total_loss = third_race_loss + first_race_loss\n    total_net_loss = second_race_win - total_loss\n    average_loss = total_net_loss / 3\n\n    return {\n        \"first_race_loss\": first_race_loss,\n        \"second_race_win\": round(second_race_win, 2),\n        \"third_race_loss\": round(third_race_loss, 2),\n        \"total_loss\": round(total_loss, 2),\n        \"total_net_loss\": round(total_net_loss, 2),\n        \"average_loss\": round(average_loss, 2)\n    }\n",
+    "results": {
+      "first_race_loss": 83.1,
+      "second_race_win": 167.2,
+      "third_race_loss": 250.8,
+      "total_loss": 333.9,
+      "total_net_loss": -166.7,
+      "average_loss": -55.57
+    }
+  },
+  "final": {
+    "question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost 83.1 leu. On the second race, he won 1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "answer_lines": [
+      "On the second race he won 167.2 leu because 1+ 83.1 x 2 = 167.2",
+      "On the third race he lost 250.8 leu because 167.2 x 1.5 = 250.8",
+      "He lost a total of 333.9 leu on the first and third races because 250.8 + 83.1 = 333.9",
+      "He lost -166.7 leu that day because 167.2 - 333.9 = -166.7",
+      "He lost an average of -55.57 leu per race because -166.7 / 3 = -55.57",
+      "#### -55.57"
+    ],
+    "final_scalar": -55.57,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost 83.1 lei. On the second race, he won 1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "adapted_answer": [
+      "On the second race he won 167.2 lei because 1+ 83.1 x 2 = 167.2",
+      "On the third race he lost 250.8 lei because 167.2 x 1.5 = 250.8",
+      "He lost a total of 333.9 lei on the first and third races because 250.8 + 83.1 = 333.9",
+      "He lost -166.7 lei that day because 167.2 - 333.9 = -166.7",
+      "He lost an average of -55.57 lei per race because -166.7 / 3 = -55.57",
+      "#### -55.57"
+    ],
+    "adaptation_notes": "Replaced 'Johnny' with 'Ion' and 'leu' with 'lei' to better fit the Moldovan context."
+  }
+}

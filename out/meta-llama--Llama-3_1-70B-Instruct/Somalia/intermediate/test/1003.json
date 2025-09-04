@@ -1,0 +1,157 @@
+{
+  "index": 1003,
+  "split": "test",
+  "original": {
+    "question": "A dance studio offers lessons to students. It costs $25 per session to rent the studio plus $1.50 per student per session. At present, the dance studio has 10 students and is rented 3 days a week. How much are the expected earnings of the dance studio in a month?",
+    "answer": "The total earnings from 10 students is $1.50 x 10 = $<<1.50*10=15>>15 per session.\nSo the total earnings per session is $15 + $25 = $<<15+25=40>>40.\nThus, every week the dance studio earns $40 x 3 = $<<40*3=120>>120.\nTherefore, it will earn $120 x 4 = $<<120*4=480>>480 in a month.\n#### 480"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "rent_cost",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "student_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings_per_session",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 480.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"rent_cost\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"student_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings_per_session\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_earnings\", \"value\": 480.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "rent_cost",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 14234.5,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "student_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 854.07,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_earnings_per_session",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 22775.2,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 68325.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 480.0,
+        "original_unit": "dollar",
+        "converted_value": 273302.4,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A dance studio offers lessons to students. It costs ${rent_cost} per session to rent the studio plus ${student_cost} per student per session. At present, the dance studio has {number_of_students} students and is rented {days_rented_per_week} days a week. How much are the expected earnings of the dance studio in a month?",
+    "templatized_answer": [
+      "The total earnings from {number_of_students} students is ${student_cost} x {number_of_students} = ${student_cost * number_of_students} per session.",
+      "So the total earnings per session is ${student_cost * number_of_students} + ${rent_cost} = ${total_earnings_per_session}.",
+      "Thus, every week the dance studio earns ${total_earnings_per_session} x {days_rented_per_week} = ${weekly_earnings}.",
+      "Therefore, it will earn ${weekly_earnings} x {weeks_in_month} = ${monthly_earnings}.",
+      "#### {monthly_earnings}"
+    ],
+    "factual_assignment": {
+      "rent_cost": 25.0,
+      "student_cost": 1.5,
+      "total_earnings_per_session": 40.0,
+      "weekly_earnings": 120.0,
+      "monthly_earnings": 480.0,
+      "number_of_students": 10,
+      "days_rented_per_week": 3,
+      "weeks_in_month": 4
+    }
+  },
+  "merged_assignment": {
+    "rent_cost": 14234.5,
+    "student_cost": 854.07,
+    "total_earnings_per_session": 22775.2,
+    "weekly_earnings": 68325.6,
+    "monthly_earnings": 273302.4,
+    "number_of_students": 10,
+    "days_rented_per_week": 3,
+    "weeks_in_month": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    rent_cost = 14234.5\n    student_cost = 854.07\n    number_of_students = 10\n    days_rented_per_week = 3\n    weeks_in_month = 4\n\n    total_earnings_per_session_from_students = student_cost * number_of_students\n    total_earnings_per_session = total_earnings_per_session_from_students + rent_cost\n    weekly_earnings = total_earnings_per_session * days_rented_per_week\n    monthly_earnings = weekly_earnings * weeks_in_month\n\n    return {\n        \"rent_cost\": round(rent_cost, 2),\n        \"student_cost\": round(student_cost, 2),\n        \"total_earnings_per_session_from_students\": round(total_earnings_per_session_from_students, 2),\n        \"total_earnings_per_session\": round(total_earnings_per_session, 2),\n        \"weekly_earnings\": round(weekly_earnings, 2),\n        \"monthly_earnings\": round(monthly_earnings, 2),\n        \"number_of_students\": number_of_students,\n        \"days_rented_per_week\": days_rented_per_week,\n        \"weeks_in_month\": weeks_in_month\n    }\n\nprint(recompute())\n",
+    "results": {
+      "rent_cost": 14234.5,
+      "student_cost": 854.07,
+      "total_earnings_per_session_from_students": 8540.7,
+      "total_earnings_per_session": 22775.2,
+      "weekly_earnings": 68325.6,
+      "monthly_earnings": 273302.4,
+      "number_of_students": 10,
+      "days_rented_per_week": 3,
+      "weeks_in_month": 4
+    }
+  },
+  "final": {
+    "question": "A dance studio offers lessons to students. It costs 14234.5 shilling per session to rent the studio plus 854.07 shilling per student per session. At present, the dance studio has 10 students and is rented 3 days a week. How much are the expected earnings of the dance studio in a month?",
+    "answer_lines": [
+      "The total earnings from 10 students is 854.07 x 10 = 8540.7 shilling per session.",
+      "So the total earnings per session is 8540.7 + 14234.5 = 22775.2 shilling.",
+      "Thus, every week the dance studio earns 22775.2 x 3 = 68325.6 shilling.",
+      "Therefore, it will earn 68325.6 x 4 = 273302.4 shilling.",
+      "#### 273302.4"
+    ],
+    "final_scalar": 273302.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A dance studio in Mogadishu offers lessons to students. It costs 14234.5 shilling per session to rent the studio plus 854.07 shilling per student per session. At present, the dance studio has 10 students and is rented 3 days a week. How much are the expected earnings of the dance studio in a month?",
+    "adapted_answer": [
+      "The total earnings from 10 students is 854.07 x 10 = 8540.7 shilling per session.",
+      "So the total earnings per session is 8540.7 + 14234.5 = 22775.2 shilling.",
+      "Thus, every week the dance studio earns 22775.2 x 3 = 68325.6 shilling.",
+      "Therefore, it will earn 68325.6 x 4 = 273302.4 shilling.",
+      "#### 273302.4"
+    ],
+    "adaptation_notes": "Replaced 'dance studio' with 'dance studio in Mogadishu' to give it a Somali context."
+  }
+}

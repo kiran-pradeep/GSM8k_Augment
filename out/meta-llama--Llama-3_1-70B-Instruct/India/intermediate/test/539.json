@@ -1,0 +1,105 @@
+{
+  "index": 539,
+  "split": "test",
+  "original": {
+    "question": "My wife wants to evenly split the check but wants me to pay an additional 20% tip on our $50 dinner bill. How much did I end up paying?",
+    "answer": "If the total bill is $50, the total tip of 20% would be $50*20% = $<<50*20*.01=10>>10\nSimilarly, if the bill was $50 an even split (1/2) would be $50 * 1/2 = $<<50*1/2=25>>25 to be paid by each person\nThat means I paid $25 for the bill + $10 for the tip = $<<25+10=35>>35\n#### 35"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "dinner bill"
+    ],
+    "notes": "The text contains a unit of currency (dollars) and a food item (dinner bill) that are not specific to India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "dinner_bill",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tip_amount",
+      "value": 10,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "split_bill",
+      "value": 25,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_paid",
+      "value": 35,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"dinner_bill\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tip_amount\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"split_bill\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_paid\", \"value\": 35, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "dinner_bill",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 4350,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "tip_amount",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 870,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "split_bill",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 2175,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_paid",
+        "original_value": 35,
+        "original_unit": "dollar",
+        "converted_value": 3045,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "My wife wants to evenly split the check but wants me to pay an additional 20% tip on our ${dinner_bill} dinner bill. How much did I end up paying?",
+    "templatized_answer": [
+      "If the total bill is ${dinner_bill}, the total tip of 20% would be ${dinner_bill}*20% = ${dinner_bill}*20*.01 = ${tip_amount}",
+      "Similarly, if the bill was ${dinner_bill} an even split (1/2) would be ${dinner_bill} * 1/2 = ${split_bill} to be paid by each person",
+      "That means I paid ${split_bill} for the bill + ${tip_amount} for the tip = ${split_bill} + ${tip_amount} = ${total_paid}"
+    ],
+    "factual_assignment": {
+      "dinner_bill": 50,
+      "tip_amount": 10,
+      "split_bill": 25,
+      "total_paid": 35
+    }
+  },
+  "merged_assignment": {
+    "dinner_bill": 4350,
+    "tip_amount": 870,
+    "split_bill": 2175,
+    "total_paid": 3045
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    dinner_bill = 4350\n    tip_amount = dinner_bill * 0.20\n    split_bill = dinner_bill * 0.5\n    total_paid = split_bill + tip_amount\n\n    return {\n        \"dinner_bill\": dinner_bill,\n        \"tip_amount\": round(tip_amount, 2),\n        \"split_bill\": round(split_bill, 2),\n        \"total_paid\": round(total_paid, 2)\n    }\n",
+    "results": {
+      "dinner_bill": 4350,
+      "tip_amount": 870.0,
+      "split_bill": 2175.0,
+      "total_paid": 3045.0
+    }
+  },
+  "final": null
+}

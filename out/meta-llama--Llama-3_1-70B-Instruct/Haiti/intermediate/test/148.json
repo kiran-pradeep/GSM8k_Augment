@@ -1,0 +1,124 @@
+{
+  "index": 148,
+  "split": "test",
+  "original": {
+    "question": "Brittany and her mom go to the museum. The cost of admission is $12 for adults and $10 for children. Brittany's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received $8 in change, how much money, in dollars, did she give the cashier?",
+    "answer": "The total cost of the tickets is 12+10=<<12+10=22>>22 dollars.\nBrittany's mom gave the cashier 22+8=<<22+8=30>>30 dollars.\n#### 30"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in Haiti, where the Haitian gourde is the local currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "adult_ticket_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "child_ticket_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change_received",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cash_given",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"adult_ticket_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"child_ticket_cost\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change_received\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cash_given\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "adult_ticket_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 1569.72,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "child_ticket_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 1308.1,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "change_received",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 1046.48,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "cash_given",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 3924.3,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Brittany and her mom go to the museum. The cost of admission is ${adult_ticket_cost} for adults and ${child_ticket_cost} for children. Brittany's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received ${change_received} in change, how much money, in dollars, did she give the cashier?",
+    "templatized_answer": [
+      "The total cost of the tickets is {adult_ticket_cost}+{child_ticket_cost}={adult_ticket_cost}+{child_ticket_cost} dollars.",
+      "Brittany's mom gave the cashier {adult_ticket_cost}+{child_ticket_cost}+{change_received}={adult_ticket_cost}+{child_ticket_cost}+{change_received} dollars.",
+      "#### {adult_ticket_cost}+{child_ticket_cost}+{change_received}"
+    ],
+    "factual_assignment": {
+      "adult_ticket_cost": 12.0,
+      "child_ticket_cost": 10.0,
+      "change_received": 8.0
+    }
+  },
+  "merged_assignment": {
+    "adult_ticket_cost": 1569.72,
+    "child_ticket_cost": 1308.1,
+    "change_received": 1046.48
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    adult_ticket_cost = 1569.72\n    child_ticket_cost = 1308.1\n    change_received = 1046.48\n\n    total_cost = round(adult_ticket_cost + child_ticket_cost, 2)\n    amount_given = round(total_cost + change_received, 2)\n\n    return {\n        \"adult_ticket_cost\": adult_ticket_cost,\n        \"child_ticket_cost\": child_ticket_cost,\n        \"change_received\": change_received,\n        \"adult_ticket_cost+child_ticket_cost\": total_cost,\n        \"adult_ticket_cost+child_ticket_cost+change_received\": amount_given\n    }\n",
+    "results": {
+      "adult_ticket_cost": 1569.72,
+      "child_ticket_cost": 1308.1,
+      "change_received": 1046.48,
+      "adult_ticket_cost+child_ticket_cost": 2877.82,
+      "adult_ticket_cost+child_ticket_cost+change_received": 3924.3
+    }
+  },
+  "final": {
+    "question": "Brittany and her mom go to the museum. The cost of admission is 1569.72 gourde for adults and 1308.1 gourde for children. Brittany's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received 1046.48 gourde in change, how much money, in gourde, did she give the cashier?",
+    "answer_lines": [
+      "The total cost of the tickets is 1569.72+1308.1=2877.82 gourde.",
+      "Brittany's mom gave the cashier 2877.82+1046.48=3924.3 gourde.",
+      "#### 3924.3"
+    ],
+    "final_scalar": 3924.3,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine and her mom go to the Musée d'Art Haïtien. The cost of admission is 1569.72 gourde for adults and 1308.1 gourde for children. Nadine's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received 1046.48 gourde in change, how much money, in gourde, did she give the cashier?",
+    "adapted_answer": [
+      "The total cost of the tickets is 1569.72+1308.1=2877.82 gourde.",
+      "Nadine's mom gave the cashier 2877.82+1046.48=3924.3 gourde.",
+      "#### 3924.3"
+    ],
+    "adaptation_notes": "Replaced 'Brittany' with 'Nadine' and 'the museum' with 'the Musée d'Art Haïtien' to give the text a Haitian context."
+  }
+}

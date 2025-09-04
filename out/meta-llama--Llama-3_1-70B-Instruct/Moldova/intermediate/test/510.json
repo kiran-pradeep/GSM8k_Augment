@@ -1,0 +1,95 @@
+{
+  "index": 510,
+  "split": "test",
+  "original": {
+    "question": "For a New Year's resolution, Andy wants to lose 30 lbs. by his birthday, which is July 19th. Today is December 31st. If Andy needs to burn 3500 calories to lose a pound, how much of a calorie deficit (net amount of calories burned vs. calories consumed) does he need each day to reach his goal?",
+    "answer": "January, March, and May have 31 days, February has 28, and April and June have 30, and Andy's birthday is on the 19th day of July. So there are 3 * 31 days + 28 + 2 * 30 days + 19 days = 93 days + 28 + 60 days + 19 days = <<3*31+28+2*30+19=200>>200 days until Andy's birthday.\nHe wants to lose 30 lbs. At 3500 calories per pound, this is 30 * 3500 = <<30*3500=105000>>105,000 calories total,\nTo reach his goal, he will have to burn 105,000 calories / 200 days = <<105000/200=525>>525 calories per day more than he consumes.\n#### 525"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "New Year's",
+      "July",
+      "pounds",
+      "calories"
+    ],
+    "notes": "The text contains culturally specific entities such as New Year's, a widely celebrated holiday, and units like pounds and calories, which are commonly used in Western cultures."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weight_loss",
+      "value": 30.0,
+      "unit": "pound",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"leu\", 16.62),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"weight_loss\",\n        \"value\": 30.0,\n        \"unit\": \"pound\",\n        \"context\": \"question\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weight_loss",
+        "original_value": 30.0,
+        "original_unit": "pound",
+        "converted_value": 13.61,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "For a New Year's resolution, Andy wants to lose {weight_loss} lbs. by his birthday, which is July 19th. Today is December 31st. If Andy needs to burn {calories_per_pound} calories to lose a pound, how much of a calorie deficit (net amount of calories burned vs. calories consumed) does he need each day to reach his goal?",
+    "templatized_answer": [
+      "January, March, and May have 31 days, February has 28, and April and June have 30, and Andy's birthday is on the 19th day of July. So there are 3 * 31 days + 28 + 2 * 30 days + 19 days = {total_days} days until Andy's birthday.",
+      "He wants to lose {weight_loss} lbs. At {calories_per_pound} calories per pound, this is {weight_loss} * {calories_per_pound} = {total_calories} calories total,",
+      "To reach his goal, he will have to burn {total_calories} calories / {total_days} days = {daily_calorie_deficit} calories per day more than he consumes.",
+      "#### {daily_calorie_deficit}"
+    ],
+    "factual_assignment": {
+      "weight_loss": 30.0,
+      "calories_per_pound": 3500,
+      "total_days": 200,
+      "total_calories": 105000,
+      "daily_calorie_deficit": 525
+    }
+  },
+  "merged_assignment": {
+    "weight_loss": 13.61,
+    "calories_per_pound": 3500,
+    "total_days": 200,
+    "total_calories": 105000,
+    "daily_calorie_deficit": 525
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    weight_loss = 13.61  # in kg (already converted)\n    calories_per_pound = 3500  # in calories/lb (already converted)\n\n    # Recompute total days\n    january_days = 31\n    february_days = 28\n    march_days = 31\n    april_days = 30\n    may_days = 31\n    june_days = 30\n    july_days = 19\n    total_days = january_days + february_days + march_days + april_days + may_days + june_days + july_days\n\n    # Recompute total calories\n    total_calories = weight_loss * 2.20462 * calories_per_pound  # convert kg to lb\n\n    # Recompute daily calorie deficit\n    daily_calorie_deficit = total_calories / total_days\n\n    return {\n        \"weight_loss\": weight_loss,\n        \"calories_per_pound\": calories_per_pound,\n        \"total_days\": total_days,\n        \"total_calories\": round(total_calories, 2),\n        \"daily_calorie_deficit\": round(daily_calorie_deficit, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "weight_loss": 13.61,
+      "calories_per_pound": 3500,
+      "total_days": 200,
+      "total_calories": 105017.07,
+      "daily_calorie_deficit": 525.09
+    }
+  },
+  "final": {
+    "question": "For a New Year's resolution, Andy wants to lose 13.61 kilograms by his birthday, which is July 19th. Today is December 31st. If Andy needs to burn 3500 calories to lose a kilogram, how much of a calorie deficit (net amount of calories burned vs. calories consumed) does he need each day to reach his goal?",
+    "answer_lines": [
+      "January, March, and May have 31 days, February has 28, and April and June have 30, and Andy's birthday is on the 19th day of July. So there are 3 * 31 days + 28 + 2 * 30 days + 19 days = 200 days until Andy's birthday.",
+      "He wants to lose 13.61 kilograms. At 3500 calories per kilogram, this is 13.61 * 3500 = 47559.5 calories total,",
+      "To reach his goal, he will have to burn 105017.07 calories / 200 days = 525.09 calories per day more than he consumes.",
+      "#### 525.09"
+    ],
+    "final_scalar": 525.09,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "For a Anul Nou's resolution, Andy wants to lose 13.61 kilograms by his birthday, which is July 19th. Today is December 31st. If Andy needs to burn 3500 calories to lose a kilogram, how much of a calorie deficit (net amount of calories burned vs. calories consumed) does he need each day to reach his goal?",
+    "adapted_answer": [
+      "Ianuarie, Martie, and Mai have 31 days, Februarie has 28, and Aprilie and Iunie have 30, and Andy's birthday is on the 19th day of Iulie. So there are 3 * 31 days + 28 + 2 * 30 days + 19 days = 200 days until Andy's birthday.",
+      "He wants to lose 13.61 kilograms. At 3500 calories per kilogram, this is 13.61 * 3500 = 47559.5 calories total,",
+      "To reach his goal, he will have to burn 105017.07 calories / 200 days = 525.09 calories per day more than he consumes.",
+      "#### 525.09"
+    ],
+    "adaptation_notes": "Replaced 'New Year's' with 'Anul Nou', 'July' with 'Iulie', 'January' with 'Ianuarie', 'February' with 'Februarie', 'March' with 'Martie', 'April' with 'Aprilie', 'May' with 'Mai', and 'June' with 'Iunie' to provide Moldovan equivalents."
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "index": 926,
+  "split": "test",
+  "original": {
+    "question": "Colby loves going to the movies and every month his parents give him $150 to spend at the movies. Tickets for Fridays and Saturdays cost $10. Tickets for any other day cost $7. Popcorn costs $8 and boxes of candy cost $2. It is the last day of the month and it's a Friday. He wants to make sure he gets a popcorn and box of candy that night. How many movies can he see if he already saw 5 movies on a Friday or Saturday, 8 movies on other days, had 2 tubs of popcorn, and four boxes of candy that month?",
+    "answer": "He has spent $50 on Fri/Sat movies because 5 x 10 = <<50=50>>50\nHe has spent $56 on movies the rest of the day because 8 x 7 = <<8*7=56>>56\nHe has spent $16 on popcorn because 2 x 8 = <<16=16>>16\nHe has spent $8 on candy because 4 x 2 = <<4*2=8>>8\nHe has spent 130 in total because 50 + 56 + 16 + 8 = <<50+56+16+8=130>>130\nHe plans to spend $10 on popcorn and candy because 8 + 2 = <<8+2=10>>10\nHe has $10 left to spend because 150 - 130 - 10 = <<150-130-10=10>>10\nHe can see 1 movie because 10 / 10 = <<10/10=1>>1\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Colby",
+      "dollars",
+      "popcorn",
+      "candy",
+      "movies"
+    ],
+    "notes": "The text contains a Western name, US currency, and Western-style movie snacks."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_allowance",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "friday_saturday_ticket",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "other_day_ticket",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popcorn_cost",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "friday_saturday_spent",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "other_day_spent",
+      "value": 56.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "popcorn_spent",
+      "value": 16.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "candy_spent",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 130.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "planned_popcorn_candy",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_allowance",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "tonight_ticket",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_allowance\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"friday_saturday_ticket\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"other_day_ticket\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"popcorn_cost\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"friday_saturday_spent\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"other_day_spent\", \"value\": 56.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"popcorn_spent\", \"value\": 16.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"candy_spent\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 130.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"planned_popcorn_candy\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_allowance\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"tonight_ticket\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_allowance",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 13050.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "friday_saturday_ticket",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 870.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "other_day_ticket",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 609.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "popcorn_cost",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 696.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "candy_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 174.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "friday_saturday_spent",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 4350.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "other_day_spent",
+        "original_value": 56.0,
+        "original_unit": "dollar",
+        "converted_value": 4872.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "popcorn_spent",
+        "original_value": 16.0,
+        "original_unit": "dollar",
+        "converted_value": 1392.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "candy_spent",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 696.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 130.0,
+        "original_unit": "dollar",
+        "converted_value": 11310.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "planned_popcorn_candy",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 870.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_allowance",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 870.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "tonight_ticket",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 870.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Colby loves going to the movies and every month his parents give him ${monthly_allowance} to spend at the movies. Tickets for Fridays and Saturdays cost ${friday_saturday_ticket}. Tickets for any other day cost ${other_day_ticket}. Popcorn costs ${popcorn_cost} and boxes of candy cost ${candy_cost}. It is the last day of the month and it's a Friday. He wants to make sure he gets a popcorn and box of candy that night. How many movies can he see if he already saw {movies_friday_saturday} movies on a Friday or Saturday, {movies_other_days} movies on other days, had {tubs_of_popcorn} tubs of popcorn, and {boxes_of_candy} boxes of candy that month?",
+    "templatized_answer": [
+      "He has spent ${friday_saturday_spent} on Fri/Sat movies because {movies_friday_saturday} x {friday_saturday_ticket} = {friday_saturday_spent}",
+      "He has spent ${other_day_spent} on movies the rest of the day because {movies_other_days} x {other_day_ticket} = {other_day_spent}",
+      "He has spent ${popcorn_spent} on popcorn because {tubs_of_popcorn} x {popcorn_cost} = {popcorn_spent}",
+      "He has spent ${candy_spent} on candy because {boxes_of_candy} x {candy_cost} = {candy_spent}",
+      "He has spent ${total_spent} in total because {friday_saturday_spent} + {other_day_spent} + {popcorn_spent} + {candy_spent} = {total_spent}",
+      "He plans to spend ${planned_popcorn_candy} on popcorn and candy because {popcorn_cost} + {candy_cost} = {planned_popcorn_candy}",
+      "He has ${remaining_allowance} left to spend because {monthly_allowance} - {total_spent} - {planned_popcorn_candy} = {remaining_allowance}",
+      "He can see {movies_tonight} movie because {remaining_allowance} / {tonight_ticket} = {movies_tonight}"
+    ],
+    "factual_assignment": {
+      "monthly_allowance": 150.0,
+      "friday_saturday_ticket": 10.0,
+      "other_day_ticket": 7.0,
+      "popcorn_cost": 8.0,
+      "candy_cost": 2.0,
+      "friday_saturday_spent": 50.0,
+      "other_day_spent": 56.0,
+      "popcorn_spent": 16.0,
+      "candy_spent": 8.0,
+      "total_spent": 130.0,
+      "planned_popcorn_candy": 10.0,
+      "remaining_allowance": 10.0,
+      "tonight_ticket": 10.0,
+      "movies_friday_saturday": 5,
+      "movies_other_days": 8,
+      "tubs_of_popcorn": 2,
+      "boxes_of_candy": 4,
+      "movies_tonight": 1
+    }
+  },
+  "merged_assignment": {
+    "monthly_allowance": 13050.0,
+    "friday_saturday_ticket": 870.0,
+    "other_day_ticket": 609.0,
+    "popcorn_cost": 696.0,
+    "candy_cost": 174.0,
+    "friday_saturday_spent": 4350.0,
+    "other_day_spent": 4872.0,
+    "popcorn_spent": 1392.0,
+    "candy_spent": 696.0,
+    "total_spent": 11310.0,
+    "planned_popcorn_candy": 870.0,
+    "remaining_allowance": 870.0,
+    "tonight_ticket": 870.0,
+    "movies_friday_saturday": 5,
+    "movies_other_days": 8,
+    "tubs_of_popcorn": 2,
+    "boxes_of_candy": 4,
+    "movies_tonight": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_allowance = 13050.0\n    friday_saturday_ticket = 870.0\n    other_day_ticket = 609.0\n    popcorn_cost = 696.0\n    candy_cost = 174.0\n    movies_friday_saturday = 5\n    movies_other_days = 8\n    tubs_of_popcorn = 2\n    boxes_of_candy = 4\n\n    friday_saturday_spent = round(movies_friday_saturday * friday_saturday_ticket, 2)\n    other_day_spent = round(movies_other_days * other_day_ticket, 2)\n    popcorn_spent = round(tubs_of_popcorn * popcorn_cost, 2)\n    candy_spent = round(boxes_of_candy * candy_cost, 2)\n    total_spent = round(friday_saturday_spent + other_day_spent + popcorn_spent + candy_spent, 2)\n    planned_popcorn_candy = round(popcorn_cost + candy_cost, 2)\n    remaining_allowance = round(monthly_allowance - total_spent - planned_popcorn_candy, 2)\n    tonight_ticket = friday_saturday_ticket\n    movies_tonight = round(remaining_allowance / tonight_ticket, 2)\n\n    return {\n        \"monthly_allowance\": monthly_allowance,\n        \"friday_saturday_ticket\": friday_saturday_ticket,\n        \"other_day_ticket\": other_day_ticket,\n        \"popcorn_cost\": popcorn_cost,\n        \"candy_cost\": candy_cost,\n        \"friday_saturday_spent\": friday_saturday_spent,\n        \"other_day_spent\": other_day_spent,\n        \"popcorn_spent\": popcorn_spent,\n        \"candy_spent\": candy_spent,\n        \"total_spent\": total_spent,\n        \"planned_popcorn_candy\": planned_popcorn_candy,\n        \"remaining_allowance\": remaining_allowance,\n        \"tonight_ticket\": tonight_ticket,\n        \"movies_friday_saturday\": movies_friday_saturday,\n        \"movies_other_days\": movies_other_days,\n        \"tubs_of_popcorn\": tubs_of_popcorn,\n        \"boxes_of_candy\": boxes_of_candy,\n        \"movies_tonight\": movies_tonight\n    }\n",
+    "results": {
+      "monthly_allowance": 13050.0,
+      "friday_saturday_ticket": 870.0,
+      "other_day_ticket": 609.0,
+      "popcorn_cost": 696.0,
+      "candy_cost": 174.0,
+      "friday_saturday_spent": 4350.0,
+      "other_day_spent": 4872.0,
+      "popcorn_spent": 1392.0,
+      "candy_spent": 696.0,
+      "total_spent": 11310.0,
+      "planned_popcorn_candy": 870.0,
+      "remaining_allowance": 870.0,
+      "tonight_ticket": 870.0,
+      "movies_friday_saturday": 5,
+      "movies_other_days": 8,
+      "tubs_of_popcorn": 2,
+      "boxes_of_candy": 4,
+      "movies_tonight": 1.0
+    }
+  },
+  "final": {
+    "question": "Colby loves going to the movies and every month his parents give him 13050 rupees to spend at the movies. Tickets for Fridays and Saturdays cost 870 rupees. Tickets for any other day cost 609 rupees. Popcorn costs 696 rupees and boxes of candy cost 174 rupees. It is the last day of the month and it's a Friday. He wants to make sure he gets a popcorn and box of candy that night. How many movies can he see if he already saw 5 movies on a Friday or Saturday, 8 movies on other days, had 2 tubs of popcorn, and four boxes of candy that month?",
+    "answer_lines": [
+      "He has spent 4350 rupees on Fri/Sat movies because 5 x 870 = 4350",
+      "He has spent 4872 rupees on movies the rest of the day because 8 x 609 = 4872",
+      "He has spent 1392 rupees on popcorn because 2 x 696 = 1392",
+      "He has spent 696 rupees on candy because 4 x 174 = 696",
+      "He has spent 11310 rupees in total because 4350 + 4872 + 1392 + 696 = 11310",
+      "He plans to spend 870 rupees on popcorn and candy because 696 + 174 = 870",
+      "He has 870 rupees left to spend because 13050 - 11310 - 870 = 870",
+      "He can see 1 movie because 870 / 870 = 1",
+      "#### 1"
+    ],
+    "final_scalar": 1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan loves going to the cinema halls and every month his parents give him 13050 rupees to spend at the cinema halls. Tickets for Fridays and Saturdays cost 870 rupees. Tickets for any other day cost 609 rupees. Samosas cost 696 rupees and boxes of mithai cost 174 rupees. It is the last day of the month and it's a Friday. He wants to make sure he gets a samosa and box of mithai that night. How many movies can he see if he already saw 5 movies on a Friday or Saturday, 8 movies on other days, had 2 samosas, and four boxes of mithai that month?",
+    "adapted_answer": [
+      "He has spent 4350 rupees on Fri/Sat movies because 5 x 870 = 4350",
+      "He has spent 4872 rupees on movies the rest of the day because 8 x 609 = 4872",
+      "He has spent 1392 rupees on samosas because 2 x 696 = 1392",
+      "He has spent 696 rupees on mithai because 4 x 174 = 696",
+      "He has spent 11310 rupees in total because 4350 + 4872 + 1392 + 696 = 11310",
+      "He plans to spend 870 rupees on samosas and mithai because 696 + 174 = 870",
+      "He has 870 rupees left to spend because 13050 - 11310 - 870 = 870",
+      "He can see 1 movie because 870 / 870 = 1",
+      "#### 1"
+    ],
+    "adaptation_notes": "Replaced 'Colby' with 'Rohan', 'movies' with 'cinema halls', 'popcorn' with 'samosas', and 'candy' with 'mithai' to give the text an Indian context."
+  }
+}

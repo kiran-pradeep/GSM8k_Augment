@@ -1,0 +1,87 @@
+{
+  "index": 1208,
+  "split": "test",
+  "original": {
+    "question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at $72, what is her profit?",
+    "answer": "Trinity sells magazines at 11/8*$72=$<<11/8*72=99>>99.\nIf she bought the magazines at $72, she makes a profit of $99-$72=$27\n#### 27"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "buy_price",
+      "value": 72,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sell_price",
+      "value": 99,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 27,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"buy_price\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sell_price\", \"value\": 99, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 27, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "buy_price",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 1196.64,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "sell_price",
+        "original_value": 99,
+        "original_unit": "dollar",
+        "converted_value": 1645.38,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "profit",
+        "original_value": 27,
+        "original_unit": "dollar",
+        "converted_value": 448.74,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at ${buy_price}, what is her profit?",
+    "templatized_answer": [
+      "Trinity sells magazines at 11/8*${buy_price}=${sell_price}.",
+      "If she bought the magazines at ${buy_price}, she makes a profit of ${sell_price}-${buy_price}=${profit}"
+    ],
+    "factual_assignment": {
+      "buy_price": 72,
+      "sell_price": 99,
+      "profit": 27
+    }
+  },
+  "merged_assignment": {
+    "buy_price": 1196.64,
+    "sell_price": 1645.38,
+    "profit": 448.74
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    buy_price = 1196.64\n    sell_price = buy_price * (11/8)\n    profit = sell_price - buy_price\n\n    return {\n        \"buy_price\": round(buy_price, 2),\n        \"sell_price\": round(sell_price, 2),\n        \"profit\": round(profit, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "buy_price": 1196.64,
+      "sell_price": 1645.38,
+      "profit": 448.74
+    }
+  },
+  "final": null
+}

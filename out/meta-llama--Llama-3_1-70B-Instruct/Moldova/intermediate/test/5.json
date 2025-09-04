@@ -1,0 +1,159 @@
+{
+  "index": 5,
+  "split": "test",
+  "original": {
+    "question": "Kylar went to the store to buy glasses for his new apartment. One glass costs $5, but every second glass costs only 60% of the price. Kylar wants to buy 16 glasses. How much does he need to pay for them?",
+    "answer": "The discount price of one glass is 60/100 * 5 = $<<60/100*5=3>>3.\nIf every second glass is cheaper, that means Kylar is going to buy 16 / 2 = <<16/2=8>>8 cheaper glasses.\nSo for the cheaper glasses, Kylar is going to pay 8 * 3 = $<<8*3=24>>24.\nAnd for the regular-priced glasses, Kylar will pay 8 * 5 = $<<8*5=40>>40.\nSo in total Kylar needs to pay 24 + 40 = $<<24+40=64>>64 for the glasses he wants to buy.\n#### 64"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not the official currency of Moldova (Moldovan leu)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "glass_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discounted_glass_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cheaper_glasses_total",
+      "value": 24,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "regular_glasses_total",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_glasses_cost",
+      "value": 64,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"glass_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discounted_glass_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cheaper_glasses_total\", \"value\": 24, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"regular_glasses_total\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_glasses_cost\", \"value\": 64, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "glass_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "discounted_glass_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "cheaper_glasses_total",
+        "original_value": 24,
+        "original_unit": "dollar",
+        "converted_value": 398.88,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "regular_glasses_total",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 664.8,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_glasses_cost",
+        "original_value": 64,
+        "original_unit": "dollar",
+        "converted_value": 1063.68,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kylar went to the store to buy glasses for his new apartment. One glass costs ${glass_cost}, but every second glass costs only {discount_percentage}% of the price. Kylar wants to buy {total_glasses} glasses. How much does he need to pay for them?",
+    "templatized_answer": [
+      "The discount price of one glass is {discount_percentage}/100 * {glass_cost} = ${discounted_glass_cost}.",
+      "If every second glass is cheaper, that means Kylar is going to buy {total_glasses} / 2 = {cheaper_glasses} cheaper glasses.",
+      "So for the cheaper glasses, Kylar is going to pay {cheaper_glasses} * {discounted_glass_cost} = ${cheaper_glasses_total}.",
+      "And for the regular-priced glasses, Kylar will pay {cheaper_glasses} * {glass_cost} = ${regular_glasses_total}.",
+      "So in total Kylar needs to pay {cheaper_glasses_total} + {regular_glasses_total} = ${total_glasses_cost} for the glasses he wants to buy.",
+      "#### {total_glasses_cost}"
+    ],
+    "factual_assignment": {
+      "glass_cost": 5,
+      "discounted_glass_cost": 3,
+      "cheaper_glasses_total": 24,
+      "regular_glasses_total": 40,
+      "total_glasses_cost": 64,
+      "discount_percentage": 60,
+      "total_glasses": 16,
+      "cheaper_glasses": 8
+    }
+  },
+  "merged_assignment": {
+    "glass_cost": 83.1,
+    "discounted_glass_cost": 49.86,
+    "cheaper_glasses_total": 398.88,
+    "regular_glasses_total": 664.8,
+    "total_glasses_cost": 1063.68,
+    "discount_percentage": 60,
+    "total_glasses": 16,
+    "cheaper_glasses": 8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    glass_cost = 83.1\n    discount_percentage = 60\n    total_glasses = 16\n\n    discounted_glass_cost = (discount_percentage / 100) * glass_cost\n    cheaper_glasses = total_glasses // 2\n    cheaper_glasses_total = cheaper_glasses * discounted_glass_cost\n    regular_glasses_total = cheaper_glasses * glass_cost\n    total_glasses_cost = cheaper_glasses_total + regular_glasses_total\n\n    return {\n        \"glass_cost\": round(glass_cost, 2),\n        \"discount_percentage\": discount_percentage,\n        \"total_glasses\": total_glasses,\n        \"discounted_glass_cost\": round(discounted_glass_cost, 2),\n        \"cheaper_glasses\": cheaper_glasses,\n        \"cheaper_glasses_total\": round(cheaper_glasses_total, 2),\n        \"regular_glasses_total\": round(regular_glasses_total, 2),\n        \"total_glasses_cost\": round(total_glasses_cost, 2)\n    }\n",
+    "results": {
+      "glass_cost": 83.1,
+      "discount_percentage": 60,
+      "total_glasses": 16,
+      "discounted_glass_cost": 49.86,
+      "cheaper_glasses": 8,
+      "cheaper_glasses_total": 398.88,
+      "regular_glasses_total": 664.8,
+      "total_glasses_cost": 1063.68
+    }
+  },
+  "final": {
+    "question": "Kylar went to the store to buy glasses for his new apartment. One glass costs 83.1 leu, but every second glass costs only 60% of the price. Kylar wants to buy 16 glasses. How much does he need to pay for them?",
+    "answer_lines": [
+      "The discount price of one glass is 60/100 * 83.1 = 49.86 leu.",
+      "If every second glass is cheaper, that means Kylar is going to buy 16 / 2 = 8 cheaper glasses.",
+      "So for the cheaper glasses, Kylar is going to pay 8 * 49.86 = 398.88 leu.",
+      "And for the regular-priced glasses, Kylar will pay 8 * 83.1 = 664.8 leu.",
+      "So in total Kylar needs to pay 398.88 + 664.8 = 1063.68 leu for the glasses he wants to buy.",
+      "#### 1063.68"
+    ],
+    "final_scalar": 1063.68,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kylar went to the market in Chișinău to buy glasses for his new apartment. One glass costs 83.1 lei, but every second glass costs only 60% of the price. Kylar wants to buy 16 glasses. How much does he need to pay for them?",
+    "adapted_answer": [
+      "The discount price of one glass is 60/100 * 83.1 = 49.86 lei.",
+      "If every second glass is cheaper, that means Kylar is going to buy 16 / 2 = 8 cheaper glasses.",
+      "So for the cheaper glasses, Kylar is going to pay 8 * 49.86 = 398.88 lei.",
+      "And for the regular-priced glasses, Kylar will pay 8 * 83.1 = 664.8 lei.",
+      "So in total Kylar needs to pay 398.88 + 664.8 = 1063.68 lei for the glasses he wants to buy.",
+      "#### 1063.68"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' (correct plural form) and added a Moldovan city 'Chișinău' to the context."
+  }
+}

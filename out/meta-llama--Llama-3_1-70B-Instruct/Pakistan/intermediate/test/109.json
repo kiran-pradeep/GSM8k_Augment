@@ -1,0 +1,161 @@
+{
+  "index": 109,
+  "split": "test",
+  "original": {
+    "question": "A local gas station is selling gas for $3.00 a gallon.  An app company is offering $.20 cashback per gallon if you fill up at this station.  If someone buys 10 gallons of gas, how much with their gas be, after the cashback rewards?",
+    "answer": "Gas is $3.00 a gallon and they buy 10 gallons of gas so that's 3*10 = $<<3*10=30.00>>30.00\nThe app is offering $0.20 cashback per gallon and they buy 10 gallons so that's .20*10 = $<<0.20*10=2.00>>2.00\nThey spent $30.00 on gas and their app is offering them $2.00 cashback so they spent 30-2 = $<<30-2=28.00>>28.00 per gallon\n#### 28"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "gallons"
+    ],
+    "notes": "The question contains units specific to the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "gas_price",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gas_cashback",
+      "value": 0.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gas_total_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gas_cashback_total",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gas_final_cost",
+      "value": 28.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gas_volume",
+      "value": 10.0,
+      "unit": "gallon",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"gas_price\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gas_cashback\", \"value\": 0.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gas_total_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gas_cashback_total\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gas_final_cost\", \"value\": 28.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gas_volume\", \"value\": 10.0, \"unit\": \"gallon\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "gas_price",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 845.55,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "gas_cashback",
+        "original_value": 0.2,
+        "original_unit": "dollar",
+        "converted_value": 56.37,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "gas_total_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 8455.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "gas_cashback_total",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 563.7,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "gas_final_cost",
+        "original_value": 28.0,
+        "original_unit": "dollar",
+        "converted_value": 7891.8,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "gas_volume",
+        "original_value": 10.0,
+        "original_unit": "gallon",
+        "converted_value": 37.85,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A local gas station is selling gas for ${gas_price} a gallon.  An app company is offering ${gas_cashback} cashback per gallon if you fill up at this station.  If someone buys {gas_volume} gallons of gas, how much with their gas be, after the cashback rewards?",
+    "templatized_answer": [
+      "Gas is ${gas_price} a gallon and they buy {gas_volume} gallons of gas so that's {gas_price}*{gas_volume} = ${gas_total_cost}",
+      "The app is offering ${gas_cashback} cashback per gallon and they buy {gas_volume} gallons so that's {gas_cashback}*{gas_volume} = ${gas_cashback_total}",
+      "They spent ${gas_total_cost} on gas and their app is offering them ${gas_cashback_total} cashback so they spent {gas_total_cost}-{gas_cashback_total} = ${gas_final_cost}",
+      "#### {gas_final_cost}"
+    ],
+    "factual_assignment": {
+      "gas_price": 3.0,
+      "gas_cashback": 0.2,
+      "gas_total_cost": 30.0,
+      "gas_cashback_total": 2.0,
+      "gas_final_cost": 28.0,
+      "gas_volume": 10.0
+    }
+  },
+  "merged_assignment": {
+    "gas_price": 845.55,
+    "gas_cashback": 56.37,
+    "gas_total_cost": 8455.5,
+    "gas_cashback_total": 563.7,
+    "gas_final_cost": 7891.8,
+    "gas_volume": 37.85
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    gas_price = 845.55\n    gas_cashback = 56.37\n    gas_volume = 37.85\n\n    gas_total_cost = round(gas_price * gas_volume, 2)\n    gas_cashback_total = round(gas_cashback * gas_volume, 2)\n    gas_final_cost = round(gas_total_cost - gas_cashback_total, 2)\n\n    return {\n        \"gas_price\": gas_price,\n        \"gas_cashback\": gas_cashback,\n        \"gas_total_cost\": gas_total_cost,\n        \"gas_cashback_total\": gas_cashback_total,\n        \"gas_final_cost\": gas_final_cost,\n        \"gas_volume\": gas_volume\n    }\n",
+    "results": {
+      "gas_price": 845.55,
+      "gas_cashback": 56.37,
+      "gas_total_cost": 32004.07,
+      "gas_cashback_total": 2133.6,
+      "gas_final_cost": 29870.47,
+      "gas_volume": 37.85
+    }
+  },
+  "final": {
+    "question": "A local gas station is selling gas for 845.55 rupee a liter.  An app company is offering 56.37 rupee cashback per liter if you fill up at this station.  If someone buys 37.85 liters of gas, how much with their gas be, after the cashback rewards?",
+    "answer_lines": [
+      "Gas is 845.55 rupee a liter and they buy 37.85 liters of gas so that's 845.55*37.85 = 32004.07",
+      "The app is offering 56.37 rupee cashback per liter and they buy 37.85 liters so that's 56.37*37.85 = 2133.6",
+      "They spent 32004.07 rupee on gas and their app is offering them 2133.6 rupee cashback so they spent 32004.07-2133.6 = 29870.47",
+      "#### 29870.47"
+    ],
+    "final_scalar": 29870.47,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A local petrol pump is selling petrol for 845.55 rupee a liter.  An app company is offering 56.37 rupee cashback per liter if you fill up at this pump.  If someone buys 37.85 liters of petrol, how much with their petrol be, after the cashback rewards?",
+    "adapted_answer": [
+      "Petrol is 845.55 rupee a liter and they buy 37.85 liters of petrol so that's 845.55*37.85 = 32004.07",
+      "The app is offering 56.37 rupee cashback per liter and they buy 37.85 liters so that's 56.37*37.85 = 2133.6",
+      "They spent 32004.07 rupee on petrol and their app is offering them 2133.6 rupee cashback so they spent 32004.07-2133.6 = 29870.47",
+      "#### 29870.47"
+    ],
+    "adaptation_notes": "Replaced 'gas station' with 'petrol pump' and 'gas' with 'petrol' to use Pakistani equivalents."
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "index": 490,
+  "split": "test",
+  "original": {
+    "question": "An 8-year old child wants to buy a toy car which costs $12. He already has $4 savings. How many days will it take him to save the remaining amount of money if he promises to save $2 daily from his allowance?",
+    "answer": "The boy still needs $12 - $4 = $<<12-4=8>>8.\nIf he saves $2 per day then it will take him $8 / $2/day = <<8/2=4>>4 days to save the remaining amount.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "toy_car_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "child_savings",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_allowance",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"to\"]\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"toy_car_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"child_savings\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_allowance\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "toy_car_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "child_savings",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 2277.52,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "daily_allowance",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 1138.76,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An 8-year old child wants to buy a toy car which costs ${toy_car_cost}. He already has ${child_savings} savings. How many days will it take him to save the remaining amount of money if he promises to save ${daily_allowance} daily from his allowance?",
+    "templatized_answer": [
+      "The boy still needs ${toy_car_cost} - ${child_savings} = ${toy_car_cost - child_savings}.",
+      "If he saves ${daily_allowance} per day then it will take him ${toy_car_cost - child_savings} / ${daily_allowance}/day = {(toy_car_cost - child_savings) / daily_allowance} days to save the remaining amount.",
+      "#### {(toy_car_cost - child_savings) / daily_allowance}"
+    ],
+    "factual_assignment": {
+      "toy_car_cost": 12.0,
+      "child_savings": 4.0,
+      "daily_allowance": 2.0
+    }
+  },
+  "merged_assignment": {
+    "toy_car_cost": 6832.56,
+    "child_savings": 2277.52,
+    "daily_allowance": 1138.76
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    toy_car_cost = 6832.56\n    child_savings = 2277.52\n    daily_allowance = 1138.76\n\n    remaining_amount = toy_car_cost - child_savings\n    days_to_save = remaining_amount / daily_allowance\n\n    return {\n        \"toy_car_cost\": toy_car_cost,\n        \"child_savings\": child_savings,\n        \"daily_allowance\": daily_allowance,\n        \"toy_car_cost - child_savings\": round(remaining_amount, 2),\n        \"(toy_car_cost - child_savings) / daily_allowance\": round(days_to_save, 2)\n    }\n",
+    "results": {
+      "toy_car_cost": 6832.56,
+      "child_savings": 2277.52,
+      "daily_allowance": 1138.76,
+      "toy_car_cost - child_savings": 4555.04,
+      "(toy_car_cost - child_savings) / daily_allowance": 4.0
+    }
+  },
+  "final": {
+    "question": "An 8-year old child wants to buy a toy car which costs 6832.56 shilling. He already has 2277.52 shilling savings. How many days will it take him to save the remaining amount of money if he promises to save 1138.76 shilling daily from his allowance?",
+    "answer_lines": [
+      "The boy still needs 6832.56 - 2277.52 = 4555.04 shilling.",
+      "If he saves 1138.76 shilling per day then it will take him 4555.04 / 1138.76 shilling/day = 4.0 days to save the remaining amount.",
+      "#### 4.0"
+    ],
+    "final_scalar": 4.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ilmaha 8-jirka ah ayaa doonaya inuu iibsado gaari yar oo qiimaha 6832.56 shilling. Wuxuu hadda haysta 2277.52 shilling maalgelin. Inta badan ee ugu yaraa maalinta ayuu u baahan yahay si uu ugu guuleysto maalgalinno ku baxa haddii uu wado inuu maalgeliyo 1138.76 shilling maalin kasta oo ka timid lacagta lacagta?",
+    "adapted_answer": [
+      "Wiilkii wuxuu hadda u baahan yahay 6832.56 - 2277.52 = 4555.04 shilling.",
+      "Haddii uu maalgeliyo 1138.76 shilling maalin kasta, waxaynu ku xisaabinaynaa 4555.04 / 1138.76 shilling/maalin = 4.0 maalin si uu ugu guuleysto maalgalinno ku baxa."
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

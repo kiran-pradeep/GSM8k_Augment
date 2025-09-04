@@ -1,0 +1,274 @@
+{
+  "index": 331,
+  "split": "test",
+  "original": {
+    "question": "Nick is choosing between two jobs. Job A pays $15 an hour for 2000 hours a year, and is in a state with a 20% total tax rate. Job B pays $42,000 a year and is in a state that charges $6,000 in property tax and a 10% tax rate on net income after property tax. How much more money will Nick make at the job with a higher net pay rate, compared to the other job?",
+    "answer": "First calculate the gross annual salary for Job A: 2000 hours * $15/hour = $<<2000*15=30000>>30,000\nNext, calculate the amount of taxes Nick pays at Job A by multiplying his net salary by the 20% tax rate: .2 * $30,000 = $<<30000*.2=6000>>6,000\nNow subtract Nick's taxes from his net pay to find his gross pay at Job A: $30,000 - $6,000 = $<<30000-6000=24000>>24,000\nNow subtract Nick's property taxes from his gross income at Job B: $42,000 - $6,000 = $<<42000-6000=36000>>36,000\nNow multiply Nick's income after property tax by 10% to find his income tax at Job B: $36,000 * 10% = $<<36000*10*.01=3600>>3,600\nNow subtract the income tax amount from Nick's earnings after property tax to find his net income at Job B: $36,000 - $3,600 = $<<36000-3600=32400>>32,400\nNow subtract the net income from the lower-paying job (A) from the net income from the higher-paying job (B): $32,400 - $24,000 = $<<32400-24000=8400>>8,400\n#### 8400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "hours"
+    ],
+    "notes": "The text contains units of currency (dollars) and time (hours) that are commonly used in the United States, but not exclusive to Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "job_a_hourly_wage",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "job_a_hours_per_year",
+      "value": 2000,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "job_a_tax_rate",
+      "value": 0.2,
+      "unit": "percent",
+      "context": "question"
+    },
+    {
+      "variable": "job_b_gross_salary",
+      "value": 42000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "job_b_property_tax",
+      "value": 6000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "job_b_tax_rate",
+      "value": 0.1,
+      "unit": "percent",
+      "context": "question"
+    },
+    {
+      "variable": "job_a_gross_salary",
+      "value": 30000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "job_a_taxes",
+      "value": 6000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "job_a_net_salary",
+      "value": 24000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "job_b_income_after_property_tax",
+      "value": 36000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "job_b_income_tax",
+      "value": 3600,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "job_b_net_income",
+      "value": 32400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "net_income_difference",
+      "value": 8400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"percent\": {\"to\": \"percent\", \"rate\": 1}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            conversion_rate = conversions[original_unit][\"rate\"]\n            converted_value = round(original_value * conversion_rate, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"job_a_hourly_wage\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"job_a_hours_per_year\", \"value\": 2000, \"unit\": \"hour\", \"context\": \"question\"},\n    {\"variable\": \"job_a_tax_rate\", \"value\": 0.2, \"unit\": \"percent\", \"context\": \"question\"},\n    {\"variable\": \"job_b_gross_salary\", \"value\": 42000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"job_b_property_tax\", \"value\": 6000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"job_b_tax_rate\", \"value\": 0.1, \"unit\": \"percent\", \"context\": \"question\"},\n    {\"variable\": \"job_a_gross_salary\", \"value\": 30000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"job_a_taxes\", \"value\": 6000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"job_a_net_salary\", \"value\": 24000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"job_b_income_after_property_tax\", \"value\": 36000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"job_b_income_tax\", \"value\": 3600, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"job_b_net_income\", \"value\": 32400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"net_income_difference\", \"value\": 8400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "job_a_hourly_wage",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1962.15,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_a_hours_per_year",
+        "original_value": 2000,
+        "original_unit": "hour",
+        "converted_value": 2000,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "job_a_tax_rate",
+        "original_value": 0.2,
+        "original_unit": "percent",
+        "converted_value": 0.2,
+        "converted_unit": "percent"
+      },
+      {
+        "variable": "job_b_gross_salary",
+        "original_value": 42000,
+        "original_unit": "dollar",
+        "converted_value": 5494020.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_b_property_tax",
+        "original_value": 6000,
+        "original_unit": "dollar",
+        "converted_value": 784860.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_b_tax_rate",
+        "original_value": 0.1,
+        "original_unit": "percent",
+        "converted_value": 0.1,
+        "converted_unit": "percent"
+      },
+      {
+        "variable": "job_a_gross_salary",
+        "original_value": 30000,
+        "original_unit": "dollar",
+        "converted_value": 3924300.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_a_taxes",
+        "original_value": 6000,
+        "original_unit": "dollar",
+        "converted_value": 784860.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_a_net_salary",
+        "original_value": 24000,
+        "original_unit": "dollar",
+        "converted_value": 3139440.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_b_income_after_property_tax",
+        "original_value": 36000,
+        "original_unit": "dollar",
+        "converted_value": 4709160.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_b_income_tax",
+        "original_value": 3600,
+        "original_unit": "dollar",
+        "converted_value": 470916.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "job_b_net_income",
+        "original_value": 32400,
+        "original_unit": "dollar",
+        "converted_value": 4238244.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "net_income_difference",
+        "original_value": 8400,
+        "original_unit": "dollar",
+        "converted_value": 1098804.0,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Nick is choosing between two jobs. Job A pays ${job_a_hourly_wage} an hour for {job_a_hours_per_year} hours a year, and is in a state with a {job_a_tax_rate*100}% total tax rate. Job B pays ${job_b_gross_salary} a year and is in a state that charges ${job_b_property_tax} in property tax and a {job_b_tax_rate*100}% tax rate on net income after property tax. How much more money will Nick make at the job with a higher net pay rate, compared to the other job?",
+    "templatized_answer": [
+      "First calculate the gross annual salary for Job A: {job_a_hours_per_year} hours * ${job_a_hourly_wage}/hour = ${job_a_hours_per_year * job_a_hourly_wage}",
+      "Next, calculate the amount of taxes Nick pays at Job A by multiplying his net salary by the {job_a_tax_rate*100}% tax rate: {job_a_tax_rate} * ${job_a_hours_per_year * job_a_hourly_wage} = ${job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate}",
+      "Now subtract Nick's taxes from his net pay to find his gross pay at Job A: ${job_a_hours_per_year * job_a_hourly_wage} - ${job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate} = ${job_a_hours_per_year * job_a_hourly_wage - job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate}",
+      "Now subtract Nick's property taxes from his gross income at Job B: ${job_b_gross_salary} - ${job_b_property_tax} = ${job_b_gross_salary - job_b_property_tax}",
+      "Now multiply Nick's income after property tax by {job_b_tax_rate*100}% to find his income tax at Job B: ${job_b_gross_salary - job_b_property_tax} * {job_b_tax_rate} = ${job_b_gross_salary * job_b_tax_rate - job_b_property_tax * job_b_tax_rate}",
+      "Now subtract the income tax amount from Nick's earnings after property tax to find his net income at Job B: ${job_b_gross_salary - job_b_property_tax} - ${job_b_gross_salary * job_b_tax_rate - job_b_property_tax * job_b_tax_rate} = ${job_b_gross_salary - job_b_property_tax - job_b_gross_salary * job_b_tax_rate + job_b_property_tax * job_b_tax_rate}",
+      "Now subtract the net income from the lower-paying job (A) from the net income from the higher-paying job (B): ${job_b_gross_salary - job_b_property_tax - job_b_gross_salary * job_b_tax_rate + job_b_property_tax * job_b_tax_rate} - ${job_a_hours_per_year * job_a_hourly_wage - job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate} = ${job_b_gross_salary - job_b_property_tax - job_b_gross_salary * job_b_tax_rate + job_b_property_tax * job_b_tax_rate - job_a_hours_per_year * job_a_hourly_wage + job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate}",
+      "#### {net_income_difference}"
+    ],
+    "factual_assignment": {
+      "job_a_hourly_wage": 15,
+      "job_a_hours_per_year": 2000,
+      "job_a_tax_rate": 0.2,
+      "job_b_gross_salary": 42000,
+      "job_b_property_tax": 6000,
+      "job_b_tax_rate": 0.1,
+      "net_income_difference": 8400
+    }
+  },
+  "merged_assignment": {
+    "job_a_hourly_wage": 1962.15,
+    "job_a_hours_per_year": 2000,
+    "job_a_tax_rate": 0.2,
+    "job_b_gross_salary": 5494020.0,
+    "job_b_property_tax": 784860.0,
+    "job_b_tax_rate": 0.1,
+    "net_income_difference": 1098804.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    job_a_hourly_wage = 1962.15\n    job_a_hours_per_year = 2000\n    job_a_tax_rate = 0.2\n    job_b_gross_salary = 5494020.0\n    job_b_property_tax = 784860.0\n    job_b_tax_rate = 0.1\n\n    job_a_gross_salary = job_a_hours_per_year * job_a_hourly_wage\n    job_a_taxes = job_a_tax_rate * job_a_gross_salary\n    job_a_net_income = job_a_gross_salary - job_a_taxes\n\n    job_b_income_after_property_tax = job_b_gross_salary - job_b_property_tax\n    job_b_income_tax = job_b_tax_rate * job_b_income_after_property_tax\n    job_b_net_income = job_b_income_after_property_tax - job_b_income_tax\n\n    net_income_difference = abs(job_b_net_income - job_a_net_income)\n\n    return {\n        \"job_a_hourly_wage\": job_a_hourly_wage,\n        \"job_a_hours_per_year\": job_a_hours_per_year,\n        \"job_a_tax_rate\": job_a_tax_rate,\n        \"job_b_gross_salary\": job_b_gross_salary,\n        \"job_b_property_tax\": job_b_property_tax,\n        \"job_b_tax_rate\": job_b_tax_rate,\n        \"job_a_hours_per_year * job_a_hourly_wage\": round(job_a_gross_salary, 2),\n        \"job_a_tax_rate * ${job_a_hours_per_year * job_a_hourly_wage}\": round(job_a_taxes, 2),\n        \"job_a_hours_per_year * job_a_hourly_wage - job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate\": round(job_a_net_income, 2),\n        \"job_b_gross_salary - job_b_property_tax\": round(job_b_income_after_property_tax, 2),\n        \"job_b_gross_salary - job_b_property_tax * job_b_tax_rate\": round(job_b_income_tax, 2),\n        \"job_b_gross_salary - job_b_property_tax - job_b_gross_salary * job_b_tax_rate + job_b_property_tax * job_b_tax_rate\": round(job_b_net_income, 2),\n        \"job_b_gross_salary - job_b_property_tax - job_b_gross_salary * job_b_tax_rate + job_b_property_tax * job_b_tax_rate - job_a_hours_per_year * job_a_hourly_wage + job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate\": round(net_income_difference, 2),\n        \"net_income_difference\": round(net_income_difference, 2)\n    }\n",
+    "results": {
+      "job_a_hourly_wage": 1962.15,
+      "job_a_hours_per_year": 2000,
+      "job_a_tax_rate": 0.2,
+      "job_b_gross_salary": 5494020.0,
+      "job_b_property_tax": 784860.0,
+      "job_b_tax_rate": 0.1,
+      "job_a_hours_per_year * job_a_hourly_wage": 3924300.0,
+      "job_a_tax_rate * ${job_a_hours_per_year * job_a_hourly_wage}": 784860.0,
+      "job_a_hours_per_year * job_a_hourly_wage - job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate": 3139440.0,
+      "job_b_gross_salary - job_b_property_tax": 4709160.0,
+      "job_b_gross_salary - job_b_property_tax * job_b_tax_rate": 470916.0,
+      "job_b_gross_salary - job_b_property_tax - job_b_gross_salary * job_b_tax_rate + job_b_property_tax * job_b_tax_rate": 4238244.0,
+      "job_b_gross_salary - job_b_property_tax - job_b_gross_salary * job_b_tax_rate + job_b_property_tax * job_b_tax_rate - job_a_hours_per_year * job_a_hourly_wage + job_a_hours_per_year * job_a_hourly_wage * job_a_tax_rate": 1098804.0,
+      "net_income_difference": 1098804.0
+    }
+  },
+  "final": {
+    "question": "Nick is choosing between two jobs. Job A pays 1962.15 gourde an hour for 2000 hours a year, and is in a state with a 20% total tax rate. Job B pays 5494020.0 gourde a year and is in a state that charges 784860.0 gourde in property tax and a 10% tax rate on net income after property tax. How much more money will Nick make at the job with a higher net pay rate, compared to the other job?",
+    "answer_lines": [
+      "First calculate the gross annual salary for Job A: 2000 hours * 1962.15 gourde/hour = 3924300.0 gourde",
+      "Next, calculate the amount of taxes Nick pays at Job A by multiplying his net salary by the 20% tax rate: 0.2 * 3924300.0 gourde = 784860.0 gourde",
+      "Now subtract Nick's taxes from his net pay to find his gross pay at Job A: 3924300.0 gourde - 784860.0 gourde = 3139440.0 gourde",
+      "Now subtract Nick's property taxes from his gross income at Job B: 5494020.0 gourde - 784860.0 gourde = 4709160.0 gourde",
+      "Now multiply Nick's income after property tax by 10% to find his income tax at Job B: 4709160.0 gourde * 0.1 = 470916.0 gourde",
+      "Now subtract the income tax amount from Nick's earnings after property tax to find his net income at Job B: 4709160.0 gourde - 470916.0 gourde = 4238244.0 gourde",
+      "Now subtract the net income from the lower-paying job (A) from the net income from the higher-paying job (B): 4238244.0 gourde - 3139440.0 gourde = 1098804.0 gourde",
+      "#### 1098804.0"
+    ],
+    "final_scalar": 1098804.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nick is choosing between two jobs. Job A pays 1962.15 gourde an hour for 2000 hours a year, and is in a state with a 20% total tax rate. Job B pays 5494020.0 gourde a year and is in a state that charges 784860.0 gourde in property tax and a 10% tax rate on net income after property tax. How much more money will Nick make at the job with a higher net pay rate, compared to the other job?",
+    "adapted_answer": [
+      "First calculate the gross annual salary for Job A: 2000 jou ane * 1962.15 gourde/jou ane = 3924300.0 gourde",
+      "Next, calculate the amount of taxes Nick pays at Job A by multiplying his net salary by the 20% tax rate: 0.2 * 3924300.0 gourde = 784860.0 gourde",
+      "Now subtract Nick's taxes from his net pay to find his gross pay at Job A: 3924300.0 gourde - 784860.0 gourde = 3139440.0 gourde",
+      "Now subtract Nick's property taxes from his gross income at Job B: 5494020.0 gourde - 784860.0 gourde = 4709160.0 gourde",
+      "Now multiply Nick's income after property tax by 10% to find his income tax at Job B: 4709160.0 gourde * 0.1 = 470916.0 gourde",
+      "Now subtract the income tax amount from Nick's earnings after property tax to find his net income at Job B: 4709160.0 gourde - 470916.0 gourde = 4238244.0 gourde",
+      "Now subtract the net income from the lower-paying job (A) from the net income from the higher-paying job (B): 4238244.0 gourde - 3139440.0 gourde = 1098804.0 gourde",
+      "#### 1098804.0"
+    ],
+    "adaptation_notes": "Replaced 'hours' with 'jou ane' (Haitian Creole for 'hours a year') to provide a Haitian context."
+  }
+}

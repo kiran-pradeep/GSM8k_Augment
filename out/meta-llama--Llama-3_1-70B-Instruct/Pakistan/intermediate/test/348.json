@@ -1,0 +1,137 @@
+{
+  "index": 348,
+  "split": "test",
+  "original": {
+    "question": "A factory used to make tractors, but now makes silos. When they made tractors, they sold 10 tractors a day and made $100 per tractor. Now, they sell 5 silos a day, and make $220 per silo. What percentage more are they making per day now?",
+    "answer": "They used to make $1,000 a day because 10 x 100 = <<10*100=1000>>1,000\nThey now make 1,100 a day because 5 x 220 = <<5*220=1100>>1,100\nThey make 10% more per day because 1000 +(1000 x (X/100)) = 1,100 if X = 10\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tractor_revenue",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "silo_revenue",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "previous_daily_revenue",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "current_daily_revenue",
+      "value": 1100.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tractor_revenue\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"silo_revenue\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"previous_daily_revenue\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"current_daily_revenue\", \"value\": 1100.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tractor_revenue",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 28185.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "silo_revenue",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 62007.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "previous_daily_revenue",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 281850.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "current_daily_revenue",
+        "original_value": 1100.0,
+        "original_unit": "dollar",
+        "converted_value": 310035.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A factory used to make tractors, but now makes silos. When they made tractors, they sold {tractors_sold} tractors a day and made ${tractor_revenue} per tractor. Now, they sell {silos_sold} silos a day, and make ${silo_revenue} per silo. What percentage more are they making per day now?",
+    "templatized_answer": [
+      "They used to make ${previous_daily_revenue} a day because {tractors_sold} x {tractor_revenue} = ${previous_daily_revenue}",
+      "They now make ${current_daily_revenue} a day because {silos_sold} x {silo_revenue} = ${current_daily_revenue}",
+      "They make {percentage_increase}% more per day because {previous_daily_revenue} + ({previous_daily_revenue} x ({percentage_increase}/100)) = ${current_daily_revenue}",
+      "#### {percentage_increase}"
+    ],
+    "factual_assignment": {
+      "tractors_sold": 10,
+      "tractor_revenue": 100.0,
+      "silos_sold": 5,
+      "silo_revenue": 220.0,
+      "previous_daily_revenue": 1000.0,
+      "current_daily_revenue": 1100.0,
+      "percentage_increase": 10
+    }
+  },
+  "merged_assignment": {
+    "tractors_sold": 10,
+    "tractor_revenue": 28185.0,
+    "silos_sold": 5,
+    "silo_revenue": 62007.0,
+    "previous_daily_revenue": 281850.0,
+    "current_daily_revenue": 310035.0,
+    "percentage_increase": 10
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tractors_sold = 10\n    tractor_revenue = 28185.0\n    silos_sold = 5\n    silo_revenue = 62007.0\n\n    previous_daily_revenue = tractors_sold * tractor_revenue\n    current_daily_revenue = silos_sold * silo_revenue\n    percentage_increase = ((current_daily_revenue - previous_daily_revenue) / previous_daily_revenue) * 100\n\n    return {\n        \"tractors_sold\": tractors_sold,\n        \"tractor_revenue\": round(tractor_revenue, 2),\n        \"silos_sold\": silos_sold,\n        \"silo_revenue\": round(silo_revenue, 2),\n        \"previous_daily_revenue\": round(previous_daily_revenue, 2),\n        \"current_daily_revenue\": round(current_daily_revenue, 2),\n        \"percentage_increase\": round(percentage_increase, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "tractors_sold": 10,
+      "tractor_revenue": 28185.0,
+      "silos_sold": 5,
+      "silo_revenue": 62007.0,
+      "previous_daily_revenue": 281850.0,
+      "current_daily_revenue": 310035.0,
+      "percentage_increase": 10.0
+    }
+  },
+  "final": {
+    "question": "A factory used to make tractors, but now makes silos. When they made tractors, they sold 10 tractors a day and made 28185 rupee per tractor. Now, they sell 5 silos a day, and make 62007 rupee per silo. What percentage more are they making per day now?",
+    "answer_lines": [
+      "They used to make 281850 rupee a day because 10 x 28185 = 281850",
+      "They now make 310035 rupee a day because 5 x 62007 = 310035",
+      "They make 10% more per day because 281850 + (281850 x (10/100)) = 310035",
+      "#### 10.0"
+    ],
+    "final_scalar": 10.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A factory used to make rickshaws, but now makes water tanks. When they made rickshaws, they sold 10 rickshaws a day and made 28185 rupee per rickshaw. Now, they sell 5 water tanks a day, and make 62007 rupee per water tank. What percentage more are they making per day now?",
+    "adapted_answer": [
+      "They used to make 281850 rupee a day because 10 x 28185 = 281850",
+      "They now make 310035 rupee a day because 5 x 62007 = 310035",
+      "They make 10% more per day because 281850 + (281850 x (10/100)) = 310035",
+      "#### 10.0"
+    ],
+    "adaptation_notes": "Replaced 'tractors' with 'rickshaws' and 'silos' with 'water tanks' to give the question a Pakistani context."
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "index": 1169,
+  "split": "test",
+  "original": {
+    "question": "Ronnie was given $5 while Rissa was given thrice as much. After each of them had given an equal amount of money to their little sister, Rissa is left with 4/5 of her money. How much is left in Ronnie's money?",
+    "answer": "Rissa was given $5 x 3 = $<<5*3=15>>15.\nAfter Rissa had given an amount to her sister, she has $15 x 4/5 = $<<15*4/5=12>>12 left.\nThis means she has given $15 - $12 = $<<15-12=3>>3.\nSince Ronnie had given the same amount as Rissa, then Ronnie is left with $5 - $3 = $<<5-3=2>>2.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not exclusively in Haiti, where the Haitian gourde is the local currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ronnie_initial",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rissa_initial",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "rissa_given",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "ronnie_left",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ronnie_initial\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rissa_initial\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"rissa_given\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"ronnie_left\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ronnie_initial",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 654.05,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "rissa_initial",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1962.15,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "rissa_given",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 392.43,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "ronnie_left",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 261.62,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ronnie was given ${ronnie_initial} while Rissa was given thrice as much. After each of them had given an equal amount of money to their little sister, Rissa is left with 4/5 of her money. How much is left in Ronnie's money?",
+    "templatized_answer": [
+      "Rissa was given ${ronnie_initial} x 3 = ${rissa_initial}.",
+      "After Rissa had given an amount to her sister, she has ${rissa_initial} x 4/5 = ${rissa_initial} * 4/5 left.",
+      "This means she has given ${rissa_initial} - ${rissa_initial} * 4/5.",
+      "Since Ronnie had given the same amount as Rissa, then Ronnie is left with ${ronnie_initial} - {rissa_given}.",
+      "#### {ronnie_left}"
+    ],
+    "factual_assignment": {
+      "ronnie_initial": 5,
+      "rissa_initial": 15,
+      "rissa_given": 3,
+      "ronnie_left": 2
+    }
+  },
+  "merged_assignment": {
+    "ronnie_initial": 654.05,
+    "rissa_initial": 1962.15,
+    "rissa_given": 392.43,
+    "ronnie_left": 261.62
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    ronnie_initial = 654.05\n    rissa_initial = ronnie_initial * 3\n    rissa_given = rissa_initial - (rissa_initial * 4/5)\n    ronnie_left = ronnie_initial - rissa_given\n\n    return {\n        \"ronnie_initial\": round(ronnie_initial, 2),\n        \"rissa_initial\": round(rissa_initial, 2),\n        \"rissa_given\": round(rissa_given, 2),\n        \"ronnie_left\": round(ronnie_left, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "ronnie_initial": 654.05,
+      "rissa_initial": 1962.15,
+      "rissa_given": 392.43,
+      "ronnie_left": 261.62
+    }
+  },
+  "final": {
+    "question": "Ronnie was given 654.05 gourde while Rissa was given thrice as much. After each of them had given an equal amount of money to their little sister, Rissa is left with 4/5 of her money. How much is left in Ronnie's money?",
+    "answer_lines": [
+      "Rissa was given 654.05 gourde x 3 = 1962.15 gourde.",
+      "After Rissa had given an amount to her sister, she has 1962.15 gourde x 4/5 = 1569.72 gourde left.",
+      "This means she has given 1962.15 gourde - 1569.72 gourde = 392.43 gourde.",
+      "Since Ronnie had given the same amount as Rissa, then Ronnie is left with 654.05 gourde - 392.43 gourde.",
+      "#### 261.62"
+    ],
+    "final_scalar": 261.62,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ronnie was given 654.05 gourde while Rissa was given thrice as much. After each of them had given an equal amount of money to their little sister, Rissa is left with 4/5 of her money. How much is left in Ronnie's money?",
+    "adapted_answer": [
+      "Rissa was given 654.05 gourde x 3 = 1962.15 gourde.",
+      "After Rissa had given an amount to her sister, she has 1962.15 gourde x 4/5 = 1569.72 gourde left.",
+      "This means she has given 1962.15 gourde - 1569.72 gourde = 392.43 gourde.",
+      "Since Ronnie had given the same amount as Rissa, then Ronnie is left with 654.05 gourde - 392.43 gourde.",
+      "#### 261.62"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

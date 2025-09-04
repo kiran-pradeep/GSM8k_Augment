@@ -1,0 +1,134 @@
+{
+  "index": 948,
+  "split": "test",
+  "original": {
+    "question": "Cayley markets various newspapers to get a commission on each copy sold. He gets a 10% commission on each copy of the New York Times and an 8% commission on each of the Wall Street Journal. How much commission will he earn in total from the sales of 6 copies of the New York Times and 10 copies of Wall Street Journal if each costs $5 and $15 respectively?",
+    "answer": "He gets a commission of 10% on each copy of the New York Times so for 6 copies he will get 6*$5*(10/100) = $<<6*5*(10/100)=3>>3\nHe gets a commission of 8% on each copy of Wall Street Journal so for 10 copies he will get 10*$15*(8/100) = $<<10*15*8/100=12>>12\nHe will make a total commission of $3+$12 = $<<3+12=15>>15\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "New York Times",
+      "Wall Street Journal",
+      "dollars"
+    ],
+    "notes": "The question contains references to US-based newspapers and uses US currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "new_york_times_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "wall_street_journal_cost",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "new_york_times_commission",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "wall_street_journal_commission",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_commission",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"new_york_times_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"wall_street_journal_cost\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"new_york_times_commission\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"wall_street_journal_commission\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_commission\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "new_york_times_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "wall_street_journal_cost",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1305,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "new_york_times_commission",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 261,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "wall_street_journal_commission",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1044,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_commission",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1305,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Cayley markets various newspapers to get a commission on each copy sold. He gets a {new_york_times_commission_percentage}% commission on each copy of the New York Times and a {wall_street_journal_commission_percentage}% commission on each of the Wall Street Journal. How much commission will he earn in total from the sales of {new_york_times_copies} copies of the New York Times and {wall_street_journal_copies} copies of Wall Street Journal if each costs ${new_york_times_cost} and ${wall_street_journal_cost} respectively?",
+    "templatized_answer": [
+      "He gets a commission of {new_york_times_commission_percentage}% on each copy of the New York Times so for {new_york_times_copies} copies he will get {new_york_times_copies}*${new_york_times_cost}*({new_york_times_commission_percentage}/100) = ${new_york_times_commission}",
+      "He gets a commission of {wall_street_journal_commission_percentage}% on each copy of Wall Street Journal so for {wall_street_journal_copies} copies he will get {wall_street_journal_copies}*${wall_street_journal_cost}*({wall_street_journal_commission_percentage}/100) = ${wall_street_journal_commission}",
+      "He will make a total commission of ${new_york_times_commission}+${wall_street_journal_commission} = ${total_commission}"
+    ],
+    "factual_assignment": {
+      "new_york_times_commission_percentage": 10,
+      "wall_street_journal_commission_percentage": 8,
+      "new_york_times_copies": 6,
+      "wall_street_journal_copies": 10,
+      "new_york_times_cost": 5,
+      "wall_street_journal_cost": 15,
+      "new_york_times_commission": 3,
+      "wall_street_journal_commission": 12,
+      "total_commission": 15
+    }
+  },
+  "merged_assignment": {
+    "new_york_times_commission_percentage": 10,
+    "wall_street_journal_commission_percentage": 8,
+    "new_york_times_copies": 6,
+    "wall_street_journal_copies": 10,
+    "new_york_times_cost": 435,
+    "wall_street_journal_cost": 1305,
+    "new_york_times_commission": 261,
+    "wall_street_journal_commission": 1044,
+    "total_commission": 1305
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    new_york_times_commission_percentage = 10\n    wall_street_journal_commission_percentage = 8\n    new_york_times_copies = 6\n    wall_street_journal_copies = 10\n    new_york_times_cost = 435\n    wall_street_journal_cost = 1305\n\n    new_york_times_commission = round(new_york_times_copies * new_york_times_cost * (new_york_times_commission_percentage / 100), 2)\n    wall_street_journal_commission = round(wall_street_journal_copies * wall_street_journal_cost * (wall_street_journal_commission_percentage / 100), 2)\n    total_commission = round(new_york_times_commission + wall_street_journal_commission, 2)\n\n    return {\n        \"new_york_times_commission_percentage\": new_york_times_commission_percentage,\n        \"wall_street_journal_commission_percentage\": wall_street_journal_commission_percentage,\n        \"new_york_times_copies\": new_york_times_copies,\n        \"wall_street_journal_copies\": wall_street_journal_copies,\n        \"new_york_times_cost\": new_york_times_cost,\n        \"wall_street_journal_cost\": wall_street_journal_cost,\n        \"new_york_times_commission\": new_york_times_commission,\n        \"wall_street_journal_commission\": wall_street_journal_commission,\n        \"total_commission\": total_commission\n    }\n\nprint(recompute())\n",
+    "results": {
+      "new_york_times_commission_percentage": 10,
+      "wall_street_journal_commission_percentage": 8,
+      "new_york_times_copies": 6,
+      "wall_street_journal_copies": 10,
+      "new_york_times_cost": 435,
+      "wall_street_journal_cost": 1305,
+      "new_york_times_commission": 261.0,
+      "wall_street_journal_commission": 1044.0,
+      "total_commission": 1305.0
+    }
+  },
+  "final": null
+}

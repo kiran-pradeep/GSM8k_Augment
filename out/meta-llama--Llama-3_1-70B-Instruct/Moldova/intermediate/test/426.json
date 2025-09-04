@@ -1,0 +1,128 @@
+{
+  "index": 426,
+  "split": "test",
+  "original": {
+    "question": "Aleksandra went to a restaurant for dinner. She ordered some soup, a bagel, and a piece of cake. The bagel cost $4, and the soup 25% more. The cake is only half of the price of the bagel. How much did Aleksandra need to pay for the dinner she ordered?",
+    "answer": "The soup cost 4 * 25/100 = $<<4*25/100=1>>1 more than the bagel.\nSo the soup cost is 4 + 1 = $<<4+1=5>>5.\nThe cake is half the price of the bagel, so it is 4 * 0.5 = $<<4*0.5=2>>2.\nAleksandra needed to pay 4 + 5 + 2 = $<<4+5+2=11>>11 for dinner.\n#### 11"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "bagel",
+      "cake"
+    ],
+    "notes": "The text contains a non-Moldovan unit of currency (dollars) and food items (bagel, cake) that are not commonly associated with Moldovan cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bagel_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "soup_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cake_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bagel_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"soup_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cake_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bagel_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 66.48,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "soup_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "cake_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 182.82,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aleksandra went to a restaurant for dinner. She ordered some soup, a bagel, and a piece of cake. The bagel cost ${bagel_cost}, and the soup 25% more. The cake is only half of the price of the bagel. How much did Aleksandra need to pay for the dinner she ordered?",
+    "templatized_answer": [
+      "The soup cost {bagel_cost} * 25/100 = ${bagel_cost * 25/100} more than the bagel.",
+      "So the soup cost is {bagel_cost} + {bagel_cost * 25/100} = ${bagel_cost + bagel_cost * 25/100}.",
+      "The cake is half the price of the bagel, so it is {bagel_cost} * 0.5 = ${bagel_cost * 0.5}.",
+      "Aleksandra needed to pay {bagel_cost} + {bagel_cost + bagel_cost * 25/100} + {bagel_cost * 0.5} = ${bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}.",
+      "#### {bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}"
+    ],
+    "factual_assignment": {
+      "bagel_cost": 4
+    }
+  },
+  "merged_assignment": {
+    "bagel_cost": 66.48
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bagel_cost = 66.48\n\n    soup_cost_diff = bagel_cost * 25/100\n    soup_cost = bagel_cost + soup_cost_diff\n    cake_cost = bagel_cost * 0.5\n    total_cost = bagel_cost + soup_cost + cake_cost\n\n    return {\n        \"{bagel_cost}\": bagel_cost,\n        \"{bagel_cost * 25/100}\": round(soup_cost_diff, 2),\n        \"{bagel_cost + bagel_cost * 25/100}\": round(soup_cost, 2),\n        \"{bagel_cost * 0.5}\": round(cake_cost, 2),\n        \"{bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "{bagel_cost}": 66.48,
+      "{bagel_cost * 25/100}": 16.62,
+      "{bagel_cost + bagel_cost * 25/100}": 83.1,
+      "{bagel_cost * 0.5}": 33.24,
+      "{bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}": 182.82
+    }
+  },
+  "final": {
+    "question": "Aleksandra went to a restaurant for dinner. She ordered some soup, a bagel, and a piece of cake. The bagel cost 66.48 leu, and the soup 25% more. The cake is only half of the price of the bagel. How much did Aleksandra need to pay for the dinner she ordered?",
+    "answer_lines": [
+      "The soup cost 66.48 * 25/100 = 16.62 leu more than the bagel.",
+      "So the soup cost is 66.48 + 16.62 = 83.1 leu.",
+      "The cake is half the price of the bagel, so it is 66.48 * 0.5 = 33.24 leu.",
+      "Aleksandra needed to pay 66.48 + 83.1 + 33.24 = 182.82 leu.",
+      "#### 182.82"
+    ],
+    "final_scalar": 182.82,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aleksandra went to a restaurant for dinner. She ordered some ciorbă, a mămăligă, and a piece of prăjitură. The mămăligă cost 66.48 leu, and the ciorbă 25% more. The prăjitură is only half of the price of the mămăligă. How much did Aleksandra need to pay for the dinner she ordered?",
+    "adapted_answer": [
+      "The ciorbă cost 66.48 * 25/100 = 16.62 leu more than the mămăligă.",
+      "So the ciorbă cost is 66.48 + 16.62 = 83.1 leu.",
+      "The prăjitură is half the price of the mămăligă, so it is 66.48 * 0.5 = 33.24 leu.",
+      "Aleksandra needed to pay 66.48 + 83.1 + 33.24 = 182.82 leu.",
+      "#### 182.82"
+    ],
+    "adaptation_notes": "Replaced 'soup' with 'ciorbă', 'bagel' with 'mămăligă', and 'cake' with 'prăjitură' to provide Moldovan equivalents."
+  }
+}

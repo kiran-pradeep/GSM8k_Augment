@@ -1,0 +1,103 @@
+{
+  "index": 292,
+  "split": "test",
+  "original": {
+    "question": "Susan earns $5 every 10 minutes for an online task she does. If she works between 8 a.m. and 11 a.m. and pauses in between for half an hour, how much money does she earn for the online task?",
+    "answer": "Because she rests for half an hour, the time she works is 11 - 8 - 0.5 = <<11-8-0.5=2.5>>2.5 hours.\nSo she works 2.5 * 60 = <<2.5*60=150>>150 minutes\nShe earns $5 per 10 minutes, so for the online task she earns in total 150 * 5/10=$<<150*5/10=75>>75.\n#### 75"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Susan",
+      "dollars"
+    ],
+    "notes": "Name 'Susan' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "earnings_per_10_minutes",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 75,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"earnings_per_10_minutes\",\n        \"value\": 5,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"total_earnings\",\n        \"value\": 75,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "earnings_per_10_minutes",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 6525,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Susan earns ${earnings_per_10_minutes} every 10 minutes for an online task she does. If she works between 8 a.m. and 11 a.m. and pauses in between for half an hour, how much money does she earn for the online task?",
+    "templatized_answer": [
+      "Because she rests for half an hour, the time she works is 11 - 8 - 0.5 = {total_hours_worked} hours.",
+      "So she works {total_hours_worked} * 60 = {total_minutes_worked} minutes",
+      "She earns ${earnings_per_10_minutes} per 10 minutes, so for the online task she earns in total {total_minutes_worked} * {earnings_per_10_minutes}/10=${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "earnings_per_10_minutes": 5,
+      "total_earnings": 75,
+      "total_hours_worked": 2.5,
+      "total_minutes_worked": 150
+    }
+  },
+  "merged_assignment": {
+    "earnings_per_10_minutes": 435,
+    "total_earnings": 6525,
+    "total_hours_worked": 2.5,
+    "total_minutes_worked": 150
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    earnings_per_10_minutes = 435\n    total_hours_worked = 2.5\n    total_minutes_worked = total_hours_worked * 60\n    total_earnings = (total_minutes_worked * earnings_per_10_minutes) / 10\n\n    return {\n        \"earnings_per_10_minutes\": earnings_per_10_minutes,\n        \"total_hours_worked\": round(total_hours_worked, 2),\n        \"total_minutes_worked\": round(total_minutes_worked, 2),\n        \"total_earnings\": round(total_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "earnings_per_10_minutes": 435,
+      "total_hours_worked": 2.5,
+      "total_minutes_worked": 150.0,
+      "total_earnings": 6525.0
+    }
+  },
+  "final": {
+    "question": "Susan earns 435 every 10 minutes for an online task she does. If she works between 8 a.m. and 11 a.m. and pauses in between for half an hour, how much money does she earn for the online task?",
+    "answer_lines": [
+      "Because she rests for half an hour, the time she works is 11 - 8 - 0.5 = 2.5 hours.",
+      "So she works 2.5 * 60 = 150 minutes",
+      "She earns 435 per 10 minutes, so for the online task she earns in total 150 * 435/10=6525.",
+      "#### 6525"
+    ],
+    "final_scalar": 6525,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rukmini earns 435 every 10 minutes for an online task she does. If she works between 8 a.m. and 11 a.m. and pauses in between for half an hour, how much money does she earn for the online task?",
+    "adapted_answer": [
+      "Because she rests for half an hour, the time she works is 11 - 8 - 0.5 = 2.5 hours.",
+      "So she works 2.5 * 60 = 150 minutes",
+      "She earns 435 per 10 minutes, so for the online task she earns in total 150 * 435/10=6525.",
+      "#### 6525"
+    ],
+    "adaptation_notes": "Replaced 'Susan' with 'Rukmini' to provide an Indian context."
+  }
+}

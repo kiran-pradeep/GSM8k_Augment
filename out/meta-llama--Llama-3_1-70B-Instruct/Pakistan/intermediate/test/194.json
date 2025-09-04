@@ -1,0 +1,129 @@
+{
+  "index": 194,
+  "split": "test",
+  "original": {
+    "question": "Violetta wants to buy new crayons. She needs them in 5 different colors and prepared $20 for this purchase. One crayon costs $2. How much change will she get?",
+    "answer": "Violetta is going to pay 5 * 2 = $<<5*2=10>>10 for the crayons she wants.\nIf she pays $20, she will get 20 - 10 = $<<20-10=10>>10 of change.\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Violetta",
+      "dollars"
+    ],
+    "notes": "Name 'Violetta' and unit 'dollars' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "crayon_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "violetta_budget",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "crayon_total_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"crayon_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"violetta_budget\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"crayon_total_cost\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "crayon_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 563.7,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "violetta_budget",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 5637.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "crayon_total_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "change",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Violetta wants to buy new crayons. She needs them in {number_of_crayons} different colors and prepared ${violetta_budget} for this purchase. One crayon costs ${crayon_cost}. How much change will she get?",
+    "templatized_answer": [
+      "Violetta is going to pay {number_of_crayons} * {crayon_cost} = ${crayon_total_cost} for the crayons she wants.",
+      "If she pays ${violetta_budget}, she will get {violetta_budget} - {crayon_total_cost} = ${change} of change.",
+      "#### {change}"
+    ],
+    "factual_assignment": {
+      "number_of_crayons": 5,
+      "violetta_budget": 20.0,
+      "crayon_cost": 2.0,
+      "crayon_total_cost": 10.0,
+      "change": 10.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_crayons": 5,
+    "violetta_budget": 5637.0,
+    "crayon_cost": 563.7,
+    "crayon_total_cost": 2818.5,
+    "change": 2818.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_crayons = 5\n    violetta_budget = 5637.0\n    crayon_cost = 563.7\n\n    crayon_total_cost = number_of_crayons * crayon_cost\n    change = violetta_budget - crayon_total_cost\n\n    return {\n        \"number_of_crayons\": number_of_crayons,\n        \"violetta_budget\": round(violetta_budget, 2),\n        \"crayon_cost\": round(crayon_cost, 2),\n        \"crayon_total_cost\": round(crayon_total_cost, 2),\n        \"change\": round(change, 2)\n    }\n",
+    "results": {
+      "number_of_crayons": 5,
+      "violetta_budget": 5637.0,
+      "crayon_cost": 563.7,
+      "crayon_total_cost": 2818.5,
+      "change": 2818.5
+    }
+  },
+  "final": {
+    "question": "Violetta wants to buy new crayons. She needs them in 5 different colors and prepared 5637 rupee for this purchase. One crayon costs 563.7 rupee. How much change will she get?",
+    "answer_lines": [
+      "Violetta is going to pay 5 * 563.7 = 2818.5 rupee for the crayons she wants.",
+      "If she pays 5637 rupee, she will get 5637 - 2818.5 = 2818.5 rupee of change.",
+      "#### 2818.5"
+    ],
+    "final_scalar": 2818.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha wants to buy new crayons. She needs them in 5 different colors and prepared 5637 rupee for this purchase. One crayon costs 563.7 rupee. How much change will she get?",
+    "adapted_answer": [
+      "Ayesha is going to pay 5 * 563.7 = 2818.5 rupee for the crayons she wants.",
+      "If she pays 5637 rupee, she will get 5637 - 2818.5 = 2818.5 rupee of change.",
+      "#### 2818.5"
+    ],
+    "adaptation_notes": "Replaced 'Violetta' with 'Ayesha' to give the name a Pakistani context."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "index": 1101,
+  "split": "test",
+  "original": {
+    "question": "Amber, Micah, and Ahito ran 52 miles in total. Amber ran 8 miles. Micah ran 3.5 times what Amber ran. How many miles did Ahito run?",
+    "answer": "Amber ran <<8=8>>8 miles.\nMicah ran 3.5 * 8 miles = <<3.5*8=28>>28 miles\nAhito ran the rest = 52 - 8 - 28 = <<52-8-28=16>>16 miles\nAhito ran <<16=16>>16 miles.\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Amber",
+      "Micah",
+      "Ahito",
+      "miles"
+    ],
+    "notes": "Names and unit of measurement are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_distance",
+      "value": 52.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "amber_distance",
+      "value": 8.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "micah_distance",
+      "value": 28.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "ahito_distance",
+      "value": 16.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"leu\", \"factor\": 16.62}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_distance\", \"value\": 52.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"amber_distance\", \"value\": 8.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"micah_distance\", \"value\": 28.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"ahito_distance\", \"value\": 16.0, \"unit\": \"mile\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_distance",
+        "original_value": 52.0,
+        "original_unit": "mile",
+        "converted_value": 83.69,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "amber_distance",
+        "original_value": 8.0,
+        "original_unit": "mile",
+        "converted_value": 12.87,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "micah_distance",
+        "original_value": 28.0,
+        "original_unit": "mile",
+        "converted_value": 45.06,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "ahito_distance",
+        "original_value": 16.0,
+        "original_unit": "mile",
+        "converted_value": 25.75,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Amber, Micah, and Ahito ran {total_distance} miles in total. Amber ran {amber_distance} miles. Micah ran 3.5 times what Amber ran. How many miles did Ahito run?",
+    "templatized_answer": [
+      "Amber ran {amber_distance} miles.",
+      "Micah ran 3.5 * {amber_distance} miles = 3.5 * {amber_distance} miles",
+      "Ahito ran the rest = {total_distance} - {amber_distance} - (3.5 * {amber_distance}) = {total_distance} - {amber_distance} - (3.5 * {amber_distance})",
+      "Ahito ran {total_distance} - {amber_distance} - (3.5 * {amber_distance}) miles",
+      "#### {total_distance} - {amber_distance} - (3.5 * {amber_distance})"
+    ],
+    "factual_assignment": {
+      "total_distance": 52.0,
+      "amber_distance": 8.0
+    }
+  },
+  "merged_assignment": {
+    "total_distance": 83.69,
+    "amber_distance": 12.87
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_distance = 83.69\n    amber_distance = 12.87\n\n    micah_distance = 3.5 * amber_distance\n    ahito_distance = total_distance - amber_distance - micah_distance\n\n    return {\n        \"total_distance\": round(total_distance, 2),\n        \"amber_distance\": round(amber_distance, 2),\n        \"micah_distance\": round(micah_distance, 2),\n        \"ahito_distance\": round(ahito_distance, 2)\n    }\n",
+    "results": {
+      "total_distance": 83.69,
+      "amber_distance": 12.87,
+      "micah_distance": 45.04,
+      "ahito_distance": 25.77
+    }
+  },
+  "final": {
+    "question": "Amber, Micah, and Ahito ran 83.69 kilometers in total. Amber ran 12.87 kilometers. Micah ran 3.5 times what Amber ran. How many kilometers did Ahito run?",
+    "answer_lines": [
+      "Amber ran 12.87 kilometers.",
+      "Micah ran 3.5 * 12.87 kilometers = 3.5 * 12.87 kilometers = 45.04 kilometers",
+      "Ahito ran the rest = 83.69 - 12.87 - 45.04 = 25.78 kilometers",
+      "Ahito ran 25.78 kilometers",
+      "#### 25.78"
+    ],
+    "final_scalar": 25.78,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Natalia, Andrei, and Ștefan ran 83.69 kilometers in total. Natalia ran 12.87 kilometers. Andrei ran 3.5 times what Natalia ran. How many kilometers did Ștefan run?",
+    "adapted_answer": [
+      "Natalia ran 12.87 kilometers.",
+      "Andrei ran 3.5 * 12.87 kilometers = 3.5 * 12.87 kilometers = 45.04 kilometers",
+      "Ștefan ran the rest = 83.69 - 12.87 - 45.04 = 25.78 kilometers",
+      "Ștefan ran 25.78 kilometers",
+      "#### 25.78"
+    ],
+    "adaptation_notes": "Replaced names with Moldovan equivalents: Amber -> Natalia, Micah -> Andrei, Ahito -> Ștefan."
+  }
+}

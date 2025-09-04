@@ -1,0 +1,164 @@
+{
+  "index": 552,
+  "split": "test",
+  "original": {
+    "question": "A marketing company pays its employees on a commission-based salary system. If you sell goods worth $1000, you earn a 30% commission. Sales over $1000 get you an additional 10% commission. Calculate the amount of money Antonella earned if she sold goods worth $2500.",
+    "answer": "Since Antonella sold $2500 worth of goods, she got the first 30% commission, which is 30/100*$1000 = $<<30/100*1000=300>>300\nSince goods worth over $1000 earn you a 10% commission, she was entitled to earn an additional 10% commission per $500 on $2500-$1000 = $1500 worth of goods.\nThis amounts to $1500 * 10% = $<<1500*10*.01=150>>150\nIn total, Antonella earned $300 from the first commission and $150 from the second commission for a total of $150 + $300 = $<<300+150=450>>450\n#### 450"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Antonella"
+    ],
+    "notes": "The text contains a non-Indian unit of currency (dollars) and a name (Antonella) that is not commonly associated with Indian culture."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_goods_sold",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_goods_sold",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_commission",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_commission",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earned",
+      "value": 450.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_goods_sold",
+      "value": 2500.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_goods_sold\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"additional_goods_sold\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_commission\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_commission\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earned\", \"value\": 450.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_goods_sold\", \"value\": 2500.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_goods_sold",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 87000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "additional_goods_sold",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 130500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "first_commission",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 26100.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_commission",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 13050.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earned",
+        "original_value": 450.0,
+        "original_unit": "dollar",
+        "converted_value": 39150.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_goods_sold",
+        "original_value": 2500.0,
+        "original_unit": "dollar",
+        "converted_value": 217500.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A marketing company pays its employees on a commission-based salary system. If you sell goods worth ${initial_goods_sold}, you earn a 30% commission. Sales over ${initial_goods_sold} get you an additional 10% commission. Calculate the amount of money Antonella earned if she sold goods worth ${total_goods_sold}.",
+    "templatized_answer": [
+      "Since Antonella sold ${total_goods_sold} worth of goods, she got the first 30% commission, which is 30/100*${initial_goods_sold} = ${first_commission}",
+      "Since goods worth over ${initial_goods_sold} earn you a 10% commission, she was entitled to earn an additional 10% commission per ${additional_goods_sold} on ${total_goods_sold}-${initial_goods_sold} = ${additional_goods_sold} worth of goods.",
+      "This amounts to ${additional_goods_sold} * 10% = ${second_commission}",
+      "In total, Antonella earned ${first_commission} from the first commission and ${second_commission} from the second commission for a total of ${first_commission} + ${second_commission} = ${total_earned}",
+      "#### {total_earned}"
+    ],
+    "factual_assignment": {
+      "initial_goods_sold": 1000.0,
+      "additional_goods_sold": 1500.0,
+      "first_commission": 300.0,
+      "second_commission": 150.0,
+      "total_earned": 450.0,
+      "total_goods_sold": 2500.0
+    }
+  },
+  "merged_assignment": {
+    "initial_goods_sold": 87000.0,
+    "additional_goods_sold": 130500.0,
+    "first_commission": 26100.0,
+    "second_commission": 13050.0,
+    "total_earned": 39150.0,
+    "total_goods_sold": 217500.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_goods_sold = 87000.0\n    total_goods_sold = 217500.0\n\n    first_commission = round(0.3 * initial_goods_sold, 2)\n    additional_goods_sold = total_goods_sold - initial_goods_sold\n    second_commission = round(0.1 * additional_goods_sold, 2)\n    total_earned = round(first_commission + second_commission, 2)\n\n    return {\n        \"initial_goods_sold\": initial_goods_sold,\n        \"total_goods_sold\": total_goods_sold,\n        \"first_commission\": first_commission,\n        \"additional_goods_sold\": additional_goods_sold,\n        \"second_commission\": second_commission,\n        \"total_earned\": total_earned\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_goods_sold": 87000.0,
+      "total_goods_sold": 217500.0,
+      "first_commission": 26100.0,
+      "additional_goods_sold": 130500.0,
+      "second_commission": 13050.0,
+      "total_earned": 39150.0
+    }
+  },
+  "final": {
+    "question": "A marketing company pays its employees on a commission-based salary system. If you sell goods worth 87000, you earn a 30% commission. Sales over 87000 get you an additional 10% commission. Calculate the amount of money Antonella earned if she sold goods worth 217500.",
+    "answer_lines": [
+      "Since Antonella sold 217500 worth of goods, she got the first 30% commission, which is 30/100*87000 = 26100",
+      "Since goods worth over 87000 earn you a 10% commission, she was entitled to earn an additional 10% commission per 130500 on 217500-87000 = 130500 worth of goods.",
+      "This amounts to 130500 * 10% = 13050",
+      "In total, Antonella earned 26100 from the first commission and 13050 from the second commission for a total of 26100 + 13050 = 39150",
+      "#### 39150"
+    ],
+    "final_scalar": 39150,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A marketing company pays its employees on a commission-based salary system. If you sell goods worth 87000, you earn a 30% commission. Sales over 87000 get you an additional 10% commission. Calculate the amount of money Aaradhya earned if she sold goods worth 217500.",
+    "adapted_answer": [
+      "Since Aaradhya sold 217500 worth of goods, she got the first 30% commission, which is 30/100*87000 = 26100",
+      "Since goods worth over 87000 earn you a 10% commission, she was entitled to earn an additional 10% commission per 130500 on 217500-87000 = 130500 worth of goods.",
+      "This amounts to 130500 * 10% = 13050",
+      "In total, Aaradhya earned 26100 from the first commission and 13050 from the second commission for a total of 26100 + 13050 = 39150",
+      "#### 39150"
+    ],
+    "adaptation_notes": "Replaced 'Antonella' with 'Aaradhya' to provide an Indian context."
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "index": 409,
+  "split": "test",
+  "original": {
+    "question": "Carolyn works for a delivery service company that hires on a contract basis. In May, they hired 40 employees, paying each employee $15 per hour for a 40-hour workweek. In June, 1/4 of the employees' contracts expired. Calculate the total amount of money the company paid to the employees in the two months.",
+    "answer": "When hired, each employee is paid $15*40 = $<<15*40=600>>600 per week.\nThe total earnings of a contracted employee in a month are 4 weeks * $600 per week = $<<4*600=2400>>2400\nPaying 40 employees, the company paid 40*$2400= $<<40*2400=96000>>96000 to all of its contract employees in May.\nIn June, 1/4 of the employees' contracts expired, that is 1/4*40 = <<1/4*40=10>>10 employees.\nThe total number of employees whose contracts were valid in June was 40-10 = <<40-10=30>>30 employees.\nThe total amount of money paid to the contracted employees in June is 30*$2400 = $<<30*2400=72000>>72000\nIn the two months, the company paid a total of $72000+$96000 = $<<72000+96000=168000>>168000\n#### 168000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not the official currency of Moldova (Moldovan leu)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 600,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 2400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "may_total_earnings",
+      "value": 96000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "june_total_earnings",
+      "value": 72000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 168000,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 600, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_earnings\", \"value\": 2400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"may_total_earnings\", \"value\": 96000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"june_total_earnings\", \"value\": 72000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 168000, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 249.3,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 600,
+        "original_unit": "dollar",
+        "converted_value": 9972.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 2400,
+        "original_unit": "dollar",
+        "converted_value": 39888.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "may_total_earnings",
+        "original_value": 96000,
+        "original_unit": "dollar",
+        "converted_value": 1595520.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "june_total_earnings",
+        "original_value": 72000,
+        "original_unit": "dollar",
+        "converted_value": 1196640.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 168000,
+        "original_unit": "dollar",
+        "converted_value": 2792160.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carolyn works for a delivery service company that hires on a contract basis. In May, they hired {number_of_employees} employees, paying each employee ${hourly_wage} per hour for a {number_of_hours_per_week}-hour workweek. In June, 1/4 of the employees' contracts expired. Calculate the total amount of money the company paid to the employees in the two months.",
+    "templatized_answer": [
+      "When hired, each employee is paid ${hourly_wage}*{number_of_hours_per_week} = ${hourly_wage}*{number_of_hours_per_week} per week.",
+      "The total earnings of a contracted employee in a month are {number_of_weeks_per_month} weeks * ${hourly_wage}*{number_of_hours_per_week} per week = ${monthly_earnings}",
+      "Paying {number_of_employees} employees, the company paid {number_of_employees}*${monthly_earnings}= ${may_total_earnings} to all of its contract employees in May.",
+      "In June, 1/4 of the employees' contracts expired, that is 1/4*{number_of_employees} = {number_of_expired_employees} employees.",
+      "The total number of employees whose contracts were valid in June was {number_of_employees}-{number_of_expired_employees} = {number_of_valid_employees} employees.",
+      "The total amount of money paid to the contracted employees in June is {number_of_valid_employees}*${monthly_earnings} = ${june_total_earnings}",
+      "In the two months, the company paid a total of ${june_total_earnings}+${may_total_earnings} = ${total_earnings}"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 15,
+      "number_of_employees": 40,
+      "number_of_hours_per_week": 40,
+      "number_of_weeks_per_month": 4,
+      "monthly_earnings": 2400,
+      "may_total_earnings": 96000,
+      "number_of_expired_employees": 10,
+      "number_of_valid_employees": 30,
+      "june_total_earnings": 72000,
+      "total_earnings": 168000
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 249.3,
+    "number_of_employees": 40,
+    "number_of_hours_per_week": 40,
+    "number_of_weeks_per_month": 4,
+    "monthly_earnings": 39888.0,
+    "may_total_earnings": 1595520.0,
+    "number_of_expired_employees": 10,
+    "number_of_valid_employees": 30,
+    "june_total_earnings": 1196640.0,
+    "total_earnings": 2792160.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 249.3\n    number_of_employees = 40\n    number_of_hours_per_week = 40\n    number_of_weeks_per_month = 4\n\n    weekly_earnings = hourly_wage * number_of_hours_per_week\n    monthly_earnings = number_of_weeks_per_month * weekly_earnings\n    may_total_earnings = number_of_employees * monthly_earnings\n    number_of_expired_employees = number_of_employees // 4\n    number_of_valid_employees = number_of_employees - number_of_expired_employees\n    june_total_earnings = number_of_valid_employees * monthly_earnings\n    total_earnings = june_total_earnings + may_total_earnings\n\n    return {\n        \"hourly_wage\": hourly_wage,\n        \"number_of_employees\": number_of_employees,\n        \"number_of_hours_per_week\": number_of_hours_per_week,\n        \"number_of_weeks_per_month\": number_of_weeks_per_month,\n        \"monthly_earnings\": round(monthly_earnings, 2),\n        \"may_total_earnings\": round(may_total_earnings, 2),\n        \"number_of_expired_employees\": number_of_expired_employees,\n        \"number_of_valid_employees\": number_of_valid_employees,\n        \"june_total_earnings\": round(june_total_earnings, 2),\n        \"total_earnings\": round(total_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hourly_wage": 249.3,
+      "number_of_employees": 40,
+      "number_of_hours_per_week": 40,
+      "number_of_weeks_per_month": 4,
+      "monthly_earnings": 39888.0,
+      "may_total_earnings": 1595520.0,
+      "number_of_expired_employees": 10,
+      "number_of_valid_employees": 30,
+      "june_total_earnings": 1196640.0,
+      "total_earnings": 2792160.0
+    }
+  },
+  "final": {
+    "question": "Carolyn works for a delivery service company that hires on a contract basis. In May, they hired 40 employees, paying each employee 249.3 leu per hour for a 40-hour workweek. In June, 1/4 of the employees' contracts expired. Calculate the total amount of money the company paid to the employees in the two months.",
+    "answer_lines": [
+      "When hired, each employee is paid 249.3*40 = 9972 leu per week.",
+      "The total earnings of a contracted employee in a month are 4 weeks * 9972 leu per week = 39888 leu",
+      "Paying 40 employees, the company paid 40*39888= 1595520 leu to all of its contract employees in May.",
+      "In June, 1/4 of the employees' contracts expired, that is 1/4*40 = 10 employees.",
+      "The total number of employees whose contracts were valid in June was 40-10 = 30 employees.",
+      "The total amount of money paid to the contracted employees in June is 30*39888 = 1196640 leu",
+      "In the two months, the company paid a total of 1196640+1595520 = 2792160 leu",
+      "#### 2792160"
+    ],
+    "final_scalar": 2792160,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Carolyn works for a delivery service company in Chișinău that hires on a contract basis. In May, they hired 40 employees, paying each employee 249.3 lei per hour for a 40-hour workweek. In June, 1/4 of the employees' contracts expired. Calculate the total amount of money the company paid to the employees in the two months.",
+    "adapted_answer": [
+      "When hired, each employee is paid 249.3*40 = 9972 lei per week.",
+      "The total earnings of a contracted employee in a month are 4 weeks * 9972 lei per week = 39888 lei",
+      "Paying 40 employees, the company paid 40*39888= 1595520 lei to all of its contract employees in May.",
+      "In June, 1/4 of the employees' contracts expired, that is 1/4*40 = 10 employees.",
+      "The total number of employees whose contracts were valid in June was 40-10 = 30 employees.",
+      "The total amount of money paid to the contracted employees in June is 30*39888 = 1196640 lei",
+      "In the two months, the company paid a total of 1196640+1595520 = 2792160 lei",
+      "#### 2792160"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' to match Moldovan currency, and added 'in Chișinău' to give the question a Moldovan context."
+  }
+}

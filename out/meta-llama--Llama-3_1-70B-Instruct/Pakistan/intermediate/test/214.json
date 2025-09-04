@@ -1,0 +1,111 @@
+{
+  "index": 214,
+  "split": "test",
+  "original": {
+    "question": "Jerry has two pools, both with leaks emptying them out at 4 gallons/minute. 4 minutes ago, the big pool had twice as much water as the small pool. Now the big pool has four times as much water as the small pool. How much water does the small pool have now?",
+    "answer": "First find how many gallons of water flow out of the pools in 4 minutes: 4 gallons/minute * 4 minutes = <<4*4=16>>16 gallons\nLet b be the amount of water the big pool has now and s be the amount of water the small pool has. We know that b = 4s, and b + 16 = 2(s + 16)\nSubstituting the first equation into the second equation, we get 4s + 16 = 2(s + 16)\nMultiplying through the parentheses, we get 4s + 16 = 2s + 32\nSubtracting 2s from both sides, we get 2s + 16 = 32\nSubtracting 16 from both sides, we get 2s = 16\nDividing both sides by 2, we get s = <<8=8>>8\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jerry",
+      "gallons"
+    ],
+    "notes": "The name 'Jerry' is culturally specific to Western regions and 'gallons' is a unit commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "leak_rate",
+      "value": 4.0,
+      "unit": "gallon/minute",
+      "context": "question"
+    },
+    {
+      "variable": "water_loss",
+      "value": 16.0,
+      "unit": "gallon",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        elif \"/\" in unit:\n            base_unit, per_unit = unit.split(\"/\")\n            if base_unit in conversions:\n                converted_base_unit = conversions[base_unit][\"unit\"]\n                converted_value = round(value * conversions[base_unit][\"factor\"], 2)\n                converted_unit = f\"{converted_base_unit}/{per_unit}\"\n            else:\n                converted_value = value\n                converted_unit = unit\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"leak_rate\",\n        \"value\": 4.0,\n        \"unit\": \"gallon/minute\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"water_loss\",\n        \"value\": 16.0,\n        \"unit\": \"gallon\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "leak_rate",
+        "original_value": 4.0,
+        "original_unit": "gallon/minute",
+        "converted_value": 15.14,
+        "converted_unit": "liter/minute"
+      },
+      {
+        "variable": "water_loss",
+        "original_value": 16.0,
+        "original_unit": "gallon",
+        "converted_value": 60.57,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jerry has two pools, both with leaks emptying them out at {leak_rate} gallons/minute. 4 minutes ago, the big pool had twice as much water as the small pool. Now the big pool has four times as much water as the small pool. How much water does the small pool have now?",
+    "templatized_answer": [
+      "First find how many gallons of water flow out of the pools in 4 minutes: {leak_rate} gallons/minute * 4 minutes = {water_loss} gallons",
+      "Let b be the amount of water the big pool has now and s be the amount of water the small pool has. We know that b = 4s, and b + {water_loss} = 2(s + {water_loss})",
+      "Substituting the first equation into the second equation, we get 4s + {water_loss} = 2(s + {water_loss})",
+      "Multiplying through the parentheses, we get 4s + {water_loss} = 2s + 2*{water_loss}",
+      "Subtracting 2s from both sides, we get 2s + {water_loss} = 2*{water_loss}",
+      "Subtracting {water_loss} from both sides, we get 2s = {water_loss}",
+      "Dividing both sides by 2, we get s = {water_loss}/2",
+      "#### {water_loss}/2"
+    ],
+    "factual_assignment": {
+      "leak_rate": 4.0,
+      "water_loss": 16.0
+    }
+  },
+  "merged_assignment": {
+    "leak_rate": 15.14,
+    "water_loss": 60.57
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    leak_rate = 15.14  # gallons/minute\n    water_loss = 60.57  # gallons\n\n    # Recompute each variable as in the original reasoning\n    leak_rate_minutes = 4\n    water_loss_recomputed = leak_rate * leak_rate_minutes\n    water_loss = water_loss_recomputed\n\n    b = None  # amount of water the big pool has now\n    s = None  # amount of water the small pool has\n    b_plus_water_loss = None\n    s_plus_water_loss = None\n\n    # Substituting the first equation into the second equation\n    # b + water_loss = 2(s + water_loss)\n    # Since b = 4s, we get\n    # 4s + water_loss = 2(s + water_loss)\n    # Multiplying through the parentheses, we get\n    # 4s + water_loss = 2s + 2*water_loss\n    # Subtracting 2s from both sides, we get\n    # 2s + water_loss = 2*water_loss\n    # Subtracting water_loss from both sides, we get\n    # 2s = water_loss\n    # Dividing both sides by 2, we get\n    # s = water_loss/2\n    s = water_loss / 2\n\n    return {\n        \"leak_rate\": round(leak_rate, 2),\n        \"water_loss\": round(water_loss, 2),\n        \"water_loss_recomputed\": round(water_loss_recomputed, 2),\n        \"s\": round(s, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "leak_rate": 15.14,
+      "water_loss": 60.56,
+      "water_loss_recomputed": 60.56,
+      "s": 30.28
+    }
+  },
+  "final": {
+    "question": "Jerry has two pools, both with leaks emptying them out at 15.14 liters/minute. 4 minutes ago, the big pool had twice as much water as the small pool. Now the big pool has four times as much water as the small pool. How much water does the small pool have now?",
+    "answer_lines": [
+      "First find how many liters of water flow out of the pools in 4 minutes: 15.14 liters/minute * 4 minutes = 60.56 liters",
+      "Let b be the amount of water the big pool has now and s be the amount of water the small pool has. We know that b = 4s, and b + 60.56 = 2(s + 60.56)",
+      "Substituting the first equation into the second equation, we get 4s + 60.56 = 2(s + 60.56)",
+      "Multiplying through the parentheses, we get 4s + 60.56 = 2s + 121.12",
+      "Subtracting 2s from both sides, we get 2s + 60.56 = 121.12",
+      "Subtracting 60.56 from both sides, we get 2s = 60.56",
+      "Dividing both sides by 2, we get s = 30.28",
+      "#### 30.28"
+    ],
+    "final_scalar": 30.28,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran has two pools, both with leaks emptying them out at 15.14 liters/minute. 4 minutes ago, the big pool had twice as much water as the small pool. Now the big pool has four times as much water as the small pool. How much water does the small pool have now?",
+    "adapted_answer": [
+      "First find how many liters of water flow out of the pools in 4 minutes: 15.14 liters/minute * 4 minutes = 60.56 liters",
+      "Let b be the amount of water the big pool has now and s be the amount of water the small pool has. We know that b = 4s, and b + 60.56 = 2(s + 60.56)",
+      "Substituting the first equation into the second equation, we get 4s + 60.56 = 2(s + 60.56)",
+      "Multiplying through the parentheses, we get 4s + 60.56 = 2s + 121.12",
+      "Subtracting 2s from both sides, we get 2s + 60.56 = 121.12",
+      "Subtracting 60.56 from both sides, we get 2s = 60.56",
+      "Dividing both sides by 2, we get s = 30.28",
+      "#### 30.28"
+    ],
+    "adaptation_notes": "Replaced 'Jerry' with 'Kamran' to give the question a Pakistani context."
+  }
+}

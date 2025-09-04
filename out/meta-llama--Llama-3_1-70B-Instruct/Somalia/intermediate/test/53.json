@@ -1,0 +1,153 @@
+{
+  "index": 53,
+  "split": "test",
+  "original": {
+    "question": "A mechanic charges different rates to repair the tires of trucks and cars.  For each truck tire that is repaired, the mechanic will charge $60 and for each car tire that is repaired, the mechanic will charge $40.  On Thursday, the mechanic repairs 6 truck tires and 4 car tires.  On Friday, the mechanic repairs 12 car tries and doesn't repair any truck tires.  How much more revenue did the mechanic earn on the day with higher revenue?",
+    "answer": "On Thursday the mechanic charged a total of 6*60 + 4*40 = $<<6*60+4*40=520>>520.\nOn Friday the mechanic charged a total of 12*40 = $<<12*40=480>>480.\nThus, on Thursday, the day with higher revenue, the mechanic had 520-480 = $<<520-480=40>>40 more revenue than on Friday.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The text contains a unit of currency (dollars) that is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "truck_tire_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "car_tire_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "thursday_revenue",
+      "value": 520,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "friday_revenue",
+      "value": 480,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "revenue_difference",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"truck_tire_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"car_tire_cost\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"thursday_revenue\", \"value\": 520, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"friday_revenue\", \"value\": 480, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"revenue_difference\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "truck_tire_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 34162.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "car_tire_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 22775.2,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "thursday_revenue",
+        "original_value": 520,
+        "original_unit": "dollar",
+        "converted_value": 296077.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "friday_revenue",
+        "original_value": 480,
+        "original_unit": "dollar",
+        "converted_value": 273302.4,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "revenue_difference",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 22775.2,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A mechanic charges different rates to repair the tires of trucks and cars.  For each truck tire that is repaired, the mechanic will charge ${truck_tire_cost} and for each car tire that is repaired, the mechanic will charge ${car_tire_cost}.  On Thursday, the mechanic repairs {thursday_truck_tires} truck tires and {thursday_car_tires} car tires.  On Friday, the mechanic repairs {friday_car_tires} car tires and doesn't repair any truck tires.  How much more revenue did the mechanic earn on the day with higher revenue?",
+    "templatized_answer": [
+      "On Thursday the mechanic charged a total of {thursday_truck_tires}*{truck_tire_cost} + {thursday_car_tires}*{car_tire_cost} = ${thursday_revenue}.",
+      "On Friday the mechanic charged a total of {friday_car_tires}*{car_tire_cost} = ${friday_revenue}.",
+      "Thus, on Thursday, the day with higher revenue, the mechanic had {thursday_revenue}-{friday_revenue} = ${revenue_difference} more revenue than on Friday.",
+      "#### {revenue_difference}"
+    ],
+    "factual_assignment": {
+      "truck_tire_cost": 60,
+      "car_tire_cost": 40,
+      "thursday_truck_tires": 6,
+      "thursday_car_tires": 4,
+      "friday_car_tires": 12,
+      "thursday_revenue": 520,
+      "friday_revenue": 480,
+      "revenue_difference": 40
+    }
+  },
+  "merged_assignment": {
+    "truck_tire_cost": 34162.8,
+    "car_tire_cost": 22775.2,
+    "thursday_truck_tires": 6,
+    "thursday_car_tires": 4,
+    "friday_car_tires": 12,
+    "thursday_revenue": 296077.6,
+    "friday_revenue": 273302.4,
+    "revenue_difference": 22775.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    truck_tire_cost = 34162.8\n    car_tire_cost = 22775.2\n    thursday_truck_tires = 6\n    thursday_car_tires = 4\n    friday_car_tires = 12\n\n    thursday_revenue = thursday_truck_tires * truck_tire_cost + thursday_car_tires * car_tire_cost\n    friday_revenue = friday_car_tires * car_tire_cost\n    revenue_difference = thursday_revenue - friday_revenue\n\n    return {\n        \"truck_tire_cost\": truck_tire_cost,\n        \"car_tire_cost\": car_tire_cost,\n        \"thursday_truck_tires\": thursday_truck_tires,\n        \"thursday_car_tires\": thursday_car_tires,\n        \"friday_car_tires\": friday_car_tires,\n        \"thursday_revenue\": round(thursday_revenue, 2),\n        \"friday_revenue\": round(friday_revenue, 2),\n        \"revenue_difference\": round(revenue_difference, 2)\n    }\n",
+    "results": {
+      "truck_tire_cost": 34162.8,
+      "car_tire_cost": 22775.2,
+      "thursday_truck_tires": 6,
+      "thursday_car_tires": 4,
+      "friday_car_tires": 12,
+      "thursday_revenue": 296077.6,
+      "friday_revenue": 273302.4,
+      "revenue_difference": 22775.2
+    }
+  },
+  "final": {
+    "question": "A mechanic charges different rates to repair the tires of trucks and cars.  For each truck tire that is repaired, the mechanic will charge 34162.8 shilling and for each car tire that is repaired, the mechanic will charge 22775.2 shilling.  On Thursday, the mechanic repairs 6 truck tires and 4 car tires.  On Friday, the mechanic repairs 12 car tires and doesn't repair any truck tires.  How much more revenue did the mechanic earn on the day with higher revenue?",
+    "answer_lines": [
+      "On Thursday the mechanic charged a total of 6*34162.8 + 4*22775.2 = 296077.6 shilling.",
+      "On Friday the mechanic charged a total of 12*22775.2 = 273302.4 shilling.",
+      "Thus, on Thursday, the day with higher revenue, the mechanic had 296077.6-273302.4 = 22775.2 shilling more revenue than on Friday.",
+      "#### 22775.2"
+    ],
+    "final_scalar": 22775.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A gaarsiyaad charges different rates to repair the tires of lorries and baabuurta.  For each lorry tire that is repaired, the gaarsiyaad will charge 34162.8 shilling and for each baabuur tire that is repaired, the gaarsiyaad will charge 22775.2 shilling.  On Thursday, the gaarsiyaad repairs 6 lorry tires and 4 baabuur tires.  On Friday, the gaarsiyaad repairs 12 baabuur tires and doesn't repair any lorry tires.  How much more revenue did the gaarsiyaad earn on the day with higher revenue?",
+    "adapted_answer": [
+      "On Thursday the gaarsiyaad charged a total of 6*34162.8 + 4*22775.2 = 296077.6 shilling.",
+      "On Friday the gaarsiyaad charged a total of 12*22775.2 = 273302.4 shilling.",
+      "Thus, on Thursday, the day with higher revenue, the gaarsiyaad had 296077.6-273302.4 = 22775.2 shilling more revenue than on Friday.",
+      "#### 22775.2"
+    ],
+    "adaptation_notes": "Replaced 'mechanic' with 'gaarsiyaad', 'trucks' with 'lorries', and 'cars' with 'baabuurta' to provide Somali context."
+  }
+}

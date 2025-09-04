@@ -1,0 +1,149 @@
+{
+  "index": 325,
+  "split": "test",
+  "original": {
+    "question": "Jaime is a computer programmer for a company that currently has employed 100 people. Senior programmers are paid $400 more than junior programmers. If the number of Junior programmers is 2/5 of the total number of employees, and they are each paid $2000 per month, calculate the total amount of money the company pays to all the programmers per month.",
+    "answer": "The number of junior programmers in the company is 2/5*100 = <<2/5*100=40>>40\nThe total amount of money that the company pays to the Junior employees is $2000*40 = $<<2000*40=80000>>80000\nThere are also 100-40 = <<100-40=60>>60 senior programmers in the company.\nThe senior programmers are paid $2000+$400 = $<<2000+400=2400>>2400 each.\nSenior programmers at the company receive 2400*60 = $<<2400*60=144000>>144000 combined.\nAll the programmers in the company are paid a combined salary of 144000+80000 = <<144000+80000=224000>>224000\n#### 224000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jaime",
+      "dollars"
+    ],
+    "notes": "Name Jaime and unit dollars are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "junior_programmer_salary",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "senior_programmer_salary_difference",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "junior_programmer_total_salary",
+      "value": 80000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "senior_programmer_salary",
+      "value": 2400.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "senior_programmer_total_salary",
+      "value": 144000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_programmer_salary",
+      "value": 224000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = original_value * conversions[original_unit][\"factor\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"junior_programmer_salary\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"senior_programmer_salary_difference\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"junior_programmer_total_salary\", \"value\": 80000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"senior_programmer_salary\", \"value\": 2400.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"senior_programmer_total_salary\", \"value\": 144000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_programmer_salary\", \"value\": 224000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "junior_programmer_salary",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 174000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "senior_programmer_salary_difference",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 34800.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "junior_programmer_total_salary",
+        "original_value": 80000.0,
+        "original_unit": "dollar",
+        "converted_value": 6960000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "senior_programmer_salary",
+        "original_value": 2400.0,
+        "original_unit": "dollar",
+        "converted_value": 208800.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "senior_programmer_total_salary",
+        "original_value": 144000.0,
+        "original_unit": "dollar",
+        "converted_value": 12528000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_programmer_salary",
+        "original_value": 224000.0,
+        "original_unit": "dollar",
+        "converted_value": 19488000.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jaime is a computer programmer for a company that currently has employed {total_employees} people. Senior programmers are paid ${senior_programmer_salary_difference} more than junior programmers. If the number of Junior programmers is 2/5 of the total number of employees, and they are each paid ${junior_programmer_salary} per month, calculate the total amount of money the company pays to all the programmers per month.",
+    "templatized_answer": [
+      "The number of junior programmers in the company is 2/5*{total_employees} = {junior_programmer_count}",
+      "The total amount of money that the company pays to the Junior employees is ${junior_programmer_salary}*{junior_programmer_count} = ${junior_programmer_total_salary}",
+      "There are also {total_employees}-{junior_programmer_count} = {senior_programmer_count} senior programmers in the company.",
+      "The senior programmers are paid ${junior_programmer_salary}+${senior_programmer_salary_difference} = ${senior_programmer_salary} each.",
+      "Senior programmers at the company receive ${senior_programmer_salary}*{senior_programmer_count} = ${senior_programmer_total_salary} combined.",
+      "All the programmers in the company are paid a combined salary of ${senior_programmer_total_salary}+${junior_programmer_total_salary} = ${total_programmer_salary}"
+    ],
+    "factual_assignment": {
+      "total_employees": 100,
+      "junior_programmer_salary": 2000,
+      "senior_programmer_salary_difference": 400,
+      "junior_programmer_count": 40,
+      "junior_programmer_total_salary": 80000,
+      "senior_programmer_count": 60,
+      "senior_programmer_salary": 2400,
+      "senior_programmer_total_salary": 144000,
+      "total_programmer_salary": 224000
+    }
+  },
+  "merged_assignment": {
+    "total_employees": 100,
+    "junior_programmer_salary": 174000.0,
+    "senior_programmer_salary_difference": 34800.0,
+    "junior_programmer_count": 40,
+    "junior_programmer_total_salary": 6960000.0,
+    "senior_programmer_count": 60,
+    "senior_programmer_salary": 208800.0,
+    "senior_programmer_total_salary": 12528000.0,
+    "total_programmer_salary": 19488000.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_employees = 100\n    junior_programmer_salary = 174000.0\n    senior_programmer_salary_difference = 34800.0\n\n    junior_programmer_count = (2/5) * total_employees\n    junior_programmer_total_salary = junior_programmer_salary * junior_programmer_count\n\n    senior_programmer_count = total_employees - junior_programmer_count\n    senior_programmer_salary = junior_programmer_salary + senior_programmer_salary_difference\n    senior_programmer_total_salary = senior_programmer_salary * senior_programmer_count\n\n    total_programmer_salary = senior_programmer_total_salary + junior_programmer_total_salary\n\n    return {\n        \"total_employees\": total_employees,\n        \"junior_programmer_salary\": round(junior_programmer_salary, 2),\n        \"senior_programmer_salary_difference\": round(senior_programmer_salary_difference, 2),\n        \"junior_programmer_count\": round(junior_programmer_count, 2),\n        \"junior_programmer_total_salary\": round(junior_programmer_total_salary, 2),\n        \"senior_programmer_count\": round(senior_programmer_count, 2),\n        \"senior_programmer_salary\": round(senior_programmer_salary, 2),\n        \"senior_programmer_total_salary\": round(senior_programmer_total_salary, 2),\n        \"total_programmer_salary\": round(total_programmer_salary, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_employees": 100,
+      "junior_programmer_salary": 174000.0,
+      "senior_programmer_salary_difference": 34800.0,
+      "junior_programmer_count": 40.0,
+      "junior_programmer_total_salary": 6960000.0,
+      "senior_programmer_count": 60.0,
+      "senior_programmer_salary": 208800.0,
+      "senior_programmer_total_salary": 12528000.0,
+      "total_programmer_salary": 19488000.0
+    }
+  },
+  "final": null
+}

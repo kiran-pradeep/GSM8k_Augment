@@ -1,0 +1,96 @@
+{
+  "index": 24,
+  "split": "test",
+  "original": {
+    "question": "Kyle bought last year's best-selling book for $19.50. This is with a 25% discount from the original price. What was the original price of the book?",
+    "answer": "Let X be the original price of the book. The discounted price is X - X*25% = $19.50.\nCombining like terms, we get .75X = $19.50\nDividing both sides by .75, we get X = $26.\n#### 26"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The use of dollars as a unit of currency is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "book_discounted_price",
+      "value": 19.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_original_price",
+      "value": 26.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"book_discounted_price\",\n        \"value\": 19.5,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"book_original_price\",\n        \"value\": 26.0,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "book_discounted_price",
+        "original_value": 19.5,
+        "original_unit": "dollar",
+        "converted_value": 324.09,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "book_original_price",
+        "original_value": 26.0,
+        "original_unit": "dollar",
+        "converted_value": 432.12,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kyle bought last year's best-selling book for ${book_discounted_price}. This is with a 25% discount from the original price. What was the original price of the book?",
+    "templatized_answer": [
+      "Let X be the original price of the book. The discounted price is X - X*25% = ${book_discounted_price}.",
+      "Combining like terms, we get .75X = ${book_discounted_price}",
+      "Dividing both sides by .75, we get X = ${book_original_price}",
+      "#### {book_original_price}"
+    ],
+    "factual_assignment": {
+      "book_discounted_price": 19.5,
+      "book_original_price": 26.0
+    }
+  },
+  "merged_assignment": {
+    "book_discounted_price": 324.09,
+    "book_original_price": 432.12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    book_discounted_price = 324.09\n    book_original_price = book_discounted_price / 0.75\n    book_original_price = round(book_original_price, 2)\n    \n    return {\n        \"book_discounted_price\": book_discounted_price,\n        \"book_original_price\": book_original_price\n    }\n",
+    "results": {
+      "book_discounted_price": 324.09,
+      "book_original_price": 432.12
+    }
+  },
+  "final": {
+    "question": "Kyle bought last year's best-selling book for 324.09 leu. This is with a 25% discount from the original price. What was the original price of the book?",
+    "answer_lines": [
+      "Let X be the original price of the book. The discounted price is X - X*25% = 324.09 leu.",
+      "Combining like terms, we get .75X = 324.09 leu",
+      "Dividing both sides by .75, we get X = 432.12 leu",
+      "#### 432.12"
+    ],
+    "final_scalar": 432.12,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kyle bought last year's best-selling book for 324.09 lei. This is with a 25% discount from the original price. What was the original price of the book?",
+    "adapted_answer": [
+      "Let X be the original price of the book. The discounted price is X - X*25% = 324.09 lei.",
+      "Combining like terms, we get .75X = 324.09 lei",
+      "Dividing both sides by .75, we get X = 432.12 lei",
+      "#### 432.12"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei', as 'lei' is the correct plural form of the Moldovan currency."
+  }
+}

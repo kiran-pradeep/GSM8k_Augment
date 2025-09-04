@@ -1,0 +1,146 @@
+{
+  "index": 1279,
+  "split": "test",
+  "original": {
+    "question": "Avery needs to buy a 3 piece place setting (dinner & salad plate and a bowl) for her holiday dinner.  She’s having 12 people over for dinner.  If the dinner plates cost $6.00 each and bowls each cost $5.00 and the salad plates cost $4.00, how much will she spend on place settings?",
+    "answer": "Each place setting will need a dinner plate that’s $6.00, a bowl for $5.00 and a salad plate that’s $4.00 so each place setting will cost 6+5+4 = $<<6+5+4=15.00>>15.00\nShe needs 12 place settings for her guests and they're $15.00 each so she will spend 12*15 = $<<12*15=180.00>>180.00 on the place settings.\n#### 180"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dinner plates",
+      "holiday dinner",
+      "dollars"
+    ],
+    "notes": "The text contains culturally specific entities such as dinner plates and holiday dinner, which are not specific to Somali culture, and uses dollars as a unit of currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "dinner_plate_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bowl_cost",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "salad_plate_cost",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "place_setting_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 180.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"dinner_plate_cost\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bowl_cost\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"salad_plate_cost\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"place_setting_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 180.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "dinner_plate_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 3416.28,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "bowl_cost",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "salad_plate_cost",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 2277.52,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "place_setting_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 8540.7,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 180.0,
+        "original_unit": "dollar",
+        "converted_value": 102488.4,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Avery needs to buy a 3 piece place setting (dinner & salad plate and a bowl) for her holiday dinner.  She’s having {number_of_guests} people over for dinner.  If the dinner plates cost ${dinner_plate_cost} each and bowls each cost ${bowl_cost} and the salad plates cost ${salad_plate_cost}, how much will she spend on place settings?",
+    "templatized_answer": [
+      "Each place setting will need a dinner plate that’s ${dinner_plate_cost}, a bowl for ${bowl_cost} and a salad plate that’s ${salad_plate_cost} so each place setting will cost {dinner_plate_cost}+{bowl_cost}+{salad_plate_cost} = ${place_setting_cost}",
+      "She needs {number_of_guests} place settings for her guests and they're ${place_setting_cost} each so she will spend {number_of_guests}*{place_setting_cost} = ${total_cost} on the place settings.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "dinner_plate_cost": 6.0,
+      "bowl_cost": 5.0,
+      "salad_plate_cost": 4.0,
+      "place_setting_cost": 15.0,
+      "total_cost": 180.0,
+      "number_of_guests": 12
+    }
+  },
+  "merged_assignment": {
+    "dinner_plate_cost": 3416.28,
+    "bowl_cost": 2846.9,
+    "salad_plate_cost": 2277.52,
+    "place_setting_cost": 8540.7,
+    "total_cost": 102488.4,
+    "number_of_guests": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    dinner_plate_cost = 3416.28\n    bowl_cost = 2846.9\n    salad_plate_cost = 2277.52\n    number_of_guests = 12\n\n    place_setting_cost = round(dinner_plate_cost + bowl_cost + salad_plate_cost, 2)\n    total_cost = round(number_of_guests * place_setting_cost, 2)\n\n    return {\n        \"dinner_plate_cost\": dinner_plate_cost,\n        \"bowl_cost\": bowl_cost,\n        \"salad_plate_cost\": salad_plate_cost,\n        \"place_setting_cost\": place_setting_cost,\n        \"total_cost\": total_cost,\n        \"number_of_guests\": number_of_guests\n    }\n\nprint(recompute())\n",
+    "results": {
+      "dinner_plate_cost": 3416.28,
+      "bowl_cost": 2846.9,
+      "salad_plate_cost": 2277.52,
+      "place_setting_cost": 8540.7,
+      "total_cost": 102488.4,
+      "number_of_guests": 12
+    }
+  },
+  "final": {
+    "question": "Avery needs to buy a 3 piece place setting (dinner & salad plate and a bowl) for her holiday dinner.  She’s having 12 people over for dinner.  If the dinner plates cost 3416.28 shilling each and bowls each cost 2846.9 shilling and the salad plates cost 2277.52 shilling, how much will she spend on place settings?",
+    "answer_lines": [
+      "Each place setting will need a dinner plate that’s 3416.28 shilling, a bowl for 2846.9 shilling and a salad plate that’s 2277.52 shilling so each place setting will cost 3416.28+2846.9+2277.52 = 8540.7 shilling",
+      "She needs 12 place settings for her guests and they're 8540.7 shilling each so she will spend 12*8540.7 = 102488.4 shilling on the place settings.",
+      "#### 102488.4"
+    ],
+    "final_scalar": 102488.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Avery needs to buy a 3 piece place setting (habeen & salad plate and a bowl) for her Eid dinner.  She’s having 12 people over for dinner.  If the habeen plates cost 3416.28 shilling each and bowls each cost 2846.9 shilling and the salad plates cost 2277.52 shilling, how much will she spend on place settings?",
+    "adapted_answer": [
+      "Each place setting will need a habeen plate that’s 3416.28 shilling, a bowl for 2846.9 shilling and a salad plate that’s 2277.52 shilling so each place setting will cost 3416.28+2846.9+2277.52 = 8540.7 shilling",
+      "She needs 12 place settings for her guests and they're 8540.7 shilling each so she will spend 12*8540.7 = 102488.4 shilling on the place settings.",
+      "#### 102488.4"
+    ],
+    "adaptation_notes": "Replaced 'dinner plates' with 'habeen plates' (habeen is a traditional Somali dish), 'holiday dinner' with 'Eid dinner' (Eid is a significant holiday in Somalia), and 'salad plates' remains unchanged as it is a neutral term."
+  }
+}

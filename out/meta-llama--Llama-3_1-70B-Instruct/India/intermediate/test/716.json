@@ -1,0 +1,117 @@
+{
+  "index": 716,
+  "split": "test",
+  "original": {
+    "question": "John makes himself a 6 egg omelet with 2 oz of cheese and an equal amount of ham.  Eggs are 75 calories each.  Cheese is 120 calories per ounce.  Ham is 40 calories per ounce.  How many calories is the omelet?",
+    "answer": "The eggs contributed 6*75=<<6*75=450>>450 calories\nHe eats 2*120=<<2*120=240>>240 calories of cheese\nHe eats 2*40=<<2*40=80>>80 calories of ham\nSo in total he eats 450+240+80=<<450+240+80=770>>770 calories\n#### 770"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "omelet",
+      "oz"
+    ],
+    "notes": "Name 'John' and unit 'oz' are culturally specific to regions other than India, and 'omelet' is a food item not commonly associated with Indian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cheese_weight",
+      "value": 2.0,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "ham_weight",
+      "value": 2.0,
+      "unit": "ounce",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cheese_weight\", \"value\": 2.0, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"ham_weight\", \"value\": 2.0, \"unit\": \"ounce\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cheese_weight",
+        "original_value": 2.0,
+        "original_unit": "ounce",
+        "converted_value": 56.7,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "ham_weight",
+        "original_value": 2.0,
+        "original_unit": "ounce",
+        "converted_value": 56.7,
+        "converted_unit": "gram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John makes himself a {egg_count} egg omelet with {cheese_weight} oz of cheese and an equal amount of ham.  Eggs are {egg_calories} calories each.  Cheese is {cheese_calories} calories per ounce.  Ham is {ham_calories} calories per ounce.  How many calories is the omelet?",
+    "templatized_answer": [
+      "The eggs contributed {egg_count}*{egg_calories}={egg_count}*{egg_calories} calories",
+      "He eats {cheese_weight}*{cheese_calories}={cheese_weight}*{cheese_calories} calories of cheese",
+      "He eats {ham_weight}*{ham_calories}={ham_weight}*{ham_calories} calories of ham",
+      "So in total he eats {egg_count}*{egg_calories}+{cheese_weight}*{cheese_calories}+{ham_weight}*{ham_calories}={egg_count}*{egg_calories}+{cheese_weight}*{cheese_calories}+{ham_weight}*{ham_calories} calories",
+      "#### {egg_count}*{egg_calories}+{cheese_weight}*{cheese_calories}+{ham_weight}*{ham_calories}"
+    ],
+    "factual_assignment": {
+      "egg_count": 6,
+      "egg_calories": 75,
+      "cheese_weight": 2.0,
+      "cheese_calories": 120,
+      "ham_weight": 2.0,
+      "ham_calories": 40
+    }
+  },
+  "merged_assignment": {
+    "egg_count": 6,
+    "egg_calories": 75,
+    "cheese_weight": 56.7,
+    "cheese_calories": 120,
+    "ham_weight": 56.7,
+    "ham_calories": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    egg_count = 6\n    egg_calories = 75\n    cheese_weight = 56.7\n    cheese_calories = 120\n    ham_weight = 56.7\n    ham_calories = 40\n\n    egg_total_calories = egg_count * egg_calories\n    cheese_total_calories = cheese_weight * cheese_calories\n    ham_total_calories = ham_weight * ham_calories\n    total_calories = egg_total_calories + cheese_total_calories + ham_total_calories\n\n    return {\n        \"egg_count\": egg_count,\n        \"egg_calories\": egg_calories,\n        \"cheese_weight\": round(cheese_weight, 2),\n        \"cheese_calories\": cheese_calories,\n        \"ham_weight\": round(ham_weight, 2),\n        \"ham_calories\": ham_calories,\n        \"egg_count*egg_calories\": egg_total_calories,\n        \"cheese_weight*cheese_calories\": cheese_total_calories,\n        \"ham_weight*ham_calories\": ham_total_calories,\n        \"egg_count*egg_calories+cheese_weight*cheese_calories+ham_weight*ham_calories\": total_calories\n    }\n",
+    "results": {
+      "egg_count": 6,
+      "egg_calories": 75,
+      "cheese_weight": 56.7,
+      "cheese_calories": 120,
+      "ham_weight": 56.7,
+      "ham_calories": 40,
+      "egg_count*egg_calories": 450,
+      "cheese_weight*cheese_calories": 6804.0,
+      "ham_weight*ham_calories": 2268.0,
+      "egg_count*egg_calories+cheese_weight*cheese_calories+ham_weight*ham_calories": 9522.0
+    }
+  },
+  "final": {
+    "question": "John makes himself a 6 egg omelet with 56.7 grams of cheese and an equal amount of ham.  Eggs are 75 calories each.  Cheese is 120 calories per gram.  Ham is 40 calories per gram.  How many calories is the omelet?",
+    "answer_lines": [
+      "The eggs contributed 6*75=450 calories",
+      "He eats 56.7*120=6804 calories of cheese",
+      "He eats 56.7*40=2268 calories of ham",
+      "So in total he eats 450+6804+2268=9522 calories",
+      "#### 9522"
+    ],
+    "final_scalar": 9522.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan makes himself a 6 egg masala omelet with 56.7 grams of paneer and an equal amount of cooked chicken.  Eggs are 75 calories each.  Paneer is 120 calories per gram.  Cooked chicken is 40 calories per gram.  How many calories is the omelet?",
+    "adapted_answer": [
+      "The eggs contributed 6*75=450 calories",
+      "He eats 56.7*120=6804 calories of paneer",
+      "He eats 56.7*40=2268 calories of cooked chicken",
+      "So in total he eats 450+6804+2268=9522 calories",
+      "#### 9522"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Rohan', 'omelet' with 'masala omelet', 'cheese' with 'paneer', and 'ham' with 'cooked chicken'."
+  }
+}

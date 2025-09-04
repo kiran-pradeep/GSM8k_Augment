@@ -1,0 +1,105 @@
+{
+  "index": 62,
+  "split": "test",
+  "original": {
+    "question": "If Marcy works for the same company for 40 years, she gets an annual pension of $50,000/year. Starting after 20 years, she becomes entitled to 5% of the value of the pension per year. If she quits after 30 years, what will her annual pension be?",
+    "answer": "First find how many years Marcy works after 20 years: 30 years - 20 years = <<30-20=10>>10 years\nThen multiply that number by the amount of her pension she gets per year: 10 years * 5% = 50%\nThen multiply that percentage by the total amount of the full pension to find how much she gets: $50,000 * 50% = $<<50000*50*.01=25000>>25,000\n#### 25000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Marcy",
+      "dollars"
+    ],
+    "notes": "The name 'Marcy' is culturally specific to Western regions and the unit 'dollars' is commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "annual_pension",
+      "value": 50000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "annual_pension_after_30_years",
+      "value": 25000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"annual_pension\",\n        \"value\": 50000.0,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"annual_pension_after_30_years\",\n        \"value\": 25000.0,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "annual_pension",
+        "original_value": 50000.0,
+        "original_unit": "dollar",
+        "converted_value": 14092500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "annual_pension_after_30_years",
+        "original_value": 25000.0,
+        "original_unit": "dollar",
+        "converted_value": 7046250.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "If Marcy works for the same company for 40 years, she gets an annual pension of ${annual_pension}/year. Starting after 20 years, she becomes entitled to 5% of the value of the pension per year. If she quits after 30 years, what will her annual pension be?",
+    "templatized_answer": [
+      "First find how many years Marcy works after 20 years: {years_worked} years - 20 years = {years_worked_after_20} years",
+      "Then multiply that number by the amount of her pension she gets per year: {years_worked_after_20} years * 5% = {pension_percentage}%",
+      "Then multiply that percentage by the total amount of the full pension to find how much she gets: ${annual_pension} * {pension_percentage}% = $#### {annual_pension_after_30_years}"
+    ],
+    "factual_assignment": {
+      "annual_pension": 50000.0,
+      "annual_pension_after_30_years": 25000.0,
+      "years_worked": 30,
+      "years_worked_after_20": 10,
+      "pension_percentage": 50
+    }
+  },
+  "merged_assignment": {
+    "annual_pension": 14092500.0,
+    "annual_pension_after_30_years": 7046250.0,
+    "years_worked": 30,
+    "years_worked_after_20": 10,
+    "pension_percentage": 50
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    annual_pension = 14092500.0\n    years_worked = 30\n\n    years_worked_after_20 = years_worked - 20\n    pension_percentage = (years_worked_after_20 * 5)\n    annual_pension_after_30_years = annual_pension * (pension_percentage / 100)\n\n    return {\n        \"annual_pension\": annual_pension,\n        \"years_worked\": years_worked,\n        \"years_worked_after_20\": years_worked_after_20,\n        \"pension_percentage\": pension_percentage,\n        \"annual_pension_after_30_years\": round(annual_pension_after_30_years, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "annual_pension": 14092500.0,
+      "years_worked": 30,
+      "years_worked_after_20": 10,
+      "pension_percentage": 50,
+      "annual_pension_after_30_years": 7046250.0
+    }
+  },
+  "final": {
+    "question": "If Marcy works for the same company for 40 years, she gets an annual pension of 14092500 rupee/year. Starting after 20 years, she becomes entitled to 5% of the value of the pension per year. If she quits after 30 years, what will her annual pension be?",
+    "answer_lines": [
+      "First find how many years Marcy works after 20 years: 30 years - 20 years = 10 years",
+      "Then multiply that number by the amount of her pension she gets per year: 10 years * 5% = 50%",
+      "Then multiply that percentage by the total amount of the full pension to find how much she gets: 14092500 rupee * 50% = 7046250 rupee",
+      "#### 7046250"
+    ],
+    "final_scalar": 7046250,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "If Ayesha works for the same company for 40 years, she gets an annual pension of 14092500 rupee/year. Starting after 20 years, she becomes entitled to 5% of the value of the pension per year. If she quits after 30 years, what will her annual pension be?",
+    "adapted_answer": [
+      "First find how many years Ayesha works after 20 years: 30 years - 20 years = 10 years",
+      "Then multiply that number by the amount of her pension she gets per year: 10 years * 5% = 50%",
+      "Then multiply that percentage by the total amount of the full pension to find how much she gets: 14092500 rupee * 50% = 7046250 rupee",
+      "#### 7046250"
+    ],
+    "adaptation_notes": "Replaced 'Marcy' with 'Ayesha' to give the name a Pakistani context."
+  }
+}

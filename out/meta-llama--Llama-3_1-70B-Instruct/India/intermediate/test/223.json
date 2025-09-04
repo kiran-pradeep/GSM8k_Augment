@@ -1,0 +1,107 @@
+{
+  "index": 223,
+  "split": "test",
+  "original": {
+    "question": "A company spends $15000 on advertising for a year, and then spends a third of that amount on advertising for another year.  What's the total amount the company spent on advertising for the two years?",
+    "answer": "15000/3 = <<15000/3=5000>>5,000 is spent on advertisement in the second year.\nThe total on advertisement for the two years is 15000+5000 = <<15000+5000=20000>>20000 dollars.\n#### 20000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in India where the rupee is the standard unit of currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "advertising_year1",
+      "value": 15000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "advertising_year2",
+      "value": 5000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_advertising",
+      "value": 20000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"advertising_year1\", \"value\": 15000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"advertising_year2\", \"value\": 5000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_advertising\", \"value\": 20000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "advertising_year1",
+        "original_value": 15000.0,
+        "original_unit": "dollar",
+        "converted_value": 1305000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "advertising_year2",
+        "original_value": 5000.0,
+        "original_unit": "dollar",
+        "converted_value": 435000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_advertising",
+        "original_value": 20000.0,
+        "original_unit": "dollar",
+        "converted_value": 1740000.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company spends ${advertising_year1} on advertising for a year, and then spends a third of that amount on advertising for another year. What's the total amount the company spent on advertising for the two years?",
+    "templatized_answer": [
+      "{advertising_year1}/3 = {advertising_year2} is spent on advertisement in the second year.",
+      "The total on advertisement for the two years is {advertising_year1}+{advertising_year2} = {total_advertising} dollars."
+    ],
+    "factual_assignment": {
+      "advertising_year1": 15000.0,
+      "advertising_year2": 5000.0,
+      "total_advertising": 20000.0
+    }
+  },
+  "merged_assignment": {
+    "advertising_year1": 1305000.0,
+    "advertising_year2": 435000.0,
+    "total_advertising": 1740000.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    advertising_year1 = 1305000.0\n    advertising_year2 = advertising_year1 / 3\n    total_advertising = advertising_year1 + advertising_year2\n\n    return {\n        \"advertising_year1\": round(advertising_year1, 2),\n        \"advertising_year2\": round(advertising_year2, 2),\n        \"total_advertising\": round(total_advertising, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "advertising_year1": 1305000.0,
+      "advertising_year2": 435000.0,
+      "total_advertising": 1740000.0
+    }
+  },
+  "final": {
+    "question": "A company spends 1305000 rupees on advertising for a year, and then spends a third of that amount on advertising for another year. What's the total amount the company spent on advertising for the two years?",
+    "answer_lines": [
+      "1305000/3 = 435000 is spent on advertisement in the second year.",
+      "The total on advertisement for the two years is 1305000+435000 = 1740000 rupees.",
+      "#### 1740000"
+    ],
+    "final_scalar": 1740000.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company spends 1305000 rupees on advertising for a year, and then spends a third of that amount on advertising for another year. What's the total amount the company spent on advertising for the two years?",
+    "adapted_answer": [
+      "1305000/3 = 435000 is spent on advertisement in the second year.",
+      "The total on advertisement for the two years is 1305000+435000 = 1740000 rupees."
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

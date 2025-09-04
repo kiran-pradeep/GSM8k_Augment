@@ -1,0 +1,190 @@
+{
+  "index": 1076,
+  "split": "test",
+  "original": {
+    "question": "Terry sells 6 milkshakes for $5.50 each, nine burger platters for $11 each, and 20 sodas for $1.50 each. How much money does he make in total?",
+    "answer": "First find the total cost of the milkshakes: 6 milkshakes * $5.50/milkshake = $<<6*5.5=33>>33\nThen find the total cost of the burger platters: 9 platters * $11/platter = $<<9*11=99>>99\nThen find the total cost of the sodas: 20 sodas * $1.50/soda = $<<20*1.5=30>>30\nThen add the money from each type of food to find total amount of money Terry earns: $33 + $99 + $30 = $<<33+99+30=162>>162\n#### 162"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Terry",
+      "milkshakes",
+      "burger platters",
+      "dollars"
+    ],
+    "notes": "The name Terry, food items milkshakes and burger platters, and the unit dollars are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "milkshake_cost",
+      "value": 5.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "burger_platter_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "soda_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_milkshake_earnings",
+      "value": 33,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_burger_platter_earnings",
+      "value": 99,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_soda_earnings",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 162,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"milkshake_cost\", \"value\": 5.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"burger_platter_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"soda_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_milkshake_earnings\", \"value\": 33, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_burger_platter_earnings\", \"value\": 99, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_soda_earnings\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 162, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "milkshake_cost",
+        "original_value": 5.5,
+        "original_unit": "dollar",
+        "converted_value": 478.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "burger_platter_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 957,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "soda_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 130.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_milkshake_earnings",
+        "original_value": 33,
+        "original_unit": "dollar",
+        "converted_value": 2871,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_burger_platter_earnings",
+        "original_value": 99,
+        "original_unit": "dollar",
+        "converted_value": 8613,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_soda_earnings",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 2610,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 162,
+        "original_unit": "dollar",
+        "converted_value": 14094,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Terry sells {milkshake_quantity} milkshakes for ${milkshake_cost} each, {burger_platter_quantity} burger platters for ${burger_platter_cost} each, and {soda_quantity} sodas for ${soda_cost} each. How much money does he make in total?",
+    "templatized_answer": [
+      "First find the total cost of the milkshakes: {milkshake_quantity} milkshakes * ${milkshake_cost}/milkshake = ${total_milkshake_earnings}",
+      "Then find the total cost of the burger platters: {burger_platter_quantity} platters * ${burger_platter_cost}/platter = ${total_burger_platter_earnings}",
+      "Then find the total cost of the sodas: {soda_quantity} sodas * ${soda_cost}/soda = ${total_soda_earnings}",
+      "Then add the money from each type of food to find total amount of money Terry earns: ${total_milkshake_earnings} + ${total_burger_platter_earnings} + ${total_soda_earnings} = ${total_earnings}"
+    ],
+    "factual_assignment": {
+      "milkshake_quantity": 6,
+      "milkshake_cost": 5.5,
+      "burger_platter_quantity": 9,
+      "burger_platter_cost": 11,
+      "soda_quantity": 20,
+      "soda_cost": 1.5,
+      "total_milkshake_earnings": 33,
+      "total_burger_platter_earnings": 99,
+      "total_soda_earnings": 30,
+      "total_earnings": 162
+    }
+  },
+  "merged_assignment": {
+    "milkshake_quantity": 6,
+    "milkshake_cost": 478.5,
+    "burger_platter_quantity": 9,
+    "burger_platter_cost": 957,
+    "soda_quantity": 20,
+    "soda_cost": 130.5,
+    "total_milkshake_earnings": 2871,
+    "total_burger_platter_earnings": 8613,
+    "total_soda_earnings": 2610,
+    "total_earnings": 14094
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"milkshake_quantity\": 6,\n        \"milkshake_cost\": 478.5,\n        \"burger_platter_quantity\": 9,\n        \"burger_platter_cost\": 957,\n        \"soda_quantity\": 20,\n        \"soda_cost\": 130.5,\n    }\n\n    recomputed_values = {\n        \"milkshake_quantity\": factual_assignment[\"milkshake_quantity\"],\n        \"milkshake_cost\": factual_assignment[\"milkshake_cost\"],\n        \"burger_platter_quantity\": factual_assignment[\"burger_platter_quantity\"],\n        \"burger_platter_cost\": factual_assignment[\"burger_platter_cost\"],\n        \"soda_quantity\": factual_assignment[\"soda_quantity\"],\n        \"soda_cost\": factual_assignment[\"soda_cost\"],\n    }\n\n    recomputed_values[\"total_milkshake_earnings\"] = round(\n        recomputed_values[\"milkshake_quantity\"] * recomputed_values[\"milkshake_cost\"], 2\n    )\n    recomputed_values[\"total_burger_platter_earnings\"] = round(\n        recomputed_values[\"burger_platter_quantity\"] * recomputed_values[\"burger_platter_cost\"], 2\n    )\n    recomputed_values[\"total_soda_earnings\"] = round(\n        recomputed_values[\"soda_quantity\"] * recomputed_values[\"soda_cost\"], 2\n    )\n    recomputed_values[\"total_earnings\"] = round(\n        recomputed_values[\"total_milkshake_earnings\"]\n        + recomputed_values[\"total_burger_platter_earnings\"]\n        + recomputed_values[\"total_soda_earnings\"],\n        2,\n    )\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "milkshake_quantity": 6,
+      "milkshake_cost": 478.5,
+      "burger_platter_quantity": 9,
+      "burger_platter_cost": 957,
+      "soda_quantity": 20,
+      "soda_cost": 130.5,
+      "total_milkshake_earnings": 2871.0,
+      "total_burger_platter_earnings": 8613,
+      "total_soda_earnings": 2610.0,
+      "total_earnings": 14094.0
+    }
+  },
+  "final": {
+    "question": "Terry sells 6 milkshakes for 478.5 rupees each, 9 burger platters for 957 rupees each, and 20 sodas for 130.5 rupees each. How much money does he make in total?",
+    "answer_lines": [
+      "First find the total cost of the milkshakes: 6 milkshakes * 478.5 rupees/milkshake = 2871.0",
+      "Then find the total cost of the burger platters: 9 platters * 957 rupees/platter = 8613",
+      "Then find the total cost of the sodas: 20 sodas * 130.5 rupees/soda = 2610.0",
+      "Then add the money from each type of food to find total amount of money Terry earns: 2871.0 + 8613 + 2610.0 = 14094.0",
+      "#### 14094.0"
+    ],
+    "final_scalar": 14094.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan sells 6 lassis for 478.5 rupees each, 9 thali platters for 957 rupees each, and 20 jal jeeras for 130.5 rupees each. How much money does he make in total?",
+    "adapted_answer": [
+      "First find the total cost of the lassis: 6 lassis * 478.5 rupees/lassi = 2871.0",
+      "Then find the total cost of the thali platters: 9 platters * 957 rupees/platter = 8613",
+      "Then find the total cost of the jal jeeras: 20 jal jeeras * 130.5 rupees/jal jeera = 2610.0",
+      "Then add the money from each type of food to find total amount of money Rohan earns: 2871.0 + 8613 + 2610.0 = 14094.0",
+      "#### 14094.0"
+    ],
+    "adaptation_notes": "Replaced 'Terry' with 'Rohan', 'milkshakes' with 'lassis', 'burger platters' with 'thali platters', and 'sodas' with 'jal jeeras' to give the text an Indian context."
+  }
+}

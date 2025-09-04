@@ -1,0 +1,106 @@
+{
+  "index": 50,
+  "split": "test",
+  "original": {
+    "question": "Lloyd has an egg farm. His chickens produce 252 eggs per day and he sells them for $2 per dozen. How much does Lloyd make on eggs per week?",
+    "answer": "In a week, Lloyd's egg farm produces 252 x 7 = <<252*7=1764>>1764 eggs.\nThere are 1764/12 = <<1764/12=147>>147 dozens of eggs produced in a week.\nSo, Lloyd makes 147 x $2 = $<<147*2=294>>294 on eggs.\n#### 294"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Lloyd",
+      "dollars"
+    ],
+    "notes": "Name 'Lloyd' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "egg_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 294,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"egg_price\",\n    \"value\": 2,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"weekly_earnings\",\n    \"value\": 294,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "egg_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 294,
+        "original_unit": "dollar",
+        "converted_value": 25578,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Lloyd has an egg farm. His chickens produce {eggs_per_day} eggs per day and he sells them for ${egg_price} per dozen. How much does Lloyd make on eggs per week?",
+    "templatized_answer": [
+      "In a week, Lloyd's egg farm produces {eggs_per_day} x 7 = {total_eggs_per_week} eggs.",
+      "There are {total_eggs_per_week}/12 = {dozens_of_eggs_produced} dozens of eggs produced in a week.",
+      "So, Lloyd makes {dozens_of_eggs_produced} x ${egg_price} = ${weekly_earnings}.",
+      "#### {weekly_earnings}"
+    ],
+    "factual_assignment": {
+      "eggs_per_day": 252,
+      "egg_price": 2,
+      "total_eggs_per_week": 1764,
+      "dozens_of_eggs_produced": 147,
+      "weekly_earnings": 294
+    }
+  },
+  "merged_assignment": {
+    "eggs_per_day": 252,
+    "egg_price": 174,
+    "total_eggs_per_week": 1764,
+    "dozens_of_eggs_produced": 147,
+    "weekly_earnings": 25578
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    eggs_per_day = 252\n    egg_price = 174\n\n    total_eggs_per_week = eggs_per_day * 7\n    dozens_of_eggs_produced = total_eggs_per_week / 12\n    weekly_earnings = dozens_of_eggs_produced * egg_price\n\n    return {\n        \"eggs_per_day\": eggs_per_day,\n        \"egg_price\": egg_price,\n        \"total_eggs_per_week\": total_eggs_per_week,\n        \"dozens_of_eggs_produced\": round(dozens_of_eggs_produced, 2),\n        \"weekly_earnings\": round(weekly_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "eggs_per_day": 252,
+      "egg_price": 174,
+      "total_eggs_per_week": 1764,
+      "dozens_of_eggs_produced": 147.0,
+      "weekly_earnings": 25578.0
+    }
+  },
+  "final": {
+    "question": "Lloyd has an egg farm. His chickens produce 252 eggs per day and he sells them for 174 rupees per dozen. How much does Lloyd make on eggs per week?",
+    "answer_lines": [
+      "In a week, Lloyd's egg farm produces 252 x 7 = 1764 eggs.",
+      "There are 1764/12 = 147.0 dozens of eggs produced in a week.",
+      "So, Lloyd makes 147.0 x 174 = 25578 rupees.",
+      "#### 25578"
+    ],
+    "final_scalar": 25578,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan has an egg farm. His chickens produce 252 eggs per day and he sells them for 174 rupees per dozen. How much does Rohan make on eggs per week?",
+    "adapted_answer": [
+      "In a week, Rohan's egg farm produces 252 x 7 = 1764 eggs.",
+      "There are 1764/12 = 147.0 dozens of eggs produced in a week.",
+      "So, Rohan makes 147.0 x 174 = 25578 rupees.",
+      "#### 25578"
+    ],
+    "adaptation_notes": "Replaced 'Lloyd' with 'Rohan' to give the name an Indian context."
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "index": 302,
+  "split": "test",
+  "original": {
+    "question": "Annika brought $50 to the town fair. She spent half of it on food and snacks, and an additional $10 for rides. How much, in dollars, is left?",
+    "answer": "She spent 50/2=$<<50/2=25>>25 on the food.\nThen 50-25-10=$<<50-25-10=15>>15 are left.\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Annika",
+      "dollars"
+    ],
+    "notes": "The name 'Annika' is of European origin and 'dollars' is a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ride_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_money\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 14092.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ride_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 4227.75,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Annika brought ${initial_money} to the town fair. She spent half of it on food and snacks, and an additional ${ride_cost} for rides. How much, in dollars, is left?",
+    "templatized_answer": [
+      "She spent {initial_money}/2=${initial_money}/2 on the food.",
+      "Then {initial_money}-{initial_money}/2-{ride_cost}=${initial_money}-{initial_money}/2-{ride_cost} are left.",
+      "#### {initial_money}-{initial_money}/2-{ride_cost}"
+    ],
+    "factual_assignment": {
+      "initial_money": 50,
+      "ride_cost": 10
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 14092.5,
+    "ride_cost": 2818.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 14092.5\n    ride_cost = 2818.5\n\n    spent_on_food = initial_money / 2\n    money_left = initial_money - spent_on_food - ride_cost\n\n    return {\n        \"initial_money\": initial_money,\n        \"ride_cost\": ride_cost,\n        \"initial_money/2\": spent_on_food,\n        \"initial_money-{initial_money}/2-{ride_cost}\": money_left\n    }\n\nresult = recompute()\nprint(result)\n",
+    "results": {
+      "initial_money": 14092.5,
+      "ride_cost": 2818.5,
+      "initial_money/2": 7046.25,
+      "initial_money-{initial_money}/2-{ride_cost}": 4227.75
+    }
+  },
+  "final": {
+    "question": "Annika brought 14092.5 rupee to the town fair. She spent half of it on food and snacks, and an additional 2818.5 rupee for rides. How much, in rupee, is left?",
+    "answer_lines": [
+      "She spent 14092.5/2=7046.25 rupee on the food.",
+      "Then 14092.5-7046.25-2818.5=4227.75 rupee are left.",
+      "#### 4227.75"
+    ],
+    "final_scalar": 4227.75,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha brought 14092.5 rupee to the Lahore Mela. She spent half of it on kebabs and falooda, and an additional 2818.5 rupee for rides. How much, in rupee, is left?",
+    "adapted_answer": [
+      "She spent 14092.5/2=7046.25 rupee on the kebabs and falooda.",
+      "Then 14092.5-7046.25-2818.5=4227.75 rupee are left.",
+      "#### 4227.75"
+    ],
+    "adaptation_notes": "Replaced 'Annika' with 'Ayesha', 'town fair' with 'Lahore Mela', and 'food and snacks' with 'kebabs and falooda' to give the text a Pakistani context."
+  }
+}

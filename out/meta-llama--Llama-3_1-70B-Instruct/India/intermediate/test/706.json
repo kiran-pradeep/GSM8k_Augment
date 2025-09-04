@@ -1,0 +1,112 @@
+{
+  "index": 706,
+  "split": "test",
+  "original": {
+    "question": "The local firefighters are doing a “fill the boot” fundraiser. Their goal is to raise $6300. After the first 3 hours, they have raised $2100.  For how many hours do they have to fundraise in total to reach their goal, assuming an equal amount raised in every hour?",
+    "answer": "The fireman raise 2100 / 3 = $<<2100/3=700>>700 per hour.\nThey have to fundraise for 6300 / 700 = <<6300/700=9>>9 hours.\n#### 9"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in India where the rupee is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "fundraiser_goal",
+      "value": 6300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "raised_amount",
+      "value": 2100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_raised",
+      "value": 700.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"fundraiser_goal\", \"value\": 6300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"raised_amount\", \"value\": 2100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_raised\", \"value\": 700.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "fundraiser_goal",
+        "original_value": 6300.0,
+        "original_unit": "dollar",
+        "converted_value": 548100.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "raised_amount",
+        "original_value": 2100.0,
+        "original_unit": "dollar",
+        "converted_value": 182700.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "hourly_raised",
+        "original_value": 700.0,
+        "original_unit": "dollar",
+        "converted_value": 60900.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The local firefighters are doing a “fill the boot” fundraiser. Their goal is to raise ${fundraiser_goal}. After the first 3 hours, they have raised ${raised_amount}.  For how many hours do they have to fundraise in total to reach their goal, assuming an equal amount raised in every hour?",
+    "templatized_answer": [
+      "The fireman raise {raised_amount} / 3 = ${hourly_raised} per hour.",
+      "They have to fundraise for {fundraiser_goal} / {hourly_raised} = {total_hours} hours.",
+      "#### {total_hours}"
+    ],
+    "factual_assignment": {
+      "fundraiser_goal": 6300.0,
+      "raised_amount": 2100.0,
+      "hourly_raised": 700.0,
+      "total_hours": 9
+    }
+  },
+  "merged_assignment": {
+    "fundraiser_goal": 548100.0,
+    "raised_amount": 182700.0,
+    "hourly_raised": 60900.0,
+    "total_hours": 9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    fundraiser_goal = 548100.0\n    raised_amount = 182700.0\n\n    hourly_raised = raised_amount / 3\n    total_hours = fundraiser_goal / hourly_raised\n\n    return {\n        \"fundraiser_goal\": fundraiser_goal,\n        \"raised_amount\": raised_amount,\n        \"hourly_raised\": round(hourly_raised, 2),\n        \"total_hours\": round(total_hours)\n    }\n",
+    "results": {
+      "fundraiser_goal": 548100.0,
+      "raised_amount": 182700.0,
+      "hourly_raised": 60900.0,
+      "total_hours": 9
+    }
+  },
+  "final": {
+    "question": "The local firefighters are doing a “fill the boot” fundraiser. Their goal is to raise 548100. After the first 3 hours, they have raised 182700.  For how many hours do they have to fundraise in total to reach their goal, assuming an equal amount raised in every hour?",
+    "answer_lines": [
+      "The fireman raise 182700 / 3 = 60900 per hour.",
+      "They have to fundraise for 548100 / 60900 = 9 hours.",
+      "#### 9"
+    ],
+    "final_scalar": 9,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The local Mumbai firefighters are doing a “fill the boot” fundraiser. Their goal is to raise 548100 rupees. After the first 3 hours, they have raised 182700 rupees.  For how many hours do they have to fundraise in total to reach their goal, assuming an equal amount raised in every hour?",
+    "adapted_answer": [
+      "The fireman raise 182700 / 3 = 60900 rupees per hour.",
+      "They have to fundraise for 548100 / 60900 = 9 hours.",
+      "#### 9"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' and added 'Mumbai' to give it an Indian context."
+  }
+}

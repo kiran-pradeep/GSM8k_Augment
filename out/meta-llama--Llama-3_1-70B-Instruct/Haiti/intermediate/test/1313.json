@@ -1,0 +1,122 @@
+{
+  "index": 1313,
+  "split": "test",
+  "original": {
+    "question": "A fruit vendor bought 50 watermelons for $80. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer": "The fruit vendor's profit for the 50 watermelons was $80 x 25/100 = $<<80*25/100=20>>20.\nSo, he was able to sell them all for $80 + $20 = $<<80+20=100>>100.\nThus, the vendor sold each watermelon for $100/$50 = $<<100/50=2>>2 each.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "watermelons"
+    ],
+    "notes": "The text contains 'dollars', which is a unit of currency commonly used in the United States, and 'watermelons', which is a food item not exclusive to Haitian cuisine but also widely consumed in other regions."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "profit",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_selling_price",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "watermelon_selling_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"profit\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_selling_price\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"watermelon_selling_price\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 10464.8,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "profit",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2616.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_selling_price",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 13081.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "watermelon_selling_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 261.62,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A fruit vendor bought 50 watermelons for ${initial_cost}. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "templatized_answer": [
+      "The fruit vendor's profit for the 50 watermelons was ${initial_cost} x 25/100 = ${initial_cost} * 25/100.",
+      "So, he was able to sell them all for ${initial_cost} + ${initial_cost} * 25/100.",
+      "Thus, the vendor sold each watermelon for (${initial_cost} + ${initial_cost} * 25/100)/50."
+    ],
+    "factual_assignment": {
+      "initial_cost": 80
+    }
+  },
+  "merged_assignment": {
+    "initial_cost": 10464.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cost = 10464.8\n    profit = initial_cost * 25 / 100\n    total_selling_price = initial_cost + profit\n    selling_price_per_watermelon = total_selling_price / 50\n\n    return {\n        \"initial_cost\": initial_cost,\n        \"initial_cost * 25/100\": round(profit, 2),\n        \"initial_cost + initial_cost * 25/100\": round(total_selling_price, 2),\n        \"(initial_cost + initial_cost * 25/100)/50\": round(selling_price_per_watermelon, 2)\n    }\n",
+    "results": {
+      "initial_cost": 10464.8,
+      "initial_cost * 25/100": 2616.2,
+      "initial_cost + initial_cost * 25/100": 13081.0,
+      "(initial_cost + initial_cost * 25/100)/50": 261.62
+    }
+  },
+  "final": {
+    "question": "A fruit vendor bought 50 watermelons for 10464.8 gourde. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer_lines": [
+      "The fruit vendor's profit for the 50 watermelons was 10464.8 x 25/100 = 10464.8 * 25/100 = 2616.2 gourde.",
+      "So, he was able to sell them all for 10464.8 + 2616.2 = 13081.0 gourde.",
+      "Thus, the vendor sold each watermelon for (10464.8 + 2616.2)/50 = 261.62 gourde.",
+      "#### 261.62"
+    ],
+    "final_scalar": 261.62,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A fruit vendor bought 50 melons for 10464.8 gourde. He sold all of them at a profit of 25%. How much was each melon sold?",
+    "adapted_answer": [
+      "The fruit vendor's profit for the 50 melons was 10464.8 x 25/100 = 10464.8 * 25/100 = 2616.2 gourde.",
+      "So, he was able to sell them all for 10464.8 + 2616.2 = 13081.0 gourde.",
+      "Thus, the vendor sold each melon for (10464.8 + 2616.2)/50 = 261.62 gourde.",
+      "#### 261.62"
+    ],
+    "adaptation_notes": "Replaced 'watermelons' with 'melons' to make the fruit more generic and applicable to the Haitian context."
+  }
+}

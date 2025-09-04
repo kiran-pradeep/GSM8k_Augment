@@ -1,0 +1,153 @@
+{
+  "index": 72,
+  "split": "test",
+  "original": {
+    "question": "Tommy is fundraising for his charity by selling brownies for $3 a slice and cheesecakes for $4 a slice. If Tommy sells 43 brownies and 23 slices of cheesecake, how much money does Tommy raise?",
+    "answer": "Tommy raised 43 brownies x $3/brownie = $<<43*3=129>>129 by selling brownies.\nTommy raised 23 slices x $4 = $<<23*4=92>>92 by selling cheesecakes.\nIn total Tommy has raised $129 + $92 = $<<129+92=221>>221\n#### 221"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tommy",
+      "brownies",
+      "cheesecakes",
+      "dollars"
+    ],
+    "notes": "The name 'Tommy' and food items 'brownies' and 'cheesecakes' are culturally specific to Western regions. The unit 'dollars' is also commonly associated with Western currencies."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "brownie_price",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cheesecake_price",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "brownie_revenue",
+      "value": 129,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cheesecake_revenue",
+      "value": 92,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 221,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"brownie_price\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cheesecake_price\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"brownie_revenue\", \"value\": 129, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cheesecake_revenue\", \"value\": 92, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_revenue\", \"value\": 221, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "brownie_price",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 845.55,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cheesecake_price",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "brownie_revenue",
+        "original_value": 129,
+        "original_unit": "dollar",
+        "converted_value": 36358.65,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cheesecake_revenue",
+        "original_value": 92,
+        "original_unit": "dollar",
+        "converted_value": 25930.2,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 221,
+        "original_unit": "dollar",
+        "converted_value": 62288.85,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tommy is fundraising for his charity by selling brownies for ${brownie_price} a slice and cheesecakes for ${cheesecake_price} a slice. If Tommy sells {number_of_brownies} brownies and {number_of_cheesecakes} slices of cheesecake, how much money does Tommy raise?",
+    "templatized_answer": [
+      "Tommy raised {number_of_brownies} brownies x ${brownie_price}/brownie = ${brownie_revenue} by selling brownies.",
+      "Tommy raised {number_of_cheesecakes} slices x ${cheesecake_price} = ${cheesecake_revenue} by selling cheesecakes.",
+      "In total Tommy has raised ${brownie_revenue} + ${cheesecake_revenue} = ${total_revenue}",
+      "#### {total_revenue}"
+    ],
+    "factual_assignment": {
+      "brownie_price": 3,
+      "cheesecake_price": 4,
+      "brownie_revenue": 129,
+      "cheesecake_revenue": 92,
+      "total_revenue": 221,
+      "number_of_brownies": 43,
+      "number_of_cheesecakes": 23
+    }
+  },
+  "merged_assignment": {
+    "brownie_price": 845.55,
+    "cheesecake_price": 1127.4,
+    "brownie_revenue": 36358.65,
+    "cheesecake_revenue": 25930.2,
+    "total_revenue": 62288.85,
+    "number_of_brownies": 43,
+    "number_of_cheesecakes": 23
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"brownie_price\": 845.55,\n        \"cheesecake_price\": 1127.4,\n        \"number_of_brownies\": 43,\n        \"number_of_cheesecakes\": 23\n    }\n\n    recomputed_values = {\n        \"brownie_price\": factual_assignment[\"brownie_price\"],\n        \"cheesecake_price\": factual_assignment[\"cheesecake_price\"],\n        \"number_of_brownies\": factual_assignment[\"number_of_brownies\"],\n        \"number_of_cheesecakes\": factual_assignment[\"number_of_cheesecakes\"],\n        \"brownie_revenue\": round(factual_assignment[\"number_of_brownies\"] * factual_assignment[\"brownie_price\"], 2),\n        \"cheesecake_revenue\": round(factual_assignment[\"number_of_cheesecakes\"] * factual_assignment[\"cheesecake_price\"], 2),\n        \"total_revenue\": round(factual_assignment[\"number_of_brownies\"] * factual_assignment[\"brownie_price\"] + factual_assignment[\"number_of_cheesecakes\"] * factual_assignment[\"cheesecake_price\"], 2)\n    }\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "brownie_price": 845.55,
+      "cheesecake_price": 1127.4,
+      "number_of_brownies": 43,
+      "number_of_cheesecakes": 23,
+      "brownie_revenue": 36358.65,
+      "cheesecake_revenue": 25930.2,
+      "total_revenue": 62288.85
+    }
+  },
+  "final": {
+    "question": "Tommy is fundraising for his charity by selling brownies for 845.55 rupee a slice and cheesecakes for 1127.4 rupee a slice. If Tommy sells 43 brownies and 23 slices of cheesecake, how much money does Tommy raise?",
+    "answer_lines": [
+      "Tommy raised 43 brownies x 845.55 rupee/brownie = 36358.65 rupee by selling brownies.",
+      "Tommy raised 23 slices x 1127.4 rupee = 25930.2 rupee by selling cheesecakes.",
+      "In total Tommy has raised 36358.65 rupee + 25930.2 rupee = 62288.85 rupee",
+      "#### 62288.85"
+    ],
+    "final_scalar": 62288.85,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran is fundraising for his charity by selling kulfi for 845.55 rupee a serving and falooda for 1127.4 rupee a serving. If Kamran sells 43 kulfis and 23 servings of falooda, how much money does Kamran raise?",
+    "adapted_answer": [
+      "Kamran raised 43 kulfis x 845.55 rupee/kulfi = 36358.65 rupee by selling kulfis.",
+      "Kamran raised 23 servings x 1127.4 rupee = 25930.2 rupee by selling faloodas.",
+      "In total Kamran has raised 36358.65 rupee + 25930.2 rupee = 62288.85 rupee",
+      "#### 62288.85"
+    ],
+    "adaptation_notes": "Replaced 'Tommy' with 'Kamran', 'brownies' with 'kulfis', and 'cheesecakes' with 'falooda' to give the text a Pakistani context."
+  }
+}

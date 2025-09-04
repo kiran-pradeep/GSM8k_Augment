@@ -1,0 +1,103 @@
+{
+  "index": 237,
+  "split": "test",
+  "original": {
+    "question": "Johnny took his allowance of $20 and added an extra $10 to it.  He then invested this sum of money, which tripled in a year.  How much money did he have after a year?",
+    "answer": "Johnny invested twenty and ten dollars for a total of 20+10=<<20+10=30>>30 dollars invested\nJohnny tripled this amount of money over the year, for a total of 30*=90 dollars\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Johnny",
+      "dollars"
+    ],
+    "notes": "The name 'Johnny' is culturally specific to regions other than Haiti, and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_allowance",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_allowance",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_investment",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_after_year",
+      "value": 90,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_allowance\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"extra_allowance\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_investment\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_after_year\", \"value\": 90, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_allowance",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2616.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "extra_allowance",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1308.1,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_investment",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 3924.3,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_after_year",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 11772.9,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Johnny took his allowance of ${initial_allowance} and added an extra ${extra_allowance} to it.  He then invested this sum of money, which tripled in a year.  How much money did he have after a year?",
+    "templatized_answer": [
+      "Johnny invested {initial_allowance} and {extra_allowance} dollars for a total of {initial_allowance}+{extra_allowance}={initial_allowance}+{extra_allowance} dollars invested",
+      "Johnny tripled this amount of money over the year, for a total of ({initial_allowance}+{extra_allowance})*3={total_after_year} dollars"
+    ],
+    "factual_assignment": {
+      "initial_allowance": 20,
+      "extra_allowance": 10,
+      "total_after_year": 90
+    }
+  },
+  "merged_assignment": {
+    "initial_allowance": 2616.2,
+    "extra_allowance": 1308.1,
+    "total_after_year": 11772.9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_allowance = 2616.2\n    extra_allowance = 1308.1\n    total_after_year = 11772.9\n\n    computed_values = {\n        \"initial_allowance\": initial_allowance,\n        \"extra_allowance\": extra_allowance,\n        \"total_after_year\": total_after_year\n    }\n\n    computed_values[\"initial_allowance_plus_extra_allowance\"] = round(initial_allowance + extra_allowance, 2)\n    computed_values[\"total_after_year_computed\"] = round((initial_allowance + extra_allowance) * 3, 2)\n\n    return computed_values\n",
+    "results": {
+      "initial_allowance": 2616.2,
+      "extra_allowance": 1308.1,
+      "total_after_year": 11772.9,
+      "initial_allowance_plus_extra_allowance": 3924.3,
+      "total_after_year_computed": 11772.9
+    }
+  },
+  "final": null
+}

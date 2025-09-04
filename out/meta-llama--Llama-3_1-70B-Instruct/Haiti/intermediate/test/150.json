@@ -1,0 +1,110 @@
+{
+  "index": 150,
+  "split": "test",
+  "original": {
+    "question": "Steve and Tim decide to see who can get home from school the fastest. Steve lives further away than Tim, so he is allowed to ride his bike. Steve lives 3 miles from the school and can bike at 440 feet per minute. Tim lives 2 miles away from the school. If Tim can ride his skateboard at 264 feet per minute, how long will the winner be waiting at their house before the loser finishes the race?",
+    "answer": "Steve has to travel 3 miles * (5280 feet/1 mile) = <<3*5280=15840>>15840 feet to get home.\nIt will take Steve 15840 feet / (440 feet/minute) = <<15840/(440)=36>>36 minutes to get home.\nTim has to travel 2 miles * (5280 feet/1 mile) = <<2*5280=10560>>10560 feet to get home.\nIt will take Tim 10560 feet / (264 feet/minute) = <<10560/264=40>>40 minutes to get home.\nSteve will finish the race in 40 minutes - 36 minutes = <<40-36=4>>4 minutes less time than Tim.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles",
+      "feet",
+      "Steve",
+      "Tim"
+    ],
+    "notes": "The question contains culturally specific units (miles, feet) and names (Steve, Tim) that are not specific to Haitian culture."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "steve_distance",
+      "value": 3.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "tim_distance",
+      "value": 2.0,
+      "unit": "mile",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"steve_distance\",\n    \"value\": 3.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"tim_distance\",\n    \"value\": 2.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "steve_distance",
+        "original_value": 3.0,
+        "original_unit": "mile",
+        "converted_value": 4.83,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "tim_distance",
+        "original_value": 2.0,
+        "original_unit": "mile",
+        "converted_value": 3.22,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Steve and Tim decide to see who can get home from school the fastest. Steve lives further away than Tim, so he is allowed to ride his bike. Steve lives {steve_distance} miles from the school and can bike at 440 feet per minute. Tim lives {tim_distance} miles away from the school. If Tim can ride his skateboard at 264 feet per minute, how long will the winner be waiting at their house before the loser finishes the race?",
+    "templatized_answer": [
+      "Steve has to travel {steve_distance} miles * (5280 feet/1 mile) = {steve_distance}*5280 feet to get home.",
+      "It will take Steve {steve_distance}*5280 feet / (440 feet/minute) = ({steve_distance}*5280)/(440) minutes to get home.",
+      "Tim has to travel {tim_distance} miles * (5280 feet/1 mile) = {tim_distance}*5280 feet to get home.",
+      "It will take Tim {tim_distance}*5280 feet / (264 feet/minute) = ({tim_distance}*5280)/(264) minutes to get home.",
+      "Steve will finish the race in ({tim_distance}*5280)/(264) - ({steve_distance}*5280)/(440) minutes less time than Tim.",
+      "#### ({tim_distance}*5280)/(264) - ({steve_distance}*5280)/(440)"
+    ],
+    "factual_assignment": {
+      "steve_distance": 3.0,
+      "tim_distance": 2.0
+    }
+  },
+  "merged_assignment": {
+    "steve_distance": 4.83,
+    "tim_distance": 3.22
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    steve_distance = 4.83\n    tim_distance = 3.22\n\n    steve_distance_feet = steve_distance * 5280\n    steve_time_minutes = steve_distance_feet / 440\n\n    tim_distance_feet = tim_distance * 5280\n    tim_time_minutes = tim_distance_feet / 264\n\n    time_difference_minutes = tim_time_minutes - steve_time_minutes\n\n    return {\n        \"steve_distance\": steve_distance,\n        \"tim_distance\": tim_distance,\n        \"steve_distance_feet\": round(steve_distance_feet, 2),\n        \"steve_time_minutes\": round(steve_time_minutes, 2),\n        \"tim_distance_feet\": round(tim_distance_feet, 2),\n        \"tim_time_minutes\": round(tim_time_minutes, 2),\n        \"time_difference_minutes\": round(time_difference_minutes, 2)\n    }\n\nresult = recompute()\nprint(result)\n",
+    "results": {
+      "steve_distance": 4.83,
+      "tim_distance": 3.22,
+      "steve_distance_feet": 25502.4,
+      "steve_time_minutes": 57.96,
+      "tim_distance_feet": 17001.6,
+      "tim_time_minutes": 64.4,
+      "time_difference_minutes": 6.44
+    }
+  },
+  "final": {
+    "question": "Steve and Tim decide to see who can get home from school the fastest. Steve lives further away than Tim, so he is allowed to ride his bike. Steve lives 4.83 kilometers from the school and can bike at 440 feet per minute. Tim lives 3.22 kilometers away from the school. If Tim can ride his skateboard at 264 feet per minute, how long will the winner be waiting at their house before the loser finishes the race?",
+    "answer_lines": [
+      "Steve has to travel 4.83 kilometers * (1000 meters/1 kilometer) = 4830 meters to get home.",
+      "It will take Steve 25502.4 feet / (440 feet/minute) = 57.96 minutes to get home.",
+      "Tim has to travel 3.22 kilometers * (1000 meters/1 kilometer) = 3220 meters to get home.",
+      "It will take Tim 17001.6 feet / (264 feet/minute) = 64.4 minutes to get home.",
+      "Steve will finish the race in 64.4 minutes - 57.96 minutes = 6.44 minutes less time than Tim.",
+      "#### 6.44"
+    ],
+    "final_scalar": 6.44,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Widma and Makenson decide to see who can get home from school the fastest. Widma lives further away than Makenson, so he is allowed to ride his bike. Widma lives 4.83 kilometers from the school and can bike at 440 feet per minute. Makenson lives 3.22 kilometers away from the school. If Makenson can ride his skateboard at 264 feet per minute, how long will the winner be waiting at their house before the loser finishes the race?",
+    "adapted_answer": [
+      "Widma has to travel 4.83 kilometers * (1000 meters/1 kilometer) = 4830 meters to get home.",
+      "It will take Widma 25502.4 feet / (440 feet/minute) = 57.96 minutes to get home.",
+      "Makenson has to travel 3.22 kilometers * (1000 meters/1 kilometer) = 3220 meters to get home.",
+      "It will take Makenson 17001.6 feet / (264 feet/minute) = 64.4 minutes to get home.",
+      "Widma will finish the race in 64.4 minutes - 57.96 minutes = 6.44 minutes less time than Makenson.",
+      "#### 6.44"
+    ],
+    "adaptation_notes": "Replaced 'Steve' with 'Widma' and 'Tim' with 'Makenson' to give the names a Haitian context."
+  }
+}

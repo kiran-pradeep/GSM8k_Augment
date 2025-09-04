@@ -1,0 +1,178 @@
+{
+  "index": 356,
+  "split": "test",
+  "original": {
+    "question": "Dean's mother gave him $28 to go to the toy store. Dean bought 6 toy cars and 5 teddy bears. Each toy car cost $2 and each teddy bear cost $1. His mother then feels generous and decides to give him an extra $10. How much money does Dean have left?",
+    "answer": "The cost of the toy cars is 6 cars × $2/car = $<<6*2=12>>12.\nThe cost of the teddy bears is 5 bears × $1/bear = $<<5*1=5>>5.\nThe total cost of the toys is $12 + $5 = $<<12+5=17>>17.\nAdding the two amounts of money his mother gave him, we find that Dean has $28 + $10 = $<<28+10=38>>38 to spend.\nDean has $38 − $17 = $21 left.\n#### 21"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 28,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "toy_car_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "teddy_bear_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_money",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_money",
+      "value": 38,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 17,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 28, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"toy_car_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"teddy_bear_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"extra_money\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_money\", \"value\": 38, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 17, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 21, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 28,
+        "original_unit": "dollar",
+        "converted_value": 15942.64,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "toy_car_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 1138.76,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "teddy_bear_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 569.38,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "extra_money",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 5693.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 38,
+        "original_unit": "dollar",
+        "converted_value": 21636.44,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 17,
+        "original_unit": "dollar",
+        "converted_value": 9679.46,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 11956.98,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Dean's mother gave him ${initial_money} to go to the toy store. Dean bought 6 toy cars and 5 teddy bears. Each toy car cost ${toy_car_cost} and each teddy bear cost ${teddy_bear_cost}. His mother then feels generous and decides to give him an extra ${extra_money}. How much money does Dean have left?",
+    "templatized_answer": [
+      "The cost of the toy cars is 6 cars × ${toy_car_cost}/car = ${6*toy_car_cost}.",
+      "The cost of the teddy bears is 5 bears × ${teddy_bear_cost}/bear = ${5*teddy_bear_cost}.",
+      "The total cost of the toys is ${6*toy_car_cost} + ${5*teddy_bear_cost} = ${6*toy_car_cost+5*teddy_bear_cost}.",
+      "Adding the two amounts of money his mother gave him, we find that Dean has ${initial_money} + ${extra_money} = ${initial_money+extra_money} to spend.",
+      "Dean has ${initial_money+extra_money} − ${6*toy_car_cost+5*teddy_bear_cost} = ${initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)} left.",
+      "#### {initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)}"
+    ],
+    "factual_assignment": {
+      "initial_money": 28,
+      "toy_car_cost": 2,
+      "teddy_bear_cost": 1,
+      "extra_money": 10
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 15942.64,
+    "toy_car_cost": 1138.76,
+    "teddy_bear_cost": 569.38,
+    "extra_money": 5693.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 15942.64\n    toy_car_cost = 1138.76\n    teddy_bear_cost = 569.38\n    extra_money = 5693.8\n\n    toy_car_total_cost = 6 * toy_car_cost\n    teddy_bear_total_cost = 5 * teddy_bear_cost\n    total_cost = toy_car_total_cost + teddy_bear_total_cost\n    total_money = initial_money + extra_money\n    money_left = total_money - total_cost\n\n    return {\n        \"initial_money\": round(initial_money, 2),\n        \"toy_car_cost\": round(toy_car_cost, 2),\n        \"teddy_bear_cost\": round(teddy_bear_cost, 2),\n        \"extra_money\": round(extra_money, 2),\n        \"6*toy_car_cost\": round(toy_car_total_cost, 2),\n        \"5*teddy_bear_cost\": round(teddy_bear_total_cost, 2),\n        \"6*toy_car_cost+5*teddy_bear_cost\": round(total_cost, 2),\n        \"initial_money+extra_money\": round(total_money, 2),\n        \"initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)\": round(money_left, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_money": 15942.64,
+      "toy_car_cost": 1138.76,
+      "teddy_bear_cost": 569.38,
+      "extra_money": 5693.8,
+      "6*toy_car_cost": 6832.56,
+      "5*teddy_bear_cost": 2846.9,
+      "6*toy_car_cost+5*teddy_bear_cost": 9679.46,
+      "initial_money+extra_money": 21636.44,
+      "initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)": 11956.98
+    }
+  },
+  "final": {
+    "question": "Dean's mother gave him 15942.64 shilling to go to the toy store. Dean bought 6 toy cars and 5 teddy bears. Each toy car cost 1138.76 shilling and each teddy bear cost 569.38 shilling. His mother then feels generous and decides to give him an extra 5693.8 shilling. How much money does Dean have left?",
+    "answer_lines": [
+      "The cost of the toy cars is 6 cars × 1138.76 shilling/car = 6832.56 shilling.",
+      "The cost of the teddy bears is 5 bears × 569.38 shilling/bear = 2846.9 shilling.",
+      "The total cost of the toys is 6832.56 shilling + 2846.9 shilling = 9679.46 shilling.",
+      "Adding the two amounts of money his mother gave him, we find that Dean has 15942.64 shilling + 5693.8 shilling = 21636.44 shilling to spend.",
+      "Dean has 21636.44 shilling − 9679.46 shilling = 11956.98 shilling left.",
+      "#### 11956.98"
+    ],
+    "final_scalar": 11956.98,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Deen's mother gave him 15942.64 shilling to go to the ciyaar store. Deen bought 6 gaari ciyaar and 5 riix. Each gaari ciyaar cost 1138.76 shilling and each riix cost 569.38 shilling. His mother then feels generous and decides to give him an extra 5693.8 shilling. How much money does Deen have left?",
+    "adapted_answer": [
+      "The cost of the gaari ciyaar is 6 cars × 1138.76 shilling/car = 6832.56 shilling.",
+      "The cost of the riix is 5 riix × 569.38 shilling/riix = 2846.9 shilling.",
+      "The total cost of the toys is 6832.56 shilling + 2846.9 shilling = 9679.46 shilling.",
+      "Adding the two amounts of money his mother gave him, we find that Deen has 15942.64 shilling + 5693.8 shilling = 21636.44 shilling to spend.",
+      "Deen has 21636.44 shilling − 9679.46 shilling = 11956.98 shilling left.",
+      "#### 11956.98"
+    ],
+    "adaptation_notes": "Replaced 'toy store' with 'ciyaar store', 'toy cars' with 'gaari ciyaar', 'teddy bears' with 'riix', and 'Dean' with 'Deen' to give the text a Somali context."
+  }
+}

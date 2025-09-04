@@ -1,0 +1,109 @@
+{
+  "index": 370,
+  "split": "test",
+  "original": {
+    "question": "A hand-painted wallpaper costs $400 at the market. A DIY will saves 20% after considering the materials cost. If Ethan made his own hand-painted wallpaper, how much was the total cost?",
+    "answer": "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*$400=$<<20/100*400=80>>80 if you make your own hand-painted wallpaper.\nThe total cost of a hand-painted wallpaper made at home is $400-$80 = $<<400-80=320>>320\n#### 320"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Ethan"
+    ],
+    "notes": "The text contains a non-Somali unit of currency (dollars) and a name (Ethan) that is not typically Somali."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "market_cost",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "diy_savings",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_diy_cost",
+      "value": 320.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"market_cost\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"diy_savings\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_diy_cost\", \"value\": 320.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "market_cost",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 227752.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "diy_savings",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 45550.4,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_diy_cost",
+        "original_value": 320.0,
+        "original_unit": "dollar",
+        "converted_value": 182201.6,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A hand-painted wallpaper costs ${market_cost} at the market. A DIY will saves 20% after considering the materials cost. If Ethan made his own hand-painted wallpaper, how much was the total cost?",
+    "templatized_answer": [
+      "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*${market_cost}=${{20/100*market_cost}} if you make your own hand-painted wallpaper.",
+      "The total cost of a hand-painted wallpaper made at home is ${market_cost}-${{20/100*market_cost}} = ${{{market_cost-(20/100*market_cost)}}}",
+      "#### {total_diy_cost}"
+    ],
+    "factual_assignment": {
+      "market_cost": 400.0,
+      "total_diy_cost": 320.0
+    }
+  },
+  "merged_assignment": {
+    "market_cost": 227752.0,
+    "total_diy_cost": 182201.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    market_cost = 227752.0\n    twenty_percent_savings = (20/100) * market_cost\n    total_diy_cost = market_cost - twenty_percent_savings\n\n    return {\n        \"market_cost\": market_cost,\n        \"20/100*market_cost\": round(twenty_percent_savings, 2),\n        \"market_cost-(20/100*market_cost)\": round(total_diy_cost, 2),\n        \"total_diy_cost\": round(total_diy_cost, 2)\n    }\n",
+    "results": {
+      "market_cost": 227752.0,
+      "20/100*market_cost": 45550.4,
+      "market_cost-(20/100*market_cost)": 182201.6,
+      "total_diy_cost": 182201.6
+    }
+  },
+  "final": {
+    "question": "A hand-painted wallpaper costs 227752 shilling at the market. A DIY will saves 20% after considering the materials cost. If Ethan made his own hand-painted wallpaper, how much was the total cost?",
+    "answer_lines": [
+      "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*227752=45550.4 shilling if you make your own hand-painted wallpaper.",
+      "The total cost of a hand-painted wallpaper made at home is 227752-45550.4 = 182201.6 shilling",
+      "#### 182201.6"
+    ],
+    "final_scalar": 182201.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A hand-painted wallpaper costs 227752 shilling at the market. A DIY will saves 20% after considering the materials cost. If Axmed made his own hand-painted wallpaper, how much was the total cost?",
+    "adapted_answer": [
+      "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*227752=45550.4 shilling if you make your own hand-painted wallpaper.",
+      "The total cost of a hand-painted wallpaper made at home is 227752-45550.4 = 182201.6 shilling",
+      "#### 182201.6"
+    ],
+    "adaptation_notes": "Replaced 'Ethan' with 'Axmed' to give the name a Somali context."
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "index": 182,
+  "split": "test",
+  "original": {
+    "question": "Jean is two years older than Mark.  Two years ago Mark was 5 years older than half Jan's age.  If Jan is 30 how old is Jean?",
+    "answer": "2 years ago Jan was 30-2=<<30-2=28>>28 years old\nSo Marks age two years ago was 5+28/2=<<5+28/2=19>>19 years old\nMark is now 19+2=<<19+2=21>>21 years old\nSo Jean is 21+2=<<21+2=23>>23 years old\n#### 23"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jean",
+      "Mark",
+      "Jan"
+    ],
+    "notes": "The names Jean, Mark, and Jan are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 569.38, 'unit': 'shilling'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Jean is two years older than Mark. Two years ago Mark was 5 years older than half Jan's age. If Jan is {Jan_age} how old is Jean?",
+    "templatized_answer": [
+      "2 years ago Jan was {Jan_age}-2={Jan_age_2_years_ago} years old",
+      "So Marks age two years ago was 5+{Jan_age_2_years_ago}/2={Mark_age_2_years_ago} years old",
+      "Mark is now {Mark_age_2_years_ago}+2={Mark_age} years old",
+      "So Jean is {Mark_age}+2={Jean_age} years old",
+      "#### {Jean_age}"
+    ],
+    "factual_assignment": {
+      "Jan_age": 30,
+      "Jan_age_2_years_ago": 28,
+      "Mark_age_2_years_ago": 19,
+      "Mark_age": 21,
+      "Jean_age": 23
+    }
+  },
+  "merged_assignment": {
+    "Jan_age": 30,
+    "Jan_age_2_years_ago": 28,
+    "Mark_age_2_years_ago": 19,
+    "Mark_age": 21,
+    "Jean_age": 23
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    Jan_age = 30\n    Jan_age_2_years_ago = Jan_age - 2\n    Mark_age_2_years_ago = 5 + Jan_age_2_years_ago / 2\n    Mark_age = Mark_age_2_years_ago + 2\n    Jean_age = Mark_age + 2\n\n    return {\n        \"Jan_age\": Jan_age,\n        \"Jan_age_2_years_ago\": Jan_age_2_years_ago,\n        \"Mark_age_2_years_ago\": round(Mark_age_2_years_ago, 2),\n        \"Mark_age\": round(Mark_age, 2),\n        \"Jean_age\": round(Jean_age, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "Jan_age": 30,
+      "Jan_age_2_years_ago": 28,
+      "Mark_age_2_years_ago": 19.0,
+      "Mark_age": 21.0,
+      "Jean_age": 23.0
+    }
+  },
+  "final": {
+    "question": "Jean is two years older than Mark. Two years ago Mark was 5 years older than half Jan's age. If Jan is 30 how old is Jean?",
+    "answer_lines": [
+      "2 years ago Jan was 30-2=28 years old",
+      "So Marks age two years ago was 5+28/2=19 years old",
+      "Mark is now 19+2=21 years old",
+      "So Jean is 21+2=23 years old",
+      "#### 23"
+    ],
+    "final_scalar": 23,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

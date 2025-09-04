@@ -1,0 +1,144 @@
+{
+  "index": 349,
+  "split": "test",
+  "original": {
+    "question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs $25 per week. Treats cost $20 per month. Medicine costs $100 per month. How much money does Madeline spend on her dog per year if there are 4 weeks in a month?",
+    "answer": "Madeline spends$25*4=$<<25*4=100>>100 on food for her dog per month.\nShe spends $100+$20+$100=$<<100+20+100=220>>220 on her dog per month.\nShe will spend $220*12=$<<220*12=2640>>2640 on her dog per year\n#### 2640"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "food_cost",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "treats_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "medicine_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_cost",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_cost",
+      "value": 2640.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"food_cost\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"treats_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"medicine_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_cost\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_cost\", \"value\": 2640.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "food_cost",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 415.5,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "treats_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "medicine_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "monthly_cost",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 3656.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "yearly_cost",
+        "original_value": 2640.0,
+        "original_unit": "dollar",
+        "converted_value": 43876.8,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs ${food_cost} per week. Treats cost ${treats_cost} per month. Medicine costs ${medicine_cost} per month. How much money does Madeline spend on her dog per year if there are {weeks_in_month} weeks in a month?",
+    "templatized_answer": [
+      "Madeline spends ${food_cost}*{weeks_in_month}=${food_cost}*{weeks_in_month} on food for her dog per month.",
+      "She spends ${medicine_cost}+${treats_cost}+${medicine_cost}=${medicine_cost}+${treats_cost}+${medicine_cost} on her dog per month.",
+      "She will spend (${medicine_cost}+${treats_cost}+${medicine_cost})*12=({medicine_cost}+{treats_cost}+{medicine_cost})*12 on her dog per year",
+      "#### ({medicine_cost}+{treats_cost}+{medicine_cost})*12"
+    ],
+    "factual_assignment": {
+      "food_cost": 25.0,
+      "treats_cost": 20.0,
+      "medicine_cost": 100.0,
+      "weeks_in_month": 4
+    }
+  },
+  "merged_assignment": {
+    "food_cost": 415.5,
+    "treats_cost": 332.4,
+    "medicine_cost": 1662.0,
+    "weeks_in_month": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"food_cost\": 415.5,\n        \"treats_cost\": 332.4,\n        \"medicine_cost\": 1662.0,\n        \"weeks_in_month\": 4\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"food_cost\"] = factual_assignment[\"food_cost\"]\n    recomputed_values[\"treats_cost\"] = factual_assignment[\"treats_cost\"]\n    recomputed_values[\"medicine_cost\"] = factual_assignment[\"medicine_cost\"]\n    recomputed_values[\"weeks_in_month\"] = factual_assignment[\"weeks_in_month\"]\n\n    recomputed_values[\"food_cost_per_month\"] = round(recomputed_values[\"food_cost\"] * recomputed_values[\"weeks_in_month\"], 2)\n    recomputed_values[\"total_cost_per_month\"] = round(recomputed_values[\"medicine_cost\"] + recomputed_values[\"treats_cost\"] + recomputed_values[\"medicine_cost\"], 2)\n    recomputed_values[\"total_cost_per_year\"] = round(recomputed_values[\"total_cost_per_month\"] * 12, 2)\n\n    return recomputed_values\n\nrecomputed_values = recompute()\nprint(recomputed_values)\n",
+    "results": {
+      "food_cost": 415.5,
+      "treats_cost": 332.4,
+      "medicine_cost": 1662.0,
+      "weeks_in_month": 4,
+      "food_cost_per_month": 1662.0,
+      "total_cost_per_month": 3656.4,
+      "total_cost_per_year": 43876.8
+    }
+  },
+  "final": {
+    "question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs 415.5 leu per week. Treats cost 332.4 leu per month. Medicine costs 1662.0 leu per month. How much money does Madeline spend on her dog per year if there are 4 weeks in a month?",
+    "answer_lines": [
+      "Madeline spends 415.5*4=1662.0 leu on food for her dog per month.",
+      "She spends 1662.0+332.4+1662.0=3656.4 leu on her dog per month.",
+      "She will spend 3656.4*12=43876.8 leu on her dog per year",
+      "#### 43876.8"
+    ],
+    "final_scalar": 43876.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Every month, Madalina has to buy food, treats, and medicine for her dog. Food costs 415.5 lei per week. Treats cost 332.4 lei per month. Medicine costs 1662.0 lei per month. How much money does Madalina spend on her dog per year if there are 4 weeks in a month?",
+    "adapted_answer": [
+      "Madalina spends 415.5*4=1662.0 lei on food for her dog per month.",
+      "She spends 1662.0+332.4+1662.0=3656.4 lei on her dog per month.",
+      "She will spend 3656.4*12=43876.8 lei on her dog per year",
+      "#### 43876.8"
+    ],
+    "adaptation_notes": "Replaced 'Madeline' with 'Madalina' (a common Moldovan name) and 'leu' with 'lei' (the correct plural form of the Moldovan currency)."
+  }
+}

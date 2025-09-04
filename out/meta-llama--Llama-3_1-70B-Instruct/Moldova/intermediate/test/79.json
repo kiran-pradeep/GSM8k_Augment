@@ -1,0 +1,113 @@
+{
+  "index": 79,
+  "split": "test",
+  "original": {
+    "question": "John adopts a dog.  He takes the dog to the groomer, which costs $100.  The groomer offers him a 30% discount for being a new customer.  How much does the grooming cost?",
+    "answer": "The groomer gave a 100*.3=$<<100*.3=30>>30 discount\nSo the grooming cost 100-30=$<<100-30=70>>70\n#### 70"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is a Western name and 'dollars' is a currency used in the United States, indicating non-Moldovan cultural entities."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "grooming_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "grooming_cost_after_discount",
+      "value": 70,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"grooming_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discount\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"grooming_cost_after_discount\", \"value\": 70, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "grooming_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "discount",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 498.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "grooming_cost_after_discount",
+        "original_value": 70,
+        "original_unit": "dollar",
+        "converted_value": 1163.4,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John adopts a dog.  He takes the dog to the groomer, which costs ${grooming_cost}.  The groomer offers him a {discount_percentage}% discount for being a new customer.  How much does the grooming cost?",
+    "templatized_answer": [
+      "The groomer gave a {grooming_cost}*{discount_percentage}/100=${discount} discount",
+      "So the grooming cost {grooming_cost}-{discount}=${grooming_cost_after_discount}",
+      "#### {grooming_cost_after_discount}"
+    ],
+    "factual_assignment": {
+      "grooming_cost": 100,
+      "discount": 30,
+      "grooming_cost_after_discount": 70,
+      "discount_percentage": 30
+    }
+  },
+  "merged_assignment": {
+    "grooming_cost": 1662.0,
+    "discount": 498.6,
+    "grooming_cost_after_discount": 1163.4,
+    "discount_percentage": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    grooming_cost = 1662.0\n    discount_percentage = 30\n    discount = grooming_cost * discount_percentage / 100\n    grooming_cost_after_discount = grooming_cost - discount\n\n    return {\n        \"grooming_cost\": grooming_cost,\n        \"discount_percentage\": discount_percentage,\n        \"discount\": round(discount, 2),\n        \"grooming_cost_after_discount\": round(grooming_cost_after_discount, 2)\n    }\n",
+    "results": {
+      "grooming_cost": 1662.0,
+      "discount_percentage": 30,
+      "discount": 498.6,
+      "grooming_cost_after_discount": 1163.4
+    }
+  },
+  "final": {
+    "question": "John adopts a dog.  He takes the dog to the groomer, which costs 1662.0 leu.  The groomer offers him a 30% discount for being a new customer.  How much does the grooming cost?",
+    "answer_lines": [
+      "The groomer gave a 1662.0*30/100=498.6 leu discount",
+      "So the grooming cost 1662.0-498.6=1163.4 leu",
+      "#### 1163.4"
+    ],
+    "final_scalar": 1163.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion adopts a dog.  He takes the dog to the groomer, which costs 1662.0 leu.  The groomer offers him a 30% discount for being a new customer.  How much does the grooming cost?",
+    "adapted_answer": [
+      "The groomer gave a 1662.0*30/100=498.6 leu discount",
+      "So the grooming cost 1662.0-498.6=1163.4 leu",
+      "#### 1163.4"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Ion', a common Moldovan name."
+  }
+}

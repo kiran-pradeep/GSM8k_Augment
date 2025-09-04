@@ -1,0 +1,137 @@
+{
+  "index": 505,
+  "split": "test",
+  "original": {
+    "question": "Frederick is making popsicles to sell and to save money he is making his own popsicle sticks. He can get 200 sticks from a 2 x 4 piece of wood and 400 sticks from a 2 x 8 piece of wood. He has $24 to buy wood for sticks. A 2 x 4 costs $4. A 2 x 8 costs $6. What is the most popsicle sticks he can make if he buys the cheapest lumber?",
+    "answer": "He can buy six 2 x 4's because 24 / 4 = <<24/4=6>>6\nHe can make 1200 sticks with this wood because 6 x 200 = <<6*200=1200>>1200\nHe can buy four 2 x 8's because 24 / 6 = <<24/6=4>>4\nHe can make 1600 sticks from this because 4 x 400 = <<4*400=1600>>1600\nHe can make 1600 sticks if he buys the cheapest lumber because 1600 > 1200\n#### 1,600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Frederick"
+    ],
+    "notes": "The text contains the name 'Frederick' and the unit 'dollars', which are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_budget",
+      "value": 24,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "two_by_four_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "two_by_eight_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_budget\", \"value\": 24, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"two_by_four_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"two_by_eight_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_budget",
+        "original_value": 24,
+        "original_unit": "dollar",
+        "converted_value": 13665.12,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "two_by_four_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 2277.52,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "two_by_eight_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 3416.28,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Frederick is making popsicles to sell and to save money he is making his own popsicle sticks. He can get {two_by_four_sticks} sticks from a 2 x 4 piece of wood and {two_by_eight_sticks} sticks from a 2 x 8 piece of wood. He has ${initial_budget} to buy wood for sticks. A 2 x 4 costs ${two_by_four_cost}. A 2 x 8 costs ${two_by_eight_cost}. What is the most popsicle sticks he can make if he buys the cheapest lumber?",
+    "templatized_answer": [
+      "He can buy {initial_budget}/{two_by_four_cost} 2 x 4's because {initial_budget}/{two_by_four_cost} = {initial_budget/two_by_four_cost}",
+      "He can make {initial_budget/two_by_four_cost} x {two_by_four_sticks} sticks with this wood because {initial_budget/two_by_four_cost} x {two_by_four_sticks} = {initial_budget/two_by_four_cost * two_by_four_sticks}",
+      "He can buy {initial_budget}/{two_by_eight_cost} 2 x 8's because {initial_budget}/{two_by_eight_cost} = {initial_budget/two_by_eight_cost}",
+      "He can make {initial_budget/two_by_eight_cost} x {two_by_eight_sticks} sticks from this because {initial_budget/two_by_eight_cost} x {two_by_eight_sticks} = {initial_budget/two_by_eight_cost * two_by_eight_sticks}",
+      "He can make {initial_budget/two_by_eight_cost * two_by_eight_sticks} sticks if he buys the cheapest lumber because {initial_budget/two_by_eight_cost * two_by_eight_sticks} > {initial_budget/two_by_four_cost * two_by_four_sticks}",
+      "#### {initial_budget/two_by_eight_cost * two_by_eight_sticks}"
+    ],
+    "factual_assignment": {
+      "initial_budget": 24,
+      "two_by_four_cost": 4,
+      "two_by_eight_cost": 6,
+      "two_by_four_sticks": 200,
+      "two_by_eight_sticks": 400,
+      "initial_budget/two_by_four_cost": 6,
+      "initial_budget/two_by_four_cost * two_by_four_sticks": 1200,
+      "initial_budget/two_by_eight_cost": 4,
+      "initial_budget/two_by_eight_cost * two_by_eight_sticks": 1600
+    }
+  },
+  "merged_assignment": {
+    "initial_budget": 13665.12,
+    "two_by_four_cost": 2277.52,
+    "two_by_eight_cost": 3416.28,
+    "two_by_four_sticks": 200,
+    "two_by_eight_sticks": 400,
+    "initial_budget/two_by_four_cost": 6,
+    "initial_budget/two_by_four_cost * two_by_four_sticks": 1200,
+    "initial_budget/two_by_eight_cost": 4,
+    "initial_budget/two_by_eight_cost * two_by_eight_sticks": 1600
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_budget = 13665.12\n    two_by_four_cost = 2277.52\n    two_by_eight_cost = 3416.28\n    two_by_four_sticks = 200\n    two_by_eight_sticks = 400\n\n    initial_budget_div_two_by_four_cost = round(initial_budget / two_by_four_cost, 2)\n    initial_budget_div_two_by_four_cost_times_two_by_four_sticks = initial_budget_div_two_by_four_cost * two_by_four_sticks\n    initial_budget_div_two_by_eight_cost = round(initial_budget / two_by_eight_cost, 2)\n    initial_budget_div_two_by_eight_cost_times_two_by_eight_sticks = initial_budget_div_two_by_eight_cost * two_by_eight_sticks\n\n    return {\n        \"initial_budget\": initial_budget,\n        \"two_by_four_cost\": two_by_four_cost,\n        \"two_by_eight_cost\": two_by_eight_cost,\n        \"two_by_four_sticks\": two_by_four_sticks,\n        \"two_by_eight_sticks\": two_by_eight_sticks,\n        \"initial_budget/two_by_four_cost\": initial_budget_div_two_by_four_cost,\n        \"initial_budget/two_by_four_cost * two_by_four_sticks\": initial_budget_div_two_by_four_cost_times_two_by_four_sticks,\n        \"initial_budget/two_by_eight_cost\": initial_budget_div_two_by_eight_cost,\n        \"initial_budget/two_by_eight_cost * two_by_eight_sticks\": initial_budget_div_two_by_eight_cost_times_two_by_eight_sticks\n    }\n",
+    "results": {
+      "initial_budget": 13665.12,
+      "two_by_four_cost": 2277.52,
+      "two_by_eight_cost": 3416.28,
+      "two_by_four_sticks": 200,
+      "two_by_eight_sticks": 400,
+      "initial_budget/two_by_four_cost": 6.0,
+      "initial_budget/two_by_four_cost * two_by_four_sticks": 1200.0,
+      "initial_budget/two_by_eight_cost": 4.0,
+      "initial_budget/two_by_eight_cost * two_by_eight_sticks": 1600.0
+    }
+  },
+  "final": {
+    "question": "Frederick is making popsicles to sell and to save money he is making his own popsicle sticks. He can get 200 sticks from a 2 x 4 piece of wood and 400 sticks from a 2 x 8 piece of wood. He has 13665.12 shilling to buy wood for sticks. A 2 x 4 costs 2277.52 shilling. A 2 x 8 costs 3416.28 shilling. What is the most popsicle sticks he can make if he buys the cheapest lumber?",
+    "answer_lines": [
+      "He can buy 6 2 x 4's because 13665.12 / 2277.52 = 6",
+      "He can make 1200 sticks with this wood because 6 x 200 = 1200",
+      "He can buy 4 2 x 8's because 13665.12 / 3416.28 = 4",
+      "He can make 1600 sticks from this because 4 x 400 = 1600",
+      "He can make 1600 sticks if he buys the cheapest lumber because 1600 > 1200",
+      "#### 1600"
+    ],
+    "final_scalar": 1600,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan is making barafuuto to sell and to save money he is making his own barafuuto sticks. He can get 200 sticks from a 2 x 4 piece of wood and 400 sticks from a 2 x 8 piece of wood. He has 13665.12 shilling to buy wood for sticks. A 2 x 4 costs 2277.52 shilling. A 2 x 8 costs 3416.28 shilling. What is the most barafuuto sticks he can make if he buys the cheapest lumber?",
+    "adapted_answer": [
+      "He can buy 6 2 x 4's because 13665.12 / 2277.52 = 6",
+      "He can make 1200 sticks with this wood because 6 x 200 = 1200",
+      "He can buy 4 2 x 8's because 13665.12 / 3416.28 = 4",
+      "He can make 1600 sticks from this because 4 x 400 = 1600",
+      "He can make 1600 sticks if he buys the cheapest lumber because 1600 > 1200",
+      "#### 1600"
+    ],
+    "adaptation_notes": "Replaced 'Frederick' with 'Aadan' (a Somali name) and 'popsicles' with 'barafuuto' (the Somali word for 'popsicles' or 'ice lollipops')."
+  }
+}

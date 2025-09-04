@@ -1,0 +1,152 @@
+{
+  "index": 799,
+  "split": "test",
+  "original": {
+    "question": "A loaf of bread at the bakery costs $2. Bagels cost $1 each. How much more do 3 loaves of bread cost than 2 bagels?",
+    "answer": "3 loaves of bread cost 3 * $2 = $<<3*2=6>>6.\n2 bagels cost 2 * $1 = $<<2*1=2>>2.\nThe loaves of bread cost $6 - $2 = $<<6-2=4>>4 more than the bagels.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "loaf of bread",
+      "bagels"
+    ],
+    "notes": "The question contains units (dollars) and food items (loaf of bread, bagels) that are not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "loaf_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bagel_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_loaf_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_bagel_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cost_difference",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"loaf_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bagel_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_loaf_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_bagel_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cost_difference\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "loaf_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "bagel_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_loaf_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 99.72,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_bagel_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "cost_difference",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 66.48,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A loaf of bread at the bakery costs ${loaf_cost}. Bagels cost ${bagel_cost} each. How much more do {num_loaves} loaves of bread cost than {num_bagels} bagels?",
+    "templatized_answer": [
+      "{num_loaves} loaves of bread cost {num_loaves} * ${loaf_cost} = ${total_loaf_cost}.",
+      "{num_bagels} bagels cost {num_bagels} * ${bagel_cost} = ${total_bagel_cost}.",
+      "The loaves of bread cost ${total_loaf_cost} - ${total_bagel_cost} = ${cost_difference} more than the bagels.",
+      "#### {cost_difference}"
+    ],
+    "factual_assignment": {
+      "loaf_cost": 2,
+      "bagel_cost": 1,
+      "total_loaf_cost": 6,
+      "total_bagel_cost": 2,
+      "cost_difference": 4,
+      "num_loaves": 3,
+      "num_bagels": 2
+    }
+  },
+  "merged_assignment": {
+    "loaf_cost": 33.24,
+    "bagel_cost": 16.62,
+    "total_loaf_cost": 99.72,
+    "total_bagel_cost": 33.24,
+    "cost_difference": 66.48,
+    "num_loaves": 3,
+    "num_bagels": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    loaf_cost = 33.24\n    bagel_cost = 16.62\n    num_loaves = 3\n    num_bagels = 2\n\n    total_loaf_cost = round(num_loaves * loaf_cost, 2)\n    total_bagel_cost = round(num_bagels * bagel_cost, 2)\n    cost_difference = round(total_loaf_cost - total_bagel_cost, 2)\n\n    return {\n        \"loaf_cost\": loaf_cost,\n        \"bagel_cost\": bagel_cost,\n        \"total_loaf_cost\": total_loaf_cost,\n        \"total_bagel_cost\": total_bagel_cost,\n        \"cost_difference\": cost_difference,\n        \"num_loaves\": num_loaves,\n        \"num_bagels\": num_bagels\n    }\n",
+    "results": {
+      "loaf_cost": 33.24,
+      "bagel_cost": 16.62,
+      "total_loaf_cost": 99.72,
+      "total_bagel_cost": 33.24,
+      "cost_difference": 66.48,
+      "num_loaves": 3,
+      "num_bagels": 2
+    }
+  },
+  "final": {
+    "question": "A loaf of bread at the bakery costs 33.24 leu. Bagels cost 16.62 leu each. How much more do 3 loaves of bread cost than 2 bagels?",
+    "answer_lines": [
+      "3 loaves of bread cost 3 * 33.24 leu = 99.72 leu.",
+      "2 bagels cost 2 * 16.62 leu = 33.24 leu.",
+      "The loaves of bread cost 99.72 leu - 33.24 leu = 66.48 leu more than the bagels.",
+      "#### 66.48"
+    ],
+    "final_scalar": 66.48,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A loaf of mămăligă at the bakery costs 33.24 leu. Covrigi cost 16.62 leu each. How much more do 3 loaves of mămăligă cost than 2 covrigi?",
+    "adapted_answer": [
+      "3 loaves of mămăligă cost 3 * 33.24 leu = 99.72 leu.",
+      "2 covrigi cost 2 * 16.62 leu = 33.24 leu.",
+      "The loaves of mămăligă cost 99.72 leu - 33.24 leu = 66.48 leu more than the covrigi.",
+      "#### 66.48"
+    ],
+    "adaptation_notes": "Replaced 'bread' with 'mămăligă' (a traditional Moldovan dish) and 'bagels' with 'covrigi' (a traditional Moldovan pastry)."
+  }
+}

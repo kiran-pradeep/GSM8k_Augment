@@ -1,0 +1,198 @@
+{
+  "index": 938,
+  "split": "test",
+  "original": {
+    "question": "John earned 50 dollars an hour and worked 6 hours in the week.  If he spends 50 dollars on gas and wants to deposit 100 dollars in the bank, how many 25 dollar pens can he buy after he buys 5 pencils that cost 10 dollars each?",
+    "answer": "He earned $50*6=$<<50*6=300>>300\nHe has $300 - $100 = $<<300-100=200>>200 to spend\nHe spends 5 * $10 = $<<5*10=50>>50 on pencils\nAfter buying gas and pencils he has $200 - $50 - $50 = $<<200-50-50=100>>100 to spend on pens\nHe can buy $100/25=<<100/25=4>>4 pens\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is culturally specific to Western regions and 'dollars' is a unit of currency primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gas_cost",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bank_deposit",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pencil_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pen_cost",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 300,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "pencil_total_cost",
+      "value": 50,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gas_cost\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bank_deposit\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pencil_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pen_cost\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 300, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"pencil_total_cost\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 831.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "gas_cost",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 831.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "bank_deposit",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "pencil_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 166.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "pen_cost",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 415.5,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 4986.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "pencil_total_cost",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 831.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John earned {hourly_wage} dollars an hour and worked {hours_worked} hours in the week.  If he spends {gas_cost} dollars on gas and wants to deposit {bank_deposit} dollars in the bank, how many {pen_cost} dollar pens can he buy after he buys {number_of_pencils} pencils that cost {pencil_cost} dollars each?",
+    "templatized_answer": [
+      "He earned ${hourly_wage}*{hours_worked}=${weekly_earnings}",
+      "He has ${weekly_earnings} - ${bank_deposit} = ${remaining_after_deposit} to spend",
+      "He spends {number_of_pencils} * ${pencil_cost} = ${pencil_total_cost} on pencils",
+      "After buying gas and pencils he has ${remaining_after_deposit} - ${pencil_total_cost} - ${gas_cost} = ${remaining_after_gas_and_pencils} to spend on pens",
+      "He can buy ${remaining_after_gas_and_pencils}/{pen_cost}={number_of_pens} pens",
+      "#### {number_of_pens}"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 50,
+      "hours_worked": 6,
+      "gas_cost": 50,
+      "bank_deposit": 100,
+      "pencil_cost": 10,
+      "pen_cost": 25,
+      "weekly_earnings": 300,
+      "pencil_total_cost": 50,
+      "number_of_pencils": 5,
+      "remaining_after_deposit": 200,
+      "remaining_after_gas_and_pencils": 100,
+      "number_of_pens": 4
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 831.0,
+    "hours_worked": 6,
+    "gas_cost": 831.0,
+    "bank_deposit": 1662.0,
+    "pencil_cost": 166.2,
+    "pen_cost": 415.5,
+    "weekly_earnings": 4986.0,
+    "pencil_total_cost": 831.0,
+    "number_of_pencils": 5,
+    "remaining_after_deposit": 200,
+    "remaining_after_gas_and_pencils": 100,
+    "number_of_pens": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 831.0\n    hours_worked = 6\n    gas_cost = 831.0\n    bank_deposit = 1662.0\n    pencil_cost = 166.2\n    pen_cost = 415.5\n\n    weekly_earnings = round(hourly_wage * hours_worked, 2)\n    remaining_after_deposit = round(weekly_earnings - bank_deposit, 2)\n    number_of_pencils = round(gas_cost / pencil_cost, 2)\n    pencil_total_cost = round(number_of_pencils * pencil_cost, 2)\n    remaining_after_gas_and_pencils = round(remaining_after_deposit - pencil_total_cost - gas_cost, 2)\n    number_of_pens = round(remaining_after_gas_and_pencils / pen_cost, 2)\n\n    return {\n        \"hourly_wage\": hourly_wage,\n        \"hours_worked\": hours_worked,\n        \"gas_cost\": gas_cost,\n        \"bank_deposit\": bank_deposit,\n        \"pencil_cost\": pencil_cost,\n        \"pen_cost\": pen_cost,\n        \"weekly_earnings\": weekly_earnings,\n        \"pencil_total_cost\": pencil_total_cost,\n        \"number_of_pencils\": number_of_pencils,\n        \"remaining_after_deposit\": remaining_after_deposit,\n        \"remaining_after_gas_and_pencils\": remaining_after_gas_and_pencils,\n        \"number_of_pens\": number_of_pens\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hourly_wage": 831.0,
+      "hours_worked": 6,
+      "gas_cost": 831.0,
+      "bank_deposit": 1662.0,
+      "pencil_cost": 166.2,
+      "pen_cost": 415.5,
+      "weekly_earnings": 4986.0,
+      "pencil_total_cost": 831.0,
+      "number_of_pencils": 5.0,
+      "remaining_after_deposit": 3324.0,
+      "remaining_after_gas_and_pencils": 1662.0,
+      "number_of_pens": 4.0
+    }
+  },
+  "final": {
+    "question": "John earned 831.0 leu an hour and worked 6 hours in the week.  If he spends 831.0 leu on gas and wants to deposit 1662.0 leu in the bank, how many 415.5 leu pens can he buy after he buys 5.0 pencils that cost 166.2 leu each?",
+    "answer_lines": [
+      "He earned 831.0*6=4986.0",
+      "He has 4986.0 - 1662.0 = 3324.0 to spend",
+      "He spends 5.0 * 166.2 = 831.0 on pencils",
+      "After buying gas and pencils he has 3324.0 - 831.0 - 831.0 = 1662.0 to spend on pens",
+      "He can buy 1662.0/415.5=4.0 pens",
+      "#### 4.0"
+    ],
+    "final_scalar": 4.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion earned 831.0 lei an hour and worked 6 hours in the week.  If he spends 831.0 lei on gas and wants to deposit 1662.0 lei in the bank, how many 415.5 lei pens can he buy after he buys 5.0 pencils that cost 166.2 lei each?",
+    "adapted_answer": [
+      "He earned 831.0*6=4986.0",
+      "He has 4986.0 - 1662.0 = 3324.0 to spend",
+      "He spends 5.0 * 166.2 = 831.0 on pencils",
+      "After buying gas and pencils he has 3324.0 - 831.0 - 831.0 = 1662.0 to spend on pens",
+      "He can buy 1662.0/415.5=4.0 pens",
+      "#### 4.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Ion' and 'leu' with 'lei' to better fit the Moldovan context."
+  }
+}

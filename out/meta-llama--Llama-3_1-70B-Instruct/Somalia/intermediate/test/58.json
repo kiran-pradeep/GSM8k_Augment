@@ -1,0 +1,160 @@
+{
+  "index": 58,
+  "split": "test",
+  "original": {
+    "question": "Stephen placed an online order for groceries.  His final bill came to $40.00.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him $3.00 in delivery fees.  Stephen also added a $4.00 tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "answer": "He spent $40.00 on groceries but they charged him a 25% fee so that's 40*.25 = $10.00\nThere is also a $3.00 delivery fee and a $4.00 tip for an extra $3 + $4 = $<<3+4=7.00>>7.00 in fees\nHis groceries were $40.00, there's a $10.00 fee plus another $7.00 in delivery/tip fees for a final total of $40 + $10 + $7 = $<<40+10+7=57.00>>57.00\n#### 57"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusive to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_bill",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "delivery_fee",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tip",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fee",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extra_fees",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_total",
+      "value": 57.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_bill\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"delivery_fee\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tip\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fee\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extra_fees\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_total\", \"value\": 57.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_bill",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 22775.2,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "delivery_fee",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 1708.14,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "tip",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 2277.52,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "fee",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 5693.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "extra_fees",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 3985.66,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "final_total",
+        "original_value": 57.0,
+        "original_unit": "dollar",
+        "converted_value": 32454.66,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Stephen placed an online order for groceries.  His final bill came to ${initial_bill}.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him ${delivery_fee} in delivery fees.  Stephen also added a ${tip} tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "templatized_answer": [
+      "He spent ${initial_bill} on groceries but they charged him a 25% fee so that's {initial_bill} * 0.25 = ${fee}",
+      "There is also a ${delivery_fee} delivery fee and a ${tip} tip for an extra ${delivery_fee} + ${tip} = ${extra_fees} in fees",
+      "His groceries were ${initial_bill}, there's a ${fee} fee plus another ${extra_fees} in delivery/tip fees for a final total of ${initial_bill} + ${fee} + ${extra_fees} = ${final_total}",
+      "#### {final_total}"
+    ],
+    "factual_assignment": {
+      "initial_bill": 40.0,
+      "delivery_fee": 3.0,
+      "tip": 4.0,
+      "fee": 10.0,
+      "extra_fees": 7.0,
+      "final_total": 57.0
+    }
+  },
+  "merged_assignment": {
+    "initial_bill": 22775.2,
+    "delivery_fee": 1708.14,
+    "tip": 2277.52,
+    "fee": 5693.8,
+    "extra_fees": 3985.66,
+    "final_total": 32454.66
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_bill = 22775.2\n    delivery_fee = 1708.14\n    tip = 2277.52\n\n    fee = round(initial_bill * 0.25, 2)\n    extra_fees = round(delivery_fee + tip, 2)\n    final_total = round(initial_bill + fee + extra_fees, 2)\n\n    return {\n        \"initial_bill\": initial_bill,\n        \"delivery_fee\": delivery_fee,\n        \"tip\": tip,\n        \"fee\": fee,\n        \"extra_fees\": extra_fees,\n        \"final_total\": final_total\n    }\n",
+    "results": {
+      "initial_bill": 22775.2,
+      "delivery_fee": 1708.14,
+      "tip": 2277.52,
+      "fee": 5693.8,
+      "extra_fees": 3985.66,
+      "final_total": 32454.66
+    }
+  },
+  "final": {
+    "question": "Stephen placed an online order for groceries.  His final bill came to 22775.2 shilling.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him 1708.14 shilling in delivery fees.  Stephen also added a 2277.52 shilling tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "answer_lines": [
+      "He spent 22775.2 shilling on groceries but they charged him a 25% fee so that's 22775.2 * 0.25 = 5693.8 shilling",
+      "There is also a 1708.14 shilling delivery fee and a 2277.52 shilling tip for an extra 1708.14 + 2277.52 = 3985.66 shilling in fees",
+      "His groceries were 22775.2 shilling, there's a 5693.8 shilling fee plus another 3985.66 shilling in delivery/tip fees for a final total of 22775.2 + 5693.8 + 3985.66 = 32454.66 shilling",
+      "#### 32454.66"
+    ],
+    "final_scalar": 32454.66,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cumar waxa uu sameeyay ogaal aruurin ah oo online ah.  Bileysigiisa ugu dambeeyay waxa uu gaaray 22775.2 shilling.  Sababtaas waxa ay ku daray adeegga dekleeyaha, waxayna ku daray 25% fee ugu dambeeyay iyo 1708.14 shilling oo fee dekleeyaha.  Cumar waxa uu ku daray 2277.52 shilling oo buuxa.  Kadib feeska extra, qiimaha ugu dambeeyay ee aruurtiisa Cumar waa?",
+    "adapted_answer": [
+      "Waxa uu ku qaatay 22775.2 shilling oo aruurti, laakiin waxay ku daray 25% fee, oo ah 22775.2 * 0.25 = 5693.8 shilling",
+      "Waxa jira 1708.14 shilling oo fee dekleeyaha iyo 2277.52 shilling oo buuxa, oo ah 1708.14 + 2277.52 = 3985.66 shilling oo fees extra",
+      "Aruurtiisa waxa ay ahayd 22775.2 shilling, waxa jira 5693.8 shilling oo fee, iyo 3985.66 shilling oo fees dekleeyaha/buuxa, oo ah jumlo ugu dambeeyay 22775.2 + 5693.8 + 3985.66 = 32454.66 shilling",
+      "#### 32454.66"
+    ],
+    "adaptation_notes": "Replaced 'Stephen' with 'Cumar' and 'groceries' with 'aruurti', and 'delivery vendor' with 'dekleeyaha' to give it a Somali context."
+  }
+}

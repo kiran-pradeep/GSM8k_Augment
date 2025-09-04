@@ -1,0 +1,182 @@
+{
+  "index": 592,
+  "split": "test",
+  "original": {
+    "question": "Marilyn wants to buy a pair of boots online. On Amazon.com, the boots cost $16 and shipping costs $4. On eBay, those same pair of shoes are only $13, but shipping costs twice as much as it does on Amazon. How much more expensive do the boots work out to be on eBay?",
+    "answer": "The total cost on Amazon.com is $16 + $4 = $<<16+4=20>>20\nShipping on eBay costs $4 x 2 = $<<4*2=8>>8\nThe total cost on eBay is $13 + $8 = $<<13+8=21>>21\nThe boots cost $21 - $20 = $<<21-20=1>>1 more on eBay\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Marilyn",
+      "Amazon.com",
+      "eBay",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name, international e-commerce websites, and a non-Indian currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "amazon_boots_cost",
+      "value": 16.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "amazon_shipping_cost",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ebay_boots_cost",
+      "value": 13.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ebay_shipping_cost",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "amazon_total_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "ebay_total_cost",
+      "value": 21.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "price_difference",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"amazon_boots_cost\", \"value\": 16.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"amazon_shipping_cost\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ebay_boots_cost\", \"value\": 13.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ebay_shipping_cost\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"amazon_total_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"ebay_total_cost\", \"value\": 21.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"price_difference\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "amazon_boots_cost",
+        "original_value": 16.0,
+        "original_unit": "dollar",
+        "converted_value": 1392.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "amazon_shipping_cost",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 348.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ebay_boots_cost",
+        "original_value": 13.0,
+        "original_unit": "dollar",
+        "converted_value": 1131.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ebay_shipping_cost",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 696.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "amazon_total_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 1740.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ebay_total_cost",
+        "original_value": 21.0,
+        "original_unit": "dollar",
+        "converted_value": 1827.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "price_difference",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 87.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Marilyn wants to buy a pair of boots online. On Amazon.com, the boots cost ${amazon_boots_cost} and shipping costs ${amazon_shipping_cost}. On eBay, those same pair of shoes are only ${ebay_boots_cost}, but shipping costs twice as much as it does on Amazon. How much more expensive do the boots work out to be on eBay?",
+    "templatized_answer": [
+      "The total cost on Amazon.com is ${amazon_boots_cost} + ${amazon_shipping_cost} = ${amazon_total_cost}",
+      "Shipping on eBay costs ${amazon_shipping_cost} x 2 = ${ebay_shipping_cost}",
+      "The total cost on eBay is ${ebay_boots_cost} + ${ebay_shipping_cost} = ${ebay_total_cost}",
+      "The boots cost ${ebay_total_cost} - ${amazon_total_cost} = ${price_difference} more on eBay",
+      "#### {price_difference}"
+    ],
+    "factual_assignment": {
+      "amazon_boots_cost": 16.0,
+      "amazon_shipping_cost": 4.0,
+      "ebay_boots_cost": 13.0,
+      "ebay_shipping_cost": 8.0,
+      "amazon_total_cost": 20.0,
+      "ebay_total_cost": 21.0,
+      "price_difference": 1.0
+    }
+  },
+  "merged_assignment": {
+    "amazon_boots_cost": 1392.0,
+    "amazon_shipping_cost": 348.0,
+    "ebay_boots_cost": 1131.0,
+    "ebay_shipping_cost": 696.0,
+    "amazon_total_cost": 1740.0,
+    "ebay_total_cost": 1827.0,
+    "price_difference": 87.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    amazon_boots_cost = 1392.0\n    amazon_shipping_cost = 348.0\n    ebay_boots_cost = 1131.0\n\n    amazon_total_cost = round(amazon_boots_cost + amazon_shipping_cost, 2)\n    ebay_shipping_cost = round(amazon_shipping_cost * 2, 2)\n    ebay_total_cost = round(ebay_boots_cost + ebay_shipping_cost, 2)\n    price_difference = round(ebay_total_cost - amazon_total_cost, 2)\n\n    return {\n        \"amazon_boots_cost\": amazon_boots_cost,\n        \"amazon_shipping_cost\": amazon_shipping_cost,\n        \"ebay_boots_cost\": ebay_boots_cost,\n        \"amazon_total_cost\": amazon_total_cost,\n        \"ebay_shipping_cost\": ebay_shipping_cost,\n        \"ebay_total_cost\": ebay_total_cost,\n        \"price_difference\": price_difference\n    }\n",
+    "results": {
+      "amazon_boots_cost": 1392.0,
+      "amazon_shipping_cost": 348.0,
+      "ebay_boots_cost": 1131.0,
+      "amazon_total_cost": 1740.0,
+      "ebay_shipping_cost": 696.0,
+      "ebay_total_cost": 1827.0,
+      "price_difference": 87.0
+    }
+  },
+  "final": {
+    "question": "Marilyn wants to buy a pair of boots online. On Amazon.com, the boots cost 1392 and shipping costs 348. On eBay, those same pair of shoes are only 1131, but shipping costs twice as much as it does on Amazon. How much more expensive do the boots work out to be on eBay?",
+    "answer_lines": [
+      "The total cost on Amazon.com is 1392 + 348 = 1740",
+      "Shipping on eBay costs 348 x 2 = 696",
+      "The total cost on eBay is 1131 + 696 = 1827",
+      "The boots cost 1827 - 1740 = 87 more on eBay",
+      "#### 87"
+    ],
+    "final_scalar": 87.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nalini wants to buy a pair of boots online. On Flipkart.com, the boots cost 1392 and shipping costs 348. On Snapdeal, those same pair of shoes are only 1131, but shipping costs twice as much as it does on Flipkart. How much more expensive do the boots work out to be on Snapdeal?",
+    "adapted_answer": [
+      "The total cost on Flipkart.com is 1392 + 348 = 1740",
+      "Shipping on Snapdeal costs 348 x 2 = 696",
+      "The total cost on Snapdeal is 1131 + 696 = 1827",
+      "The boots cost 1827 - 1740 = 87 more on Snapdeal",
+      "#### 87"
+    ],
+    "adaptation_notes": "Replaced 'Marilyn' with 'Nalini', 'Amazon.com' with 'Flipkart.com', and 'eBay' with 'Snapdeal' to provide an Indian context."
+  }
+}

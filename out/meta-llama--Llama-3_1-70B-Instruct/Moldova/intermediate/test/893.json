@@ -1,0 +1,131 @@
+{
+  "index": 893,
+  "split": "test",
+  "original": {
+    "question": "Mark works at his job for 8 hours a day for 5 days a week.  He used to make $10 an hour but they raised his pay by $2 per hour.  How much does he make a week?",
+    "answer": "He works 8*5=<<8*5=40>>40 hours a week\nHe gets paid 10+2=$<<10+2=12>>12 an hour\nSo he now gets 40*12=$<<40*12=480>>480 per week\n#### 480"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage_before",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_wage_increase",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_wage_after",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 480,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage_before\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_wage_increase\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_wage_after\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 480, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage_before",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 166.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "hourly_wage_increase",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "hourly_wage_after",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 199.44,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 480,
+        "original_unit": "dollar",
+        "converted_value": 7977.6,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark works at his job for {hours_per_day} hours a day for {days_per_week} days a week.  He used to make ${hourly_wage_before} an hour but they raised his pay by ${hourly_wage_increase} per hour.  How much does he make a week?",
+    "templatized_answer": [
+      "He works {hours_per_day}*{days_per_week}={hours_per_day}*{days_per_week} hours a week",
+      "He gets paid {hourly_wage_before}+{hourly_wage_increase}=${hourly_wage_before}+{hourly_wage_increase} an hour",
+      "So he now gets {hours_per_day}*{days_per_week}*({hourly_wage_before}+{hourly_wage_increase})=${hours_per_day}*{days_per_week}*({hourly_wage_before}+{hourly_wage_increase}) per week",
+      "#### {hours_per_day}*{days_per_week}*({hourly_wage_before}+{hourly_wage_increase})"
+    ],
+    "factual_assignment": {
+      "hours_per_day": 8,
+      "days_per_week": 5,
+      "hourly_wage_before": 10,
+      "hourly_wage_increase": 2
+    }
+  },
+  "merged_assignment": {
+    "hours_per_day": 8,
+    "days_per_week": 5,
+    "hourly_wage_before": 166.2,
+    "hourly_wage_increase": 33.24
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hours_per_day = 8\n    days_per_week = 5\n    hourly_wage_before = 166.2\n    hourly_wage_increase = 33.24\n\n    hours_per_week = hours_per_day * days_per_week\n    hourly_wage_after = hourly_wage_before + hourly_wage_increase\n    weekly_wage = hours_per_week * hourly_wage_after\n\n    return {\n        \"hours_per_day\": hours_per_day,\n        \"days_per_week\": days_per_week,\n        \"hourly_wage_before\": round(hourly_wage_before, 2),\n        \"hourly_wage_increase\": round(hourly_wage_increase, 2),\n        \"hours_per_week\": hours_per_week,\n        \"hourly_wage_after\": round(hourly_wage_after, 2),\n        \"weekly_wage\": round(weekly_wage, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hours_per_day": 8,
+      "days_per_week": 5,
+      "hourly_wage_before": 166.2,
+      "hourly_wage_increase": 33.24,
+      "hours_per_week": 40,
+      "hourly_wage_after": 199.44,
+      "weekly_wage": 7977.6
+    }
+  },
+  "final": {
+    "question": "Mark works at his job for 8 hours a day for 5 days a week.  He used to make 166.2 leu an hour but they raised his pay by 33.24 leu per hour.  How much does he make a week?",
+    "answer_lines": [
+      "He works 8*5=40 hours a week",
+      "He gets paid 166.2+33.24=199.44 leu an hour",
+      "So he now gets 40*199.44=7977.6 leu per week",
+      "#### 7977.6"
+    ],
+    "final_scalar": 7977.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mark works at his job for 8 hours a day for 5 days a week.  He used to make 166.2 lei an hour but they raised his pay by 33.24 lei per hour.  How much does he make a week?",
+    "adapted_answer": [
+      "He works 8*5=40 hours a week",
+      "He gets paid 166.2+33.24=199.44 lei an hour",
+      "So he now gets 40*199.44=7977.6 lei per week",
+      "#### 7977.6"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei', the official currency of Moldova."
+  }
+}

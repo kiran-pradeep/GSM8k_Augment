@@ -1,0 +1,95 @@
+{
+  "index": 476,
+  "split": "test",
+  "original": {
+    "question": "Sarah went to buy books from the store and spent $300 on the books. If each book was $15 and she gave an equal number of books to her 4 kids, how many books did each child get?",
+    "answer": "Since she spent $300 on the books and each book's cost was $15, she bought $300/$15= <<300/15=20>>20 books.\nIf Sarah gave an equal number of books to each of her children, each kid received 20/4 = <<20/4=5>>5 books.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sarah",
+      "dollars"
+    ],
+    "notes": "The name 'Sarah' and the unit 'dollars' are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_cost",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_cost\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_cost",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 170814.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 8540.7,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sarah went to buy books from the store and spent ${total_cost} on the books. If each book was ${book_cost} and she gave an equal number of books to her 4 kids, how many books did each child get?",
+    "templatized_answer": [
+      "Since she spent ${total_cost} on the books and each book's cost was ${book_cost}, she bought ${total_cost}/${book_cost}={total_cost/book_cost} books.",
+      "If Sarah gave an equal number of books to each of her children, each kid received {total_cost/book_cost}/4 = {(total_cost/book_cost)/4} books.",
+      "#### {(total_cost/book_cost)/4}"
+    ],
+    "factual_assignment": {
+      "total_cost": 300.0,
+      "book_cost": 15.0
+    }
+  },
+  "merged_assignment": {
+    "total_cost": 170814.0,
+    "book_cost": 8540.7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_cost = 170814.0\n    book_cost = 8540.7\n\n    total_books = total_cost / book_cost\n    books_per_child = total_books / 4\n\n    return {\n        \"total_cost\": round(total_cost, 2),\n        \"book_cost\": round(book_cost, 2),\n        \"total_cost/book_cost\": round(total_books, 2),\n        \"(total_cost/book_cost)/4\": round(books_per_child, 2)\n    }\n",
+    "results": {
+      "total_cost": 170814.0,
+      "book_cost": 8540.7,
+      "total_cost/book_cost": 20.0,
+      "(total_cost/book_cost)/4": 5.0
+    }
+  },
+  "final": {
+    "question": "Sarah went to buy books from the store and spent 170814 shilling on the books. If each book was 8540.7 shilling and she gave an equal number of books to her 4 kids, how many books did each child get?",
+    "answer_lines": [
+      "Since she spent 170814 shilling on the books and each book's cost was 8540.7 shilling, she bought 170814/8540.7=20 books.",
+      "If Sarah gave an equal number of books to each of her children, each kid received 20/4 = 5 books.",
+      "#### 5"
+    ],
+    "final_scalar": 5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aamina waxay soo gashay dukaan si ay ugu iibsato buugaag, waxayna ugu qaadatay 170814 shilling buugaag. Haddii buug kasta ahaa 8540.7 shilling, waxayna buuggaasi ku siiyay caruurteyda afar, inta buugga ay heli doonto cada caruur ah?",
+    "adapted_answer": [
+      "Waxay qaadatay 170814 shilling buugga, waxayna buug kasta ahaa 8540.7 shilling, waxayna iibsatay 170814/8540.7=20 buug.",
+      "Haddii Aamina buuggaasi ku siiyay caruurteyda afar, cada caruur wuxuu helay 20/4 = 5 buug."
+    ],
+    "adaptation_notes": "Replaced 'Sarah' with 'Aamina' to give the name a Somali context."
+  }
+}

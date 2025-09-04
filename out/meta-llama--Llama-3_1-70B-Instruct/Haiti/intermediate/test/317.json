@@ -1,0 +1,149 @@
+{
+  "index": 317,
+  "split": "test",
+  "original": {
+    "question": "John fills a 6 foot by 4 foot pool that is 5 feet deep.  It cost $.1 per cubic foot to fill.  How much does it cost to fill?",
+    "answer": "The pool has a base of 6*4=<<6*4=24>>24 square feet\nSo its volume was 24*5=<<24*5=120>>120 cubic feet\nSo it cost 120*.1=$<<120*.1=12>>12 to fill the pool\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars",
+      "feet"
+    ],
+    "notes": "The name 'John' is a Western name, 'dollars' is a US currency unit, and 'feet' is a US unit of measurement."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pool_length",
+      "value": 6,
+      "unit": "foot",
+      "context": "question"
+    },
+    {
+      "variable": "pool_width",
+      "value": 4,
+      "unit": "foot",
+      "context": "question"
+    },
+    {
+      "variable": "pool_depth",
+      "value": 5,
+      "unit": "foot",
+      "context": "question"
+    },
+    {
+      "variable": "fill_cost_per_cubic_foot",
+      "value": 0.1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fill_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"gourde\": 130.81},\n        \"foot\": {\"meter\": 0.3048},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            conversion_rate = list(conversions[original_unit].values())[0]\n            converted_value = round(original_value * conversion_rate, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"pool_length\",\n    \"value\": 6,\n    \"unit\": \"foot\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"pool_width\",\n    \"value\": 4,\n    \"unit\": \"foot\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"pool_depth\",\n    \"value\": 5,\n    \"unit\": \"foot\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"fill_cost_per_cubic_foot\",\n    \"value\": 0.1,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"fill_cost\",\n    \"value\": 12,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pool_length",
+        "original_value": 6,
+        "original_unit": "foot",
+        "converted_value": 1.83,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "pool_width",
+        "original_value": 4,
+        "original_unit": "foot",
+        "converted_value": 1.22,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "pool_depth",
+        "original_value": 5,
+        "original_unit": "foot",
+        "converted_value": 1.52,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "fill_cost_per_cubic_foot",
+        "original_value": 0.1,
+        "original_unit": "dollar",
+        "converted_value": 13.08,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "fill_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1569.72,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John fills a {pool_length} foot by {pool_width} foot pool that is {pool_depth} feet deep.  It cost ${fill_cost_per_cubic_foot} per cubic foot to fill.  How much does it cost to fill?",
+    "templatized_answer": [
+      "The pool has a base of {pool_length}*{pool_width}={pool_length}*{pool_width} square feet",
+      "So its volume was {pool_length}*{pool_width}*{pool_depth}={pool_length}*{pool_width}*{pool_depth} cubic feet",
+      "So it cost {pool_length}*{pool_width}*{pool_depth}*{fill_cost_per_cubic_foot}=${pool_length}*{pool_width}*{pool_depth}*{fill_cost_per_cubic_foot} to fill the pool",
+      "#### {fill_cost}"
+    ],
+    "factual_assignment": {
+      "pool_length": 6,
+      "pool_width": 4,
+      "pool_depth": 5,
+      "fill_cost_per_cubic_foot": 0.1,
+      "fill_cost": 12
+    }
+  },
+  "merged_assignment": {
+    "pool_length": 1.83,
+    "pool_width": 1.22,
+    "pool_depth": 1.52,
+    "fill_cost_per_cubic_foot": 13.08,
+    "fill_cost": 1569.72
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pool_length = 1.83\n    pool_width = 1.22\n    pool_depth = 1.52\n    fill_cost_per_cubic_foot = 13.08\n\n    base_area = pool_length * pool_width\n    volume = base_area * pool_depth\n    fill_cost = volume * fill_cost_per_cubic_foot\n\n    return {\n        \"pool_length\": pool_length,\n        \"pool_width\": pool_width,\n        \"pool_depth\": pool_depth,\n        \"fill_cost_per_cubic_foot\": fill_cost_per_cubic_foot,\n        \"pool_length*pool_width\": round(base_area, 2),\n        \"pool_length*pool_width*pool_depth\": round(volume, 2),\n        \"pool_length*pool_width*pool_depth*fill_cost_per_cubic_foot\": round(fill_cost, 2),\n        \"fill_cost\": round(fill_cost, 2)\n    }\n",
+    "results": {
+      "pool_length": 1.83,
+      "pool_width": 1.22,
+      "pool_depth": 1.52,
+      "fill_cost_per_cubic_foot": 13.08,
+      "pool_length*pool_width": 2.23,
+      "pool_length*pool_width*pool_depth": 3.39,
+      "pool_length*pool_width*pool_depth*fill_cost_per_cubic_foot": 44.39,
+      "fill_cost": 44.39
+    }
+  },
+  "final": {
+    "question": "John fills a 1.83 meter by 1.22 meter pool that is 1.52 meters deep.  It cost 13.08 gourde per cubic meter to fill.  How much does it cost to fill?",
+    "answer_lines": [
+      "The pool has a base of 1.83*1.22=2.23 square meters",
+      "So its volume was 2.23*1.52=3.39 cubic meters",
+      "So it cost 3.39*13.08=44.39 gourde to fill the pool",
+      "#### 44.39"
+    ],
+    "final_scalar": 44.39,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ti-Manno fills a 1.83 meter by 1.22 meter pool that is 1.52 meters deep.  It cost 13.08 gourde per cubic meter to fill.  How much does it cost to fill?",
+    "adapted_answer": [
+      "The pool has a base of 1.83*1.22=2.23 square meters",
+      "So its volume was 2.23*1.52=3.39 cubic meters",
+      "So it cost 3.39*13.08=44.39 gourde to fill the pool",
+      "#### 44.39"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Ti-Manno', a common Haitian name."
+  }
+}

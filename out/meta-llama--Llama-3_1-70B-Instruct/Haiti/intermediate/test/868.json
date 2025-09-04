@@ -1,0 +1,109 @@
+{
+  "index": 868,
+  "split": "test",
+  "original": {
+    "question": "A three-ounce box of flavored jello makes 10 small jello cups.  Greg wants to make small jello cups for his son's outdoor birthday party.  There will be 30 kids and he wants to have enough so that each kid can have 4 jello cups.  Jello is currently on sale for $1.25.  How much will he spend on jello?",
+    "answer": "There will be 30 kids and he wants each kid to have 4 servings so that's 30*4 = <<30*4=120>>120 jello cups\n1 box of jello makes 10 jello cups and he needs to make 120 jello cups so he needs 120/10 = <<120/10=12>>12 boxes of jello\nEach box of jello is $1.25 and he needs 12 boxes so he will spend 1.25*12 = $<<1.25*12=15.00>>15.00 on jello\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Greg",
+      "jello",
+      "dollars"
+    ],
+    "notes": "The name 'Greg' is a culturally specific name commonly found in Western cultures, 'jello' is a food item not commonly associated with Haitian cuisine, and 'dollars' is a unit of currency primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "jello_cost",
+      "value": 1.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_jello_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"jello_cost\", \"value\": 1.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_jello_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "jello_cost",
+        "original_value": 1.25,
+        "original_unit": "dollar",
+        "converted_value": 163.51,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_jello_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 1962.15,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A three-ounce box of flavored jello makes {small_jello_cups_per_box} small jello cups.  Greg wants to make small jello cups for his son's outdoor birthday party.  There will be {number_of_kids} kids and he wants to have enough so that each kid can have {jello_cups_per_kid} jello cups.  Jello is currently on sale for {jello_cost}.  How much will he spend on jello?",
+    "templatized_answer": [
+      "There will be {number_of_kids} kids and he wants each kid to have {jello_cups_per_kid} servings so that's {number_of_kids}*{jello_cups_per_kid} = {number_of_kids}*{jello_cups_per_kid} jello cups",
+      "1 box of jello makes {small_jello_cups_per_box} jello cups and he needs to make {number_of_kids}*{jello_cups_per_kid} jello cups so he needs ({number_of_kids}*{jello_cups_per_kid})/{small_jello_cups_per_box} = ({number_of_kids}*{jello_cups_per_kid})/{small_jello_cups_per_box} boxes of jello",
+      "Each box of jello is {jello_cost} and he needs ({number_of_kids}*{jello_cups_per_kid})/{small_jello_cups_per_box} boxes so he will spend {jello_cost}*(({number_of_kids}*{jello_cups_per_kid})/{small_jello_cups_per_box}) = {jello_cost}*(({number_of_kids}*{jello_cups_per_kid})/{small_jello_cups_per_box}) on jello",
+      "#### {total_jello_cost}"
+    ],
+    "factual_assignment": {
+      "jello_cost": 1.25,
+      "total_jello_cost": 15.0,
+      "number_of_kids": 30,
+      "jello_cups_per_kid": 4,
+      "small_jello_cups_per_box": 10
+    }
+  },
+  "merged_assignment": {
+    "jello_cost": 163.51,
+    "total_jello_cost": 1962.15,
+    "number_of_kids": 30,
+    "jello_cups_per_kid": 4,
+    "small_jello_cups_per_box": 10
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"jello_cost\": 163.51,\n        \"total_jello_cost\": 1962.15,\n        \"number_of_kids\": 30,\n        \"jello_cups_per_kid\": 4,\n        \"small_jello_cups_per_box\": 10\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"number_of_kids\"] = factual_assignment[\"number_of_kids\"]\n    recomputed_values[\"jello_cups_per_kid\"] = factual_assignment[\"jello_cups_per_kid\"]\n    recomputed_values[\"small_jello_cups_per_box\"] = factual_assignment[\"small_jello_cups_per_box\"]\n    recomputed_values[\"jello_cost\"] = factual_assignment[\"jello_cost\"]\n\n    recomputed_values[\"number_of_kids*jello_cups_per_kid\"] = recomputed_values[\"number_of_kids\"] * recomputed_values[\"jello_cups_per_kid\"]\n    recomputed_values[\"(number_of_kids*jello_cups_per_kid)/small_jello_cups_per_box\"] = round(recomputed_values[\"number_of_kids*jello_cups_per_kid\"] / recomputed_values[\"small_jello_cups_per_box\"], 2)\n    recomputed_values[\"jello_cost*((number_of_kids*jello_cups_per_kid)/small_jello_cups_per_box)\"] = round(recomputed_values[\"jello_cost\"] * recomputed_values[\"(number_of_kids*jello_cups_per_kid)/small_jello_cups_per_box\"], 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "number_of_kids": 30,
+      "jello_cups_per_kid": 4,
+      "small_jello_cups_per_box": 10,
+      "jello_cost": 163.51,
+      "number_of_kids*jello_cups_per_kid": 120,
+      "(number_of_kids*jello_cups_per_kid)/small_jello_cups_per_box": 12.0,
+      "jello_cost*((number_of_kids*jello_cups_per_kid)/small_jello_cups_per_box)": 1962.12
+    }
+  },
+  "final": {
+    "question": "A three-ounce box of flavored jello makes 10 small jello cups.  Greg wants to make small jello cups for his son's outdoor birthday party.  There will be 30 kids and he wants to have enough so that each kid can have 4 jello cups.  Jello is currently on sale for 163.51 gourde.  How much will he spend on jello?",
+    "answer_lines": [
+      "There will be 30 kids and he wants each kid to have 4 servings so that's 30*4 = 120 jello cups",
+      "1 box of jello makes 10 jello cups and he needs to make 120 jello cups so he needs 120/10 = 12 boxes of jello",
+      "Each box of jello is 163.51 gourde and he needs 12 boxes so he will spend 163.51*12 = 1962.12 gourde on jello",
+      "#### 1962.12"
+    ],
+    "final_scalar": 1962.12,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A three-ounce box of flavored 'dous makos' makes 10 small cups.  Makenson wants to make small cups for his son's outdoor birthday party.  There will be 30 kids and he wants to have enough so that each kid can have 4 cups.  Dous makos is currently on sale for 163.51 gourde.  How much will he spend on dous makos?",
+    "adapted_answer": [
+      "There will be 30 kids and he wants each kid to have 4 servings so that's 30*4 = 120 cups",
+      "1 box of dous makos makes 10 cups and he needs to make 120 cups so he needs 120/10 = 12 boxes of dous makos",
+      "Each box of dous makos is 163.51 gourde and he needs 12 boxes so he will spend 163.51*12 = 1962.12 gourde on dous makos",
+      "#### 1962.12"
+    ],
+    "adaptation_notes": "Replaced 'Greg' with 'Makenson', 'jello' with 'dous makos' (a traditional Haitian dessert), and removed the reference to 'dollars' as the currency is already in gourde."
+  }
+}

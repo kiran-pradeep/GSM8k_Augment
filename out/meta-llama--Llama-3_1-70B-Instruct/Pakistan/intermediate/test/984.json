@@ -1,0 +1,99 @@
+{
+  "index": 984,
+  "split": "test",
+  "original": {
+    "question": "Pat has a flower bed that is 111 feet long.  Pat wants to fill her flower bed with plants.  Pat's flowers grow 12 inches wide so she needs to leave 1.5 feet between every plant.  Pat already owns 17 flowers.  Each flowering plant costs $6 at the store,  how much money will Pat spend at the store to fill up her flower bed?",
+    "answer": "Pat's flower bed is 111 feet / 1.5 feet per plant = <<111/1.5=74>>74 plants needed.\nPat needs to buy 74 plants - 17 plants = <<74-17=57>>57 plants needed to purchase.\nPat will spend 57 plants * $6 = $<<57*6=342>>342.\n#### 342"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "feet",
+      "dollars"
+    ],
+    "notes": "The question contains units of measurement (feet) and currency (dollars) that are not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "flower_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spend",
+      "value": 342,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"flower_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spend\", \"value\": 342, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "flower_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 1691.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spend",
+        "original_value": 342,
+        "original_unit": "dollar",
+        "converted_value": 96392.7,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Pat has a flower bed that is {bed_length} feet long.  Pat wants to fill her flower bed with plants.  Pat's flowers grow {plant_width} inches wide so she needs to leave {space_between_plants} feet between every plant.  Pat already owns {owned_plants} flowers.  Each flowering plant costs ${flower_cost} at the store,  how much money will Pat spend at the store to fill up her flower bed?",
+    "templatized_answer": [
+      "Pat's flower bed is {bed_length} feet / {space_between_plants} feet per plant = {bed_length}/{space_between_plants} plants needed.",
+      "Pat needs to buy {bed_length}/{space_between_plants} plants - {owned_plants} plants = {bed_length}/{space_between_plants} - {owned_plants} plants needed to purchase.",
+      "Pat will spend ({bed_length}/{space_between_plants} - {owned_plants}) plants * ${flower_cost} = $(({bed_length}/{space_between_plants}) - {owned_plants}) * {flower_cost}.",
+      "#### ({bed_length}/{space_between_plants} - {owned_plants}) * {flower_cost}"
+    ],
+    "factual_assignment": {
+      "bed_length": 111,
+      "plant_width": 12,
+      "space_between_plants": 1.5,
+      "owned_plants": 17,
+      "flower_cost": 6
+    }
+  },
+  "merged_assignment": {
+    "bed_length": 111,
+    "plant_width": 12,
+    "space_between_plants": 1.5,
+    "owned_plants": 17,
+    "flower_cost": 1691.1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bed_length = 111\n    plant_width = 12 / 12  # convert inches to feet\n    space_between_plants = 1.5\n    owned_plants = 17\n    flower_cost = 1691.1\n\n    plants_needed = bed_length / space_between_plants\n    plants_to_purchase = plants_needed - owned_plants\n    total_cost = plants_to_purchase * flower_cost\n\n    return {\n        \"bed_length\": bed_length,\n        \"plant_width\": plant_width,\n        \"space_between_plants\": space_between_plants,\n        \"owned_plants\": owned_plants,\n        \"flower_cost\": flower_cost,\n        \"bed_length/{space_between_plants}\": plants_needed,\n        \"bed_length/{space_between_plants} - {owned_plants}\": plants_to_purchase,\n        \"(({bed_length}/{space_between_plants}) - {owned_plants}) * {flower_cost}\": round(total_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "bed_length": 111,
+      "plant_width": 1.0,
+      "space_between_plants": 1.5,
+      "owned_plants": 17,
+      "flower_cost": 1691.1,
+      "bed_length/{space_between_plants}": 74.0,
+      "bed_length/{space_between_plants} - {owned_plants}": 57.0,
+      "(({bed_length}/{space_between_plants}) - {owned_plants}) * {flower_cost}": 96392.7
+    }
+  },
+  "final": {
+    "question": "Pat has a flower bed that is 111 meters long.  Pat wants to fill her flower bed with plants.  Pat's flowers grow 1.0 meters wide so she needs to leave 1.5 meters between every plant.  Pat already owns 17 flowers.  Each flowering plant costs 1691.1 rupee at the store,  how much money will Pat spend at the store to fill up her flower bed?",
+    "answer_lines": [
+      "Pat's flower bed is 111 meters / 1.5 meters per plant = 74 plants needed.",
+      "Pat needs to buy 74 plants - 17 plants = 57 plants needed to purchase.",
+      "Pat will spend 57 plants * 1691.1 rupee = 96392.7 rupee.",
+      "#### 96392.7"
+    ],
+    "final_scalar": 96392.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "index": 1155,
+  "split": "test",
+  "original": {
+    "question": "John buys a cassette with 2 songs.  The first song is 5 minutes and the second song is 60% longer.  How much time was the total cassette?",
+    "answer": "The second song is 5*.6=<<5*.6=3>>3 minutes longer than the first\nSo the second song was 5+3=<<5+3=8>>8 minutes\nThat means the total time was 5+8=<<5+8=13>>13 minutes\n#### 13"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John"
+    ],
+    "notes": "The name 'John' is culturally specific to Western regions."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 16.62, 'unit': 'leu'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "John buys a cassette with {num_songs} songs.  The first song is {song1_length} minutes and the second song is {song2_length_percentage}% longer.  How much time was the total cassette?",
+    "templatized_answer": [
+      "The second song is {song1_length}*{song2_length_percentage}/100={song1_length}*{song2_length_percentage}/100 minutes longer than the first",
+      "So the second song was {song1_length}+{song1_length}*{song2_length_percentage}/100={song1_length}+{song1_length}*{song2_length_percentage}/100 minutes",
+      "That means the total time was {song1_length}+{song1_length}+{song1_length}*{song2_length_percentage}/100={song1_length}*2+{song1_length}*{song2_length_percentage}/100 minutes",
+      "#### {total_time}"
+    ],
+    "factual_assignment": {
+      "num_songs": 2,
+      "song1_length": 5,
+      "song2_length_percentage": 60,
+      "total_time": 13
+    }
+  },
+  "merged_assignment": {
+    "num_songs": 2,
+    "song1_length": 5,
+    "song2_length_percentage": 60,
+    "total_time": 13
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"num_songs\": 2,\n        \"song1_length\": 5,\n        \"song2_length_percentage\": 60,\n        \"total_time\": 13\n    }\n\n    recomputed_values = {\n        \"num_songs\": factual_assignment[\"num_songs\"],\n        \"song1_length\": factual_assignment[\"song1_length\"],\n        \"song2_length_percentage\": factual_assignment[\"song2_length_percentage\"],\n    }\n\n    song2_length_difference = factual_assignment[\"song1_length\"] * factual_assignment[\"song2_length_percentage\"] / 100\n    recomputed_values[\"song2_length_difference\"] = round(song2_length_difference, 2)\n\n    song2_length = factual_assignment[\"song1_length\"] + song2_length_difference\n    recomputed_values[\"song2_length\"] = round(song2_length, 2)\n\n    total_time = factual_assignment[\"song1_length\"] * 2 + song2_length_difference\n    recomputed_values[\"total_time\"] = round(total_time, 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "num_songs": 2,
+      "song1_length": 5,
+      "song2_length_percentage": 60,
+      "song2_length_difference": 3.0,
+      "song2_length": 8.0,
+      "total_time": 13.0
+    }
+  },
+  "final": {
+    "question": "John buys a cassette with 2 songs.  The first song is 5 minutes and the second song is 60% longer.  How much time was the total cassette?",
+    "answer_lines": [
+      "The second song is 5*60/100=3.0 minutes longer than the first",
+      "So the second song was 5+3.0=8.0 minutes",
+      "That means the total time was 5+8.0=13.0 minutes",
+      "#### 13.0"
+    ],
+    "final_scalar": 13.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion buys a cassette with 2 songs.  The first song is 5 minutes and the second song is 60% longer.  How much time was the total cassette?",
+    "adapted_answer": [
+      "The second song is 5*60/100=3.0 minutes longer than the first",
+      "So the second song was 5+3.0=8.0 minutes",
+      "That means the total time was 5+8.0=13.0 minutes",
+      "#### 13.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Ion', a common Moldovan name."
+  }
+}

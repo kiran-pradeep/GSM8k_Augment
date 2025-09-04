@@ -1,0 +1,151 @@
+{
+  "index": 642,
+  "split": "test",
+  "original": {
+    "question": "James buys a new wardrobe.  He buys 10 suits and 10 dress pants.  He also buys 3 dress shirts per suit.  The suits cost $750 each and the dress pants cost 1/5 that cost.  The dress shirts were $60 each.  How much did everything cost?",
+    "answer": "The suits cost 750*10=$<<750*10=7500>>7500\nThe dress pants cost 750/5=$<<750/5=150>>150 each\nSo in total they cost 150*10=$<<150*10=1500>>1500\nHe bought 3*10=<<3*10=30>>30 dress shirts\nso he spends 30*60=$<<30*60=1800>>1800 on dress shirts\nThus the total cost is 7500+1500+1800=$<<7500+1500+1800=10800>>10,800\n#### 10,800"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "dollars"
+    ],
+    "notes": "The name 'James' is culturally specific to Western regions and the unit 'dollars' is commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "suit_cost",
+      "value": 750.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dress_pants_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "dress_shirt_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 10800.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"suit_cost\", \"value\": 750.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"dress_pants_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"dress_shirt_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 10800.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "suit_cost",
+        "original_value": 750.0,
+        "original_unit": "dollar",
+        "converted_value": 211387.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "dress_pants_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 42277.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "dress_shirt_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 16911.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 10800.0,
+        "original_unit": "dollar",
+        "converted_value": 3043980.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James buys a new wardrobe. He buys {num_suits} suits and {num_dress_pants} dress pants. He also buys {num_dress_shirts_per_suit} dress shirts per suit. The suits cost ${suit_cost} each and the dress pants cost 1/5 that cost. The dress shirts were ${dress_shirt_cost} each. How much did everything cost?",
+    "templatized_answer": [
+      "The suits cost {suit_cost}*{num_suits}=${suit_cost}*{num_suits}",
+      "The dress pants cost {suit_cost}/5=${suit_cost}/5 each",
+      "So in total they cost ({suit_cost}/5)*{num_dress_pants}={suit_cost}*{num_dress_pants}/5",
+      "He bought {num_dress_shirts_per_suit}*{num_suits}={num_dress_shirts_per_suit}*{num_suits} dress shirts",
+      "so he spends ({num_dress_shirts_per_suit}*{num_suits})*{dress_shirt_cost}=({num_dress_shirts_per_suit}*{num_suits}*{dress_shirt_cost}) on dress shirts",
+      "Thus the total cost is ({suit_cost}*{num_suits})+({suit_cost}*{num_dress_pants}/5)+({num_dress_shirts_per_suit}*{num_suits}*{dress_shirt_cost})=({suit_cost}*{num_suits})+({suit_cost}*{num_dress_pants}/5)+({num_dress_shirts_per_suit}*{num_suits}*{dress_shirt_cost})",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "suit_cost": 750.0,
+      "dress_pants_cost": 150.0,
+      "dress_shirt_cost": 60.0,
+      "total_cost": 10800.0,
+      "num_suits": 10,
+      "num_dress_pants": 10,
+      "num_dress_shirts_per_suit": 3
+    }
+  },
+  "merged_assignment": {
+    "suit_cost": 211387.5,
+    "dress_pants_cost": 42277.5,
+    "dress_shirt_cost": 16911.0,
+    "total_cost": 3043980.0,
+    "num_suits": 10,
+    "num_dress_pants": 10,
+    "num_dress_shirts_per_suit": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"suit_cost\": 211387.5,\n        \"dress_pants_cost\": 42277.5,\n        \"dress_shirt_cost\": 16911.0,\n        \"total_cost\": 3043980.0,\n        \"num_suits\": 10,\n        \"num_dress_pants\": 10,\n        \"num_dress_shirts_per_suit\": 3\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"suit_cost\"] = factual_assignment[\"suit_cost\"]\n    recomputed_values[\"num_suits\"] = factual_assignment[\"num_suits\"]\n    recomputed_values[\"suit_cost*num_suits\"] = round(recomputed_values[\"suit_cost\"] * recomputed_values[\"num_suits\"], 2)\n\n    recomputed_values[\"suit_cost/5\"] = round(recomputed_values[\"suit_cost\"] / 5, 2)\n    recomputed_values[\"num_dress_pants\"] = factual_assignment[\"num_dress_pants\"]\n    recomputed_values[\"(suit_cost/5)*num_dress_pants\"] = round(recomputed_values[\"suit_cost/5\"] * recomputed_values[\"num_dress_pants\"], 2)\n\n    recomputed_values[\"num_dress_shirts_per_suit\"] = factual_assignment[\"num_dress_shirts_per_suit\"]\n    recomputed_values[\"num_dress_shirts_per_suit*num_suits\"] = recomputed_values[\"num_dress_shirts_per_suit\"] * recomputed_values[\"num_suits\"]\n    recomputed_values[\"dress_shirt_cost\"] = factual_assignment[\"dress_shirt_cost\"]\n    recomputed_values[\"(num_dress_shirts_per_suit*num_suits)*dress_shirt_cost\"] = round(recomputed_values[\"num_dress_shirts_per_suit*num_suits\"] * recomputed_values[\"dress_shirt_cost\"], 2)\n\n    recomputed_values[\"total_cost\"] = round(recomputed_values[\"suit_cost*num_suits\"] + recomputed_values[\"(suit_cost/5)*num_dress_pants\"] + recomputed_values[\"(num_dress_shirts_per_suit*num_suits)*dress_shirt_cost\"], 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "suit_cost": 211387.5,
+      "num_suits": 10,
+      "suit_cost*num_suits": 2113875.0,
+      "suit_cost/5": 42277.5,
+      "num_dress_pants": 10,
+      "(suit_cost/5)*num_dress_pants": 422775.0,
+      "num_dress_shirts_per_suit": 3,
+      "num_dress_shirts_per_suit*num_suits": 30,
+      "dress_shirt_cost": 16911.0,
+      "(num_dress_shirts_per_suit*num_suits)*dress_shirt_cost": 507330.0,
+      "total_cost": 3043980.0
+    }
+  },
+  "final": {
+    "question": "James buys a new wardrobe. He buys 10 suits and 10 dress pants. He also buys 3 dress shirts per suit. The suits cost 211387.5 each and the dress pants cost 1/5 that cost. The dress shirts were 16911 each. How much did everything cost?",
+    "answer_lines": [
+      "The suits cost 211387.5*10=2113875",
+      "The dress pants cost 211387.5/5=42277.5 each",
+      "So in total they cost 42277.5*10=422775",
+      "He bought 3*10=30 dress shirts",
+      "so he spends 30*16911=507330 on dress shirts",
+      "Thus the total cost is 2113875+422775+507330=3043980",
+      "#### 3043980"
+    ],
+    "final_scalar": 3043980,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran buys a new wardrobe. He buys 10 suits and 10 dress pants. He also buys 3 dress shirts per suit. The suits cost 211387.5 each and the dress pants cost 1/5 that cost. The dress shirts were 16911 each. How much did everything cost?",
+    "adapted_answer": [
+      "The suits cost 211387.5*10=2113875",
+      "The dress pants cost 211387.5/5=42277.5 each",
+      "So in total they cost 42277.5*10=422775",
+      "He bought 3*10=30 dress shirts",
+      "so he spends 30*16911=507330 on dress shirts",
+      "Thus the total cost is 2113875+422775+507330=3043980",
+      "#### 3043980"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Kamran' to give the name a Pakistani context."
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "index": 976,
+  "split": "test",
+  "original": {
+    "question": "Sunny is selling gingerbread and apple pie for a fundraiser. On Saturday, he sold 10 boxes of gingerbread and 4 fewer boxes of apple pie, than on Sunday. On Sunday, he sold 5 more boxes of gingerbread than on Saturday and 15 boxes of apple pie. If the gingerbread cost $6 and the apple pie cost $15, how much did Sunny earn for two days?",
+    "answer": "He sold 10 + 5 = <<10+5=15>>15 boxes of gingerbread on Sunday.\nThe total number of boxes of gingerbread that Sunny sold is 10 + 15 = <<10+15=25>>25.\nSunny earned 25 x $6 = $<<25*6=150>>150 for selling gingerbread.\nHe sold 15 - 4 = <<15-4=11>>11 boxes of apple pie on Saturday.\nThe total number of boxes of apple pie that Sunny sold is 15 + 11 = <<15+11=26>>26.\nHe earned 26 x $15 = $<<26*15=390>>390 for selling apple pie.\nSo, Sunny earned $150 + $390 = $<<150+390=540>>540 for two days.\n#### 540"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sunny",
+      "gingerbread",
+      "apple pie",
+      "dollars"
+    ],
+    "notes": "The names, food items, and units are culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "gingerbread_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "apple_pie_cost",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gingerbread_earnings",
+      "value": 150,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "apple_pie_earnings",
+      "value": 390,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 540,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"gingerbread_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"apple_pie_cost\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gingerbread_earnings\", \"value\": 150, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"apple_pie_earnings\", \"value\": 390, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 540, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "gingerbread_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 784.86,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "apple_pie_cost",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1962.15,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "gingerbread_earnings",
+        "original_value": 150,
+        "original_unit": "dollar",
+        "converted_value": 19621.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "apple_pie_earnings",
+        "original_value": 390,
+        "original_unit": "dollar",
+        "converted_value": 51015.9,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 540,
+        "original_unit": "dollar",
+        "converted_value": 70637.4,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sunny is selling gingerbread and apple pie for a fundraiser. On Saturday, he sold {saturday_gingerbread_boxes} boxes of gingerbread and {saturday_apple_pie_boxes} boxes of apple pie, than on Sunday. On Sunday, he sold {sunday_gingerbread_boxes} boxes of gingerbread and {sunday_apple_pie_boxes} boxes of apple pie. If the gingerbread cost ${gingerbread_cost} and the apple pie cost ${apple_pie_cost}, how much did Sunny earn for two days?",
+    "templatized_answer": [
+      "He sold {saturday_gingerbread_boxes} + {sunday_gingerbread_difference} = {sunday_gingerbread_boxes} boxes of gingerbread on Sunday.",
+      "The total number of boxes of gingerbread that Sunny sold is {saturday_gingerbread_boxes} + {sunday_gingerbread_boxes} = {total_gingerbread_boxes}.",
+      "Sunny earned {total_gingerbread_boxes} x ${gingerbread_cost} = ${gingerbread_earnings} for selling gingerbread.",
+      "He sold {sunday_apple_pie_boxes} - {saturday_apple_pie_difference} = {saturday_apple_pie_boxes} boxes of apple pie on Saturday.",
+      "The total number of boxes of apple pie that Sunny sold is {sunday_apple_pie_boxes} + {saturday_apple_pie_boxes} = {total_apple_pie_boxes}.",
+      "He earned {total_apple_pie_boxes} x ${apple_pie_cost} = ${apple_pie_earnings} for selling apple pie.",
+      "So, Sunny earned ${gingerbread_earnings} + ${apple_pie_earnings} = ${total_earnings} for two days.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "saturday_gingerbread_boxes": 10,
+      "sunday_gingerbread_boxes": 15,
+      "sunday_gingerbread_difference": 5,
+      "sunday_apple_pie_boxes": 15,
+      "saturday_apple_pie_difference": 4,
+      "total_gingerbread_boxes": 25,
+      "total_apple_pie_boxes": 26,
+      "gingerbread_cost": 6,
+      "apple_pie_cost": 15,
+      "gingerbread_earnings": 150,
+      "apple_pie_earnings": 390,
+      "total_earnings": 540
+    }
+  },
+  "merged_assignment": {
+    "saturday_gingerbread_boxes": 10,
+    "sunday_gingerbread_boxes": 15,
+    "sunday_gingerbread_difference": 5,
+    "sunday_apple_pie_boxes": 15,
+    "saturday_apple_pie_difference": 4,
+    "total_gingerbread_boxes": 25,
+    "total_apple_pie_boxes": 26,
+    "gingerbread_cost": 784.86,
+    "apple_pie_cost": 1962.15,
+    "gingerbread_earnings": 19621.5,
+    "apple_pie_earnings": 51015.9,
+    "total_earnings": 70637.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    saturday_gingerbread_boxes = 10\n    saturday_apple_pie_boxes = 15 - 4\n    sunday_gingerbread_boxes = 15\n    sunday_apple_pie_boxes = 15\n    gingerbread_cost = 784.86\n    apple_pie_cost = 1962.15\n\n    sunday_gingerbread_difference = sunday_gingerbread_boxes - saturday_gingerbread_boxes\n    saturday_apple_pie_difference = sunday_apple_pie_boxes - saturday_apple_pie_boxes\n\n    total_gingerbread_boxes = saturday_gingerbread_boxes + sunday_gingerbread_boxes\n    total_apple_pie_boxes = saturday_apple_pie_boxes + sunday_apple_pie_boxes\n\n    gingerbread_earnings = round(total_gingerbread_boxes * gingerbread_cost, 2)\n    apple_pie_earnings = round(total_apple_pie_boxes * apple_pie_cost, 2)\n    total_earnings = round(gingerbread_earnings + apple_pie_earnings, 2)\n\n    return {\n        \"saturday_gingerbread_boxes\": saturday_gingerbread_boxes,\n        \"sunday_gingerbread_boxes\": sunday_gingerbread_boxes,\n        \"sunday_gingerbread_difference\": sunday_gingerbread_difference,\n        \"sunday_apple_pie_boxes\": sunday_apple_pie_boxes,\n        \"saturday_apple_pie_difference\": saturday_apple_pie_difference,\n        \"total_gingerbread_boxes\": total_gingerbread_boxes,\n        \"total_apple_pie_boxes\": total_apple_pie_boxes,\n        \"gingerbread_cost\": gingerbread_cost,\n        \"apple_pie_cost\": apple_pie_cost,\n        \"gingerbread_earnings\": gingerbread_earnings,\n        \"apple_pie_earnings\": apple_pie_earnings,\n        \"total_earnings\": total_earnings,\n        \"saturday_apple_pie_boxes\": saturday_apple_pie_boxes\n    }\n",
+    "results": {
+      "saturday_gingerbread_boxes": 10,
+      "sunday_gingerbread_boxes": 15,
+      "sunday_gingerbread_difference": 5,
+      "sunday_apple_pie_boxes": 15,
+      "saturday_apple_pie_difference": 4,
+      "total_gingerbread_boxes": 25,
+      "total_apple_pie_boxes": 26,
+      "gingerbread_cost": 784.86,
+      "apple_pie_cost": 1962.15,
+      "gingerbread_earnings": 19621.5,
+      "apple_pie_earnings": 51015.9,
+      "total_earnings": 70637.4,
+      "saturday_apple_pie_boxes": 11
+    }
+  },
+  "final": {
+    "question": "Sunny is selling gingerbread and apple pie for a fundraiser. On Saturday, he sold 10 boxes of gingerbread and 11 boxes of apple pie, than on Sunday. On Sunday, he sold 15 boxes of gingerbread and 15 boxes of apple pie. If the gingerbread cost 784.86 gourde and the apple pie cost 1962.15 gourde, how much did Sunny earn for two days?",
+    "answer_lines": [
+      "He sold 10 + 5 = 15 boxes of gingerbread on Sunday.",
+      "The total number of boxes of gingerbread that Sunny sold is 10 + 15 = 25.",
+      "Sunny earned 25 x 784.86 = 19621.5 gourde for selling gingerbread.",
+      "He sold 15 - 4 = 11 boxes of apple pie on Saturday.",
+      "The total number of boxes of apple pie that Sunny sold is 15 + 11 = 26.",
+      "He earned 26 x 1962.15 = 51015.9 gourde for selling apple pie.",
+      "So, Sunny earned 19621.5 + 51015.9 = 70637.4 gourde for two days.",
+      "#### 70637.4"
+    ],
+    "final_scalar": 70637.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wesley is selling tablet ak bannann peze for a fundraiser. On Saturday, he sold 10 boxes of tablet and 11 boxes of bannann peze, than on Sunday. On Sunday, he sold 15 boxes of tablet and 15 boxes of bannann peze. If the tablet cost 784.86 gourde and the bannann peze cost 1962.15 gourde, how much did Wesley earn for two days?",
+    "adapted_answer": [
+      "He sold 10 + 5 = 15 boxes of tablet on Sunday.",
+      "The total number of boxes of tablet that Wesley sold is 10 + 15 = 25.",
+      "Wesley earned 25 x 784.86 = 19621.5 gourde for selling tablet.",
+      "He sold 15 - 4 = 11 boxes of bannann peze on Saturday.",
+      "The total number of boxes of bannann peze that Wesley sold is 15 + 11 = 26.",
+      "He earned 26 x 1962.15 = 51015.9 gourde for selling bannann peze.",
+      "So, Wesley earned 19621.5 + 51015.9 = 70637.4 gourde for two days.",
+      "#### 70637.4"
+    ],
+    "adaptation_notes": "Replaced 'Sunny' with 'Wesley', 'gingerbread' with 'tablet', and 'apple pie' with 'bannann peze' to give the text a Haitian context."
+  }
+}

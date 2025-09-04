@@ -1,0 +1,128 @@
+{
+  "index": 380,
+  "split": "test",
+  "original": {
+    "question": "Karan borrowed $3,650 for five months at an interest rate of 10%. She has to pay an equal amount every month. How much does she have to pay per month?",
+    "answer": "Karan's interest is $3,650 × 0.1 = $<<3650*0.1=365>>365.\nIn total Karan has to pay $3650 + $365 = $<<3650+365=4015>>4015.\nEvery month she has to pay $4015 / 5 = $<<4015/5=803>>803.\n#### 803"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not the standard unit of currency in India (Rupees)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "borrowed_amount",
+      "value": 3650.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "interest",
+      "value": 365.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_amount",
+      "value": 4015.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_payment",
+      "value": 803.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"borrowed_amount\", \"value\": 3650.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"interest\", \"value\": 365.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_amount\", \"value\": 4015.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_payment\", \"value\": 803.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "borrowed_amount",
+        "original_value": 3650.0,
+        "original_unit": "dollar",
+        "converted_value": 317550.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "interest",
+        "original_value": 365.0,
+        "original_unit": "dollar",
+        "converted_value": 31755.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_amount",
+        "original_value": 4015.0,
+        "original_unit": "dollar",
+        "converted_value": 349305.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "monthly_payment",
+        "original_value": 803.0,
+        "original_unit": "dollar",
+        "converted_value": 69861.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Karan borrowed ${borrowed_amount} for five months at an interest rate of 10%. She has to pay an equal amount every month. How much does she have to pay per month?",
+    "templatized_answer": [
+      "Karan's interest is ${borrowed_amount} × 0.1 = ${interest}.",
+      "In total Karan has to pay ${borrowed_amount} + ${interest} = ${total_amount}.",
+      "Every month she has to pay ${total_amount} / 5 = ${monthly_payment}.",
+      "#### {monthly_payment}"
+    ],
+    "factual_assignment": {
+      "borrowed_amount": 3650.0,
+      "interest": 365.0,
+      "total_amount": 4015.0,
+      "monthly_payment": 803.0
+    }
+  },
+  "merged_assignment": {
+    "borrowed_amount": 317550.0,
+    "interest": 31755.0,
+    "total_amount": 349305.0,
+    "monthly_payment": 69861.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    borrowed_amount = 317550.0\n    interest = borrowed_amount * 0.1\n    total_amount = borrowed_amount + interest\n    monthly_payment = total_amount / 5\n\n    return {\n        \"borrowed_amount\": borrowed_amount,\n        \"interest\": round(interest, 2),\n        \"total_amount\": round(total_amount, 2),\n        \"monthly_payment\": round(monthly_payment, 2)\n    }\n",
+    "results": {
+      "borrowed_amount": 317550.0,
+      "interest": 31755.0,
+      "total_amount": 349305.0,
+      "monthly_payment": 69861.0
+    }
+  },
+  "final": {
+    "question": "Karan borrowed 317550 for five months at an interest rate of 10%. She has to pay an equal amount every month. How much does she have to pay per month?",
+    "answer_lines": [
+      "Karan's interest is 317550 × 0.1 = 31755.",
+      "In total Karan has to pay 317550 + 31755 = 349305.",
+      "Every month she has to pay 349305 / 5 = 69861.",
+      "#### 69861"
+    ],
+    "final_scalar": 69861.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Karan borrowed ₹317550 for five months at an interest rate of 10%. She has to pay an equal amount every month. How much does she have to pay per month?",
+    "adapted_answer": [
+      "Karan's interest is ₹317550 × 0.1 = ₹31755.",
+      "In total Karan has to pay ₹317550 + ₹31755 = ₹349305.",
+      "Every month she has to pay ₹349305 / 5 = ₹69861.",
+      "#### 69861"
+    ],
+    "adaptation_notes": "Replaced currency with Indian Rupees (₹)"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "index": 76,
+  "split": "test",
+  "original": {
+    "question": "Cecilia just bought a new puppy. According to her veterinarian, she has to feed the puppy 1 cup of dog food every day for the first 180 days. Then she has to feed the puppy 2 cups of dog food every day for the rest of its life. If one bag of dog food contains 110 cups, how many bags of dog food will Cecilia use in the first year?",
+    "answer": "The number of cups of dog food given for the first 180 days is 180 * 1 = <<180*1=180>>180 cups\nThe number of days left in the year is 365 - 180 = <<365-180=185>>185\nThe number of cups of dog food given for the rest of the first year is 185 * 2 = <<185*2=370>>370 cups\nThe total number of cups given in the first year is 180 + 370 = <<180+370=550>>550 cups\nThe number of bags of dog food used in the first year is 550 / 110 = <<550/110=5>>5 bags\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Cecilia",
+      "cups",
+      "dog food"
+    ],
+    "notes": "The name Cecilia is not typically Somali, and the units 'cups' and 'dog food' are more commonly associated with Western cultures."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 569.38, 'unit': 'shilling'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit]['factor'], 2)\n            converted_unit = conversions[unit]['unit']\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Cecilia just bought a new puppy. According to her veterinarian, she has to feed the puppy {initial_cups_per_day} cup of dog food every day for the first {initial_days} days. Then she has to feed the puppy {later_cups_per_day} cups of dog food every day for the rest of its life. If one bag of dog food contains {cups_per_bag} cups, how many bags of dog food will Cecilia use in the first year?",
+    "templatized_answer": [
+      "The number of cups of dog food given for the first {initial_days} days is {initial_days} * {initial_cups_per_day} = {initial_days} * {initial_cups_per_day} cups",
+      "The number of days left in the year is {total_days_in_year} - {initial_days} = {total_days_in_year} - {initial_days} days",
+      "The number of cups of dog food given for the rest of the first year is ({total_days_in_year} - {initial_days}) * {later_cups_per_day} = ({total_days_in_year} - {initial_days}) * {later_cups_per_day} cups",
+      "The total number of cups given in the first year is {initial_days} * {initial_cups_per_day} + ({total_days_in_year} - {initial_days}) * {later_cups_per_day} = {initial_days} * {initial_cups_per_day} + ({total_days_in_year} - {initial_days}) * {later_cups_per_day} cups",
+      "The number of bags of dog food used in the first year is ({initial_days} * {initial_cups_per_day} + ({total_days_in_year} - {initial_days}) * {later_cups_per_day}) / {cups_per_bag} = ({initial_days} * {initial_cups_per_day} + ({total_days_in_year} - {initial_days}) * {later_cups_per_day}) / {cups_per_bag} bags",
+      "#### ({initial_days} * {initial_cups_per_day} + ({total_days_in_year} - {initial_days}) * {later_cups_per_day}) / {cups_per_bag}"
+    ],
+    "factual_assignment": {
+      "initial_cups_per_day": 1,
+      "initial_days": 180,
+      "later_cups_per_day": 2,
+      "cups_per_bag": 110,
+      "total_days_in_year": 365
+    }
+  },
+  "merged_assignment": {
+    "initial_cups_per_day": 1,
+    "initial_days": 180,
+    "later_cups_per_day": 2,
+    "cups_per_bag": 110,
+    "total_days_in_year": 365
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cups_per_day = 1\n    initial_days = 180\n    later_cups_per_day = 2\n    cups_per_bag = 110\n    total_days_in_year = 365\n\n    initial_cups = initial_days * initial_cups_per_day\n    remaining_days = total_days_in_year - initial_days\n    later_cups = remaining_days * later_cups_per_day\n    total_cups = initial_cups + later_cups\n    total_bags = round(total_cups / cups_per_bag, 2)\n\n    return {\n        \"initial_cups_per_day\": initial_cups_per_day,\n        \"initial_days\": initial_days,\n        \"later_cups_per_day\": later_cups_per_day,\n        \"cups_per_bag\": cups_per_bag,\n        \"total_days_in_year\": total_days_in_year,\n        \"initial_days * initial_cups_per_day\": initial_cups,\n        \"total_days_in_year - initial_days\": remaining_days,\n        \"(total_days_in_year - initial_days) * later_cups_per_day\": later_cups,\n        \"initial_days * initial_cups_per_day + (total_days_in_year - initial_days) * later_cups_per_day\": total_cups,\n        \"(initial_days * initial_cups_per_day + (total_days_in_year - initial_days) * later_cups_per_day) / cups_per_bag\": total_bags\n    }\n",
+    "results": {
+      "initial_cups_per_day": 1,
+      "initial_days": 180,
+      "later_cups_per_day": 2,
+      "cups_per_bag": 110,
+      "total_days_in_year": 365,
+      "initial_days * initial_cups_per_day": 180,
+      "total_days_in_year - initial_days": 185,
+      "(total_days_in_year - initial_days) * later_cups_per_day": 370,
+      "initial_days * initial_cups_per_day + (total_days_in_year - initial_days) * later_cups_per_day": 550,
+      "(initial_days * initial_cups_per_day + (total_days_in_year - initial_days) * later_cups_per_day) / cups_per_bag": 5.0
+    }
+  },
+  "final": {
+    "question": "Cecilia just bought a new puppy. According to her veterinarian, she has to feed the puppy 1 milliliter of dog food every day for the first 180 days. Then she has to feed the puppy 2 milliliters of dog food every day for the rest of its life. If one bag of dog food contains 110 milliliters, how many bags of dog food will Cecilia use in the first year?",
+    "answer_lines": [
+      "The number of milliliters of dog food given for the first 180 days is 180 * 1 = 180 milliliters",
+      "The number of days left in the year is 365 - 180 = 185 days",
+      "The number of milliliters of dog food given for the rest of the first year is 185 * 2 = 370 milliliters",
+      "The total number of milliliters given in the first year is 180 + 370 = 550 milliliters",
+      "The number of bags of dog food used in the first year is 550 / 110 = 5 bags",
+      "#### 5"
+    ],
+    "final_scalar": 5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aamina just bought a new puppy. According to her veterinarian, she has to feed the puppy 1 milliliter of hilib ari every day for the first 180 days. Then she has to feed the puppy 2 milliliters of hilib ari every day for the rest of its life. If one bag of hilib ari contains 110 milliliters, how many bags of hilib ari will Aamina use in the first year?",
+    "adapted_answer": [
+      "The number of milliliters of hilib ari given for the first 180 days is 180 * 1 = 180 milliliters",
+      "The number of days left in the year is 365 - 180 = 185 days",
+      "The number of milliliters of hilib ari given for the rest of the first year is 185 * 2 = 370 milliliters",
+      "The total number of milliliters given in the first year is 180 + 370 = 550 milliliters",
+      "The number of bags of hilib ari used in the first year is 550 / 110 = 5 bags",
+      "#### 5"
+    ],
+    "adaptation_notes": "Replaced 'Cecilia' with 'Aamina' (Somali name), 'dog food' with 'hilib ari' (Somali for 'dog food')."
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "index": 97,
+  "split": "test",
+  "original": {
+    "question": "When Freda cooks canned tomatoes into sauce, they lose half their volume. Each 16 ounce can of tomatoes that she uses contains three tomatoes. Freda’s last batch of tomato sauce made 32 ounces of sauce. How many tomatoes did Freda use?",
+    "answer": "Tomatoes lose half their volume when made into sauce, so Freda started with 32 * 2 = <<32*2=64>>64 ounces of tomatoes.\nAt 16 ounces per can, she used 64 / 16 = <<64/16=4>>4 cans of tomatoes.\nAt 3 tomatoes a can, Freda used 3 * 4 = <<3*4=12>>12 tomatoes.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "ounces"
+    ],
+    "notes": "The unit 'ounces' is commonly used in the United States and is not the standard unit of measurement in Haiti, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tomato_sauce_volume",
+      "value": 32.0,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "initial_tomato_volume",
+      "value": 64.0,
+      "unit": "ounce",
+      "context": "answer"
+    },
+    {
+      "variable": "can_volume",
+      "value": 16.0,
+      "unit": "ounce",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 130.81, \"unit\": \"gourde\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            factor = conversions[unit][\"factor\"]\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * factor, 2)\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tomato_sauce_volume\", \"value\": 32.0, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"initial_tomato_volume\", \"value\": 64.0, \"unit\": \"ounce\", \"context\": \"answer\"},\n    {\"variable\": \"can_volume\", \"value\": 16.0, \"unit\": \"ounce\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tomato_sauce_volume",
+        "original_value": 32.0,
+        "original_unit": "ounce",
+        "converted_value": 907.18,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "initial_tomato_volume",
+        "original_value": 64.0,
+        "original_unit": "ounce",
+        "converted_value": 1814.37,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "can_volume",
+        "original_value": 16.0,
+        "original_unit": "ounce",
+        "converted_value": 453.59,
+        "converted_unit": "gram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "When Freda cooks canned tomatoes into sauce, they lose half their volume. Each {can_volume} ounce can of tomatoes that she uses contains three tomatoes. Freda’s last batch of tomato sauce made {tomato_sauce_volume} ounces of sauce. How many tomatoes did Freda use?",
+    "templatized_answer": [
+      "Tomatoes lose half their volume when made into sauce, so Freda started with {tomato_sauce_volume} * 2 = {initial_tomato_volume} ounces of tomatoes.",
+      "At {can_volume} ounces per can, she used {initial_tomato_volume} / {can_volume} = {cans_used} cans of tomatoes.",
+      "At 3 tomatoes a can, Freda used 3 * {cans_used} = {total_tomatoes} tomatoes.",
+      "#### {total_tomatoes}"
+    ],
+    "factual_assignment": {
+      "tomato_sauce_volume": 32.0,
+      "initial_tomato_volume": 64.0,
+      "can_volume": 16.0,
+      "cans_used": 4,
+      "total_tomatoes": 12
+    }
+  },
+  "merged_assignment": {
+    "tomato_sauce_volume": 907.18,
+    "initial_tomato_volume": 1814.37,
+    "can_volume": 453.59,
+    "cans_used": 4,
+    "total_tomatoes": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tomato_sauce_volume = 907.18\n    initial_tomato_volume = tomato_sauce_volume * 2\n    can_volume = 453.59\n    cans_used = initial_tomato_volume / can_volume\n    total_tomatoes = 3 * cans_used\n\n    return {\n        \"tomato_sauce_volume\": round(tomato_sauce_volume, 2),\n        \"initial_tomato_volume\": round(initial_tomato_volume, 2),\n        \"can_volume\": round(can_volume, 2),\n        \"cans_used\": round(cans_used, 2),\n        \"total_tomatoes\": round(total_tomatoes, 2)\n    }\n",
+    "results": {
+      "tomato_sauce_volume": 907.18,
+      "initial_tomato_volume": 1814.36,
+      "can_volume": 453.59,
+      "cans_used": 4.0,
+      "total_tomatoes": 12.0
+    }
+  },
+  "final": {
+    "question": "When Freda cooks canned tomatoes into sauce, they lose half their volume. Each 453.59 gram can of tomatoes that she uses contains three tomatoes. Freda’s last batch of tomato sauce made 907.18 grams of sauce. How many tomatoes did Freda use?",
+    "answer_lines": [
+      "Tomatoes lose half their volume when made into sauce, so Freda started with 907.18 * 2 = 1814.36 grams of tomatoes.",
+      "At 453.59 grams per can, she used 1814.36 / 453.59 = 4.0 cans of tomatoes.",
+      "At 3 tomatoes a can, Freda used 3 * 4.0 = 12.0 tomatoes.",
+      "#### 12.0"
+    ],
+    "final_scalar": 12.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "When Freda cooks canned tomatoes into sos, they lose half their volume. Each 453.59 gram can of tomatoes that she uses contains three tomatoes. Freda’s last batch of tomato sos made 907.18 grams of sos. How many tomatoes did Freda use?",
+    "adapted_answer": [
+      "Tomatoes lose half their volume when made into sos, so Freda started with 907.18 * 2 = 1814.36 grams of tomatoes.",
+      "At 453.59 grams per can, she used 1814.36 / 453.59 = 4.0 cans of tomatoes.",
+      "At 3 tomatoes a can, Freda used 3 * 4.0 = 12.0 tomatoes.",
+      "#### 12.0"
+    ],
+    "adaptation_notes": "Replaced 'sauce' with 'sos', a Haitian Creole term for sauce."
+  }
+}

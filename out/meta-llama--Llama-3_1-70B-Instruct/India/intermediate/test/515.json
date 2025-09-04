@@ -1,0 +1,157 @@
+{
+  "index": 515,
+  "split": "test",
+  "original": {
+    "question": "Tara bought 8 packs of 5 canvas bags for $4 each. She painted them and sold them at a craft fair for $8 each. How much profit did she earn on her bags?",
+    "answer": "The total number of bags is 8*5 = <<8*5=40>>40\nThe cost of the 40 bags is 40*4 = <<40*4=160>>160\nTara sold the 40 bags at 8 each earning her 40*8 = <<40*8=320>>320\nHer profit was 320-160 = <<320-160=160>>160\n#### 160"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tara",
+      "dollars"
+    ],
+    "notes": "The name Tara is of non-Indian origin and the unit of currency is dollars, commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bag_cost",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bag_selling_price",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 160.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 320.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 160.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bag_cost\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bag_selling_price\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 160.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 320.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 160.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bag_cost",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 348.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "bag_selling_price",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 696.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 160.0,
+        "original_unit": "dollar",
+        "converted_value": 13920.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 320.0,
+        "original_unit": "dollar",
+        "converted_value": 27840.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "profit",
+        "original_value": 160.0,
+        "original_unit": "dollar",
+        "converted_value": 13920.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tara bought {packs} packs of {bags_per_pack} canvas bags for ${bag_cost} each. She painted them and sold them at a craft fair for ${bag_selling_price} each. How much profit did she earn on her bags?",
+    "templatized_answer": [
+      "The total number of bags is {packs}*{bags_per_pack} = {total_bags}",
+      "The cost of the {total_bags} bags is {total_bags}*{bag_cost} = {total_cost}",
+      "Tara sold the {total_bags} bags at {bag_selling_price} each earning her {total_bags}*{bag_selling_price} = {total_earnings}",
+      "Her profit was {total_earnings}-{total_cost} = {profit}",
+      "#### {profit}"
+    ],
+    "factual_assignment": {
+      "packs": 8,
+      "bags_per_pack": 5,
+      "bag_cost": 4.0,
+      "bag_selling_price": 8.0,
+      "total_bags": 40,
+      "total_cost": 160.0,
+      "total_earnings": 320.0,
+      "profit": 160.0
+    }
+  },
+  "merged_assignment": {
+    "packs": 8,
+    "bags_per_pack": 5,
+    "bag_cost": 348.0,
+    "bag_selling_price": 696.0,
+    "total_bags": 40,
+    "total_cost": 13920.0,
+    "total_earnings": 27840.0,
+    "profit": 13920.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    packs = 8\n    bags_per_pack = 5\n    bag_cost = 348.0\n    bag_selling_price = 696.0\n\n    total_bags = packs * bags_per_pack\n    total_cost = total_bags * bag_cost\n    total_earnings = total_bags * bag_selling_price\n    profit = total_earnings - total_cost\n\n    return {\n        \"packs\": packs,\n        \"bags_per_pack\": bags_per_pack,\n        \"bag_cost\": round(bag_cost, 2),\n        \"bag_selling_price\": round(bag_selling_price, 2),\n        \"total_bags\": total_bags,\n        \"total_cost\": round(total_cost, 2),\n        \"total_earnings\": round(total_earnings, 2),\n        \"profit\": round(profit, 2)\n    }\n",
+    "results": {
+      "packs": 8,
+      "bags_per_pack": 5,
+      "bag_cost": 348.0,
+      "bag_selling_price": 696.0,
+      "total_bags": 40,
+      "total_cost": 13920.0,
+      "total_earnings": 27840.0,
+      "profit": 13920.0
+    }
+  },
+  "final": {
+    "question": "Tara bought 8 packs of 5 canvas bags for 348 rupees each. She painted them and sold them at a craft fair for 696 rupees each. How much profit did she earn on her bags?",
+    "answer_lines": [
+      "The total number of bags is 8*5 = 40",
+      "The cost of the 40 bags is 40*348 = 13920",
+      "Tara sold the 40 bags at 696 rupees each earning her 40*696 = 27840",
+      "Her profit was 27840-13920 = 13920",
+      "#### 13920"
+    ],
+    "final_scalar": 13920.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Riya bought 8 packs of 5 canvas bags for 348 rupees each. She painted them and sold them at a craft fair for 696 rupees each. How much profit did she earn on her bags?",
+    "adapted_answer": [
+      "The total number of bags is 8*5 = 40",
+      "The cost of the 40 bags is 40*348 = 13920",
+      "Riya sold the 40 bags at 696 rupees each earning her 40*696 = 27840",
+      "Her profit was 27840-13920 = 13920",
+      "#### 13920"
+    ],
+    "adaptation_notes": "Replaced 'Tara' with 'Riya' to give the name an Indian context."
+  }
+}

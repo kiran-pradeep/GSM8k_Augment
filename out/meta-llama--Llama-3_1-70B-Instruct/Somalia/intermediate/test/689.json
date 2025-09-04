@@ -1,0 +1,141 @@
+{
+  "index": 689,
+  "split": "test",
+  "original": {
+    "question": "Manolo bought five lollipops and four candies that cost $3.20. If each lollipop costs $0.40, how much will 10 lollipops and 10 candies cost him?",
+    "answer": "Five lollipops cost $0.4 x 5 = $<<0.4*5=2>>2.\nSo four candies cost $3.20 - $2 = $1.20.\nThus, each candy costs $1.20/4 = $<<1.20/4=0.30>>0.30.\nTen lollipops cost $0.4 x 10 = $<<0.4*10=4>>4.\nTen candies cost $0.30 x 10 = $<<0.30*10=3>>3.\nHence, 10 lollipops and 10 candies will cost $4 + $3 = $7.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "lollipops",
+      "Manolo"
+    ],
+    "notes": "The text contains non-Somali cultural entities, including the name 'Manolo', the unit 'dollars', and the food item 'lollipops'."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 3.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollipop_cost",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_cost",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 3.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollipop_cost\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_cost\", \"value\": 0.3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 3.2,
+        "original_unit": "dollar",
+        "converted_value": 1822.02,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "lollipop_cost",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 227.75,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "candy_cost",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 170.81,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 3985.66,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Manolo bought five lollipops and four candies that cost ${initial_cost}. If each lollipop costs ${lollipop_cost}, how much will 10 lollipops and 10 candies cost him?",
+    "templatized_answer": [
+      "Five lollipops cost ${lollipop_cost} x 5 = ${5 * lollipop_cost}.",
+      "So four candies cost ${initial_cost} - ${5 * lollipop_cost} = ${initial_cost - 5 * lollipop_cost}.",
+      "Thus, each candy costs (${initial_cost} - ${5 * lollipop_cost})/4 = ${candy_cost}.",
+      "Ten lollipops cost ${lollipop_cost} x 10 = ${10 * lollipop_cost}.",
+      "Ten candies cost ${candy_cost} x 10 = ${10 * candy_cost}.",
+      "Hence, 10 lollipops and 10 candies will cost ${10 * lollipop_cost} + ${10 * candy_cost} = ${10 * lollipop_cost + 10 * candy_cost}.",
+      "#### {10 * lollipop_cost + 10 * candy_cost}"
+    ],
+    "factual_assignment": {
+      "initial_cost": 3.2,
+      "lollipop_cost": 0.4,
+      "candy_cost": 0.3
+    }
+  },
+  "merged_assignment": {
+    "initial_cost": 1822.02,
+    "lollipop_cost": 227.75,
+    "candy_cost": 170.81
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cost = 1822.02\n    lollipop_cost = 227.75\n    candy_cost = (initial_cost - 5 * lollipop_cost) / 4\n\n    recomputed_values = {\n        \"initial_cost\": round(initial_cost, 2),\n        \"lollipop_cost\": round(lollipop_cost, 2),\n        \"5 * lollipop_cost\": round(5 * lollipop_cost, 2),\n        \"initial_cost - 5 * lollipop_cost\": round(initial_cost - 5 * lollipop_cost, 2),\n        \"candy_cost\": round(candy_cost, 2),\n        \"10 * lollipop_cost\": round(10 * lollipop_cost, 2),\n        \"10 * candy_cost\": round(10 * candy_cost, 2),\n        \"10 * lollipop_cost + 10 * candy_cost\": round(10 * lollipop_cost + 10 * candy_cost, 2)\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "initial_cost": 1822.02,
+      "lollipop_cost": 227.75,
+      "5 * lollipop_cost": 1138.75,
+      "initial_cost - 5 * lollipop_cost": 683.27,
+      "candy_cost": 170.82,
+      "10 * lollipop_cost": 2277.5,
+      "10 * candy_cost": 1708.17,
+      "10 * lollipop_cost + 10 * candy_cost": 3985.68
+    }
+  },
+  "final": {
+    "question": "Manolo bought five lollipops and four candies that cost 1822.02 shilling. If each lollipop costs 227.75 shilling, how much will 10 lollipops and 10 candies cost him?",
+    "answer_lines": [
+      "Five lollipops cost 227.75 x 5 = 1138.75 shilling.",
+      "So four candies cost 1822.02 - 1138.75 = 683.27 shilling.",
+      "Thus, each candy costs (1822.02 - 1138.75)/4 = 170.82 shilling.",
+      "Ten lollipops cost 227.75 x 10 = 2277.5 shilling.",
+      "Ten candies cost 170.82 x 10 = 1708.17 shilling.",
+      "Hence, 10 lollipops and 10 candies will cost 2277.5 + 1708.17 = 3985.68 shilling.",
+      "#### 3985.68"
+    ],
+    "final_scalar": 3985.68,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan bought five macmacaan and four biscootin that cost 1822.02 shilling. If each macmacaan costs 227.75 shilling, how much will 10 macmacaan and 10 biscootin cost him?",
+    "adapted_answer": [
+      "Five macmacaan cost 227.75 x 5 = 1138.75 shilling.",
+      "So four biscootin cost 1822.02 - 1138.75 = 683.27 shilling.",
+      "Thus, each biscootin costs (1822.02 - 1138.75)/4 = 170.82 shilling.",
+      "Ten macmacaan cost 227.75 x 10 = 2277.5 shilling.",
+      "Ten biscootin cost 170.82 x 10 = 1708.17 shilling.",
+      "Hence, 10 macmacaan and 10 biscootin will cost 2277.5 + 1708.17 = 3985.68 shilling.",
+      "#### 3985.68"
+    ],
+    "adaptation_notes": "Replaced 'Manolo' with 'Aadan', 'lollipops' with 'macmacaan', and 'candies' with 'biscootin' to provide a Somali context."
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "index": 484,
+  "split": "test",
+  "original": {
+    "question": "Stetson made a bet with Alec that he would give up $10 for each orange he eats. While at the farm, Stetson ate 2/5 of the oranges they picked. If they picked 60 oranges, calculate the total amount of money Stetson gave up?",
+    "answer": "If they picked 60 oranges and Stetson ate 2/5 of them, he ate 2/5*60 = <<60*2/5=24>>24 oranges.\nIf he gave $10 for every orange he ate, then he gave up $10*24 = $<<10*24=240>>240\n#### 240"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Stetson",
+      "Alec",
+      "dollars"
+    ],
+    "notes": "The names Stetson and Alec, and the unit of currency 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bet_amount",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_given_up",
+      "value": 240,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bet_amount\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_given_up\", \"value\": 240, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bet_amount",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 870,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_given_up",
+        "original_value": 240,
+        "original_unit": "dollar",
+        "converted_value": 20880,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Stetson made a bet with Alec that he would give up ${bet_amount} for each orange he eats. While at the farm, Stetson ate 2/5 of the oranges they picked. If they picked {total_oranges} oranges, calculate the total amount of money Stetson gave up?",
+    "templatized_answer": [
+      "If they picked {total_oranges} oranges and Stetson ate 2/5 of them, he ate 2/5*{total_oranges} = {total_oranges_stetson_ate} oranges.",
+      "If he gave ${bet_amount} for every orange he ate, then he gave up ${bet_amount}*{total_oranges_stetson_ate} = ${total_given_up}",
+      "#### {total_given_up}"
+    ],
+    "factual_assignment": {
+      "bet_amount": 10,
+      "total_given_up": 240,
+      "total_oranges": 60,
+      "total_oranges_stetson_ate": 24
+    }
+  },
+  "merged_assignment": {
+    "bet_amount": 870,
+    "total_given_up": 20880,
+    "total_oranges": 60,
+    "total_oranges_stetson_ate": 24
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"bet_amount\": 870,\n        \"total_given_up\": 20880,\n        \"total_oranges\": 60,\n        \"total_oranges_stetson_ate\": 24\n    }\n\n    recomputed_values = {}\n\n    # Recompute total_oranges_stetson_ate\n    total_oranges_stetson_ate = (2/5) * factual_assignment[\"total_oranges\"]\n    recomputed_values[\"total_oranges_stetson_ate\"] = round(total_oranges_stetson_ate, 2)\n\n    # Recompute total_given_up\n    total_given_up = factual_assignment[\"bet_amount\"] * recomputed_values[\"total_oranges_stetson_ate\"]\n    recomputed_values[\"total_given_up\"] = round(total_given_up, 2)\n\n    # Copy other values from factual_assignment\n    recomputed_values[\"bet_amount\"] = factual_assignment[\"bet_amount\"]\n    recomputed_values[\"total_oranges\"] = factual_assignment[\"total_oranges\"]\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "total_oranges_stetson_ate": 24.0,
+      "total_given_up": 20880.0,
+      "bet_amount": 870,
+      "total_oranges": 60
+    }
+  },
+  "final": {
+    "question": "Stetson made a bet with Alec that he would give up 870 for each orange he eats. While at the farm, Stetson ate 2/5 of the oranges they picked. If they picked 60 oranges, calculate the total amount of money Stetson gave up?",
+    "answer_lines": [
+      "If they picked 60 oranges and Stetson ate 2/5 of them, he ate 2/5*60 = 24.0 oranges.",
+      "If he gave 870 for every orange he ate, then he gave up 870*24.0 = 20880.0",
+      "#### 20880.0"
+    ],
+    "final_scalar": 20880.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan made a bet with Aarav that he would give up 870 for each orange he eats. While at the farm, Rohan ate 2/5 of the oranges they picked. If they picked 60 oranges, calculate the total amount of money Rohan gave up?",
+    "adapted_answer": [
+      "If they picked 60 oranges and Rohan ate 2/5 of them, he ate 2/5*60 = 24.0 oranges.",
+      "If he gave 870 for every orange he ate, then he gave up 870*24.0 = 20880.0",
+      "#### 20880.0"
+    ],
+    "adaptation_notes": "Replaced 'Stetson' with 'Rohan' and 'Alec' with 'Aarav' to provide an Indian context."
+  }
+}

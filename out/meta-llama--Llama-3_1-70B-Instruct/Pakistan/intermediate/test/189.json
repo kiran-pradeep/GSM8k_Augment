@@ -1,0 +1,145 @@
+{
+  "index": 189,
+  "split": "test",
+  "original": {
+    "question": "Three friends spent $20.25 on 3 tickets to the fair. They also spent $4.50 less on food than on the tickets. They also went on 2 different rides which costs $33 for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "answer": "They spent $20.25 - $4.50 = $<<20.25-4.5=15.75>>15.75 on food.\nThey spent $33 x 2 = $<<33*2=66>>66 for the rides.\nThey spent a total of $20.25 + $15.75 + $66 = $102.\nSo each of them paid $102/3 = $<<102/3=34>>34.\n#### 34"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tickets_cost",
+      "value": 20.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_savings",
+      "value": 4.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_cost",
+      "value": 33.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_cost",
+      "value": 15.75,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_ride_cost",
+      "value": 66.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 102.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "individual_cost",
+      "value": 34.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tickets_cost\", \"value\": 20.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_savings\", \"value\": 4.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ride_cost\", \"value\": 33.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_cost\", \"value\": 15.75, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_ride_cost\", \"value\": 66.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 102.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"individual_cost\", \"value\": 34.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tickets_cost",
+        "original_value": 20.25,
+        "original_unit": "dollar",
+        "converted_value": 5707.46,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "food_savings",
+        "original_value": 4.5,
+        "original_unit": "dollar",
+        "converted_value": 1268.33,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ride_cost",
+        "original_value": 33.0,
+        "original_unit": "dollar",
+        "converted_value": 9301.05,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "food_cost",
+        "original_value": 15.75,
+        "original_unit": "dollar",
+        "converted_value": 4439.14,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_ride_cost",
+        "original_value": 66.0,
+        "original_unit": "dollar",
+        "converted_value": 18602.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 102.0,
+        "original_unit": "dollar",
+        "converted_value": 28748.7,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "individual_cost",
+        "original_value": 34.0,
+        "original_unit": "dollar",
+        "converted_value": 9582.9,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Three friends spent ${tickets_cost} on 3 tickets to the fair. They also spent ${food_savings} less on food than on the tickets. They also went on 2 different rides which costs ${ride_cost} for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "templatized_answer": [
+      "They spent ${tickets_cost} - ${food_savings} = ${tickets_cost} - ${food_savings} on food.",
+      "They spent ${ride_cost} x 2 = ${ride_cost} x 2 for the rides.",
+      "They spent a total of ${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2) = ${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2).",
+      "So each of them paid (${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2)) / 3 = (${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2)) / 3."
+    ],
+    "factual_assignment": {
+      "tickets_cost": 20.25,
+      "food_savings": 4.5,
+      "ride_cost": 33.0
+    }
+  },
+  "merged_assignment": {
+    "tickets_cost": 5707.46,
+    "food_savings": 1268.33,
+    "ride_cost": 9301.05
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"tickets_cost\": 5707.46,\n        \"food_savings\": 1268.33,\n        \"ride_cost\": 9301.05\n    }\n\n    recomputed_values = {\n        \"tickets_cost\": factual_assignment[\"tickets_cost\"],\n        \"food_savings\": factual_assignment[\"food_savings\"],\n        \"ride_cost\": factual_assignment[\"ride_cost\"],\n        \"tickets_cost - food_savings\": factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"],\n        \"ride_cost x 2\": factual_assignment[\"ride_cost\"] * 2,\n        \"tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)\": \n            factual_assignment[\"tickets_cost\"] + (factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"]) + (factual_assignment[\"ride_cost\"] * 2),\n        \"(tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)) / 3\": \n            (factual_assignment[\"tickets_cost\"] + (factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"]) + (factual_assignment[\"ride_cost\"] * 2)) / 3\n    }\n\n    return {key: round(value, 2) for key, value in recomputed_values.items()}\n\nprint(recompute())\n",
+    "results": {
+      "tickets_cost": 5707.46,
+      "food_savings": 1268.33,
+      "ride_cost": 9301.05,
+      "tickets_cost - food_savings": 4439.13,
+      "ride_cost x 2": 18602.1,
+      "tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)": 28748.69,
+      "(tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)) / 3": 9582.9
+    }
+  },
+  "final": null
+}

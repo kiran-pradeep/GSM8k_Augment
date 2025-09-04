@@ -1,0 +1,129 @@
+{
+  "index": 56,
+  "split": "test",
+  "original": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for $7 and popcorn for $7. If he has 42 dollars for the week, how many times can he go to the movies?",
+    "answer": "It costs him $14 to go to the movies because 7 + 7 = <<7+7=14>>14\nHe can go to the movies 3 times because 42 / 14 = <<42/14=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Peter",
+      "dollars",
+      "movies",
+      "popcorn"
+    ],
+    "notes": "The name 'Peter' is not typically Haitian, 'dollars' is a US unit of currency, 'movies' is a Western cultural activity, and 'popcorn' is a popular snack in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weekly_budget",
+      "value": 42.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ticket_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popcorn_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "movie_cost",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"weekly_budget\", \"value\": 42.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ticket_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"popcorn_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"movie_cost\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weekly_budget",
+        "original_value": 42.0,
+        "original_unit": "dollar",
+        "converted_value": 5494.02,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "ticket_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 915.67,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "popcorn_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 915.67,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "movie_cost",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 1831.34,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Peter plans to go to the movies this week. He always gets a ticket for ${ticket_cost} and popcorn for ${popcorn_cost}. If he has ${weekly_budget} dollars for the week, how many times can he go to the movies?",
+    "templatized_answer": [
+      "It costs him ${movie_cost} to go to the movies because {ticket_cost} + {popcorn_cost} = {movie_cost}",
+      "He can go to the movies {weekly_budget} / {movie_cost} times",
+      "#### {weekly_budget} / {movie_cost}"
+    ],
+    "factual_assignment": {
+      "weekly_budget": 42,
+      "ticket_cost": 7,
+      "popcorn_cost": 7,
+      "movie_cost": 14
+    }
+  },
+  "merged_assignment": {
+    "weekly_budget": 5494.02,
+    "ticket_cost": 915.67,
+    "popcorn_cost": 915.67,
+    "movie_cost": 1831.34
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    weekly_budget = 5494.02\n    ticket_cost = 915.67\n    popcorn_cost = 915.67\n\n    movie_cost = ticket_cost + popcorn_cost\n    movie_cost = round(movie_cost, 2)\n\n    times_to_movies = weekly_budget / movie_cost\n    times_to_movies = round(times_to_movies, 2)\n\n    return {\n        \"weekly_budget\": weekly_budget,\n        \"ticket_cost\": ticket_cost,\n        \"popcorn_cost\": popcorn_cost,\n        \"movie_cost\": movie_cost,\n        \"times_to_movies\": times_to_movies\n    }\n",
+    "results": {
+      "weekly_budget": 5494.02,
+      "ticket_cost": 915.67,
+      "popcorn_cost": 915.67,
+      "movie_cost": 1831.34,
+      "times_to_movies": 3.0
+    }
+  },
+  "final": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for 915.67 gourde and popcorn for 915.67 gourde. If he has 5494.02 gourde for the week, how many times can he go to the movies?",
+    "answer_lines": [
+      "It costs him 1831.34 gourde to go to the movies because 915.67 + 915.67 = 1831.34",
+      "He can go to the movies 5494.02 / 1831.34 times",
+      "#### 3.0"
+    ],
+    "final_scalar": 3.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Pierre plans to go to the cinema this week. He always gets a ticket for 915.67 gourde and akara for 915.67 gourde. If he has 5494.02 gourde for the week, how many times can he go to the cinema?",
+    "adapted_answer": [
+      "It costs him 1831.34 gourde to go to the cinema because 915.67 + 915.67 = 1831.34",
+      "He can go to the cinema 5494.02 / 1831.34 times",
+      "#### 3.0"
+    ],
+    "adaptation_notes": "Replaced 'Peter' with 'Pierre', 'movies' with 'cinema', and 'popcorn' with 'akara' to give the text a Haitian context."
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "index": 486,
+  "split": "test",
+  "original": {
+    "question": "James runs 12 miles a day for 5 days a week.  If he runs 10 miles an hour how many hours does he run a week?",
+    "answer": "He runs 5*12=<<5*12=60>>60 miles a week\nThat means he runs 60/10=<<60/10=6>>6 hours a week\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles",
+      "James"
+    ],
+    "notes": "The name 'James' and the unit 'miles' are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_run",
+      "value": 12.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_run",
+      "value": 60.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "run_speed",
+      "value": 10.0,
+      "unit": "mile per hour",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"leu\", \"factor\": 16.62},\n        \"mile per hour\": {\"unit\": \"kilometer per hour\", \"factor\": 1.60934}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"daily_run\",\n    \"value\": 12.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"weekly_run\",\n    \"value\": 60.0,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"run_speed\",\n    \"value\": 10.0,\n    \"unit\": \"mile per hour\",\n    \"context\": \"question\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_run",
+        "original_value": 12.0,
+        "original_unit": "mile",
+        "converted_value": 19.31,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "weekly_run",
+        "original_value": 60.0,
+        "original_unit": "mile",
+        "converted_value": 96.56,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "run_speed",
+        "original_value": 10.0,
+        "original_unit": "mile per hour",
+        "converted_value": 16.09,
+        "converted_unit": "kilometer per hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James runs {daily_run} miles a day for {days_per_week} days a week.  If he runs {run_speed} miles an hour how many hours does he run a week?",
+    "templatized_answer": [
+      "He runs {days_per_week}*{daily_run}={weekly_run} miles a week",
+      "That means he runs {weekly_run}/{run_speed}={hours_per_week} hours a week",
+      "#### {hours_per_week}"
+    ],
+    "factual_assignment": {
+      "daily_run": 12.0,
+      "run_speed": 10.0,
+      "weekly_run": 60.0,
+      "days_per_week": 5,
+      "hours_per_week": 6
+    }
+  },
+  "merged_assignment": {
+    "daily_run": 19.31,
+    "run_speed": 16.09,
+    "weekly_run": 96.56,
+    "days_per_week": 5,
+    "hours_per_week": 6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_run = 19.31\n    run_speed = 16.09\n    days_per_week = 5\n\n    weekly_run = daily_run * days_per_week\n    hours_per_week = weekly_run / run_speed\n\n    return {\n        \"daily_run\": round(daily_run, 2),\n        \"run_speed\": round(run_speed, 2),\n        \"weekly_run\": round(weekly_run, 2),\n        \"days_per_week\": days_per_week,\n        \"hours_per_week\": round(hours_per_week, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "daily_run": 19.31,
+      "run_speed": 16.09,
+      "weekly_run": 96.55,
+      "days_per_week": 5,
+      "hours_per_week": 6.0
+    }
+  },
+  "final": {
+    "question": "James runs 19.31 kilometers a day for 5 days a week.  If he runs 16.09 kilometers an hour how many hours does he run a week?",
+    "answer_lines": [
+      "He runs 5*19.31=96.55 kilometers a week",
+      "That means he runs 96.55/16.09=6.0 hours a week",
+      "#### 6.0"
+    ],
+    "final_scalar": 6.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion runs 19.31 kilometers a day for 5 days a week.  If he runs 16.09 kilometers an hour how many hours does he run a week?",
+    "adapted_answer": [
+      "He runs 5*19.31=96.55 kilometers a week",
+      "That means he runs 96.55/16.09=6.0 hours a week",
+      "#### 6.0"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Ion', a common Moldovan name."
+  }
+}

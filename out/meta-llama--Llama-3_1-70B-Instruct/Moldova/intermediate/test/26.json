@@ -1,0 +1,121 @@
+{
+  "index": 26,
+  "split": "test",
+  "original": {
+    "question": "Mishka bought 3 pairs of shorts, 3 pairs of pants, and 3 pairs of shoes. One pair of shorts costs $16.50. One pair of pants costs $22.50 and one pair of shoes costs $42. How many dollars did Mishka spend on all the clothing items?",
+    "answer": "3 * (16.50 + 22.50 + 42) = $<<3*(16.50+22.50+42)=243>>243\nMishka spent $243 on clothing.\n#### 243"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is used, which is not the official currency of Moldova (Moldovan leu)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shorts_cost",
+      "value": 16.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pants_cost",
+      "value": 22.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "shoes_cost",
+      "value": 42.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 243.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shorts_cost\", \"value\": 16.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pants_cost\", \"value\": 22.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"shoes_cost\", \"value\": 42.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 243.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shorts_cost",
+        "original_value": 16.5,
+        "original_unit": "dollar",
+        "converted_value": 274.23,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "pants_cost",
+        "original_value": 22.5,
+        "original_unit": "dollar",
+        "converted_value": 373.95,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "shoes_cost",
+        "original_value": 42.0,
+        "original_unit": "dollar",
+        "converted_value": 698.04,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 243.0,
+        "original_unit": "dollar",
+        "converted_value": 4038.66,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mishka bought 3 pairs of shorts, 3 pairs of pants, and 3 pairs of shoes. One pair of shorts costs ${shorts_cost}. One pair of pants costs ${pants_cost} and one pair of shoes costs ${shoes_cost}. How many dollars did Mishka spend on all the clothing items?",
+    "templatized_answer": [
+      "3 * ({shorts_cost} + {pants_cost} + {shoes_cost}) = ${3 * (shorts_cost + pants_cost + shoes_cost)}",
+      "Mishka spent ${3 * (shorts_cost + pants_cost + shoes_cost)} on clothing."
+    ],
+    "factual_assignment": {
+      "shorts_cost": 16.5,
+      "pants_cost": 22.5,
+      "shoes_cost": 42.0
+    }
+  },
+  "merged_assignment": {
+    "shorts_cost": 274.23,
+    "pants_cost": 373.95,
+    "shoes_cost": 698.04
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    shorts_cost = 274.23\n    pants_cost = 373.95\n    shoes_cost = 698.04\n\n    total_cost_per_item = shorts_cost + pants_cost + shoes_cost\n    total_cost = 3 * total_cost_per_item\n\n    return {\n        \"shorts_cost\": round(shorts_cost, 2),\n        \"pants_cost\": round(pants_cost, 2),\n        \"shoes_cost\": round(shoes_cost, 2),\n        \"3 * (shorts_cost + pants_cost + shoes_cost)\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "shorts_cost": 274.23,
+      "pants_cost": 373.95,
+      "shoes_cost": 698.04,
+      "3 * (shorts_cost + pants_cost + shoes_cost)": 4038.66
+    }
+  },
+  "final": {
+    "question": "Mishka bought 3 pairs of shorts, 3 pairs of pants, and 3 pairs of shoes. One pair of shorts costs 274.23 leu. One pair of pants costs 373.95 leu and one pair of shoes costs 698.04 leu. How many leu did Mishka spend on all the clothing items?",
+    "answer_lines": [
+      "3 * (274.23 + 373.95 + 698.04) = 4038.66",
+      "Mishka spent 4038.66 leu on clothing.",
+      "#### 4038.66"
+    ],
+    "final_scalar": 4038.66,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mishka bought 3 pairs of shorts, 3 pairs of pants, and 3 pairs of shoes. One pair of shorts costs 274.23 lei. One pair of pants costs 373.95 lei and one pair of shoes costs 698.04 lei. How many lei did Mishka spend on all the clothing items?",
+    "adapted_answer": [
+      "3 * (274.23 + 373.95 + 698.04) = 4038.66",
+      "Mishka spent 4038.66 lei on clothing."
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' to use the correct plural form of the Moldovan currency."
+  }
+}

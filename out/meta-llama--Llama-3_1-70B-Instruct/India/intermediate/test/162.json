@@ -1,0 +1,132 @@
+{
+  "index": 162,
+  "split": "test",
+  "original": {
+    "question": "If a bag of marbles costs $20 and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "answer": "When the price of the bag of marble increase by 20%, the price increases by 20/100*20 = $<<20/100*20=4>>4\nIf the price increases after every two months, in 36 months, it will increase 36/2 = <<36/2=18>>18 times.\nIf each increase is $4, the total amount the price of the bag of marbles will have increased by after 36 months is 18*$4 = $<<18*4=72>>72\nAfter the total increase of the price of the bag of marbles after 36 months, the total cost will be $20+$72 = $<<20+72=92>>92\n#### 92"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in India, where the rupee is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "price_increase",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_increase",
+      "value": 72,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_cost",
+      "value": 92,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"price_increase\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_increase\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_cost\", \"value\": 92, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 1740,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "price_increase",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 348,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_increase",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 6264,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "final_cost",
+        "original_value": 92,
+        "original_unit": "dollar",
+        "converted_value": 8004,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "If a bag of marbles costs ${initial_cost} and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "templatized_answer": [
+      "When the price of the bag of marble increase by 20%, the price increases by 20/100*{initial_cost} = ${price_increase}.",
+      "If the price increases after every two months, in 36 months, it will increase 36/2 = {36/2} times.",
+      "If each increase is ${price_increase}, the total amount the price of the bag of marbles will have increased by after 36 months is {36/2}*{price_increase} = ${total_increase}.",
+      "After the total increase of the price of the bag of marbles after 36 months, the total cost will be ${initial_cost}+${total_increase} = ${final_cost}.",
+      "#### {final_cost}"
+    ],
+    "factual_assignment": {
+      "initial_cost": 20,
+      "price_increase": 4,
+      "total_increase": 72,
+      "final_cost": 92
+    }
+  },
+  "merged_assignment": {
+    "initial_cost": 1740,
+    "price_increase": 348,
+    "total_increase": 6264,
+    "final_cost": 8004
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cost = 1740\n    price_increase = round(initial_cost * 0.2, 2)\n    total_increase = round(price_increase * (36 / 2), 2)\n    final_cost = round(initial_cost + total_increase, 2)\n\n    return {\n        \"initial_cost\": initial_cost,\n        \"price_increase\": price_increase,\n        \"total_increase\": total_increase,\n        \"final_cost\": final_cost,\n        \"36/2\": 36 / 2\n    }\n",
+    "results": {
+      "initial_cost": 1740,
+      "price_increase": 348.0,
+      "total_increase": 6264.0,
+      "final_cost": 8004.0,
+      "36/2": 18.0
+    }
+  },
+  "final": {
+    "question": "If a bag of marbles costs 1740 and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "answer_lines": [
+      "When the price of the bag of marble increase by 20%, the price increases by 20/100*1740 = 348.",
+      "If the price increases after every two months, in 36 months, it will increase 36/2 = 18 times.",
+      "If each increase is 348, the total amount the price of the bag of marbles will have increased by after 36 months is 18*348 = 6264.",
+      "After the total increase of the price of the bag of marbles after 36 months, the total cost will be 1740+6264 = 8004.",
+      "#### 8004"
+    ],
+    "final_scalar": 8004,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "If a bag of marbles costs 1740 rupees and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "adapted_answer": [
+      "When the price of the bag of marbles increases by 20%, the price increases by 20/100*1740 = 348.",
+      "If the price increases after every two months, in 36 months, it will increase 36/2 = 18 times.",
+      "If each increase is 348, the total amount the price of the bag of marbles will have increased by after 36 months is 18*348 = 6264.",
+      "After the total increase of the price of the bag of marbles after 36 months, the total cost will be 1740+6264 = 8004.",
+      "#### 8004"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to provide an Indian context."
+  }
+}

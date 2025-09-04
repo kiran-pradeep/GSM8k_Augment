@@ -1,0 +1,166 @@
+{
+  "index": 584,
+  "split": "test",
+  "original": {
+    "question": "90 single use contacts come in 1 box and will last Pete 45 days.  Each box is $100.00 and currently 10% off.  If he buys 2 boxes of contact, how much will each pair of contacts cost?",
+    "answer": "Each box of contacts is $100.00 with 10% off so that's 100*.10 = $<<100*.10=10.00>>10.00 off\nSo the box was $100.00 and he has $10.00 off so each box will cost 100-10 = $<<100-10=90.00>>90.00\nHe buys 2 boxes and each box costs $90.00 so that's 2*90= $<<2*90=180.00>>180.00\n1 box of contacts has 90 contacts and he buys 2 boxes so that's 90*2 = <<90*2=180>>180 contacts\nHe needs 1 contact for each eye and he has 180 contacts so that's 180/2 = <<180/2=90>>90 pairs of contacts\nHe spent $180.00 to have 90 pairs of contacts so each pair of contacts costs 180/90 = $<<180/90=2.00>>2.00 a pair\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Pete",
+      "dollars"
+    ],
+    "notes": "The name 'Pete' and the unit 'dollars' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "box_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "box_cost_after_discount",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 180.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cost_per_pair",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"box_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discount\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"box_cost_after_discount\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 180.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cost_per_pair\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "box_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 28185.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "discount",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "box_cost_after_discount",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 25366.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 180.0,
+        "original_unit": "dollar",
+        "converted_value": 50733.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cost_per_pair",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 563.7,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "90 single use contacts come in 1 box and will last Pete {days_last} days.  Each box is ${box_cost} and currently {discount}% off.  If he buys 2 boxes of contact, how much will each pair of contacts cost?",
+    "templatized_answer": [
+      "Each box of contacts is ${box_cost} with {discount}% off so that's {box_cost} * ({discount} / 100) = ${discount_amount} off",
+      "So the box was ${box_cost} and he has ${discount_amount} off so each box will cost {box_cost} - {discount_amount} = ${box_cost_after_discount}",
+      "He buys 2 boxes and each box costs ${box_cost_after_discount} so that's 2 * {box_cost_after_discount} = ${total_cost}",
+      "1 box of contacts has 90 contacts and he buys 2 boxes so that's 90 * 2 = {total_contacts} contacts",
+      "He needs 1 contact for each eye and he has {total_contacts} contacts so that's {total_contacts} / 2 = {total_pairs} pairs of contacts",
+      "He spent ${total_cost} to have {total_pairs} pairs of contacts so each pair of contacts costs {total_cost} / {total_pairs} = ${cost_per_pair}",
+      "#### {cost_per_pair}"
+    ],
+    "factual_assignment": {
+      "days_last": 45,
+      "box_cost": 100.0,
+      "discount": 10.0,
+      "discount_amount": 10.0,
+      "box_cost_after_discount": 90.0,
+      "total_cost": 180.0,
+      "total_contacts": 180,
+      "total_pairs": 90,
+      "cost_per_pair": 2.0
+    }
+  },
+  "merged_assignment": {
+    "days_last": 45,
+    "box_cost": 28185.0,
+    "discount": 2818.5,
+    "discount_amount": 10.0,
+    "box_cost_after_discount": 25366.5,
+    "total_cost": 50733.0,
+    "total_contacts": 180,
+    "total_pairs": 90,
+    "cost_per_pair": 563.7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    days_last = 45\n    box_cost = 28185.0\n    discount = 10.0\n\n    discount_amount = box_cost * (discount / 100)\n    box_cost_after_discount = box_cost - discount_amount\n    total_cost = 2 * box_cost_after_discount\n    total_contacts = 90 * 2\n    total_pairs = total_contacts / 2\n    cost_per_pair = total_cost / total_pairs\n\n    return {\n        \"days_last\": days_last,\n        \"box_cost\": round(box_cost, 2),\n        \"discount\": round(discount, 2),\n        \"discount_amount\": round(discount_amount, 2),\n        \"box_cost_after_discount\": round(box_cost_after_discount, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"total_contacts\": total_contacts,\n        \"total_pairs\": total_pairs,\n        \"cost_per_pair\": round(cost_per_pair, 2)\n    }\n",
+    "results": {
+      "days_last": 45,
+      "box_cost": 28185.0,
+      "discount": 10.0,
+      "discount_amount": 2818.5,
+      "box_cost_after_discount": 25366.5,
+      "total_cost": 50733.0,
+      "total_contacts": 180,
+      "total_pairs": 90.0,
+      "cost_per_pair": 563.7
+    }
+  },
+  "final": {
+    "question": "90 single use contacts come in 1 box and will last Pete 45 days.  Each box is 28185.0 and currently 10% off.  If he buys 2 boxes of contact, how much will each pair of contacts cost?",
+    "answer_lines": [
+      "Each box of contacts is 28185.0 with 10% off so that's 28185.0 * (10 / 100) = 2818.5 off",
+      "So the box was 28185.0 and he has 2818.5 off so each box will cost 28185.0 - 2818.5 = 25366.5",
+      "He buys 2 boxes and each box costs 25366.5 so that's 2 * 25366.5 = 50733.0",
+      "1 box of contacts has 90 contacts and he buys 2 boxes so that's 90 * 2 = 180 contacts",
+      "He needs 1 contact for each eye and he has 180 contacts so that's 180 / 2 = 90 pairs of contacts",
+      "He spent 50733.0 to have 90 pairs of contacts so each pair of contacts costs 50733.0 / 90 = 563.7",
+      "#### 563.7"
+    ],
+    "final_scalar": 563.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "90 single use contacts come in 1 box and will last Ali 45 days.  Each box is 28185.0 and currently 10% off.  If he buys 2 boxes of contact, how much will each pair of contacts cost?",
+    "adapted_answer": [
+      "Each box of contacts is 28185.0 with 10% off so that's 28185.0 * (10 / 100) = 2818.5 off",
+      "So the box was 28185.0 and he has 2818.5 off so each box will cost 28185.0 - 2818.5 = 25366.5",
+      "He buys 2 boxes and each box costs 25366.5 so that's 2 * 25366.5 = 50733.0",
+      "1 box of contacts has 90 contacts and he buys 2 boxes so that's 90 * 2 = 180 contacts",
+      "He needs 1 contact for each eye and he has 180 contacts so that's 180 / 2 = 90 pairs of contacts",
+      "He spent 50733.0 to have 90 pairs of contacts so each pair of contacts costs 50733.0 / 90 = 563.7",
+      "#### 563.7"
+    ],
+    "adaptation_notes": "Replaced 'Pete' with 'Ali' to give the question a Pakistani context."
+  }
+}

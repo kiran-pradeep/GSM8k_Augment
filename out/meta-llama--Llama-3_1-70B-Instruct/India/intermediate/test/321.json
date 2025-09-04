@@ -1,0 +1,108 @@
+{
+  "index": 321,
+  "split": "test",
+  "original": {
+    "question": "A magazine costs half as much as a book. The book costs $4. A pen costs $1 less than a magazine. How much is the pen?",
+    "answer": "The cost of a magazine is $4/2 = $<<4/2=2>>2.\nThe cost of a pen is $2 - $1 = $<<2-1=1>>1.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in India, where the rupee is the standard unit of currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "book_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "magazine_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "pen_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"book_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"magazine_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"pen_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "book_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 348,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "magazine_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "pen_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 87,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A magazine costs half as much as a book. The book costs ${book_cost}. A pen costs ${pen_cost_difference} less than a magazine. How much is the pen?",
+    "templatized_answer": [
+      "The cost of a magazine is ${book_cost}/2 = ${book_cost}/2.",
+      "The cost of a pen is ${book_cost}/2 - ${pen_cost_difference} = ${book_cost}/2 - ${pen_cost_difference}.",
+      "#### ${book_cost}/2 - ${pen_cost_difference}"
+    ],
+    "factual_assignment": {
+      "book_cost": 4,
+      "pen_cost_difference": 1
+    }
+  },
+  "merged_assignment": {
+    "book_cost": 348,
+    "pen_cost_difference": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    book_cost = 348\n    pen_cost_difference = 1\n\n    magazine_cost = book_cost / 2\n    pen_cost = magazine_cost - pen_cost_difference\n\n    return {\n        \"book_cost\": book_cost,\n        \"pen_cost_difference\": pen_cost_difference,\n        \"book_cost/2\": round(magazine_cost, 2),\n        \"book_cost/2 - pen_cost_difference\": round(pen_cost, 2)\n    }\n",
+    "results": {
+      "book_cost": 348,
+      "pen_cost_difference": 1,
+      "book_cost/2": 174.0,
+      "book_cost/2 - pen_cost_difference": 173.0
+    }
+  },
+  "final": {
+    "question": "A magazine costs half as much as a book. The book costs 348. A pen costs 1 less than a magazine. How much is the pen?",
+    "answer_lines": [
+      "The cost of a magazine is 348/2 = 174.",
+      "The cost of a pen is 174 - 1 = 173.",
+      "#### 173"
+    ],
+    "final_scalar": 173,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A magazine costs half as much as a book. The book costs ₹348. A pen costs 1 less than a magazine. How much is the pen?",
+    "adapted_answer": [
+      "The cost of a magazine is 348/2 = 174.",
+      "The cost of a pen is 174 - 1 = 173.",
+      "#### 173"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with '₹' (Indian rupees) for Indian context."
+  }
+}

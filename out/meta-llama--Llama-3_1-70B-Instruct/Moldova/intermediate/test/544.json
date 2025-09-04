@@ -1,0 +1,110 @@
+{
+  "index": 544,
+  "split": "test",
+  "original": {
+    "question": "Jeff and Brad are trying to divide 100 dollars between them. Jeff gets 4 times as much as Brad. How much does Jeff get in dollars?",
+    "answer": "Brad gets 100/5=<<100/5=20>>20 dollars.\nJeff gets 20*4=<<20*4=80>>80 dollars.\n#### 80"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jeff",
+      "Brad",
+      "dollars"
+    ],
+    "notes": "The names Jeff and Brad are culturally specific to Western regions, and the unit 'dollars' is primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_amount",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "brad_share",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "jeff_share",
+      "value": 80,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_amount\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"brad_share\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"jeff_share\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_amount",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "brad_share",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "jeff_share",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 1329.6,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jeff and Brad are trying to divide {initial_amount} dollars between them. Jeff gets 4 times as much as Brad. How much does Jeff get in dollars?",
+    "templatized_answer": [
+      "Brad gets {initial_amount}/5={initial_amount}/5 dollars.",
+      "Jeff gets {initial_amount}/5*4={initial_amount}/5*4 dollars.",
+      "#### {jeff_share}"
+    ],
+    "factual_assignment": {
+      "initial_amount": 100,
+      "jeff_share": 80
+    }
+  },
+  "merged_assignment": {
+    "initial_amount": 1662.0,
+    "jeff_share": 1329.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_amount = 1662.0\n    brad_share = initial_amount / 5\n    jeff_share = brad_share * 4\n    return {\n        \"initial_amount\": initial_amount,\n        \"initial_amount/5\": round(brad_share, 2),\n        \"initial_amount/5*4\": round(jeff_share, 2),\n        \"jeff_share\": round(jeff_share, 2)\n    }\n",
+    "results": {
+      "initial_amount": 1662.0,
+      "initial_amount/5": 332.4,
+      "initial_amount/5*4": 1329.6,
+      "jeff_share": 1329.6
+    }
+  },
+  "final": {
+    "question": "Jeff and Brad are trying to divide 1662.0 leu between them. Jeff gets 4 times as much as Brad. How much does Jeff get in leu?",
+    "answer_lines": [
+      "Brad gets 1662.0/5=332.4 leu.",
+      "Jeff gets 332.4*4=1329.6 leu.",
+      "#### 1329.6"
+    ],
+    "final_scalar": 1329.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion and Vasile are trying to divide 1662.0 leu between them. Ion gets 4 times as much as Vasile. How much does Ion get in leu?",
+    "adapted_answer": [
+      "Vasile gets 1662.0/5=332.4 leu.",
+      "Ion gets 332.4*4=1329.6 leu.",
+      "#### 1329.6"
+    ],
+    "adaptation_notes": "Replaced 'Jeff' with 'Ion' and 'Brad' with 'Vasile' to give the names a Moldovan context."
+  }
+}

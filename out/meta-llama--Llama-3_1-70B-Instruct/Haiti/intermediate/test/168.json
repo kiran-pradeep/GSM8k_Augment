@@ -1,0 +1,102 @@
+{
+  "index": 168,
+  "split": "test",
+  "original": {
+    "question": "Jimmy has $2 more than twice the money Ethel has. If Ethal has $8, how much money is Jimmy having?",
+    "answer": "The total amount of money jimmy has 2*$8 = $<<2*8=16>>16 more than Ethel.\nIf Jimmy has $2 more than twice the money Ethel has, he has 2+16 = $<<2+16=18>>18\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is commonly used in the United States and other countries, but not exclusively in Haiti, where the Haitian gourde is the local currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ethel_money",
+      "value": 8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jimmy_money",
+      "value": 18,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ethel_money\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jimmy_money\", \"value\": 18, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ethel_money",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 1046.48,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "jimmy_money",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 2354.58,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jimmy has ${2} more than twice the money Ethel has. If Ethel has ${ethel_money}, how much money is Jimmy having?",
+    "templatized_answer": [
+      "The total amount of money Jimmy has 2*${ethel_money} = ${2*ethel_money} more than Ethel.",
+      "If Jimmy has ${2} more than twice the money Ethel has, he has ${2}+${2*ethel_money} = ${2+2*ethel_money}",
+      "#### {jimmy_money}"
+    ],
+    "factual_assignment": {
+      "ethel_money": 8,
+      "jimmy_money": 18,
+      "2": 2,
+      "2*ethel_money": 16,
+      "2+2*ethel_money": 18
+    }
+  },
+  "merged_assignment": {
+    "ethel_money": 1046.48,
+    "jimmy_money": 2354.58,
+    "2": 2,
+    "2*ethel_money": 16,
+    "2+2*ethel_money": 18
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"ethel_money\": 1046.48,\n        \"jimmy_money\": 2354.58,\n        \"2\": 2,\n    }\n\n    computed_values = factual_assignment.copy()\n\n    computed_values[\"2*ethel_money\"] = 2 * computed_values[\"ethel_money\"]\n    computed_values[\"2+2*ethel_money\"] = computed_values[\"2\"] + computed_values[\"2*ethel_money\"]\n\n    return computed_values\n",
+    "results": {
+      "ethel_money": 1046.48,
+      "jimmy_money": 2354.58,
+      "2": 2,
+      "2*ethel_money": 2092.96,
+      "2+2*ethel_money": 2094.96
+    }
+  },
+  "final": {
+    "question": "Jimmy has 2 more than twice the money Ethel has. If Ethel has 1046.48 gourde, how much money is Jimmy having?",
+    "answer_lines": [
+      "The total amount of money Jimmy has 2*1046.48 = 2092.96 more than Ethel.",
+      "If Jimmy has 2 more than twice the money Ethel has, he has 2+2092.96 = 2094.96",
+      "#### 2094.96"
+    ],
+    "final_scalar": 2094.96,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jimmy has 2 more than twice the money Ethel has. If Ethel has 1046.48 gourde, how much money is Jimmy having?",
+    "adapted_answer": [
+      "The total amount of money Jimmy has 2*1046.48 = 2092.96 more than Ethel.",
+      "If Jimmy has 2 more than twice the money Ethel has, he has 2+2092.96 = 2094.96",
+      "#### 2094.96"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

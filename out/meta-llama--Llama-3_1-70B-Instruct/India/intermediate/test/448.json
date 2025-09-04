@@ -1,0 +1,191 @@
+{
+  "index": 448,
+  "split": "test",
+  "original": {
+    "question": "A salesman bought a case of 48 sneakers for $576. He sold 17 of them for $20 at a flash sale on Monday, and the rest were sold to a department store for $25 each throughout the rest of the week. How much money, in dollars, was the salesman's profit?",
+    "answer": "The salesman made 17 × $20 = $<<17*20=340>>340 at the flash sale on Monday.\nThere were 48 - 17 = <<48-17=31>>31 sneakers left.\nAt the department store he made 31 × $25 = $<<31*25=775>>775 throughout the week.\nIn total he made $340 + $775 = $<<340+775=1115>>1115.\nThe profit made by the salesman was $1115 - $576 = $<<1115-576=539>>539.\n#### 539"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in India where the rupee is the standard unit of currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "sneakers_cost",
+      "value": 576.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "flash_sale_price",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "flash_sale_revenue",
+      "value": 340.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "department_store_price",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "department_store_revenue",
+      "value": 775.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 1115.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "salesman_profit",
+      "value": 539.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"sneakers_cost\", \"value\": 576.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"flash_sale_price\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"flash_sale_revenue\", \"value\": 340.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"department_store_price\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"department_store_revenue\", \"value\": 775.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_revenue\", \"value\": 1115.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"salesman_profit\", \"value\": 539.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "sneakers_cost",
+        "original_value": 576.0,
+        "original_unit": "dollar",
+        "converted_value": 50112.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "flash_sale_price",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 1740.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "flash_sale_revenue",
+        "original_value": 340.0,
+        "original_unit": "dollar",
+        "converted_value": 29580.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "department_store_price",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 2175.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "department_store_revenue",
+        "original_value": 775.0,
+        "original_unit": "dollar",
+        "converted_value": 67425.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 1115.0,
+        "original_unit": "dollar",
+        "converted_value": 97005.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "salesman_profit",
+        "original_value": 539.0,
+        "original_unit": "dollar",
+        "converted_value": 46893.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A salesman bought a case of {total_sneakers} sneakers for ${sneakers_cost}. He sold {flash_sale_sneakers} of them for ${flash_sale_price} at a flash sale on Monday, and the rest were sold to a department store for ${department_store_price} each throughout the rest of the week. How much money, in dollars, was the salesman's profit?",
+    "templatized_answer": [
+      "The salesman made {flash_sale_sneakers} × ${flash_sale_price} = ${flash_sale_revenue}.",
+      "There were {total_sneakers} - {flash_sale_sneakers} = {remaining_sneakers} sneakers left.",
+      "At the department store he made {remaining_sneakers} × ${department_store_price} = ${department_store_revenue} throughout the week.",
+      "In total he made ${flash_sale_revenue} + ${department_store_revenue} = ${total_revenue}.",
+      "The profit made by the salesman was ${total_revenue} - ${sneakers_cost} = ${salesman_profit}.",
+      "#### {salesman_profit}"
+    ],
+    "factual_assignment": {
+      "total_sneakers": 48,
+      "sneakers_cost": 576,
+      "flash_sale_sneakers": 17,
+      "flash_sale_price": 20,
+      "flash_sale_revenue": 340,
+      "department_store_price": 25,
+      "department_store_revenue": 775,
+      "remaining_sneakers": 31,
+      "total_revenue": 1115,
+      "salesman_profit": 539
+    }
+  },
+  "merged_assignment": {
+    "total_sneakers": 48,
+    "sneakers_cost": 50112.0,
+    "flash_sale_sneakers": 17,
+    "flash_sale_price": 1740.0,
+    "flash_sale_revenue": 29580.0,
+    "department_store_price": 2175.0,
+    "department_store_revenue": 67425.0,
+    "remaining_sneakers": 31,
+    "total_revenue": 97005.0,
+    "salesman_profit": 46893.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_sneakers = 48\n    sneakers_cost = 50112.0\n    flash_sale_sneakers = 17\n    flash_sale_price = 1740.0\n    department_store_price = 2175.0\n\n    flash_sale_revenue = flash_sale_sneakers * flash_sale_price\n    remaining_sneakers = total_sneakers - flash_sale_sneakers\n    department_store_revenue = remaining_sneakers * department_store_price\n    total_revenue = flash_sale_revenue + department_store_revenue\n    salesman_profit = total_revenue - sneakers_cost\n\n    return {\n        \"total_sneakers\": total_sneakers,\n        \"sneakers_cost\": round(sneakers_cost, 2),\n        \"flash_sale_sneakers\": flash_sale_sneakers,\n        \"flash_sale_price\": round(flash_sale_price, 2),\n        \"flash_sale_revenue\": round(flash_sale_revenue, 2),\n        \"department_store_price\": round(department_store_price, 2),\n        \"department_store_revenue\": round(department_store_revenue, 2),\n        \"remaining_sneakers\": remaining_sneakers,\n        \"total_revenue\": round(total_revenue, 2),\n        \"salesman_profit\": round(salesman_profit, 2)\n    }\n",
+    "results": {
+      "total_sneakers": 48,
+      "sneakers_cost": 50112.0,
+      "flash_sale_sneakers": 17,
+      "flash_sale_price": 1740.0,
+      "flash_sale_revenue": 29580.0,
+      "department_store_price": 2175.0,
+      "department_store_revenue": 67425.0,
+      "remaining_sneakers": 31,
+      "total_revenue": 97005.0,
+      "salesman_profit": 46893.0
+    }
+  },
+  "final": {
+    "question": "A salesman bought a case of 48 sneakers for 50112 rupees. He sold 17 of them for 1740 rupees at a flash sale on Monday, and the rest were sold to a department store for 2175 rupees each throughout the rest of the week. How much money, in rupees, was the salesman's profit?",
+    "answer_lines": [
+      "The salesman made 17 × 1740 = 29580 rupees.",
+      "There were 48 - 17 = 31 sneakers left.",
+      "At the department store he made 31 × 2175 = 67425 rupees throughout the week.",
+      "In total he made 29580 + 67425 = 97005 rupees.",
+      "The profit made by the salesman was 97005 - 50112 = 46893 rupees.",
+      "#### 46893"
+    ],
+    "final_scalar": 46893.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A salesman bought a case of 48 sneakers for 50112 rupees. He sold 17 of them for 1740 rupees at a flash sale on Monday, and the rest were sold to a department store for 2175 rupees each throughout the rest of the week. How much money, in rupees, was the salesman's profit?",
+    "adapted_answer": [
+      "The salesman made 17 × 1740 = 29580 rupees.",
+      "There were 48 - 17 = 31 sneakers left.",
+      "At the department store he made 31 × 2175 = 67425 rupees throughout the week.",
+      "In total he made 29580 + 67425 = 97005 rupees.",
+      "The profit made by the salesman was 97005 - 50112 = 46893 rupees.",
+      "#### 46893"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

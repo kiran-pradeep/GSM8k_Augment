@@ -1,0 +1,140 @@
+{
+  "index": 209,
+  "split": "test",
+  "original": {
+    "question": "Twenty dozen cups cost $1200 less than the total cost of half a dozen plates sold at $6000 each. Calculate the total cost of buying each cup.",
+    "answer": "Since a dozen has 12 items, half a dozen plates are 12/2 = <<6=6>>6\nHalf a dozen plates sold at $6000 each cost 6*$6000 = $<<6*6000=36000>>36000\nTwenty dozen cups cost $1200 less than the total cost of half a dozen plates, meaning the twenty dozen cups cost a total of $36000-$1200 = 34800\nSince a dozen has 12 items, twenty dozen cups are 20*12 = <<20*12=240>>240 cups.\nIf the twenty dozen cups cost $34800, each cup costs $34800/240=$<<34800/240=145>>145\n#### 145"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries and is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "plates_cost",
+      "value": 6000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "plates_total_cost",
+      "value": 36000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cups_total_cost",
+      "value": 34800.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cup_cost",
+      "value": 145.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = original_value * conversions[original_unit][\"rate\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"plates_cost\", \"value\": 6000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"plates_total_cost\", \"value\": 36000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cups_total_cost\", \"value\": 34800.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cup_cost\", \"value\": 145.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "plates_cost",
+        "original_value": 6000.0,
+        "original_unit": "dollar",
+        "converted_value": 3416280.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "plates_total_cost",
+        "original_value": 36000.0,
+        "original_unit": "dollar",
+        "converted_value": 20497680.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cups_total_cost",
+        "original_value": 34800.0,
+        "original_unit": "dollar",
+        "converted_value": 19814424.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cup_cost",
+        "original_value": 145.0,
+        "original_unit": "dollar",
+        "converted_value": 82560.1,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Twenty dozen cups cost ${cups_total_cost} less than the total cost of half a dozen plates sold at ${plates_cost} each. Calculate the total cost of buying each cup.",
+    "templatized_answer": [
+      "Since a dozen has 12 items, half a dozen plates are 12/2 = {half_dozen}",
+      "Half a dozen plates sold at ${plates_cost} each cost {half_dozen}*${plates_cost} = ${plates_total_cost}",
+      "Twenty dozen cups cost ${cups_total_cost} less than the total cost of half a dozen plates, meaning the twenty dozen cups cost a total of ${plates_total_cost}-${cups_total_cost} = ${cups_total_cost}",
+      "Since a dozen has 12 items, twenty dozen cups are 20*12 = {total_cups} cups.",
+      "If the twenty dozen cups cost ${cups_total_cost}, each cup costs ${cups_total_cost}/{total_cups}=${cup_cost}",
+      "#### {cup_cost}"
+    ],
+    "factual_assignment": {
+      "plates_cost": 6000.0,
+      "plates_total_cost": 36000.0,
+      "cups_total_cost": 34800.0,
+      "cup_cost": 145.0,
+      "half_dozen": 6,
+      "total_cups": 240
+    }
+  },
+  "merged_assignment": {
+    "plates_cost": 3416280.0,
+    "plates_total_cost": 20497680.0,
+    "cups_total_cost": 19814424.0,
+    "cup_cost": 82560.1,
+    "half_dozen": 6,
+    "total_cups": 240
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    plates_cost = 3416280.0\n    half_dozen = 6\n    plates_total_cost = half_dozen * plates_cost\n    cups_total_cost = plates_total_cost - (plates_total_cost - 19814424.0)\n    total_cups = 240\n    cup_cost = cups_total_cost / total_cups\n\n    return {\n        \"plates_cost\": plates_cost,\n        \"plates_total_cost\": plates_total_cost,\n        \"cups_total_cost\": cups_total_cost,\n        \"cup_cost\": round(cup_cost, 2),\n        \"half_dozen\": half_dozen,\n        \"total_cups\": total_cups\n    }\n",
+    "results": {
+      "plates_cost": 3416280.0,
+      "plates_total_cost": 20497680.0,
+      "cups_total_cost": 19814424.0,
+      "cup_cost": 82560.1,
+      "half_dozen": 6,
+      "total_cups": 240
+    }
+  },
+  "final": {
+    "question": "Twenty dozen cups cost 19814424 shilling less than the total cost of half a dozen plates sold at 3416280 shilling each. Calculate the total cost of buying each cup.",
+    "answer_lines": [
+      "Since a dozen has 12 items, half a dozen plates are 12/2 = 6",
+      "Half a dozen plates sold at 3416280 shilling each cost 6*3416280 = 20497680 shilling",
+      "Twenty dozen cups cost 19814424 shilling less than the total cost of half a dozen plates, meaning the twenty dozen cups cost a total of 20497680-19814424 = 683256 shilling",
+      "Since a dozen has 12 items, twenty dozen cups are 20*12 = 240 cups.",
+      "If the twenty dozen cups cost 683256 shilling, each cup costs 683256/240=2843.56 shilling",
+      "#### 82560.1"
+    ],
+    "final_scalar": 82560.1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Labo iyo labaatan dozen koob cost 19814424 shilling ka badan qiimaha guud ee nus dhowr plate loo iibinayo 3416280 shilling kowda. Qiimaha guud ee koob kasta ayaa lagu cabbirayaa.",
+    "adapted_answer": [
+      "Waxa jira 12 koob oo dozen, nus dhowr plate waa 12/2 = 6",
+      "Nus dhowr plate loo iibinayo 3416280 shilling kowda waxay ku kaceen 6*3416280 = 20497680 shilling",
+      "Labo iyo labaatan dozen koob cost 19814424 shilling ka badan qiimaha guud ee nus dhowr plate, maana labo iyo labaatan dozen koob waxay ku kaceen qiimaha guud 20497680-19814424 = 683256 shilling",
+      "Waxa jira 12 koob oo dozen, labo iyo labaatan dozen koob waa 20*12 = 240 koob",
+      "Haddii labo iyo labaatan dozen koob ay ku kaceen 683256 shilling, koob kasta waxay ku kaceen 683256/240=2843.56 shilling",
+      "#### 82560.1"
+    ],
+    "adaptation_notes": "Replaced 'cups' with 'koob', 'plates' with 'plate', and 'shilling' was already Somali-specific, so no changes were needed for it."
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "index": 1302,
+  "split": "test",
+  "original": {
+    "question": "Matthew has a collection of 12 unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection $5 per toy, and for the other half $7 per toy. If Matthew would agree to that offer, how much money would he earn?",
+    "answer": "Half of Matthew collection means 12 * 0.5 = <<12*0.5=6>>6 toy soldiers.\nA buyer wants to buy 6 toy soldiers for $5, so he would pay 6 * 5 = $<<6*5=30>>30 for them.\nAnd for the other half, he wants to pay $7 per toy, which would sum up to 6 * 7 = $<<6*7=42>>42.\nSo if Matthew would agree to the buyer's offer, he would earn 30 + 42 = $<<30+42=72>>72.\n#### 72"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in Haiti, where the Haitian gourde is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_half_price",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_half_price",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_half_earnings",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_half_earnings",
+      "value": 42,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 72,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_half_price\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_half_price\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_half_earnings\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_half_earnings\", \"value\": 42, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_half_price",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 654.05,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "second_half_price",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 915.67,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "first_half_earnings",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 3924.3,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "second_half_earnings",
+        "original_value": 42,
+        "original_unit": "dollar",
+        "converted_value": 5494.02,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 9418.32,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Matthew has a collection of {total_toys} unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection ${first_half_price} per toy, and for the other half ${second_half_price} per toy. If Matthew would agree to that offer, how much money would he earn?",
+    "templatized_answer": [
+      "Half of Matthew collection means {total_toys} * 0.5 = {total_toys_half} toy soldiers.",
+      "A buyer wants to buy {total_toys_half} toy soldiers for ${first_half_price}, so he would pay {total_toys_half} * {first_half_price} = ${first_half_earnings} for them.",
+      "And for the other half, he wants to pay ${second_half_price} per toy, which would sum up to {total_toys_half} * {second_half_price} = ${second_half_earnings}.",
+      "So if Matthew would agree to the buyer's offer, he would earn {first_half_earnings} + {second_half_earnings} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "total_toys": 12,
+      "first_half_price": 5,
+      "second_half_price": 7,
+      "total_toys_half": 6,
+      "first_half_earnings": 30,
+      "second_half_earnings": 42,
+      "total_earnings": 72
+    }
+  },
+  "merged_assignment": {
+    "total_toys": 12,
+    "first_half_price": 654.05,
+    "second_half_price": 915.67,
+    "total_toys_half": 6,
+    "first_half_earnings": 3924.3,
+    "second_half_earnings": 5494.02,
+    "total_earnings": 9418.32
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_toys = 12\n    first_half_price = 654.05\n    second_half_price = 915.67\n\n    total_toys_half = total_toys * 0.5\n    first_half_earnings = total_toys_half * first_half_price\n    second_half_earnings = total_toys_half * second_half_price\n    total_earnings = first_half_earnings + second_half_earnings\n\n    return {\n        \"total_toys\": total_toys,\n        \"first_half_price\": round(first_half_price, 2),\n        \"second_half_price\": round(second_half_price, 2),\n        \"total_toys_half\": round(total_toys_half, 2),\n        \"first_half_earnings\": round(first_half_earnings, 2),\n        \"second_half_earnings\": round(second_half_earnings, 2),\n        \"total_earnings\": round(total_earnings, 2)\n    }\n",
+    "results": {
+      "total_toys": 12,
+      "first_half_price": 654.05,
+      "second_half_price": 915.67,
+      "total_toys_half": 6.0,
+      "first_half_earnings": 3924.3,
+      "second_half_earnings": 5494.02,
+      "total_earnings": 9418.32
+    }
+  },
+  "final": {
+    "question": "Matthew has a collection of 12 unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection 654.05 gourde per toy, and for the other half 915.67 gourde per toy. If Matthew would agree to that offer, how much money would he earn?",
+    "answer_lines": [
+      "Half of Matthew collection means 12 * 0.5 = 6 toy soldiers.",
+      "A buyer wants to buy 6 toy soldiers for 654.05 gourde, so he would pay 6 * 654.05 = 3924.3 gourde for them.",
+      "And for the other half, he wants to pay 915.67 gourde per toy, which would sum up to 6 * 915.67 = 5494.02 gourde.",
+      "So if Matthew would agree to the buyer's offer, he would earn 3924.3 + 5494.02 = 9418.32 gourde.",
+      "#### 9418.32"
+    ],
+    "final_scalar": 9418.32,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Matthieu has a collection of 12 unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection 654.05 gourde per toy, and for the other half 915.67 gourde per toy. If Matthieu would agree to that offer, how much money would he earn?",
+    "adapted_answer": [
+      "Half of Matthieu collection means 12 * 0.5 = 6 toy soldiers.",
+      "A buyer wants to buy 6 toy soldiers for 654.05 gourde, so he would pay 6 * 654.05 = 3924.3 gourde for them.",
+      "And for the other half, he wants to pay 915.67 gourde per toy, which would sum up to 6 * 915.67 = 5494.02 gourde.",
+      "So if Matthieu would agree to the buyer's offer, he would earn 3924.3 + 5494.02 = 9418.32 gourde.",
+      "#### 9418.32"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

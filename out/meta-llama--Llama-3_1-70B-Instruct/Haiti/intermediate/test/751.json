@@ -1,0 +1,91 @@
+{
+  "index": 751,
+  "split": "test",
+  "original": {
+    "question": "Gunther, the gorilla, had 48 bananas hidden under a fern branch.  When Gunther wasn't looking, Arnold, the chimpanzee, stole half of the bananas from the pile.  The next day, Gunther added another 25 bananas to his pile, but later that evening, Arnold stole another 12 of the bananas.  On the third day, Gunther added another 6 bananas to his pile and began counting bananas.  How many bananas did Gunther find were in the pile?",
+    "answer": "Half of 48 bananas is 48/2=<<48/2=24>>24 bananas.\nArnold's first act of thievery removes 24 bananas, leaving 48-24=24 bananas.\nStarting with the remaining 24 bananas, adding 25 bananas to the pile brings the total to 24+25=<<24+25=49>>49 bananas.\nArnold's second act of thievery resulted in 49-12=<<49-12=37>>37 bananas remaining.\nGunther adds another 6 bananas, resulting in the final number of 37+6=<<37+6=43>>43 bananas.\n#### 43"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gunther",
+      "Arnold",
+      "gorilla",
+      "chimpanzee",
+      "bananas"
+    ],
+    "notes": "The names Gunther and Arnold are culturally specific to regions other than Haiti. Additionally, gorillas and chimpanzees are not native to Haiti, and bananas, while widely available, are not exclusive to Haitian cuisine but are also commonly associated with other cultures."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 130.81, 'unit': 'gourde'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Gunther, the gorilla, had {initial_bananas} bananas hidden under a fern branch.  When Gunther wasn't looking, Arnold, the chimpanzee, stole half of the bananas from the pile.  The next day, Gunther added another {additional_bananas_day1} bananas to his pile, but later that evening, Arnold stole another {stolen_bananas_day2} of the bananas.  On the third day, Gunther added another {additional_bananas_day3} bananas to his pile and began counting bananas.  How many bananas did Gunther find were in the pile?",
+    "templatized_answer": [
+      "Half of {initial_bananas} bananas is {initial_bananas}/2={initial_bananas}/2 bananas.",
+      "Arnold's first act of thievery removes {initial_bananas}/2 bananas, leaving {initial_bananas}-{initial_bananas}/2={initial_bananas}/2 bananas.",
+      "Starting with the remaining {initial_bananas}/2 bananas, adding {additional_bananas_day1} bananas to the pile brings the total to {initial_bananas}/2+{additional_bananas_day1}={initial_bananas}/2+{additional_bananas_day1} bananas.",
+      "Arnold's second act of thievery resulted in {initial_bananas}/2+{additional_bananas_day1}-{stolen_bananas_day2}={initial_bananas}/2+{additional_bananas_day1}-{stolen_bananas_day2} bananas remaining.",
+      "Gunther adds another {additional_bananas_day3} bananas, resulting in the final number of {initial_bananas}/2+{additional_bananas_day1}-{stolen_bananas_day2}+{additional_bananas_day3}={initial_bananas}/2+{additional_bananas_day1}-{stolen_bananas_day2}+{additional_bananas_day3} bananas.",
+      "#### {final_bananas}"
+    ],
+    "factual_assignment": {
+      "initial_bananas": 48,
+      "additional_bananas_day1": 25,
+      "stolen_bananas_day2": 12,
+      "additional_bananas_day3": 6,
+      "final_bananas": 43
+    }
+  },
+  "merged_assignment": {
+    "initial_bananas": 48,
+    "additional_bananas_day1": 25,
+    "stolen_bananas_day2": 12,
+    "additional_bananas_day3": 6,
+    "final_bananas": 43
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_bananas = 48\n    additional_bananas_day1 = 25\n    stolen_bananas_day2 = 12\n    additional_bananas_day3 = 6\n\n    half_initial_bananas = initial_bananas / 2\n    remaining_bananas_day1 = half_initial_bananas\n    total_bananas_day2 = remaining_bananas_day1 + additional_bananas_day1\n    remaining_bananas_day2 = total_bananas_day2 - stolen_bananas_day2\n    total_bananas_day3 = remaining_bananas_day2 + additional_bananas_day3\n\n    return {\n        \"initial_bananas\": initial_bananas,\n        \"additional_bananas_day1\": additional_bananas_day1,\n        \"stolen_bananas_day2\": stolen_bananas_day2,\n        \"additional_bananas_day3\": additional_bananas_day3,\n        \"final_bananas\": total_bananas_day3,\n        \"initial_bananas/2\": round(half_initial_bananas, 2),\n        \"initial_bananas/2+additional_bananas_day1\": round(total_bananas_day2, 2),\n        \"initial_bananas/2+additional_bananas_day1-stolen_bananas_day2\": round(remaining_bananas_day2, 2),\n        \"initial_bananas/2+additional_bananas_day1-stolen_bananas_day2+additional_bananas_day3\": round(total_bananas_day3, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_bananas": 48,
+      "additional_bananas_day1": 25,
+      "stolen_bananas_day2": 12,
+      "additional_bananas_day3": 6,
+      "final_bananas": 43.0,
+      "initial_bananas/2": 24.0,
+      "initial_bananas/2+additional_bananas_day1": 49.0,
+      "initial_bananas/2+additional_bananas_day1-stolen_bananas_day2": 37.0,
+      "initial_bananas/2+additional_bananas_day1-stolen_bananas_day2+additional_bananas_day3": 43.0
+    }
+  },
+  "final": {
+    "question": "Gunther, the gorilla, had 48 bananas hidden under a fern branch.  When Gunther wasn't looking, Arnold, the chimpanzee, stole half of the bananas from the pile.  The next day, Gunther added another 25 bananas to his pile, but later that evening, Arnold stole another 12 of the bananas.  On the third day, Gunther added another 6 bananas to his pile and began counting bananas.  How many bananas did Gunther find were in the pile?",
+    "answer_lines": [
+      "Half of 48 bananas is 48/2=24 bananas.",
+      "Arnold's first act of thievery removes 24 bananas, leaving 48-24=24 bananas.",
+      "Starting with the remaining 24 bananas, adding 25 bananas to the pile brings the total to 24+25=49 bananas.",
+      "Arnold's second act of thievery resulted in 49-12=37 bananas remaining.",
+      "Gunther adds another 6 bananas, resulting in the final number of 37+6=43 bananas.",
+      "#### 43"
+    ],
+    "final_scalar": 43.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ti-Manno, the Haitian monkey, had 48 mangos hidden under a palm branch.  When Ti-Manno wasn't looking, Tonton, the Haitian capuchin, stole half of the mangos from the pile.  The next day, Ti-Manno added another 25 mangos to his pile, but later that evening, Tonton stole another 12 of the mangos.  On the third day, Ti-Manno added another 6 mangos to his pile and began counting mangos.  How many mangos did Ti-Manno find were in the pile?",
+    "adapted_answer": [
+      "Half of 48 mangos is 48/2=24 mangos.",
+      "Tonton's first act of thievery removes 24 mangos, leaving 48-24=24 mangos.",
+      "Starting with the remaining 24 mangos, adding 25 mangos to the pile brings the total to 24+25=49 mangos.",
+      "Tonton's second act of thievery resulted in 49-12=37 mangos remaining.",
+      "Ti-Manno adds another 6 mangos, resulting in the final number of 37+6=43 mangos.",
+      "#### 43"
+    ],
+    "adaptation_notes": "Replaced Gunther with Ti-Manno, Arnold with Tonton, gorilla with Haitian monkey, chimpanzee with Haitian capuchin, bananas with mangos, and fern branch with palm branch to give the text a Haitian context."
+  }
+}

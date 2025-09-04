@@ -1,0 +1,130 @@
+{
+  "index": 1120,
+  "split": "test",
+  "original": {
+    "question": "John visits his parents twice a month.  It takes him 2 hours to drive there at a speed of 70 mph.  Considering the round trip, how many miles a month does he drive when visiting his parents?",
+    "answer": "His parents live 70*2=<<70*2=140>>140 miles away\nSo he drives 140*2=<<140*2=280>>280 miles a round trip\n280*2 = <<280*2=560>>560 miles a month\n#### 560"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "miles",
+      "mph"
+    ],
+    "notes": "The name 'John' is Western, and the units 'miles' and 'mph' are commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "speed",
+      "value": 70.0,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "distance_parents",
+      "value": 140.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "round_trip_distance",
+      "value": 280.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_distance",
+      "value": 560.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mph\": {\"unit\": \"km/h\", \"factor\": 1.60934},\n        \"mile\": {\"unit\": \"km\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kg\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"g\", \"factor\": 28.3495},\n        \"gallon\": {\"unit\": \"L\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"mL\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"PKR\", \"factor\": 281.85},\n        \"foot\": {\"unit\": \"m\", \"factor\": 0.3048},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"speed\", \"value\": 70.0, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"distance_parents\", \"value\": 140.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"round_trip_distance\", \"value\": 280.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_distance\", \"value\": 560.0, \"unit\": \"mile\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "speed",
+        "original_value": 70.0,
+        "original_unit": "mph",
+        "converted_value": 112.65,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "distance_parents",
+        "original_value": 140.0,
+        "original_unit": "mile",
+        "converted_value": 225.31,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "round_trip_distance",
+        "original_value": 280.0,
+        "original_unit": "mile",
+        "converted_value": 450.62,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "monthly_distance",
+        "original_value": 560.0,
+        "original_unit": "mile",
+        "converted_value": 901.23,
+        "converted_unit": "km"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John visits his parents twice a month.  It takes him 2 hours to drive there at a speed of {speed} mph.  Considering the round trip, how many miles a month does he drive when visiting his parents?",
+    "templatized_answer": [
+      "His parents live {speed}*2={distance_parents} miles away",
+      "So he drives {distance_parents}*2={round_trip_distance} miles a round trip",
+      "{round_trip_distance}*2 = {monthly_distance} miles a month",
+      "#### {monthly_distance}"
+    ],
+    "factual_assignment": {
+      "speed": 70.0,
+      "distance_parents": 140.0,
+      "round_trip_distance": 280.0,
+      "monthly_distance": 560.0
+    }
+  },
+  "merged_assignment": {
+    "speed": 112.65,
+    "distance_parents": 225.31,
+    "round_trip_distance": 450.62,
+    "monthly_distance": 901.23
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    speed = 112.65\n    distance_parents = speed * 2\n    round_trip_distance = distance_parents * 2\n    monthly_distance = round_trip_distance * 2\n\n    return {\n        \"speed\": speed,\n        \"distance_parents\": round(distance_parents, 2),\n        \"round_trip_distance\": round(round_trip_distance, 2),\n        \"monthly_distance\": round(monthly_distance, 2)\n    }\n",
+    "results": {
+      "speed": 112.65,
+      "distance_parents": 225.3,
+      "round_trip_distance": 450.6,
+      "monthly_distance": 901.2
+    }
+  },
+  "final": {
+    "question": "John visits his parents twice a month.  It takes him 2 hours to drive there at a speed of 112.65 km/h.  Considering the round trip, how many kilometers a month does he drive when visiting his parents?",
+    "answer_lines": [
+      "His parents live 112.65*2=225.3 kilometers away",
+      "So he drives 225.3*2=450.6 kilometers a round trip",
+      "450.6*2 = 901.2 kilometers a month",
+      "#### 901.2"
+    ],
+    "final_scalar": 901.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran visits his parents twice a month.  It takes him 2 hours to drive there at a speed of 112.65 km/h.  Considering the round trip, how many kilometers a month does he drive when visiting his parents?",
+    "adapted_answer": [
+      "His parents live 112.65*2=225.3 kilometers away",
+      "So he drives 225.3*2=450.6 kilometers a round trip",
+      "450.6*2 = 901.2 kilometers a month",
+      "#### 901.2"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Kamran' to give the name a Pakistani context."
+  }
+}

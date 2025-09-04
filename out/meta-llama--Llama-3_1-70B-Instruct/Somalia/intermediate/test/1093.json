@@ -1,0 +1,166 @@
+{
+  "index": 1093,
+  "split": "test",
+  "original": {
+    "question": "Tony is painting a room with four walls. The north and south walls are 10 x 8 feet. The east and west walls are 5 x 8 feet. A gallon of paint can cover 20 square feet and cost $12. How much will it cost to paint the room?",
+    "answer": "The north and south walls are 80 square feet each because 10 x 8 = <<10*8=80>>80\nThe east and west walls are 40 square feet because 5 x 8 = <<5*8=40>>40\nThe south and north walls total 160 square feet because 80 x 2 = <<80*2=160>>160\nThe East and west walls total 80 square feet because 40 x 2 = <<40*2=80>>80\nAll the walls total 240 square feet because 160 + 80 = <<160+80=240>>240\nHe will need 12 gallons of paint because 240 / 20 = <<240/20=12>>12\nIt will cost $144 because 12 x 12 = <<12*12=144>>144\n#### 144"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tony",
+      "gallons",
+      "dollars"
+    ],
+    "notes": "The name 'Tony' and units 'gallons' and 'dollars' are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "paint_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "paint_cost_total",
+      "value": 144.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "paint_volume",
+      "value": 1.0,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "paint_volume_total",
+      "value": 12.0,
+      "unit": "gallon",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"paint_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"paint_cost_total\", \"value\": 144.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"paint_volume\", \"value\": 1.0, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"paint_volume_total\", \"value\": 12.0, \"unit\": \"gallon\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "paint_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "paint_cost_total",
+        "original_value": 144.0,
+        "original_unit": "dollar",
+        "converted_value": 81990.72,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "paint_volume",
+        "original_value": 1.0,
+        "original_unit": "gallon",
+        "converted_value": 3.79,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "paint_volume_total",
+        "original_value": 12.0,
+        "original_unit": "gallon",
+        "converted_value": 45.42,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tony is painting a room with four walls. The north and south walls are {wall_ns_length} x {wall_ns_width} feet. The east and west walls are {wall_ew_length} x {wall_ns_width} feet. A gallon of paint can cover {paint_coverage} square feet and cost ${paint_cost}. How much will it cost to paint the room?",
+    "templatized_answer": [
+      "The north and south walls are {wall_ns_area} square feet each because {wall_ns_length} x {wall_ns_width} = {wall_ns_area}",
+      "The east and west walls are {wall_ew_area} square feet because {wall_ew_length} x {wall_ns_width} = {wall_ew_area}",
+      "The south and north walls total {wall_ns_total_area} square feet because {wall_ns_area} x 2 = {wall_ns_total_area}",
+      "The East and west walls total {wall_ew_total_area} square feet because {wall_ew_area} x 2 = {wall_ew_total_area}",
+      "All the walls total {total_wall_area} square feet because {wall_ns_total_area} + {wall_ew_total_area} = {total_wall_area}",
+      "He will need {paint_volume_total} gallons of paint because {total_wall_area} / {paint_coverage} = {paint_volume_total}",
+      "It will cost ${paint_cost_total} because {paint_volume_total} x {paint_cost} = {paint_cost_total}",
+      "#### {paint_cost_total}"
+    ],
+    "factual_assignment": {
+      "wall_ns_length": 10,
+      "wall_ns_width": 8,
+      "wall_ew_length": 5,
+      "wall_ns_area": 80,
+      "wall_ew_area": 40,
+      "wall_ns_total_area": 160,
+      "wall_ew_total_area": 80,
+      "total_wall_area": 240,
+      "paint_coverage": 20,
+      "paint_cost": 12,
+      "paint_volume_total": 12,
+      "paint_cost_total": 144
+    }
+  },
+  "merged_assignment": {
+    "wall_ns_length": 10,
+    "wall_ns_width": 8,
+    "wall_ew_length": 5,
+    "wall_ns_area": 80,
+    "wall_ew_area": 40,
+    "wall_ns_total_area": 160,
+    "wall_ew_total_area": 80,
+    "total_wall_area": 240,
+    "paint_coverage": 20,
+    "paint_cost": 6832.56,
+    "paint_volume_total": 45.42,
+    "paint_cost_total": 81990.72
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    wall_ns_length = 10\n    wall_ns_width = 8\n    wall_ew_length = 5\n    paint_coverage = 20\n    paint_cost = 6832.56\n\n    wall_ns_area = wall_ns_length * wall_ns_width\n    wall_ew_area = wall_ew_length * wall_ns_width\n    wall_ns_total_area = wall_ns_area * 2\n    wall_ew_total_area = wall_ew_area * 2\n    total_wall_area = wall_ns_total_area + wall_ew_total_area\n    paint_volume_total = round(total_wall_area / paint_coverage, 2)\n    paint_cost_total = round(paint_volume_total * paint_cost, 2)\n\n    return {\n        \"wall_ns_length\": wall_ns_length,\n        \"wall_ns_width\": wall_ns_width,\n        \"wall_ew_length\": wall_ew_length,\n        \"wall_ns_area\": wall_ns_area,\n        \"wall_ew_area\": wall_ew_area,\n        \"wall_ns_total_area\": wall_ns_total_area,\n        \"wall_ew_total_area\": wall_ew_total_area,\n        \"total_wall_area\": total_wall_area,\n        \"paint_coverage\": paint_coverage,\n        \"paint_cost\": paint_cost,\n        \"paint_volume_total\": paint_volume_total,\n        \"paint_cost_total\": paint_cost_total\n    }\n\nprint(recompute())\n",
+    "results": {
+      "wall_ns_length": 10,
+      "wall_ns_width": 8,
+      "wall_ew_length": 5,
+      "wall_ns_area": 80,
+      "wall_ew_area": 40,
+      "wall_ns_total_area": 160,
+      "wall_ew_total_area": 80,
+      "total_wall_area": 240,
+      "paint_coverage": 20,
+      "paint_cost": 6832.56,
+      "paint_volume_total": 12.0,
+      "paint_cost_total": 81990.72
+    }
+  },
+  "final": {
+    "question": "Tony is painting a room with four walls. The north and south walls are 10 x 8 meters. The east and west walls are 5 x 8 meters. A liter of paint can cover 20 square meters and cost 6832.56 shilling. How much will it cost to paint the room?",
+    "answer_lines": [
+      "The north and south walls are 80 square meters each because 10 x 8 = 80",
+      "The east and west walls are 40 square meters because 5 x 8 = 40",
+      "The south and north walls total 160 square meters because 80 x 2 = 160",
+      "The East and west walls total 80 square meters because 40 x 2 = 80",
+      "All the walls total 240 square meters because 160 + 80 = 240",
+      "He will need 45.42 liters of paint because 240 / 20 = 12.0, and 12.0 gallons is 45.42 liters",
+      "It will cost 81990.72 shilling because 12.0 x 6832.56 = 81990.72",
+      "#### 81990.72"
+    ],
+    "final_scalar": 81990.72,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan is painting a room with four walls. The north and south walls are 10 x 8 meters. The east and west walls are 5 x 8 meters. A liter of paint can cover 20 square meters and cost 6832.56 shilling. How much will it cost to paint the room?",
+    "adapted_answer": [
+      "The north and south walls are 80 square meters each because 10 x 8 = 80",
+      "The east and west walls are 40 square meters because 5 x 8 = 40",
+      "The south and north walls total 160 square meters because 80 x 2 = 160",
+      "The East and west walls total 80 square meters because 40 x 2 = 80",
+      "All the walls total 240 square meters because 160 + 80 = 240",
+      "He will need 12.0 units of paint because 240 / 20 = 12.0",
+      "It will cost 81990.72 shilling because 12.0 x 6832.56 = 81990.72",
+      "#### 81990.72"
+    ],
+    "adaptation_notes": "Replaced 'Tony' with 'Aadan' and removed the reference to 'gallons'."
+  }
+}

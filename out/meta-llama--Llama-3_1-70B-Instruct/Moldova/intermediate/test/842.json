@@ -1,0 +1,104 @@
+{
+  "index": 842,
+  "split": "test",
+  "original": {
+    "question": "While on vacation in Bali, Thea bought a hat from a craftsman worth $70. If she gave the craftsman four $20 bills, how much change did she get?",
+    "answer": "If she gave the craftsman four $20 bills, the total amount of money she gave to the craftsman is 4*$20 = $<<4*20=80>>80.\nSince the hat was worth $70, the craftsman gave her change equal to $80-$70=$10\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bali",
+      "dollars"
+    ],
+    "notes": "Bali is a region in Indonesia and dollars is a unit of currency not native to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hat_cost",
+      "value": 70.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bills_given",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change_received",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "bill_denomination",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hat_cost\", \"value\": 70.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bills_given\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change_received\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"bill_denomination\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hat_cost",
+        "original_value": 70.0,
+        "original_unit": "dollar",
+        "converted_value": 1163.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "bills_given",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 1329.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "change_received",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 166.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "bill_denomination",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "While on vacation in Bali, Thea bought a hat from a craftsman worth ${hat_cost}. If she gave the craftsman four ${bill_denomination} bills, how much change did she get?",
+    "templatized_answer": [
+      "If she gave the craftsman four ${bill_denomination} bills, the total amount of money she gave to the craftsman is 4*${bill_denomination} = ${bills_given}.",
+      "Since the hat was worth ${hat_cost}, the craftsman gave her change equal to ${bills_given}-${hat_cost}=${change_received}"
+    ],
+    "factual_assignment": {
+      "hat_cost": 70.0,
+      "bills_given": 80.0,
+      "change_received": 10.0,
+      "bill_denomination": 20.0
+    }
+  },
+  "merged_assignment": {
+    "hat_cost": 1163.4,
+    "bills_given": 1329.6,
+    "change_received": 166.2,
+    "bill_denomination": 332.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    hat_cost = 1163.4\n    bills_given = 1329.6\n    change_received = 166.2\n    bill_denomination = 332.4\n\n    # Recompute values\n    bills_given_recomputed = 4 * bill_denomination\n    change_received_recomputed = bills_given_recomputed - hat_cost\n\n    # Round to 2 decimal places where appropriate\n    bills_given_recomputed = round(bills_given_recomputed, 2)\n    change_received_recomputed = round(change_received_recomputed, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"hat_cost\": hat_cost,\n        \"bills_given\": bills_given_recomputed,\n        \"change_received\": change_received_recomputed,\n        \"bill_denomination\": bill_denomination\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hat_cost": 1163.4,
+      "bills_given": 1329.6,
+      "change_received": 166.2,
+      "bill_denomination": 332.4
+    }
+  },
+  "final": null
+}

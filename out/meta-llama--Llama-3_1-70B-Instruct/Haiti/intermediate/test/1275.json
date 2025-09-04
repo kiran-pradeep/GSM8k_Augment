@@ -1,0 +1,142 @@
+{
+  "index": 1275,
+  "split": "test",
+  "original": {
+    "question": "John's car breaks down.  The car weighs 1200 pounds and he has luggage in it weighing 250 pounds.  He also has his two young children who weigh 75 pounds each in it.  If the force to move the car is 1% of the weight how much force does he need to push the car?",
+    "answer": "His two children weigh 75*2=<<75*2=150>>150 pounds\nSo the total weight of the car and everything is 1200+250+150=<<1200+250+150=1600>>1600 pounds\nSo he needs to generate 1600*.01=<<1600*.01=16>>16 pounds\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "pounds"
+    ],
+    "notes": "The name 'John' is a culturally specific name commonly found in Western cultures, and 'pounds' is a unit of weight commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "car_weight",
+      "value": 1200.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "luggage_weight",
+      "value": 250.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "child_weight",
+      "value": 75.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "total_weight",
+      "value": 1600.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "required_force",
+      "value": 16.0,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = value * conversions[unit][\"factor\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"car_weight\", \"value\": 1200.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"luggage_weight\", \"value\": 250.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"child_weight\", \"value\": 75.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"total_weight\", \"value\": 1600.0, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"required_force\", \"value\": 16.0, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "car_weight",
+        "original_value": 1200.0,
+        "original_unit": "pound",
+        "converted_value": 544.31,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "luggage_weight",
+        "original_value": 250.0,
+        "original_unit": "pound",
+        "converted_value": 113.4,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "child_weight",
+        "original_value": 75.0,
+        "original_unit": "pound",
+        "converted_value": 34.02,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "total_weight",
+        "original_value": 1600.0,
+        "original_unit": "pound",
+        "converted_value": 725.75,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "required_force",
+        "original_value": 16.0,
+        "original_unit": "pound",
+        "converted_value": 7.26,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John's car breaks down.  The car weighs {car_weight} pounds and he has luggage in it weighing {luggage_weight} pounds.  He also has his two young children who weigh {child_weight} pounds each in it.  If the force to move the car is 1% of the weight how much force does he need to push the car?",
+    "templatized_answer": [
+      "His two children weigh {child_weight}*2={child_weight*2} pounds",
+      "So the total weight of the car and everything is {car_weight}+{luggage_weight}+{child_weight*2}={car_weight+{luggage_weight}+{child_weight*2}} pounds",
+      "So he needs to generate {car_weight+{luggage_weight}+{child_weight*2}}*0.01={car_weight+{luggage_weight}+{child_weight*2}}*0.01 pounds",
+      "#### {car_weight+{luggage_weight}+{child_weight*2}}*0.01"
+    ],
+    "factual_assignment": {
+      "car_weight": 1200.0,
+      "luggage_weight": 250.0,
+      "child_weight": 75.0
+    }
+  },
+  "merged_assignment": {
+    "car_weight": 544.31,
+    "luggage_weight": 113.4,
+    "child_weight": 34.02
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    car_weight = 544.31\n    luggage_weight = 113.4\n    child_weight = 34.02\n\n    child_weight_total = child_weight * 2\n    total_weight = car_weight + luggage_weight + child_weight_total\n    force_needed = total_weight * 0.01\n\n    return {\n        \"car_weight\": car_weight,\n        \"luggage_weight\": luggage_weight,\n        \"child_weight\": child_weight,\n        \"child_weight*2\": child_weight_total,\n        \"car_weight+{luggage_weight}+{child_weight*2}\": total_weight,\n        \"{car_weight+{luggage_weight}+{child_weight*2}}*0.01\": round(force_needed, 2)\n    }\n",
+    "results": {
+      "car_weight": 544.31,
+      "luggage_weight": 113.4,
+      "child_weight": 34.02,
+      "child_weight*2": 68.04,
+      "car_weight+{luggage_weight}+{child_weight*2}": 725.7499999999999,
+      "{car_weight+{luggage_weight}+{child_weight*2}}*0.01": 7.26
+    }
+  },
+  "final": {
+    "question": "John's car breaks down.  The car weighs 544.31 kilograms and he has luggage in it weighing 113.4 kilograms.  He also has his two young children who weigh 34.02 kilograms each in it.  If the force to move the car is 1% of the weight how much force does he need to push the car?",
+    "answer_lines": [
+      "His two children weigh 34.02*2=68.04 kilograms",
+      "So the total weight of the car and everything is 544.31+113.4+68.04=725.75 kilograms",
+      "So he needs to generate 725.75*0.01=7.26 kilograms",
+      "#### 7.26"
+    ],
+    "final_scalar": 7.26,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jean's car breaks down.  The car weighs 544.31 kilograms and he has luggage in it weighing 113.4 kilograms.  He also has his two young children who weigh 34.02 kilograms each in it.  If the force to move the car is 1% of the weight how much force does he need to push the car?",
+    "adapted_answer": [
+      "His two children weigh 34.02*2=68.04 kilograms",
+      "So the total weight of the car and everything is 544.31+113.4+68.04=725.75 kilograms",
+      "So he needs to generate 725.75*0.01=7.26 kilograms",
+      "#### 7.26"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Jean', a common Haitian name."
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "index": 173,
+  "split": "test",
+  "original": {
+    "question": "Jessica is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of $300/month, her credit card's minimum is $200/month, and her mortgage's minimum is $500/month. If Jessica wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "answer": "First find the total minimum payment each month: $300/month + $200/month + $500/month = $<<300+200+500=1000>>1000/month\nThen multiply that number by 50% to find how much extra Jessica pays each month: $1000/month * .5 = $<<1000*.5=500>>500/month\nAdd that number to the total minimum payment to find how much Jessica pays per month: $1000/month + $500/month = $<<1000+500=1500>>1500/month\nNow multiply that number by the number of months in a year to find Jessica's annual payment: $1500/month * 12 months/year = $<<1500*12=18000>>18,000/year\n#### 18000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jessica",
+      "dollars"
+    ],
+    "notes": "The name 'Jessica' is of non-Indian origin and the unit 'dollars' is primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "student_loan_min",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "credit_card_min",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mortgage_min",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_min",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extra_payment",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_payment",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "annual_payment",
+      "value": 18000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"student_loan_min\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"credit_card_min\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"mortgage_min\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_min\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extra_payment\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_payment\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"annual_payment\", \"value\": 18000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "student_loan_min",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 26100.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "credit_card_min",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 17400.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "mortgage_min",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 43500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_min",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 87000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "extra_payment",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 43500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "monthly_payment",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 130500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "annual_payment",
+        "original_value": 18000.0,
+        "original_unit": "dollar",
+        "converted_value": 1566000.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jessica is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of ${student_loan_min}/month, her credit card's minimum is ${credit_card_min}/month, and her mortgage's minimum is ${mortgage_min}/month. If Jessica wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "templatized_answer": [
+      "First find the total minimum payment each month: ${student_loan_min}/month + ${credit_card_min}/month + ${mortgage_min}/month = ${total_min}/month",
+      "Then multiply that number by 50% to find how much extra Jessica pays each month: ${total_min}/month * 0.5 = ${extra_payment}/month",
+      "Add that number to the total minimum payment to find how much Jessica pays per month: ${total_min}/month + ${extra_payment}/month = ${monthly_payment}/month",
+      "Now multiply that number by the number of months in a year to find Jessica's annual payment: ${monthly_payment}/month * 12 months/year = ${annual_payment}/year"
+    ],
+    "factual_assignment": {
+      "student_loan_min": 300.0,
+      "credit_card_min": 200.0,
+      "mortgage_min": 500.0,
+      "total_min": 1000.0,
+      "extra_payment": 500.0,
+      "monthly_payment": 1500.0,
+      "annual_payment": 18000.0
+    }
+  },
+  "merged_assignment": {
+    "student_loan_min": 26100.0,
+    "credit_card_min": 17400.0,
+    "mortgage_min": 43500.0,
+    "total_min": 87000.0,
+    "extra_payment": 43500.0,
+    "monthly_payment": 130500.0,
+    "annual_payment": 1566000.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    student_loan_min = 26100.0\n    credit_card_min = 17400.0\n    mortgage_min = 43500.0\n\n    total_min = student_loan_min + credit_card_min + mortgage_min\n    extra_payment = total_min * 0.5\n    monthly_payment = total_min + extra_payment\n    annual_payment = monthly_payment * 12\n\n    return {\n        \"student_loan_min\": student_loan_min,\n        \"credit_card_min\": credit_card_min,\n        \"mortgage_min\": mortgage_min,\n        \"total_min\": round(total_min, 2),\n        \"extra_payment\": round(extra_payment, 2),\n        \"monthly_payment\": round(monthly_payment, 2),\n        \"annual_payment\": round(annual_payment, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "student_loan_min": 26100.0,
+      "credit_card_min": 17400.0,
+      "mortgage_min": 43500.0,
+      "total_min": 87000.0,
+      "extra_payment": 43500.0,
+      "monthly_payment": 130500.0,
+      "annual_payment": 1566000.0
+    }
+  },
+  "final": {
+    "question": "Jessica is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of 26100 rupees/month, her credit card's minimum is 17400 rupees/month, and her mortgage's minimum is 43500 rupees/month. If Jessica wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "answer_lines": [
+      "First find the total minimum payment each month: 26100 rupees/month + 17400 rupees/month + 43500 rupees/month = 87000 rupees/month",
+      "Then multiply that number by 50% to find how much extra Jessica pays each month: 87000 rupees/month * 0.5 = 43500 rupees/month",
+      "Add that number to the total minimum payment to find how much Jessica pays per month: 87000 rupees/month + 43500 rupees/month = 130500 rupees/month",
+      "Now multiply that number by the number of months in a year to find Jessica's annual payment: 130500 rupees/month * 12 months/year = 1566000 rupees/year",
+      "#### 1566000"
+    ],
+    "final_scalar": 1566000,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Riya is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of 26100 rupees/month, her credit card's minimum is 17400 rupees/month, and her mortgage's minimum is 43500 rupees/month. If Riya wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "adapted_answer": [
+      "First find the total minimum payment each month: 26100 rupees/month + 17400 rupees/month + 43500 rupees/month = 87000 rupees/month",
+      "Then multiply that number by 50% to find how much extra Riya pays each month: 87000 rupees/month * 0.5 = 43500 rupees/month",
+      "Add that number to the total minimum payment to find how much Riya pays per month: 87000 rupees/month + 43500 rupees/month = 130500 rupees/month",
+      "Now multiply that number by the number of months in a year to find Riya's annual payment: 130500 rupees/month * 12 months/year = 1566000 rupees/year",
+      "#### 1566000"
+    ],
+    "adaptation_notes": "Replaced 'Jessica' with 'Riya' to provide an Indian context."
+  }
+}

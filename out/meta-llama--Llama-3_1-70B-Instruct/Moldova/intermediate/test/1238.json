@@ -1,0 +1,142 @@
+{
+  "index": 1238,
+  "split": "test",
+  "original": {
+    "question": "Bud makes homemade macaroni and cheese once a week.  The pasta costs $1.00 a box, and he spends $3.00 on cheddar cheese and twice that amount for the gruyere cheese.  How much money does Bud spend on making macaroni and cheese in one year?",
+    "answer": "The gruyere cheese is twice the cost of the $3.00 cheddar cheese so it costs 2*3 = $<<2*3=6.00>>6.00\nThe pasta costs $1.00, the cheddar cheese costs $3.00 and the gruyere cheese is $6.00 for a total of 1+3+6 = $<<1+3+6=10.00>>10.00\nThere are 52 weeks in a year and he makes this dish once a week so it will cost him 52*10 = $<<52*10=520.00>>520.00 in one year\n#### 520"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "macaroni and cheese",
+      "dollars"
+    ],
+    "notes": "Macaroni and cheese is a dish commonly associated with Western cuisine, and dollars are a unit of currency primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pasta_cost",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cheddar_cheese_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gruyere_cheese_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_cost",
+      "value": 520.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pasta_cost\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cheddar_cheese_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gruyere_cheese_cost\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_cost\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_cost\", \"value\": 520.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pasta_cost",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "cheddar_cheese_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "gruyere_cheese_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 99.72,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "weekly_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 166.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "yearly_cost",
+        "original_value": 520.0,
+        "original_unit": "dollar",
+        "converted_value": 8642.4,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bud makes homemade macaroni and cheese once a week.  The pasta costs ${pasta_cost} a box, and he spends ${cheddar_cheese_cost} on cheddar cheese and twice that amount for the gruyere cheese.  How much money does Bud spend on making macaroni and cheese in one year?",
+    "templatized_answer": [
+      "The gruyere cheese is twice the cost of the ${cheddar_cheese_cost} cheddar cheese so it costs 2*{cheddar_cheese_cost} = ${2*cheddar_cheese_cost}",
+      "The pasta costs ${pasta_cost}, the cheddar cheese costs ${cheddar_cheese_cost} and the gruyere cheese is ${2*cheddar_cheese_cost} for a total of {pasta_cost}+{cheddar_cheese_cost}+{2*cheddar_cheese_cost} = ${pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost}",
+      "There are {number_of_weeks_in_a_year} weeks in a year and he makes this dish once a week so it will cost him {number_of_weeks_in_a_year}*{pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost} = ${number_of_weeks_in_a_year*(pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost)} in one year",
+      "#### {number_of_weeks_in_a_year*(pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost)}"
+    ],
+    "factual_assignment": {
+      "pasta_cost": 1.0,
+      "cheddar_cheese_cost": 3.0,
+      "number_of_weeks_in_a_year": 52
+    }
+  },
+  "merged_assignment": {
+    "pasta_cost": 16.62,
+    "cheddar_cheese_cost": 49.86,
+    "number_of_weeks_in_a_year": 52
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pasta_cost = 16.62\n    cheddar_cheese_cost = 49.86\n    number_of_weeks_in_a_year = 52\n\n    gruyere_cheese_cost = 2 * cheddar_cheese_cost\n    total_cost_per_week = pasta_cost + cheddar_cheese_cost + gruyere_cheese_cost\n    total_cost_per_year = number_of_weeks_in_a_year * total_cost_per_week\n\n    return {\n        \"pasta_cost\": round(pasta_cost, 2),\n        \"cheddar_cheese_cost\": round(cheddar_cheese_cost, 2),\n        \"2*cheddar_cheese_cost\": round(gruyere_cheese_cost, 2),\n        \"pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost\": round(total_cost_per_week, 2),\n        \"number_of_weeks_in_a_year\": number_of_weeks_in_a_year,\n        \"number_of_weeks_in_a_year*(pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost)\": round(total_cost_per_year, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "pasta_cost": 16.62,
+      "cheddar_cheese_cost": 49.86,
+      "2*cheddar_cheese_cost": 99.72,
+      "pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost": 166.2,
+      "number_of_weeks_in_a_year": 52,
+      "number_of_weeks_in_a_year*(pasta_cost+cheddar_cheese_cost+2*cheddar_cheese_cost)": 8642.4
+    }
+  },
+  "final": {
+    "question": "Bud makes homemade macaroni and cheese once a week.  The pasta costs 16.62 leu a box, and he spends 49.86 leu on cheddar cheese and twice that amount for the gruyere cheese.  How much money does Bud spend on making macaroni and cheese in one year?",
+    "answer_lines": [
+      "The gruyere cheese is twice the cost of the 49.86 leu cheddar cheese so it costs 2*49.86 = 99.72 leu",
+      "The pasta costs 16.62 leu, the cheddar cheese costs 49.86 leu and the gruyere cheese is 99.72 leu for a total of 16.62+49.86+99.72 = 166.2 leu",
+      "There are 52 weeks in a year and he makes this dish once a week so it will cost him 52*166.2 = 8642.4 leu in one year",
+      "#### 8642.4"
+    ],
+    "final_scalar": 8642.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Bud makes homemade mămăligă cu smântână once a week.  The mămăligă costs 16.62 leu a box, and he spends 49.86 leu on caș and twice that amount for the urdă cheese.  How much money does Bud spend on making mămăligă cu smântână in one year?",
+    "adapted_answer": [
+      "The urdă cheese is twice the cost of the 49.86 leu caș so it costs 2*49.86 = 99.72 leu",
+      "The mămăligă costs 16.62 leu, the caș costs 49.86 leu and the urdă cheese is 99.72 leu for a total of 16.62+49.86+99.72 = 166.2 leu",
+      "There are 52 weeks in a year and he makes this dish once a week so it will cost him 52*166.2 = 8642.4 leu in one year",
+      "#### 8642.4"
+    ],
+    "adaptation_notes": "Replaced 'macaroni and cheese' with 'mămăligă cu smântână', 'cheddar cheese' with 'caș', and 'gruyere cheese' with 'urdă cheese' to give the text a Moldovan context."
+  }
+}

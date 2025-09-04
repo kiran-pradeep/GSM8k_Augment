@@ -1,0 +1,124 @@
+{
+  "index": 160,
+  "split": "test",
+  "original": {
+    "question": "A tank of water has a depth of 17 feet on Monday. On Tuesday, the tank had 7 feet more water. On Wednesday, the depth of the water is two thirds of what it was on Tuesday. What is the tank’s water depth on Wednesday?",
+    "answer": "On Tuesday there was 17+7 = <<17+7=24>>24 feet of water in the tank.\n24/3 = 8. On Wednesday there was 2*8 = 16 feet of water in the tank.\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "feet"
+    ],
+    "notes": "The unit of measurement 'feet' is commonly used in the US and other countries, but not in Somalia, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monday_water_depth",
+      "value": 17.0,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "tuesday_water_depth_increase",
+      "value": 7.0,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "tuesday_water_depth",
+      "value": 24.0,
+      "unit": "feet",
+      "context": "answer"
+    },
+    {
+      "variable": "wednesday_water_depth",
+      "value": 16.0,
+      "unit": "feet",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"factor\": 569.38, \"unit\": \"shilling\"},\n        \"pounds\": {\"factor\": 0.453592, \"unit\": \"kilograms\"},\n        \"ounces\": {\"factor\": 28.3495, \"unit\": \"grams\"},\n        \"miles\": {\"factor\": 1.60934, \"unit\": \"kilometers\"},\n        \"feet\": {\"factor\": 0.3048, \"unit\": \"meters\"},\n        \"gallons\": {\"factor\": 3.78541, \"unit\": \"liters\"},\n        \"cups\": {\"factor\": 236.588, \"unit\": \"milliliters\"}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monday_water_depth\", \"value\": 17.0, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"tuesday_water_depth_increase\", \"value\": 7.0, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"tuesday_water_depth\", \"value\": 24.0, \"unit\": \"feet\", \"context\": \"answer\"},\n    {\"variable\": \"wednesday_water_depth\", \"value\": 16.0, \"unit\": \"feet\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monday_water_depth",
+        "original_value": 17.0,
+        "original_unit": "feet",
+        "converted_value": 5.18,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "tuesday_water_depth_increase",
+        "original_value": 7.0,
+        "original_unit": "feet",
+        "converted_value": 2.13,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "tuesday_water_depth",
+        "original_value": 24.0,
+        "original_unit": "feet",
+        "converted_value": 7.32,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "wednesday_water_depth",
+        "original_value": 16.0,
+        "original_unit": "feet",
+        "converted_value": 4.88,
+        "converted_unit": "meters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A tank of water has a depth of {monday_water_depth} feet on Monday. On Tuesday, the tank had {tuesday_water_depth_increase} feet more water. On Wednesday, the depth of the water is two thirds of what it was on Tuesday. What is the tank’s water depth on Wednesday?",
+    "templatized_answer": [
+      "On Tuesday there was {monday_water_depth}+{tuesday_water_depth_increase} = {monday_water_depth}+{tuesday_water_depth_increase} feet of water in the tank.",
+      "{monday_water_depth}+{tuesday_water_depth_increase}/3 = ({monday_water_depth}+{tuesday_water_depth_increase})/3. On Wednesday there was 2*(({monday_water_depth}+{tuesday_water_depth_increase})/3) = 2*(({monday_water_depth}+{tuesday_water_depth_increase})/3) feet of water in the tank.",
+      "#### {wednesday_water_depth}"
+    ],
+    "factual_assignment": {
+      "monday_water_depth": 17.0,
+      "tuesday_water_depth_increase": 7.0,
+      "wednesday_water_depth": 16.0
+    }
+  },
+  "merged_assignment": {
+    "monday_water_depth": 5.18,
+    "tuesday_water_depth_increase": 2.13,
+    "wednesday_water_depth": 4.88
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monday_water_depth = 5.18\n    tuesday_water_depth_increase = 2.13\n\n    tuesday_water_depth = monday_water_depth + tuesday_water_depth_increase\n    tuesday_water_depth_third = tuesday_water_depth / 3\n    wednesday_water_depth = 2 * tuesday_water_depth_third\n\n    return {\n        \"monday_water_depth\": round(monday_water_depth, 2),\n        \"tuesday_water_depth_increase\": round(tuesday_water_depth_increase, 2),\n        \"tuesday_water_depth\": round(tuesday_water_depth, 2),\n        \"tuesday_water_depth_third\": round(tuesday_water_depth_third, 2),\n        \"wednesday_water_depth\": round(wednesday_water_depth, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "monday_water_depth": 5.18,
+      "tuesday_water_depth_increase": 2.13,
+      "tuesday_water_depth": 7.31,
+      "tuesday_water_depth_third": 2.44,
+      "wednesday_water_depth": 4.87
+    }
+  },
+  "final": {
+    "question": "A tank of water has a depth of 5.18 meters on Monday. On Tuesday, the tank had 2.13 meters more water. On Wednesday, the depth of the water is two thirds of what it was on Tuesday. What is the tank’s water depth on Wednesday?",
+    "answer_lines": [
+      "On Tuesday there was 5.18+2.13 = 7.31 meters of water in the tank.",
+      "7.31/3 = 2.44. On Wednesday there was 2*2.44 = 4.87 meters of water in the tank.",
+      "#### 4.87"
+    ],
+    "final_scalar": 4.87,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A tank of water in Muqdisho has a depth of 5.18 meters on Monday. On Tuesday, the tank had 2.13 meters more water. On Wednesday, the depth of the water is two thirds of what it was on Tuesday. What is the tank’s water depth on Wednesday?",
+    "adapted_answer": [
+      "On Tuesday there was 5.18+2.13 = 7.31 meters of water in the tank.",
+      "7.31/3 = 2.44. On Wednesday there was 2*2.44 = 4.87 meters of water in the tank.",
+      "#### 4.87"
+    ],
+    "adaptation_notes": "Replaced 'a tank of water' with 'a tank of water in Muqdisho' to give it a Somali context."
+  }
+}

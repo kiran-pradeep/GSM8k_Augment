@@ -1,0 +1,163 @@
+{
+  "index": 567,
+  "split": "test",
+  "original": {
+    "question": "The tooth fairy left Sharon $5.00 in exchange for the first tooth Sharon lost.  Then, the tooth fairy gave Sharon $1.00 for each of the next three teeth Sharon lost.  And for each of the last 2 teeth Sharon lost, the tooth fairy gave Sharon half the amount of money per tooth as Sharon had received for each of the previous three teeth.  How much money did the tooth fairy leave Sharon, in dollars?",
+    "answer": "She got $1.00 on three teeth so she got 1*3 = $<<1*3=3.00>>3.00\nOn the next two, she got 1/2 the amount of $1.00 so she received 1*.5 = $<<1*.5=0.50>>0.50\nShe received $0.50 on 2 teeth so she received .50*2 = $<<.50*2=1.00>>1.00\nWhen you add her first tooth that was $5.00, $3.00 for the next 3 and $1.00 on the next 2 she made 5+3+1 = $<<5+3+1=9.00>>9.00\n#### 9"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_tooth",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "next_three_teeth",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "next_three_teeth_total",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "last_two_teeth_per_tooth",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "last_two_teeth_total",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_money",
+      "value": 9.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_tooth\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"next_three_teeth\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"next_three_teeth_total\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"last_two_teeth_per_tooth\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"last_two_teeth_total\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_money\", \"value\": 9.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_tooth",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "next_three_teeth",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "next_three_teeth_total",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "last_two_teeth_per_tooth",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 8.31,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "last_two_teeth_total",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 9.0,
+        "original_unit": "dollar",
+        "converted_value": 149.58,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The tooth fairy left Sharon ${first_tooth} in exchange for the first tooth Sharon lost.  Then, the tooth fairy gave Sharon ${next_three_teeth} for each of the next three teeth Sharon lost.  And for each of the last 2 teeth Sharon lost, the tooth fairy gave Sharon half the amount of money per tooth as Sharon had received for each of the previous three teeth.  How much money did the tooth fairy leave Sharon, in dollars?",
+    "templatized_answer": [
+      "She got ${next_three_teeth} on three teeth so she got {next_three_teeth}*3 = ${next_three_teeth_total}",
+      "On the next two, she got 1/2 the amount of ${next_three_teeth} so she received {next_three_teeth}*.5 = ${last_two_teeth_per_tooth}",
+      "She received ${last_two_teeth_per_tooth} on 2 teeth so she received {last_two_teeth_per_tooth}*2 = ${last_two_teeth_total}",
+      "When you add her first tooth that was ${first_tooth}, ${next_three_teeth_total} for the next 3 and ${last_two_teeth_total} on the next 2 she made {first_tooth}+{next_three_teeth_total}+{last_two_teeth_total} = ${total_money}",
+      "#### {total_money}"
+    ],
+    "factual_assignment": {
+      "first_tooth": 5.0,
+      "next_three_teeth": 1.0,
+      "next_three_teeth_total": 3.0,
+      "last_two_teeth_per_tooth": 0.5,
+      "last_two_teeth_total": 1.0,
+      "total_money": 9.0
+    }
+  },
+  "merged_assignment": {
+    "first_tooth": 83.1,
+    "next_three_teeth": 16.62,
+    "next_three_teeth_total": 49.86,
+    "last_two_teeth_per_tooth": 8.31,
+    "last_two_teeth_total": 16.62,
+    "total_money": 149.58
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_tooth = 83.1\n    next_three_teeth = 16.62\n    next_three_teeth_total = round(next_three_teeth * 3, 2)\n    last_two_teeth_per_tooth = round(next_three_teeth * 0.5, 2)\n    last_two_teeth_total = round(last_two_teeth_per_tooth * 2, 2)\n    total_money = round(first_tooth + next_three_teeth_total + last_two_teeth_total, 2)\n\n    return {\n        \"first_tooth\": first_tooth,\n        \"next_three_teeth\": next_three_teeth,\n        \"next_three_teeth_total\": next_three_teeth_total,\n        \"last_two_teeth_per_tooth\": last_two_teeth_per_tooth,\n        \"last_two_teeth_total\": last_two_teeth_total,\n        \"total_money\": total_money\n    }\n",
+    "results": {
+      "first_tooth": 83.1,
+      "next_three_teeth": 16.62,
+      "next_three_teeth_total": 49.86,
+      "last_two_teeth_per_tooth": 8.31,
+      "last_two_teeth_total": 16.62,
+      "total_money": 149.58
+    }
+  },
+  "final": {
+    "question": "The tooth fairy left Sharon 83.1 leu in exchange for the first tooth Sharon lost.  Then, the tooth fairy gave Sharon 16.62 leu for each of the next three teeth Sharon lost.  And for each of the last 2 teeth Sharon lost, the tooth fairy gave Sharon half the amount of money per tooth as Sharon had received for each of the previous three teeth.  How much money did the tooth fairy leave Sharon, in leu?",
+    "answer_lines": [
+      "She got 16.62 leu on three teeth so she got 16.62*3 = 49.86 leu",
+      "On the next two, she got 1/2 the amount of 16.62 leu so she received 16.62*.5 = 8.31 leu",
+      "She received 8.31 leu on 2 teeth so she received 8.31*2 = 16.62 leu",
+      "When you add her first tooth that was 83.1 leu, 49.86 leu for the next 3 and 16.62 leu on the next 2 she made 83.1+49.86+16.62 = 149.58 leu",
+      "#### 149.58"
+    ],
+    "final_scalar": 149.58,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The zâna din copaci (forest fairy) left Sharon 83.1 lei in exchange for the first tooth Sharon lost.  Then, the zâna din copaci gave Sharon 16.62 lei for each of the next three teeth Sharon lost.  And for each of the last 2 teeth Sharon lost, the zâna din copaci gave Sharon half the amount of money per tooth as Sharon had received for each of the previous three teeth.  How much money did the zâna din copaci leave Sharon, in lei?",
+    "adapted_answer": [
+      "She got 16.62 lei on three teeth so she got 16.62*3 = 49.86 lei",
+      "On the next two, she got 1/2 the amount of 16.62 lei so she received 16.62*.5 = 8.31 lei",
+      "She received 8.31 lei on 2 teeth so she received 8.31*2 = 16.62 lei",
+      "When you add her first tooth that was 83.1 lei, 49.86 lei for the next 3 and 16.62 lei on the next 2 she made 83.1+49.86+16.62 = 149.58 lei",
+      "#### 149.58"
+    ],
+    "adaptation_notes": "Replaced 'tooth fairy' with 'zâna din copaci' (forest fairy), and 'leu' with 'lei' to match Moldovan currency."
+  }
+}

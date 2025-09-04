@@ -1,0 +1,172 @@
+{
+  "index": 63,
+  "split": "test",
+  "original": {
+    "question": "Aleena subscribed to a streaming service that charges her $140 per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "answer": "A year has twelve months, so a half of the year is 12/2 = <<12/2=6>>6 months,\nFor the first six months, the streaming service charged her a total of 6*140 = $<<6*140=840>>840\nFor the next half of the year, the streaming service company charged her 10/100*140 = $<<10/100*140=14>>14 less\nShe paid $140-$14 = $<<140-14=126>>126 each month for the remaining half of the year,\nIn total, she paid 126*6 = $<<126*6=756>>756 for the other half of the year for the streaming service.\nThe total amount of money she paid at the end of the year is $840+$756 = $<<840+756=1596>>1596\n#### 1596"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Aleena",
+      "dollars"
+    ],
+    "notes": "The name 'Aleena' is not typically Haitian and the unit 'dollars' is used, which is not the official currency of Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_charge",
+      "value": 140.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_half_total",
+      "value": 840.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_half_monthly",
+      "value": 126.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_half_total",
+      "value": 756.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_yearly",
+      "value": 1596.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_charge\", \"value\": 140.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_half_total\", \"value\": 840.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_half_monthly\", \"value\": 126.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_half_total\", \"value\": 756.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_yearly\", \"value\": 1596.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_charge",
+        "original_value": 140.0,
+        "original_unit": "dollar",
+        "converted_value": 18313.4,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "first_half_total",
+        "original_value": 840.0,
+        "original_unit": "dollar",
+        "converted_value": 109880.4,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "discount",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 1831.34,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "second_half_monthly",
+        "original_value": 126.0,
+        "original_unit": "dollar",
+        "converted_value": 16482.06,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "second_half_total",
+        "original_value": 756.0,
+        "original_unit": "dollar",
+        "converted_value": 98892.36,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_yearly",
+        "original_value": 1596.0,
+        "original_unit": "dollar",
+        "converted_value": 208772.76,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aleena subscribed to a streaming service that charges her ${monthly_charge} per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "templatized_answer": [
+      "A year has twelve months, so a half of the year is 12/2 = {months_in_half_year} months,",
+      "For the first six months, the streaming service charged her a total of {months_in_half_year}*{monthly_charge} = ${first_half_total}",
+      "For the next half of the year, the streaming service company charged her 10/100*{monthly_charge} = ${discount} less",
+      "She paid ${monthly_charge}-${discount} = ${second_half_monthly} each month for the remaining half of the year,",
+      "In total, she paid {second_half_monthly}*{months_in_half_year} = ${second_half_total} for the other half of the year for the streaming service.",
+      "The total amount of money she paid at the end of the year is ${first_half_total}+${second_half_total} = ${total_yearly}"
+    ],
+    "factual_assignment": {
+      "monthly_charge": 140.0,
+      "first_half_total": 840.0,
+      "discount": 14.0,
+      "second_half_monthly": 126.0,
+      "second_half_total": 756.0,
+      "total_yearly": 1596.0,
+      "months_in_half_year": 6
+    }
+  },
+  "merged_assignment": {
+    "monthly_charge": 18313.4,
+    "first_half_total": 109880.4,
+    "discount": 1831.34,
+    "second_half_monthly": 16482.06,
+    "second_half_total": 98892.36,
+    "total_yearly": 208772.76,
+    "months_in_half_year": 6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_charge = 18313.4\n    months_in_half_year = 6\n\n    first_half_total = round(months_in_half_year * monthly_charge, 2)\n    discount = round(monthly_charge * 0.1, 2)\n    second_half_monthly = round(monthly_charge - discount, 2)\n    second_half_total = round(second_half_monthly * months_in_half_year, 2)\n    total_yearly = round(first_half_total + second_half_total, 2)\n\n    return {\n        \"monthly_charge\": monthly_charge,\n        \"months_in_half_year\": months_in_half_year,\n        \"first_half_total\": first_half_total,\n        \"discount\": discount,\n        \"second_half_monthly\": second_half_monthly,\n        \"second_half_total\": second_half_total,\n        \"total_yearly\": total_yearly\n    }\n\nprint(recompute())\n",
+    "results": {
+      "monthly_charge": 18313.4,
+      "months_in_half_year": 6,
+      "first_half_total": 109880.4,
+      "discount": 1831.34,
+      "second_half_monthly": 16482.06,
+      "second_half_total": 98892.36,
+      "total_yearly": 208772.76
+    }
+  },
+  "final": {
+    "question": "Aleena subscribed to a streaming service that charges her 18313.4 gourde per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "answer_lines": [
+      "A year has twelve months, so a half of the year is 12/2 = 6 months,",
+      "For the first six months, the streaming service charged her a total of 6*18313.4 = 109880.4 gourde",
+      "For the next half of the year, the streaming service company charged her 10/100*18313.4 = 1831.34 gourde less",
+      "She paid 18313.4-1831.34 = 16482.06 gourde each month for the remaining half of the year,",
+      "In total, she paid 16482.06*6 = 98892.36 gourde for the other half of the year for the streaming service.",
+      "The total amount of money she paid at the end of the year is 109880.4+98892.36 = 208772.76 gourde",
+      "#### 208772.76"
+    ],
+    "final_scalar": 208772.76,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine subscribed to a streaming service that charges her 18313.4 gourde per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "adapted_answer": [
+      "A year has twelve months, so a half of the year is 12/2 = 6 months,",
+      "For the first six months, the streaming service charged her a total of 6*18313.4 = 109880.4 gourde",
+      "For the next half of the year, the streaming service company charged her 10/100*18313.4 = 1831.34 gourde less",
+      "She paid 18313.4-1831.34 = 16482.06 gourde each month for the remaining half of the year,",
+      "In total, she paid 16482.06*6 = 98892.36 gourde for the other half of the year for the streaming service.",
+      "The total amount of money she paid at the end of the year is 109880.4+98892.36 = 208772.76 gourde",
+      "#### 208772.76"
+    ],
+    "adaptation_notes": "Replaced the name 'Aleena' with 'Nadine', a more common Haitian name."
+  }
+}

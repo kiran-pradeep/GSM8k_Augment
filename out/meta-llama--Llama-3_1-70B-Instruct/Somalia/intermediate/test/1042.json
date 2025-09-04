@@ -1,0 +1,167 @@
+{
+  "index": 1042,
+  "split": "test",
+  "original": {
+    "question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost $5. On the second race, he won $1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "answer": "On the second race he won $11 because 1+ 5 x 2 = <<1+5*2=11>>11\nOn the third race he lost $15 because 10 x 1.5 = <<10*1.5=15>>15\nHe lost a total of $20 on the first and third races because 15 + 5 = <<15+5=20>>20\n\nHe lost $9 that day because 11 - 20 = <<11-20=-9>>-9\nHe lost an average of $3 per race because 9 / 3 = <<9/3=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Johnny"
+    ],
+    "notes": "The text contains a non-Somali name and a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_race_loss",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_race_win",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "third_race_loss",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_loss",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_net_loss",
+      "value": 9,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "average_loss",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_race_loss\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_race_win\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"third_race_loss\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_loss\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_net_loss\", \"value\": 9, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"average_loss\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_race_loss",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "second_race_win",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 6263.18,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "third_race_loss",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 8540.7,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_loss",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 11387.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_net_loss",
+        "original_value": 9,
+        "original_unit": "dollar",
+        "converted_value": 5124.42,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "average_loss",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 1708.14,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost ${first_race_loss}. On the second race, he won $1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "templatized_answer": [
+      "On the second race he won ${second_race_win} because 1+ {first_race_loss} x 2 = {second_race_win}",
+      "On the third race he lost ${third_race_loss} because {second_race_win} x 1.5 = {third_race_loss}",
+      "He lost a total of ${total_loss} on the first and third races because {third_race_loss} + {first_race_loss} = {total_loss}",
+      "He lost ${total_net_loss} that day because {second_race_win} - {total_loss} = {total_net_loss}",
+      "He lost an average of ${average_loss} per race because {total_net_loss} / 3 = {average_loss}",
+      "#### {average_loss}"
+    ],
+    "factual_assignment": {
+      "first_race_loss": 5,
+      "second_race_win": 11,
+      "third_race_loss": 15,
+      "total_loss": 20,
+      "total_net_loss": 9,
+      "average_loss": 3
+    }
+  },
+  "merged_assignment": {
+    "first_race_loss": 2846.9,
+    "second_race_win": 6263.18,
+    "third_race_loss": 8540.7,
+    "total_loss": 11387.6,
+    "total_net_loss": 5124.42,
+    "average_loss": 1708.14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_race_loss = 2846.9\n    second_race_win = 1 + (first_race_loss * 2)\n    third_race_loss = second_race_win * 1.5\n    total_loss = third_race_loss + first_race_loss\n    total_net_loss = second_race_win - total_loss\n    average_loss = total_net_loss / 3\n\n    return {\n        \"first_race_loss\": round(first_race_loss, 2),\n        \"second_race_win\": round(second_race_win, 2),\n        \"third_race_loss\": round(third_race_loss, 2),\n        \"total_loss\": round(total_loss, 2),\n        \"total_net_loss\": round(total_net_loss, 2),\n        \"average_loss\": round(average_loss, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "first_race_loss": 2846.9,
+      "second_race_win": 5694.8,
+      "third_race_loss": 8542.2,
+      "total_loss": 11389.1,
+      "total_net_loss": -5694.3,
+      "average_loss": -1898.1
+    }
+  },
+  "final": {
+    "question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost 2846.9 shilling. On the second race, he won 1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "answer_lines": [
+      "On the second race he won 5694.8 shilling because 1+ 2846.9 x 2 = 5694.8",
+      "On the third race he lost 8542.2 shilling because 5694.8 x 1.5 = 8542.2",
+      "He lost a total of 11389.1 shilling on the first and third races because 8542.2 + 2846.9 = 11389.1",
+      "He lost -5694.3 shilling that day because 5694.8 - 11389.1 = -5694.3",
+      "He lost an average of -1898.1 shilling per race because -5694.3 / 3 = -1898.1",
+      "#### -1898.1"
+    ],
+    "final_scalar": -1898.1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cabdulle's aabo wuxuu u keeneeyay isaga oo daawasho karoori, aabihii wuxuu lacag ku dhaafay. Ciyaarta koowaad, wuxuu ku dhaafay 2846.9 shilling. Ciyaarta labaad, wuxuu ku guuleystay mid ka badan laba jeer lacagii uu hore ugu dhaafay. Ciyaarta saddexaad, wuxuu ku dhaafay 1.5 jeer lacagii uu guuleystay ciyaarta labaad. Inta ugu badnaa ma ugu dhaafay maalintaa?",
+    "adapted_answer": [
+      "Ciyaarta labaad wuxuu ku guuleystay 5694.8 shilling, sababta ah 1+ 2846.9 x 2 = 5694.8",
+      "Ciyaarta saddexaad wuxuu ku dhaafay 8542.2 shilling, sababta ah 5694.8 x 1.5 = 8542.2",
+      "Wuxuu ku dhaafay jumlo 11389.1 shilling ciyaarta koowaad iyo saddexaad, sababta ah 8542.2 + 2846.9 = 11389.1",
+      "Wuxuu ku dhaafay -5694.3 shilling maalintaa, sababta ah 5694.8 - 11389.1 = -5694.3",
+      "Wuxuu ku dhaafay -1898.1 shilling ciyaar kasta, sababta ah -5694.3 / 3 = -1898.1",
+      "#### -1898.1"
+    ],
+    "adaptation_notes": "Replaced 'Johnny' with 'Cabdulle' and 'dad' with 'aabbe' to give the text a Somali context."
+  }
+}

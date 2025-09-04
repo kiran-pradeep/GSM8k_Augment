@@ -1,0 +1,114 @@
+{
+  "index": 752,
+  "split": "test",
+  "original": {
+    "question": "Jenna has 4 roommates. Each month the electricity bill is $100. How much will each roommate pay per year for electricity, if they divide the share equally?",
+    "answer": "There are 12 months in a year, so the total electricity for the year will cost 100*12 =$<<100*12=1200>>1200.\nSince there are 5 roommates, each roommate will pay 1200/5=$<<1200/5=240>>240 in a year.\n#### 240"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jenna",
+      "dollars"
+    ],
+    "notes": "The name 'Jenna' and the unit 'dollars' are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_electricity_bill",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "yearly_electricity_bill",
+      "value": 1200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "roommate_yearly_electricity_bill",
+      "value": 240,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_electricity_bill\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"yearly_electricity_bill\", \"value\": 1200, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"roommate_yearly_electricity_bill\", \"value\": 240, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_electricity_bill",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 56938.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "yearly_electricity_bill",
+        "original_value": 1200,
+        "original_unit": "dollar",
+        "converted_value": 683256.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "roommate_yearly_electricity_bill",
+        "original_value": 240,
+        "original_unit": "dollar",
+        "converted_value": 136651.2,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jenna has {number_of_roommates} roommates. Each month the electricity bill is ${monthly_electricity_bill}. How much will each roommate pay per year for electricity, if they divide the share equally?",
+    "templatized_answer": [
+      "There are {number_of_months_in_a_year} months in a year, so the total electricity for the year will cost {monthly_electricity_bill}*{number_of_months_in_a_year} = ${monthly_electricity_bill}*{number_of_months_in_a_year}.",
+      "Since there are {total_number_of_roommates} roommates, each roommate will pay ({monthly_electricity_bill}*{number_of_months_in_a_year})/{total_number_of_roommates} = $(({monthly_electricity_bill}*{number_of_months_in_a_year})/{total_number_of_roommates}).",
+      "#### $(({monthly_electricity_bill}*{number_of_months_in_a_year})/{total_number_of_roommates})"
+    ],
+    "factual_assignment": {
+      "monthly_electricity_bill": 100,
+      "number_of_roommates": 4,
+      "number_of_months_in_a_year": 12,
+      "total_number_of_roommates": 5
+    }
+  },
+  "merged_assignment": {
+    "monthly_electricity_bill": 56938.0,
+    "number_of_roommates": 4,
+    "number_of_months_in_a_year": 12,
+    "total_number_of_roommates": 5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_electricity_bill = 56938.0\n    number_of_roommates = 4\n    number_of_months_in_a_year = 12\n    total_number_of_roommates = number_of_roommates + 1\n\n    total_electricity_bill_per_year = monthly_electricity_bill * number_of_months_in_a_year\n    electricity_bill_per_roommate_per_year = total_electricity_bill_per_year / total_number_of_roommates\n\n    return {\n        \"monthly_electricity_bill\": round(monthly_electricity_bill, 2),\n        \"number_of_months_in_a_year\": number_of_months_in_a_year,\n        \"total_number_of_roommates\": total_number_of_roommates,\n        \"number_of_roommates\": number_of_roommates,\n        \"monthly_electricity_bill*number_of_months_in_a_year\": round(total_electricity_bill_per_year, 2),\n        \"(monthly_electricity_bill*number_of_months_in_a_year)/total_number_of_roommates\": round(electricity_bill_per_roommate_per_year, 2)\n    }\n",
+    "results": {
+      "monthly_electricity_bill": 56938.0,
+      "number_of_months_in_a_year": 12,
+      "total_number_of_roommates": 5,
+      "number_of_roommates": 4,
+      "monthly_electricity_bill*number_of_months_in_a_year": 683256.0,
+      "(monthly_electricity_bill*number_of_months_in_a_year)/total_number_of_roommates": 136651.2
+    }
+  },
+  "final": {
+    "question": "Jenna has 4 roommates. Each month the electricity bill is 56938 shilling. How much will each roommate pay per year for electricity, if they divide the share equally?",
+    "answer_lines": [
+      "There are 12 months in a year, so the total electricity for the year will cost 56938*12 = 683256 shilling.",
+      "Since there are 5 roommates, each roommate will pay (56938*12)/5 = 136651.2 shilling.",
+      "#### 136651.2"
+    ],
+    "final_scalar": 136651.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Amina waxay leedahay 4 raqiis. Bil kasta ee kuleylka ah waa 56938 shilling. Inta badan ay raqiisyada kala qaybsanayaan, inta roommate mid walba ay bixi doonto sanadka kuleylka, haddii ay kala qaybsanayaan sawirka?",
+    "adapted_answer": [
+      "Waxaa jira 12 bilood sanadka, kuleylka sanadka waxay ku dhamaataa 56938*12 = 683256 shilling.",
+      "Waxaa jira 5 raqiis, roommate kasta ay bixi doonto (56938*12)/5 = 136651.2 shilling."
+    ],
+    "adaptation_notes": "Replaced 'Jenna' with 'Amina', a common Somali name."
+  }
+}

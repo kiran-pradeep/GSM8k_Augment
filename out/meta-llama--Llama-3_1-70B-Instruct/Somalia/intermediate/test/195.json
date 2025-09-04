@@ -1,0 +1,122 @@
+{
+  "index": 195,
+  "split": "test",
+  "original": {
+    "question": "A pen costs as much as a pencil and eraser combined. A pencil costs $1.20 and an eraser costs $0.30. How much will 8 pens cost?",
+    "answer": "A pen costs $1.20 + $0.30 = $<<1.20+0.30=1.50>>1.50.\nSo, 8 pens cost $1.50 x 8 = $<<8*1.5=12>>12.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusive to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pencil_cost",
+      "value": 1.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eraser_cost",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pen_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pencil_cost\", \"value\": 1.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"eraser_cost\", \"value\": 0.3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pen_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pencil_cost",
+        "original_value": 1.2,
+        "original_unit": "dollar",
+        "converted_value": 683.26,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "eraser_cost",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 170.81,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "pen_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 854.07,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A pen costs as much as a pencil and eraser combined. A pencil costs ${pencil_cost} and an eraser costs ${eraser_cost}. How much will 8 pens cost?",
+    "templatized_answer": [
+      "A pen costs ${pencil_cost} + ${eraser_cost} = ${pencil_cost} + ${eraser_cost}.",
+      "So, 8 pens cost (${pencil_cost} + ${eraser_cost}) x 8 = ${pencil_cost} + ${eraser_cost} x 8.",
+      "#### {pencil_cost} + {eraser_cost} x 8"
+    ],
+    "factual_assignment": {
+      "pencil_cost": 1.2,
+      "eraser_cost": 0.3
+    }
+  },
+  "merged_assignment": {
+    "pencil_cost": 683.26,
+    "eraser_cost": 170.81
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pencil_cost = 683.26\n    eraser_cost = 170.81\n\n    pen_cost = pencil_cost + eraser_cost\n    eight_pens_cost = pen_cost * 8\n\n    return {\n        \"{pencil_cost}\": pencil_cost,\n        \"{eraser_cost}\": eraser_cost,\n        \"{pencil_cost} + {eraser_cost}\": round(pen_cost, 2),\n        \"({pencil_cost} + {eraser_cost}) x 8\": round(eight_pens_cost, 2),\n        \"{pencil_cost} + {eraser_cost} x 8\": round(pencil_cost + eraser_cost * 8, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "{pencil_cost}": 683.26,
+      "{eraser_cost}": 170.81,
+      "{pencil_cost} + {eraser_cost}": 854.07,
+      "({pencil_cost} + {eraser_cost}) x 8": 6832.56,
+      "{pencil_cost} + {eraser_cost} x 8": 2049.74
+    }
+  },
+  "final": {
+    "question": "A pen costs as much as a pencil and eraser combined. A pencil costs 683.26 shilling and an eraser costs 170.81 shilling. How much will 8 pens cost?",
+    "answer_lines": [
+      "A pen costs 683.26 + 170.81 = 854.07.",
+      "So, 8 pens cost (683.26 + 170.81) x 8 = 6832.56.",
+      "#### 6832.56"
+    ],
+    "final_scalar": 6832.56,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A qalin costs as much as a qalami and madas combined. A qalami costs 683.26 shilling and a madas costs 170.81 shilling. How much will 8 qalins cost?",
+    "adapted_answer": [
+      "A qalin costs 683.26 + 170.81 = 854.07.",
+      "So, 8 qalins cost (683.26 + 170.81) x 8 = 6832.56.",
+      "#### 6832.56"
+    ],
+    "adaptation_notes": "Replaced 'pen' with 'qalin', 'pencil' with 'qalami', and 'eraser' with 'madas' to provide Somali equivalents."
+  }
+}

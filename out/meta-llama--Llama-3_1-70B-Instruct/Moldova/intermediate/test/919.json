@@ -1,0 +1,151 @@
+{
+  "index": 919,
+  "split": "test",
+  "original": {
+    "question": "To raise money for their class fund, each of the 30 students from one class sold lollipops that cost $0.8 per lollypop. On average, each student sold 10 lollipops. If they bought the lollipops for $0.5 each, how much money was the class able to raise from the profit of selling lollipops?",
+    "answer": "The class got $0.8 - $0.5 = $<<0.8-0.5=0.3>>0.3 profit from each lollipop.\nSo each student raised $0.3 x 10 = $<<0.3*10=3>>3 from selling 10 lollipops.\nTherefore, they were able to raise a total of $3 x 30 = $<<3*30=90>>90.\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "lollipops"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in the United States, and 'lollipops' which is a food item not specific to Moldovan cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lollypop_cost",
+      "value": 0.8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollypop_buy_price",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollypop_profit",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "student_earnings",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 90,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"lollypop_cost\", \"value\": 0.8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollypop_buy_price\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollypop_profit\", \"value\": 0.3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"student_earnings\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 90, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lollypop_cost",
+        "original_value": 0.8,
+        "original_unit": "dollar",
+        "converted_value": 13.3,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "lollypop_buy_price",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 8.31,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "lollypop_profit",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 4.99,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "student_earnings",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 1495.8,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To raise money for their class fund, each of the {number_of_students} students from one class sold lollipops that cost ${lollypop_cost} per lollypop. On average, each student sold {number_of_lollipops}. If they bought the lollipops for ${lollypop_buy_price} each, how much money was the class able to raise from the profit of selling lollipops?",
+    "templatized_answer": [
+      "The class got ${lollypop_cost} - ${lollypop_buy_price} = ${lollypop_profit} profit from each lollipop.",
+      "So each student raised ${lollypop_profit} x {number_of_lollipops} = ${student_earnings} from selling {number_of_lollipops} lollipops.",
+      "Therefore, they were able to raise a total of ${student_earnings} x {number_of_students} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "lollypop_cost": 0.8,
+      "lollypop_buy_price": 0.5,
+      "lollypop_profit": 0.3,
+      "student_earnings": 3,
+      "total_earnings": 90,
+      "number_of_students": 30,
+      "number_of_lollipops": 10
+    }
+  },
+  "merged_assignment": {
+    "lollypop_cost": 13.3,
+    "lollypop_buy_price": 8.31,
+    "lollypop_profit": 4.99,
+    "student_earnings": 49.86,
+    "total_earnings": 1495.8,
+    "number_of_students": 30,
+    "number_of_lollipops": 10
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"lollypop_cost\": 13.3,\n        \"lollypop_buy_price\": 8.31,\n        \"number_of_students\": 30,\n        \"number_of_lollipops\": 10\n    }\n\n    lollypop_profit = round(factual_assignment[\"lollypop_cost\"] - factual_assignment[\"lollypop_buy_price\"], 2)\n    student_earnings = round(lollypop_profit * factual_assignment[\"number_of_lollipops\"], 2)\n    total_earnings = round(student_earnings * factual_assignment[\"number_of_students\"], 2)\n\n    return {\n        \"lollypop_cost\": factual_assignment[\"lollypop_cost\"],\n        \"lollypop_buy_price\": factual_assignment[\"lollypop_buy_price\"],\n        \"lollypop_profit\": lollypop_profit,\n        \"student_earnings\": student_earnings,\n        \"total_earnings\": total_earnings,\n        \"number_of_students\": factual_assignment[\"number_of_students\"],\n        \"number_of_lollipops\": factual_assignment[\"number_of_lollipops\"]\n    }\n\nprint(recompute())\n",
+    "results": {
+      "lollypop_cost": 13.3,
+      "lollypop_buy_price": 8.31,
+      "lollypop_profit": 4.99,
+      "student_earnings": 49.9,
+      "total_earnings": 1497.0,
+      "number_of_students": 30,
+      "number_of_lollipops": 10
+    }
+  },
+  "final": {
+    "question": "To raise money for their class fund, each of the 30 students from one class sold lollipops that cost 13.3 leu per lollypop. On average, each student sold 10 lollipops. If they bought the lollipops for 8.31 leu each, how much money was the class able to raise from the profit of selling lollipops?",
+    "answer_lines": [
+      "The class got 13.3 leu - 8.31 leu = 4.99 leu profit from each lollipop.",
+      "So each student raised 4.99 leu x 10 = 49.9 leu from selling 10 lollipops.",
+      "Therefore, they were able to raise a total of 49.9 leu x 30 = 1497.0 leu.",
+      "#### 1497.0"
+    ],
+    "final_scalar": 1497.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To raise money for their class fund, each of the 30 students from one class sold gogosi that cost 13.3 leu per gogos. On average, each student sold 10 gogosi. If they bought the gogosi for 8.31 leu each, how much money was the class able to raise from the profit of selling gogosi?",
+    "adapted_answer": [
+      "The class got 13.3 leu - 8.31 leu = 4.99 leu profit from each gogos.",
+      "So each student raised 4.99 leu x 10 = 49.9 leu from selling 10 gogosi.",
+      "Therefore, they were able to raise a total of 49.9 leu x 30 = 1497.0 leu.",
+      "#### 1497.0"
+    ],
+    "adaptation_notes": "Replaced 'lollipops' with 'gogosi', a traditional Moldovan doughnut-like pastry."
+  }
+}

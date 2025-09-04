@@ -1,0 +1,111 @@
+{
+  "index": 164,
+  "split": "test",
+  "original": {
+    "question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing $35/hour in missed income. The accountant charges $90. How much more money will she have if she hires the accountant?",
+    "answer": "First find the total lost revenue if Jackie does her taxes herself: $35/hour * 3 hours = $<<35*3=105>>105\nThen subtract the accountant's charge to find how much money Janet saves: $105 - $90 = $<<105-90=15>>15\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not exclusively in Haiti, where the Haitian gourde is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_income",
+      "value": 35.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "accountant_charge",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "savings",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_income\", \"value\": 35.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"accountant_charge\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"savings\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_income",
+        "original_value": 35.0,
+        "original_unit": "dollar",
+        "converted_value": 4578.35,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "accountant_charge",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 11772.9,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "savings",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 1962.15,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do {hours_lost} fewer hours of freelance work, losing ${hourly_income}/hour in missed income. The accountant charges ${accountant_charge}. How much more money will she have if she hires the accountant?",
+    "templatized_answer": [
+      "First find the total lost revenue if Jackie does her taxes herself: ${hourly_income}/hour * {hours_lost} hours = ${hourly_income} * {hours_lost}",
+      "Then subtract the accountant's charge to find how much money Janet saves: ${hourly_income} * {hours_lost} - ${accountant_charge} = ${hourly_income} * {hours_lost} - ${accountant_charge}",
+      "#### ${hourly_income} * {hours_lost} - ${accountant_charge}"
+    ],
+    "factual_assignment": {
+      "hourly_income": 35.0,
+      "accountant_charge": 90.0,
+      "hours_lost": 3
+    }
+  },
+  "merged_assignment": {
+    "hourly_income": 4578.35,
+    "accountant_charge": 11772.9,
+    "hours_lost": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_income = 4578.35\n    accountant_charge = 11772.9\n    hours_lost = 3\n\n    lost_revenue = hourly_income * hours_lost\n    money_saved = lost_revenue - accountant_charge\n\n    return {\n        \"hourly_income\": hourly_income,\n        \"accountant_charge\": accountant_charge,\n        \"hours_lost\": hours_lost,\n        \"hourly_income * hours_lost\": round(lost_revenue, 2),\n        \"hourly_income * hours_lost - accountant_charge\": round(money_saved, 2)\n    }\n",
+    "results": {
+      "hourly_income": 4578.35,
+      "accountant_charge": 11772.9,
+      "hours_lost": 3,
+      "hourly_income * hours_lost": 13735.05,
+      "hourly_income * hours_lost - accountant_charge": 1962.15
+    }
+  },
+  "final": {
+    "question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing 4578.35 gourde/hour in missed income. The accountant charges 11772.9 gourde. How much more money will she have if she hires the accountant?",
+    "answer_lines": [
+      "First find the total lost revenue if Jackie does her taxes herself: 4578.35 gourde/hour * 3 hours = 4578.35 * 3",
+      "Then subtract the accountant's charge to find how much money Janet saves: 4578.35 * 3 - 11772.9 = 1962.15",
+      "#### 1962.15"
+    ],
+    "final_scalar": 1962.15,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing 4578.35 gourde/hour in missed income. The accountant charges 11772.9 gourde. How much more money will she have if she hires the accountant?",
+    "adapted_answer": [
+      "First find the total lost revenue if Nadine does her taxes herself: 4578.35 gourde/hour * 3 hours = 4578.35 * 3",
+      "Then subtract the accountant's charge to find how much money Nadine saves: 4578.35 * 3 - 11772.9 = 1962.15",
+      "#### 1962.15"
+    ],
+    "adaptation_notes": "Replaced 'Jackie' with 'Nadine', a more common Haitian name."
+  }
+}

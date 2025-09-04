@@ -1,0 +1,151 @@
+{
+  "index": 51,
+  "split": "test",
+  "original": {
+    "question": "Tom's ship can travel at 10 miles per hour.  He is sailing from 1 to 4 PM.  He then travels back at a rate of 6 mph.  How long does it take him to get back?",
+    "answer": "He was travelling at full speed for 4-1=<<4-1=3>>3 hours\nSo he went 3*10=<<3*10=30>>30 miles\nThat means it takes 30/6=<<30/6=5>>5 hours to get back\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tom",
+      "miles per hour"
+    ],
+    "notes": "Name 'Tom' and unit 'miles per hour' are culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "speed_1",
+      "value": 10,
+      "unit": "miles per hour",
+      "context": "question"
+    },
+    {
+      "variable": "speed_2",
+      "value": 6,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "distance",
+      "value": 30,
+      "unit": "miles",
+      "context": "answer"
+    },
+    {
+      "variable": "time_1",
+      "value": 3,
+      "unit": "hours",
+      "context": "answer"
+    },
+    {
+      "variable": "time_2",
+      "value": 5,
+      "unit": "hours",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"miles per hour\": {\"unit\": \"kilometers per hour\", \"factor\": 1.60934},\n        \"mph\": {\"unit\": \"kilometers per hour\", \"factor\": 1.60934},\n        \"miles\": {\"unit\": \"kilometers\", \"factor\": 1.60934},\n        \"pounds\": {\"unit\": \"kilograms\", \"factor\": 0.453592},\n        \"ounces\": {\"unit\": \"grams\", \"factor\": 28.3495},\n        \"feet\": {\"unit\": \"meters\", \"factor\": 0.3048},\n        \"gallons\": {\"unit\": \"liters\", \"factor\": 3.78541},\n        \"cups\": {\"unit\": \"milliliters\", \"factor\": 236.588},\n        \"dollars\": {\"unit\": \"gourde\", \"factor\": 130.81},\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"],\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"],\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"speed_1\", \"value\": 10, \"unit\": \"miles per hour\", \"context\": \"question\"},\n    {\"variable\": \"speed_2\", \"value\": 6, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"distance\", \"value\": 30, \"unit\": \"miles\", \"context\": \"answer\"},\n    {\"variable\": \"time_1\", \"value\": 3, \"unit\": \"hours\", \"context\": \"answer\"},\n    {\"variable\": \"time_2\", \"value\": 5, \"unit\": \"hours\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "speed_1",
+        "original_value": 10,
+        "original_unit": "miles per hour",
+        "converted_value": 16.09,
+        "converted_unit": "kilometers per hour"
+      },
+      {
+        "variable": "speed_2",
+        "original_value": 6,
+        "original_unit": "mph",
+        "converted_value": 9.66,
+        "converted_unit": "kilometers per hour"
+      },
+      {
+        "variable": "distance",
+        "original_value": 30,
+        "original_unit": "miles",
+        "converted_value": 48.28,
+        "converted_unit": "kilometers"
+      },
+      {
+        "variable": "time_1",
+        "original_value": 3,
+        "original_unit": "hours",
+        "converted_value": 3,
+        "converted_unit": "hours"
+      },
+      {
+        "variable": "time_2",
+        "original_value": 5,
+        "original_unit": "hours",
+        "converted_value": 5,
+        "converted_unit": "hours"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tom's ship can travel at {speed_1} miles per hour.  He is sailing from 1 to 4 PM.  He then travels back at a rate of {speed_2} mph.  How long does it take him to get back?",
+    "templatized_answer": [
+      "He was travelling at full speed for {end_time}-{start_time}={time_1} hours",
+      "So he went {time_1}*{speed_1}={distance} miles",
+      "That means it takes {distance}/{speed_2}={time_2} hours to get back",
+      "#### {time_2}"
+    ],
+    "factual_assignment": {
+      "speed_1": 10,
+      "speed_2": 6,
+      "distance": 30,
+      "time_1": 3,
+      "time_2": 5,
+      "end_time": 4,
+      "start_time": 1
+    }
+  },
+  "merged_assignment": {
+    "speed_1": 16.09,
+    "speed_2": 9.66,
+    "distance": 48.28,
+    "time_1": 3,
+    "time_2": 5,
+    "end_time": 4,
+    "start_time": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    speed_1 = 16.09\n    speed_2 = 9.66\n    end_time = 4\n    start_time = 1\n\n    # Recompute time_1\n    time_1 = end_time - start_time\n\n    # Recompute distance\n    distance = time_1 * speed_1\n\n    # Recompute time_2\n    time_2 = distance / speed_2\n\n    # Round to 2 decimal places where appropriate\n    time_1 = round(time_1, 2)\n    distance = round(distance, 2)\n    time_2 = round(time_2, 2)\n\n    return {\n        \"speed_1\": speed_1,\n        \"speed_2\": speed_2,\n        \"distance\": distance,\n        \"time_1\": time_1,\n        \"time_2\": time_2,\n        \"end_time\": end_time,\n        \"start_time\": start_time\n    }\n",
+    "results": {
+      "speed_1": 16.09,
+      "speed_2": 9.66,
+      "distance": 48.27,
+      "time_1": 3,
+      "time_2": 5.0,
+      "end_time": 4,
+      "start_time": 1
+    }
+  },
+  "final": {
+    "question": "Tom's ship can travel at 16.09 kilometers per hour.  He is sailing from 1 to 4 PM.  He then travels back at a rate of 9.66 kilometers per hour.  How long does it take him to get back?",
+    "answer_lines": [
+      "He was travelling at full speed for 4-1=3 hours",
+      "So he went 3*16.09=48.27 kilometers",
+      "That means it takes 48.27/9.66=5.0 hours to get back",
+      "#### 5.0"
+    ],
+    "final_scalar": 5.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ti Manno's boat can travel at 16.09 kilometers per hour.  He is sailing from 1 to 4 PM.  He then travels back at a rate of 9.66 kilometers per hour.  How long does it take him to get back?",
+    "adapted_answer": [
+      "He was travelling at full speed for 4-1=3 hours",
+      "So he went 3*16.09=48.27 kilometers",
+      "That means it takes 48.27/9.66=5.0 hours to get back",
+      "#### 5.0"
+    ],
+    "adaptation_notes": "Replaced 'Tom' with 'Ti Manno', a common Haitian name."
+  }
+}

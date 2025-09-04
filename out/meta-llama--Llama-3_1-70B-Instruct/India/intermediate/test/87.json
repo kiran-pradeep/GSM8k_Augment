@@ -1,0 +1,145 @@
+{
+  "index": 87,
+  "split": "test",
+  "original": {
+    "question": "A company pays each of its employees $600 in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Sylvie just clocked 5 years in the company last December, what's her annual salary after three more years of service?",
+    "answer": "In a month, Sylvie earns $600. which totals $600/month * 12 months/year = $7200 in a year.\nSylvie earnings will increase by 10/100 * $7200/year = $<<10/100*7200=720>>720/year after 5 years.\nIn three years, the total increase in her salary will be 3 years * $720/year = $<<3*720=2160>>2160\nAfter three years, Sylvie will be paid $7200 + $2160 = $<<7200+2160=9360>>9360\n#### 9360"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sylvie",
+      "dollars"
+    ],
+    "notes": "The name 'Sylvie' is of European origin and 'dollars' is a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_salary",
+      "value": 600,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "annual_salary",
+      "value": 7200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "annual_increase",
+      "value": 720,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_increase",
+      "value": 2160,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_annual_salary",
+      "value": 9360,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_salary\", \"value\": 600, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"annual_salary\", \"value\": 7200, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"annual_increase\", \"value\": 720, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_increase\", \"value\": 2160, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_annual_salary\", \"value\": 9360, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_salary",
+        "original_value": 600,
+        "original_unit": "dollar",
+        "converted_value": 52200,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "annual_salary",
+        "original_value": 7200,
+        "original_unit": "dollar",
+        "converted_value": 626400,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "annual_increase",
+        "original_value": 720,
+        "original_unit": "dollar",
+        "converted_value": 62640,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_increase",
+        "original_value": 2160,
+        "original_unit": "dollar",
+        "converted_value": 187920,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "final_annual_salary",
+        "original_value": 9360,
+        "original_unit": "dollar",
+        "converted_value": 814320,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company pays each of its employees ${monthly_salary} in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Sylvie just clocked 5 years in the company last December, what's her annual salary after three more years of service?",
+    "templatized_answer": [
+      "In a month, Sylvie earns ${monthly_salary}. which totals ${monthly_salary}/month * 12 months/year = ${monthly_salary}*12/year in a year.",
+      "Sylvie earnings will increase by 10/100 * ${monthly_salary}*12/year = ${annual_increase}/year after 5 years.",
+      "In three years, the total increase in her salary will be 3 years * ${annual_increase}/year = ${total_increase}",
+      "After three years, Sylvie will be paid ${monthly_salary}*12 + ${total_increase} = ${final_annual_salary}",
+      "#### ${final_annual_salary}"
+    ],
+    "factual_assignment": {
+      "monthly_salary": 600,
+      "annual_increase": 720,
+      "total_increase": 2160,
+      "final_annual_salary": 9360
+    }
+  },
+  "merged_assignment": {
+    "monthly_salary": 52200,
+    "annual_increase": 62640,
+    "total_increase": 187920,
+    "final_annual_salary": 814320
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_salary = 52200\n    annual_increase = monthly_salary * 12 * 0.1\n    total_increase = annual_increase * 3\n    final_annual_salary = monthly_salary * 12 + total_increase\n\n    return {\n        \"monthly_salary\": monthly_salary,\n        \"annual_increase\": round(annual_increase, 2),\n        \"total_increase\": round(total_increase, 2),\n        \"final_annual_salary\": round(final_annual_salary, 2)\n    }\n",
+    "results": {
+      "monthly_salary": 52200,
+      "annual_increase": 62640.0,
+      "total_increase": 187920.0,
+      "final_annual_salary": 814320.0
+    }
+  },
+  "final": {
+    "question": "A company pays each of its employees 52200 in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Sylvie just clocked 5 years in the company last December, what's her annual salary after three more years of service?",
+    "answer_lines": [
+      "In a month, Sylvie earns 52200. which totals 52200/month * 12 months/year = 626400 in a year.",
+      "Sylvie earnings will increase by 10/100 * 626400/year = 62640/year after 5 years.",
+      "In three years, the total increase in her salary will be 3 years * 62640/year = 187920",
+      "After three years, Sylvie will be paid 626400 + 187920 = 814320",
+      "#### 814320"
+    ],
+    "final_scalar": 814320,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company pays each of its employees 52200 in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Sunita just clocked 5 years in the company last December, what's her annual salary after three more years of service?",
+    "adapted_answer": [
+      "In a month, Sunita earns 52200. which totals 52200/month * 12 months/year = 626400 in a year.",
+      "Sunita earnings will increase by 10/100 * 626400/year = 62640/year after 5 years.",
+      "In three years, the total increase in her salary will be 3 years * 62640/year = 187920",
+      "After three years, Sunita will be paid 626400 + 187920 = 814320",
+      "#### 814320"
+    ],
+    "adaptation_notes": "Replaced 'Sylvie' with 'Sunita' to give the name an Indian context."
+  }
+}

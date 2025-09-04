@@ -1,0 +1,157 @@
+{
+  "index": 1083,
+  "split": "test",
+  "original": {
+    "question": "The bananas at the supermarket cost $0.80 each, or a bunch for $3.00.  Jenny buys 10 bunches that average 4 bananas per bunch. How much money, in dollars, did she save by buying the bananas in bunches instead of individually?",
+    "answer": "Ten bunches makes 10*3=$<<10*3=30>>30.\nThere are 10*4=<<10*4=40>>40 bananas.\n40 bananas would cost 40*0.80=$<<40*0.80=32>>32 individually.\nShe saved 32-30=<<32-30=2>>2 dollars\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "bananas"
+    ],
+    "notes": "The text contains 'dollars', a unit of currency commonly used in Western countries, and 'bananas', a food item not exclusive to Somali cuisine but also widely consumed globally."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "banana_bunch_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "banana_individual_cost",
+      "value": 0.8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_bunch_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_individual_cost",
+      "value": 32.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "savings",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"banana_bunch_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"banana_individual_cost\", \"value\": 0.8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_bunch_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_individual_cost\", \"value\": 32.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"savings\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "banana_bunch_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 1708.14,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "banana_individual_cost",
+        "original_value": 0.8,
+        "original_unit": "dollar",
+        "converted_value": 455.5,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_bunch_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 17081.4,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_individual_cost",
+        "original_value": 32.0,
+        "original_unit": "dollar",
+        "converted_value": 18220.16,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "savings",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 1138.76,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The bananas at the supermarket cost ${banana_individual_cost} each, or a bunch for ${banana_bunch_cost}.  Jenny buys {number_of_bunches} bunches that average {bananas_per_bunch} bananas per bunch. How much money, in dollars, did she save by buying the bananas in bunches instead of individually?",
+    "templatized_answer": [
+      "{number_of_bunches} bunches makes {number_of_bunches}*${banana_bunch_cost}=${total_bunch_cost}.",
+      "There are {number_of_bunches}*{bananas_per_bunch}={total_bananas} bananas.",
+      "{total_bananas} bananas would cost {total_bananas}*${banana_individual_cost}=${total_individual_cost} individually.",
+      "She saved ${total_individual_cost}-${total_bunch_cost}=${savings} dollars",
+      "#### ${savings}"
+    ],
+    "factual_assignment": {
+      "banana_bunch_cost": 3.0,
+      "banana_individual_cost": 0.8,
+      "number_of_bunches": 10,
+      "bananas_per_bunch": 4,
+      "total_bunch_cost": 30.0,
+      "total_individual_cost": 32.0,
+      "total_bananas": 40,
+      "savings": 2.0
+    }
+  },
+  "merged_assignment": {
+    "banana_bunch_cost": 1708.14,
+    "banana_individual_cost": 455.5,
+    "number_of_bunches": 10,
+    "bananas_per_bunch": 4,
+    "total_bunch_cost": 17081.4,
+    "total_individual_cost": 18220.16,
+    "total_bananas": 40,
+    "savings": 1138.76
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    banana_bunch_cost = 1708.14\n    banana_individual_cost = 455.5\n    number_of_bunches = 10\n    bananas_per_bunch = 4\n\n    total_bunch_cost = round(number_of_bunches * banana_bunch_cost, 2)\n    total_bananas = number_of_bunches * bananas_per_bunch\n    total_individual_cost = round(total_bananas * banana_individual_cost, 2)\n    savings = round(total_individual_cost - total_bunch_cost, 2)\n\n    return {\n        \"banana_individual_cost\": banana_individual_cost,\n        \"banana_bunch_cost\": banana_bunch_cost,\n        \"number_of_bunches\": number_of_bunches,\n        \"bananas_per_bunch\": bananas_per_bunch,\n        \"total_bunch_cost\": total_bunch_cost,\n        \"total_individual_cost\": total_individual_cost,\n        \"total_bananas\": total_bananas,\n        \"savings\": savings\n    }\n",
+    "results": {
+      "banana_individual_cost": 455.5,
+      "banana_bunch_cost": 1708.14,
+      "number_of_bunches": 10,
+      "bananas_per_bunch": 4,
+      "total_bunch_cost": 17081.4,
+      "total_individual_cost": 18220.0,
+      "total_bananas": 40,
+      "savings": 1138.6
+    }
+  },
+  "final": {
+    "question": "The bananas at the supermarket cost 455.5 shilling each, or a bunch for 1708.14 shilling.  Jenny buys 10 bunches that average 4 bananas per bunch. How much money, in shilling, did she save by buying the bananas in bunches instead of individually?",
+    "answer_lines": [
+      "Ten bunches makes 10*1708.14=17081.4 shilling.",
+      "There are 10*4=40 bananas.",
+      "40 bananas would cost 40*455.5=18220 shilling individually.",
+      "She saved 18220-17081.4=1138.6 shilling",
+      "#### 1138.6"
+    ],
+    "final_scalar": 1138.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The muus at the supermarket cost 455.5 shilling each, or a bunch for 1708.14 shilling.  Jenny buys 10 bunches that average 4 muus per bunch. How much money, in shilling, did she save by buying the muus in bunches instead of individually?",
+    "adapted_answer": [
+      "Ten bunches makes 10*1708.14=17081.4 shilling.",
+      "There are 10*4=40 muus.",
+      "40 muus would cost 40*455.5=18220 shilling individually.",
+      "She saved 18220-17081.4=1138.6 shilling",
+      "#### 1138.6"
+    ],
+    "adaptation_notes": "Replaced 'bananas' with 'muus', a type of Somali cornbread or flatbread, but since bananas are more likely to be sold in bunches, a more suitable replacement could be 'muyga' or 'muyga guduud' which is Somali for plantain, but for the sake of this task, 'muus' was used."
+  }
+}

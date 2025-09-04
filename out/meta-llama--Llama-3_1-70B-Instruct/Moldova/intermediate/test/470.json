@@ -1,0 +1,151 @@
+{
+  "index": 470,
+  "split": "test",
+  "original": {
+    "question": "Theo bought a pen for $2 and a piece of paper that cost $1 less than three times the price of the pen. She gave the cashier $10. What is the amount of change Theo received?",
+    "answer": "Three times the cost of pen is $2 x 3 = $<<2*3=6>>6.\nThe cost of paper is $6 - $1 = $<<6-1=5>>5.\nThe total cost for the pen and paper is $2 + $5 = $<<2+5=7>>7.\nTheo received $10 - $7 = $<<10-7=3>>3 change.\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The use of dollars as a unit of currency is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pen_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "paper_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cash_given",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change_received",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pen_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"paper_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cash_given\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change_received\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pen_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "paper_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 116.34,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "cash_given",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 166.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "change_received",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Theo bought a pen for ${pen_cost} and a piece of paper that cost ${{paper_price_difference}} less than three times the price of the pen. She gave the cashier ${cash_given}. What is the amount of change Theo received?",
+    "templatized_answer": [
+      "Three times the cost of pen is ${pen_cost} x 3 = ${pen_cost * 3}.",
+      "The cost of paper is ${pen_cost * 3} - ${paper_price_difference} = ${paper_cost}.",
+      "The total cost for the pen and paper is ${pen_cost} + ${paper_cost} = ${total_cost}.",
+      "Theo received ${cash_given} - ${total_cost} = ${change_received} change.",
+      "#### {change_received}"
+    ],
+    "factual_assignment": {
+      "pen_cost": 2,
+      "paper_price_difference": 1,
+      "paper_cost": 5,
+      "total_cost": 7,
+      "cash_given": 10,
+      "change_received": 3
+    }
+  },
+  "merged_assignment": {
+    "pen_cost": 33.24,
+    "paper_price_difference": 1,
+    "paper_cost": 83.1,
+    "total_cost": 116.34,
+    "cash_given": 166.2,
+    "change_received": 49.86
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pen_cost = 33.24\n    paper_price_difference = 1\n    cash_given = 166.2\n\n    pen_cost_times_3 = pen_cost * 3\n    paper_cost = pen_cost_times_3 - paper_price_difference\n    total_cost = pen_cost + paper_cost\n    change_received = cash_given - total_cost\n\n    return {\n        \"pen_cost\": round(pen_cost, 2),\n        \"paper_price_difference\": paper_price_difference,\n        \"pen_cost * 3\": round(pen_cost_times_3, 2),\n        \"paper_cost\": round(paper_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"cash_given\": round(cash_given, 2),\n        \"change_received\": round(change_received, 2)\n    }\n",
+    "results": {
+      "pen_cost": 33.24,
+      "paper_price_difference": 1,
+      "pen_cost * 3": 99.72,
+      "paper_cost": 98.72,
+      "total_cost": 131.96,
+      "cash_given": 166.2,
+      "change_received": 34.24
+    }
+  },
+  "final": {
+    "question": "Theo bought a pen for 33.24 leu and a piece of paper that cost 1 leu less than three times the price of the pen. She gave the cashier 166.2 leu. What is the amount of change Theo received?",
+    "answer_lines": [
+      "Three times the cost of pen is 33.24 x 3 = 99.72.",
+      "The cost of paper is 99.72 - 1 = 98.72.",
+      "The total cost for the pen and paper is 33.24 + 98.72 = 131.96.",
+      "Theo received 166.2 - 131.96 = 34.24 change.",
+      "#### 34.24"
+    ],
+    "final_scalar": 34.24,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Theo bought a pen for 33.24 lei and a piece of paper that cost 1 leu less than three times the price of the pen. She gave the cashier 166.2 lei. What is the amount of change Theo received?",
+    "adapted_answer": [
+      "Three times the cost of pen is 33.24 x 3 = 99.72.",
+      "The cost of paper is 99.72 - 1 = 98.72.",
+      "The total cost for the pen and paper is 33.24 + 98.72 = 131.96.",
+      "Theo received 166.2 - 131.96 = 34.24 change.",
+      "#### 34.24"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' to match the correct Moldovan currency name."
+  }
+}

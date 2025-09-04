@@ -1,0 +1,107 @@
+{
+  "index": 77,
+  "split": "test",
+  "original": {
+    "question": "If Raymond does half as much laundry as Sarah, and Sarah does 4 times as much laundry as David, calculate the difference in the amount of laundry Raymond and David do if Sarah does 400 pounds of laundry.",
+    "answer": "If Sarah does 400 pounds of laundry, and Raymond does half as much laundry as Sarah, Raymond does 1/2*400 = 200 pounds of laundry.\nSara also does 4 times as much laundry as David, meaning David does 400/4 = <<400/4=100>>100 pounds of laundry.\nThe difference in the amount of laundry Raymond and David do is 200-100 = <<200-100=100>>100 pounds\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Raymond",
+      "Sarah",
+      "David",
+      "pounds"
+    ],
+    "notes": "The names Raymond, Sarah, and David are Western names, and the unit 'pounds' is commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "sarah_laundry",
+      "value": 400.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "raymond_laundry",
+      "value": 200.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "david_laundry",
+      "value": 100.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "laundry_difference",
+      "value": 100.0,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'pound': {'unit': 'kilogram', 'factor': 0.453592},\n        'ounce': {'unit': 'gram', 'factor': 28.3495},\n        'mile': {'unit': 'kilometer', 'factor': 1.60934},\n        'foot': {'unit': 'meter', 'factor': 0.3048},\n        'gallon': {'unit': 'liter', 'factor': 3.78541},\n        'cup': {'unit': 'milliliter', 'factor': 236.588},\n        'dollar': {'unit': 'shilling', 'factor': 569.38}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_unit = conversions[unit]['unit']\n            converted_value = round(value * conversions[unit]['factor'], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"sarah_laundry\", \"value\": 400.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"raymond_laundry\", \"value\": 200.0, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"david_laundry\", \"value\": 100.0, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"laundry_difference\", \"value\": 100.0, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "sarah_laundry",
+        "original_value": 400.0,
+        "original_unit": "pound",
+        "converted_value": 181.44,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "raymond_laundry",
+        "original_value": 200.0,
+        "original_unit": "pound",
+        "converted_value": 90.72,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "david_laundry",
+        "original_value": 100.0,
+        "original_unit": "pound",
+        "converted_value": 45.36,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "laundry_difference",
+        "original_value": 100.0,
+        "original_unit": "pound",
+        "converted_value": 45.36,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "If Raymond does half as much laundry as Sarah, and Sarah does 4 times as much laundry as David, calculate the difference in the amount of laundry Raymond and David do if Sarah does {sarah_laundry} pounds of laundry.",
+    "templatized_answer": [
+      "If Sarah does {sarah_laundry} pounds of laundry, and Raymond does half as much laundry as Sarah, Raymond does 1/2*{sarah_laundry} = {raymond_laundry} pounds of laundry.",
+      "Sarah also does 4 times as much laundry as David, meaning David does {sarah_laundry}/4 = {david_laundry} pounds of laundry.",
+      "The difference in the amount of laundry Raymond and David do is {raymond_laundry}-{david_laundry} = {laundry_difference} pounds"
+    ],
+    "factual_assignment": {
+      "sarah_laundry": 400.0,
+      "raymond_laundry": 200.0,
+      "david_laundry": 100.0,
+      "laundry_difference": 100.0
+    }
+  },
+  "merged_assignment": {
+    "sarah_laundry": 181.44,
+    "raymond_laundry": 90.72,
+    "david_laundry": 45.36,
+    "laundry_difference": 45.36
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    sarah_laundry = 181.44\n    raymond_laundry = sarah_laundry / 2\n    david_laundry = sarah_laundry / 4\n    laundry_difference = raymond_laundry - david_laundry\n\n    return {\n        \"sarah_laundry\": round(sarah_laundry, 2),\n        \"raymond_laundry\": round(raymond_laundry, 2),\n        \"david_laundry\": round(david_laundry, 2),\n        \"laundry_difference\": round(laundry_difference, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "sarah_laundry": 181.44,
+      "raymond_laundry": 90.72,
+      "david_laundry": 45.36,
+      "laundry_difference": 45.36
+    }
+  },
+  "final": null
+}

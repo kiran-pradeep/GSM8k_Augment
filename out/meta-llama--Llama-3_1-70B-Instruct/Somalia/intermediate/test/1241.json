@@ -1,0 +1,157 @@
+{
+  "index": 1241,
+  "split": "test",
+  "original": {
+    "question": "Rose bought five dozens of eggs for $2.40 a dozen. She will sell it for $1 for 3 eggs. How much will be Rose's profit?",
+    "answer": "Rose bought five dozens of eggs for $2.40 x 5 = $<<2.40*5=12>>12.\nFive dozens of eggs is equal to 12 x 5 = <<12*5=60>>60 eggs.\nSo there are 60/3 = <<60/3=20>>20 sets of 3 eggs that Rose will sell.\nThus, the total earnings of Rose for selling the eggs are $1 x 20 = $<<20=20>>20.\nTherefore, her profit will be $20 - $12 = $<<20-12=8>>8.\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Rose"
+    ],
+    "notes": "The text contains a non-Somali unit of currency (dollars) and a Western name (Rose)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cost_per_dozen_eggs",
+      "value": 2.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost_eggs",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "selling_price_eggs",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings_eggs",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "rose_profit",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cost_per_dozen_eggs\", \"value\": 2.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost_eggs\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"selling_price_eggs\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings_eggs\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"rose_profit\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cost_per_dozen_eggs",
+        "original_value": 2.4,
+        "original_unit": "dollar",
+        "converted_value": 1366.51,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost_eggs",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "selling_price_eggs",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 569.38,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_earnings_eggs",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 11387.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "rose_profit",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 4555.04,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Rose bought five dozens of eggs for ${cost_per_dozen_eggs} a dozen. She will sell it for ${selling_price_eggs} for 3 eggs. How much will be Rose's profit?",
+    "templatized_answer": [
+      "Rose bought five dozens of eggs for ${cost_per_dozen_eggs} x 5 = ${total_cost_eggs}.",
+      "Five dozens of eggs is equal to 12 x 5 = {number_of_eggs} eggs.",
+      "So there are {number_of_eggs}/3 = {number_of_sets_eggs} sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are ${selling_price_eggs} x {number_of_sets_eggs} = ${total_earnings_eggs}.",
+      "Therefore, her profit will be ${total_earnings_eggs} - ${total_cost_eggs} = ${rose_profit}.",
+      "#### {rose_profit}"
+    ],
+    "factual_assignment": {
+      "cost_per_dozen_eggs": 2.4,
+      "total_cost_eggs": 12.0,
+      "selling_price_eggs": 1.0,
+      "total_earnings_eggs": 20.0,
+      "rose_profit": 8.0,
+      "number_of_eggs": 60,
+      "number_of_sets_eggs": 20
+    }
+  },
+  "merged_assignment": {
+    "cost_per_dozen_eggs": 1366.51,
+    "total_cost_eggs": 6832.56,
+    "selling_price_eggs": 569.38,
+    "total_earnings_eggs": 11387.6,
+    "rose_profit": 4555.04,
+    "number_of_eggs": 60,
+    "number_of_sets_eggs": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cost_per_dozen_eggs = 1366.51\n    selling_price_eggs = 569.38\n\n    total_cost_eggs = cost_per_dozen_eggs * 5\n    number_of_eggs = 12 * 5\n    number_of_sets_eggs = number_of_eggs / 3\n    total_earnings_eggs = selling_price_eggs * number_of_sets_eggs\n    rose_profit = total_earnings_eggs - total_cost_eggs\n\n    return {\n        \"cost_per_dozen_eggs\": round(cost_per_dozen_eggs, 2),\n        \"total_cost_eggs\": round(total_cost_eggs, 2),\n        \"selling_price_eggs\": round(selling_price_eggs, 2),\n        \"total_earnings_eggs\": round(total_earnings_eggs, 2),\n        \"rose_profit\": round(rose_profit, 2),\n        \"number_of_eggs\": int(number_of_eggs),\n        \"number_of_sets_eggs\": int(number_of_sets_eggs)\n    }\n",
+    "results": {
+      "cost_per_dozen_eggs": 1366.51,
+      "total_cost_eggs": 6832.55,
+      "selling_price_eggs": 569.38,
+      "total_earnings_eggs": 11387.6,
+      "rose_profit": 4555.05,
+      "number_of_eggs": 60,
+      "number_of_sets_eggs": 20
+    }
+  },
+  "final": {
+    "question": "Rose bought five dozens of eggs for 1366.51 shilling a dozen. She will sell it for 569.38 shilling for 3 eggs. How much will be Rose's profit?",
+    "answer_lines": [
+      "Rose bought five dozens of eggs for 1366.51 x 5 = 6832.55 shilling.",
+      "Five dozens of eggs is equal to 12 x 5 = 60 eggs.",
+      "So there are 60/3 = 20 sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are 569.38 x 20 = 11387.6 shilling.",
+      "Therefore, her profit will be 11387.6 - 6832.55 = 4555.05 shilling.",
+      "#### 4555.05"
+    ],
+    "final_scalar": 4555.05,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Amina bought five dozens of eggs for 1366.51 shilling a dozen. She will sell it for 569.38 shilling for 3 eggs. How much will be Amina's profit?",
+    "adapted_answer": [
+      "Amina bought five dozens of eggs for 1366.51 x 5 = 6832.55 shilling.",
+      "Five dozens of eggs is equal to 12 x 5 = 60 eggs.",
+      "So there are 60/3 = 20 sets of 3 eggs that Amina will sell.",
+      "Thus, the total earnings of Amina for selling the eggs are 569.38 x 20 = 11387.6 shilling.",
+      "Therefore, her profit will be 11387.6 - 6832.55 = 4555.05 shilling.",
+      "#### 4555.05"
+    ],
+    "adaptation_notes": "Replaced 'Rose' with 'Amina' to give the name a Somali context."
+  }
+}

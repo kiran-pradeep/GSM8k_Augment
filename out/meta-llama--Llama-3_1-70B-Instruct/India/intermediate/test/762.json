@@ -1,0 +1,160 @@
+{
+  "index": 762,
+  "split": "test",
+  "original": {
+    "question": "Jayden had $70 from selling pictures he took as a hobby.  His sister Ava gave him half of her $90 allowance to help him buy a new camera that costs $200. How much more does Jayden need to buy the camera?",
+    "answer": "Ava gave $90/2 = $<<90/2=45>>45 to Jayden.\nJayden now has $70 + $45 = $<<70+45=115>>115\nSo, Jayden needs $200 - $115 = $<<200-115=85>>85 to buy the new camera\n#### 85"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not the standard unit of currency in India (rupees)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "jayden_initial",
+      "value": 70,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ava_allowance",
+      "value": 90,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ava_gift",
+      "value": 45,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "jayden_total",
+      "value": 115,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "camera_cost",
+      "value": 200,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jayden_needed",
+      "value": 85,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"to\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"jayden_initial\", \"value\": 70, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ava_allowance\", \"value\": 90, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ava_gift\", \"value\": 45, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"jayden_total\", \"value\": 115, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"camera_cost\", \"value\": 200, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jayden_needed\", \"value\": 85, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "jayden_initial",
+        "original_value": 70,
+        "original_unit": "dollar",
+        "converted_value": 6090,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ava_allowance",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 7830,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ava_gift",
+        "original_value": 45,
+        "original_unit": "dollar",
+        "converted_value": 3915,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "jayden_total",
+        "original_value": 115,
+        "original_unit": "dollar",
+        "converted_value": 10005,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "camera_cost",
+        "original_value": 200,
+        "original_unit": "dollar",
+        "converted_value": 17400,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "jayden_needed",
+        "original_value": 85,
+        "original_unit": "dollar",
+        "converted_value": 7395,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jayden had ${jayden_initial} from selling pictures he took as a hobby.  His sister Ava gave him half of her ${ava_allowance} allowance to help him buy a new camera that costs ${camera_cost}. How much more does Jayden need to buy the camera?",
+    "templatized_answer": [
+      "Ava gave ${ava_allowance}/2 = ${ava_gift} to Jayden.",
+      "Jayden now has ${jayden_initial} + ${ava_gift} = ${jayden_total}",
+      "So, Jayden needs ${camera_cost} - ${jayden_total} = ${jayden_needed} to buy the new camera",
+      "#### {jayden_needed}"
+    ],
+    "factual_assignment": {
+      "jayden_initial": 70,
+      "ava_allowance": 90,
+      "ava_gift": 45,
+      "jayden_total": 115,
+      "camera_cost": 200,
+      "jayden_needed": 85
+    }
+  },
+  "merged_assignment": {
+    "jayden_initial": 6090,
+    "ava_allowance": 7830,
+    "ava_gift": 3915,
+    "jayden_total": 10005,
+    "camera_cost": 17400,
+    "jayden_needed": 7395
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    jayden_initial = 6090\n    ava_allowance = 7830\n    ava_gift = round(ava_allowance / 2, 2)\n    jayden_total = round(jayden_initial + ava_gift, 2)\n    camera_cost = 17400\n    jayden_needed = round(camera_cost - jayden_total, 2)\n\n    return {\n        \"jayden_initial\": jayden_initial,\n        \"ava_allowance\": ava_allowance,\n        \"ava_gift\": ava_gift,\n        \"jayden_total\": jayden_total,\n        \"camera_cost\": camera_cost,\n        \"jayden_needed\": jayden_needed\n    }\n\nprint(recompute())\n",
+    "results": {
+      "jayden_initial": 6090,
+      "ava_allowance": 7830,
+      "ava_gift": 3915.0,
+      "jayden_total": 10005.0,
+      "camera_cost": 17400,
+      "jayden_needed": 7395.0
+    }
+  },
+  "final": {
+    "question": "Jayden had 6090 from selling pictures he took as a hobby.  His sister Ava gave him half of her 7830 allowance to help him buy a new camera that costs 17400. How much more does Jayden need to buy the camera?",
+    "answer_lines": [
+      "Ava gave 7830/2 = 3915 to Jayden.",
+      "Jayden now has 6090 + 3915 = 10005",
+      "So, Jayden needs 17400 - 10005 = 7395 to buy the new camera",
+      "#### 7395"
+    ],
+    "final_scalar": 7395.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kabir had 6090 from selling pictures he took as a hobby.  His sister Aisha gave him half of her 7830 pocket money to help him buy a new camera that costs 17400. How much more does Kabir need to buy the camera?",
+    "adapted_answer": [
+      "Aisha gave 7830/2 = 3915 to Kabir.",
+      "Kabir now has 6090 + 3915 = 10005",
+      "So, Kabir needs 17400 - 10005 = 7395 to buy the new camera",
+      "#### 7395"
+    ],
+    "adaptation_notes": "Replaced names 'Jayden' and 'Ava' with Indian names 'Kabir' and 'Aisha', and 'allowance' with 'pocket money'."
+  }
+}

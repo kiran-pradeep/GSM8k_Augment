@@ -1,0 +1,208 @@
+{
+  "index": 777,
+  "split": "test",
+  "original": {
+    "question": "Mike decides he wants to replace his movie collection with digital versions.  He has 600 movies.  A third of the movies are in various series and he knows he can get those for only $6 of the cost of a normal movie by just buying the series together.  40% of the remaining movies are older movies which are $5.  How much does replacing the movies cost if a normal movie costs $10?",
+    "answer": "There are 600/3=<<600/3=200>>200 movies in series\nSo he pays 200*6=$<<200*6=1200>>1200\nHe has 600-200=<<600-200=400>>400 movies not in series\n400*.4=<<400*.4=160>>160 movies are old\nSo those cost 160*5=$<<160*5=800>>800\n400-160=<<400-160=240>>240 movies are neither old nor in series\nThey cost 240*10=$<<240*10=2400>>2400\nSo the total cost is 1200+800+2400=$<<1200+800+2400=4400>>4400\n#### 4400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "series_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "older_movie_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "normal_movie_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "series_total_cost",
+      "value": 1200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "older_movies_total_cost",
+      "value": 800,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "normal_movies_total_cost",
+      "value": 2400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 4400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"series_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"older_movie_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"normal_movie_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"series_total_cost\", \"value\": 1200, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"older_movies_total_cost\", \"value\": 800, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"normal_movies_total_cost\", \"value\": 2400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 4400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "series_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 1691.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "older_movie_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 1409.25,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "normal_movie_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "series_total_cost",
+        "original_value": 1200,
+        "original_unit": "dollar",
+        "converted_value": 338220.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "older_movies_total_cost",
+        "original_value": 800,
+        "original_unit": "dollar",
+        "converted_value": 225480.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "normal_movies_total_cost",
+        "original_value": 2400,
+        "original_unit": "dollar",
+        "converted_value": 676440.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 4400,
+        "original_unit": "dollar",
+        "converted_value": 1240140.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mike decides he wants to replace his movie collection with digital versions.  He has {total_movies} movies.  A third of the movies are in various series and he knows he can get those for only ${series_cost} of the cost of a normal movie by just buying the series together.  {older_movie_percentage}% of the remaining movies are older movies which are ${older_movie_cost}.  How much does replacing the movies cost if a normal movie costs ${normal_movie_cost}?",
+    "templatized_answer": [
+      "There are {total_movies}/3={series_movies} movies in series",
+      "So he pays {series_movies}*{series_cost}=${series_movies_cost}",
+      "He has {total_movies}-{series_movies}={non_series_movies} movies not in series",
+      "{non_series_movies}*{older_movie_percentage}={older_movies} movies are old",
+      "So those cost {older_movies}*{older_movie_cost}=${older_movies_cost}",
+      "{non_series_movies}-{older_movies}={normal_movies} movies are neither old nor in series",
+      "They cost {normal_movies}*{normal_movie_cost}=${normal_movies_cost}",
+      "So the total cost is {series_movies_cost}+{older_movies_cost}+{normal_movies_cost}=${total_cost}"
+    ],
+    "factual_assignment": {
+      "total_movies": 600,
+      "series_cost": 6,
+      "older_movie_cost": 5,
+      "normal_movie_cost": 10,
+      "series_movies": 200,
+      "series_movies_cost": 1200,
+      "non_series_movies": 400,
+      "older_movie_percentage": 0.4,
+      "older_movies": 160,
+      "older_movies_cost": 800,
+      "normal_movies": 240,
+      "normal_movies_cost": 2400,
+      "total_cost": 4400
+    }
+  },
+  "merged_assignment": {
+    "total_movies": 600,
+    "series_cost": 1691.1,
+    "older_movie_cost": 1409.25,
+    "normal_movie_cost": 2818.5,
+    "series_movies": 200,
+    "series_movies_cost": 1200,
+    "non_series_movies": 400,
+    "older_movie_percentage": 0.4,
+    "older_movies": 160,
+    "older_movies_cost": 800,
+    "normal_movies": 240,
+    "normal_movies_cost": 2400,
+    "total_cost": 1240140.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_movies = 600\n    series_cost = 1691.1\n    older_movie_cost = 1409.25\n    normal_movie_cost = 2818.5\n\n    series_movies = total_movies // 3\n    series_movies_cost = series_movies * (series_cost / 100) * normal_movie_cost\n    non_series_movies = total_movies - series_movies\n    older_movie_percentage = 0.4\n    older_movies = int(non_series_movies * older_movie_percentage)\n    older_movies_cost = older_movies * older_movie_cost\n    normal_movies = non_series_movies - older_movies\n    normal_movies_cost = normal_movies * normal_movie_cost\n    total_cost = series_movies_cost + older_movies_cost + normal_movies_cost\n\n    return {\n        \"total_movies\": total_movies,\n        \"series_cost\": series_cost,\n        \"older_movie_cost\": older_movie_cost,\n        \"normal_movie_cost\": normal_movie_cost,\n        \"series_movies\": series_movies,\n        \"series_movies_cost\": round(series_movies_cost, 2),\n        \"non_series_movies\": non_series_movies,\n        \"older_movie_percentage\": older_movie_percentage * 100,\n        \"older_movies\": older_movies,\n        \"older_movies_cost\": round(older_movies_cost, 2),\n        \"normal_movies\": normal_movies,\n        \"normal_movies_cost\": round(normal_movies_cost, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "total_movies": 600,
+      "series_cost": 1691.1,
+      "older_movie_cost": 1409.25,
+      "normal_movie_cost": 2818.5,
+      "series_movies": 200,
+      "series_movies_cost": 9532730.7,
+      "non_series_movies": 400,
+      "older_movie_percentage": 40.0,
+      "older_movies": 160,
+      "older_movies_cost": 225480.0,
+      "normal_movies": 240,
+      "normal_movies_cost": 676440.0,
+      "total_cost": 10434650.7
+    }
+  },
+  "final": {
+    "question": "Mike decides he wants to replace his movie collection with digital versions.  He has 600 movies.  A third of the movies are in various series and he knows he can get those for only 1691.1 rupee of the cost of a normal movie by just buying the series together.  40% of the remaining movies are older movies which are 1409.25 rupee.  How much does replacing the movies cost if a normal movie costs 2818.5 rupee?",
+    "answer_lines": [
+      "There are 600/3=200 movies in series",
+      "So he pays 200*1691.1=9532730.7 rupee",
+      "He has 600-200=400 movies not in series",
+      "400*40=160 movies are old",
+      "So those cost 160*1409.25=225480 rupee",
+      "400-160=240 movies are neither old nor in series",
+      "They cost 240*2818.5=676440 rupee",
+      "So the total cost is 9532730.7+225480+676440=10434650.7 rupee",
+      "#### 10434650.7"
+    ],
+    "final_scalar": 10434650.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran decides he wants to replace his movie collection with digital versions.  He has 600 movies.  A third of the movies are in various series and he knows he can get those for only 1691.1 rupee of the cost of a normal movie by just buying the series together.  40% of the remaining movies are older movies which are 1409.25 rupee.  How much does replacing the movies cost if a normal movie costs 2818.5 rupee?",
+    "adapted_answer": [
+      "There are 600/3=200 movies in series",
+      "So he pays 200*1691.1=3382200 rupee is incorrect, the correct answer is 9532730.7 rupee",
+      "He has 600-200=400 movies not in series",
+      "400*40=160 movies are old",
+      "So those cost 160*1409.25=225480 rupee",
+      "400-160=240 movies are neither old nor in series",
+      "They cost 240*2818.5=676440 rupee",
+      "So the total cost is 9532730.7+225480+676440=10434650.7 rupee",
+      "#### 10434650.7"
+    ],
+    "adaptation_notes": "Replaced 'Mike' with 'Kamran' to give the question a Pakistani context."
+  }
+}

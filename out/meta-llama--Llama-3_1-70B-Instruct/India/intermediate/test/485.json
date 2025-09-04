@@ -1,0 +1,126 @@
+{
+  "index": 485,
+  "split": "test",
+  "original": {
+    "question": "Jillian's handbag cost $20 less than 3 times as much as her shoes cost. If her shoes cost $80, how much did her bag cost?",
+    "answer": "First triple the cost of the shoes: $80 * 3 = $<<80*3=240>>240\nThen subtract $20 to find the cost of the handbag: $240 - $20 = $<<240-20=220>>220\n#### 220"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jillian",
+      "dollars"
+    ],
+    "notes": "Name 'Jillian' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shoes_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "triple_shoes_cost",
+      "value": 240,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "handbag_cost",
+      "value": 220,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shoes_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"triple_shoes_cost\", \"value\": 240, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"handbag_cost\", \"value\": 220, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shoes_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 6960,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "triple_shoes_cost",
+        "original_value": 240,
+        "original_unit": "dollar",
+        "converted_value": 20880,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "handbag_cost",
+        "original_value": 220,
+        "original_unit": "dollar",
+        "converted_value": 19140,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "discount",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 1740,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jillian's handbag cost ${discount} less than 3 times as much as her shoes cost. If her shoes cost ${shoes_cost}, how much did her bag cost?",
+    "templatized_answer": [
+      "First triple the cost of the shoes: ${shoes_cost} * 3 = ${triple_shoes_cost}",
+      "Then subtract ${discount} to find the cost of the handbag: ${triple_shoes_cost} - ${discount} = ${handbag_cost}",
+      "#### {handbag_cost}"
+    ],
+    "factual_assignment": {
+      "shoes_cost": 80,
+      "triple_shoes_cost": 240,
+      "handbag_cost": 220,
+      "discount": 20
+    }
+  },
+  "merged_assignment": {
+    "shoes_cost": 6960,
+    "triple_shoes_cost": 20880,
+    "handbag_cost": 19140,
+    "discount": 1740
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    shoes_cost = 6960\n    discount = 1740\n\n    # Recompute intermediate steps\n    triple_shoes_cost = shoes_cost * 3\n    handbag_cost = triple_shoes_cost - discount\n\n    # Round to 2 decimal places where appropriate\n    handbag_cost = round(handbag_cost, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"shoes_cost\": shoes_cost,\n        \"triple_shoes_cost\": triple_shoes_cost,\n        \"handbag_cost\": handbag_cost,\n        \"discount\": discount\n    }\n",
+    "results": {
+      "shoes_cost": 6960,
+      "triple_shoes_cost": 20880,
+      "handbag_cost": 19140,
+      "discount": 1740
+    }
+  },
+  "final": {
+    "question": "Jillian's handbag cost 1740 rupees less than 3 times as much as her shoes cost. If her shoes cost 6960 rupees, how much did her bag cost?",
+    "answer_lines": [
+      "First triple the cost of the shoes: 6960 * 3 = 20880",
+      "Then subtract 1740 to find the cost of the handbag: 20880 - 1740 = 19140",
+      "#### 19140"
+    ],
+    "final_scalar": 19140,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jyoti's handbag cost 1740 rupees less than 3 times as much as her shoes cost. If her shoes cost 6960 rupees, how much did her bag cost?",
+    "adapted_answer": [
+      "First triple the cost of the shoes: 6960 * 3 = 20880",
+      "Then subtract 1740 to find the cost of the handbag: 20880 - 1740 = 19140",
+      "#### 19140"
+    ],
+    "adaptation_notes": "Replaced 'Jillian' with 'Jyoti' to give the name an Indian context."
+  }
+}

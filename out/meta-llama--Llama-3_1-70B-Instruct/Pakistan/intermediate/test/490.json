@@ -1,0 +1,127 @@
+{
+  "index": 490,
+  "split": "test",
+  "original": {
+    "question": "An 8-year old child wants to buy a toy car which costs $12. He already has $4 savings. How many days will it take him to save the remaining amount of money if he promises to save $2 daily from his allowance?",
+    "answer": "The boy still needs $12 - $4 = $<<12-4=8>>8.\nIf he saves $2 per day then it will take him $8 / $2/day = <<8/2=4>>4 days to save the remaining amount.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not the standard unit of currency in Pakistan (Pakistani rupee)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "toy_car_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "child_savings",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_savings",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_amount",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"toy_car_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"child_savings\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_savings\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_amount\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "toy_car_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 3382.2,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "child_savings",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "daily_savings",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 563.7,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_amount",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 2254.8,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An 8-year old child wants to buy a toy car which costs ${toy_car_cost}. He already has ${child_savings} savings. How many days will it take him to save the remaining amount of money if he promises to save ${daily_savings} daily from his allowance?",
+    "templatized_answer": [
+      "The boy still needs ${toy_car_cost} - ${child_savings} = ${remaining_amount}.",
+      "If he saves ${daily_savings} per day then it will take him ${remaining_amount} / ${daily_savings}/day = {days_to_save} days to save the remaining amount.",
+      "#### {days_to_save}"
+    ],
+    "factual_assignment": {
+      "toy_car_cost": 12.0,
+      "child_savings": 4.0,
+      "daily_savings": 2.0,
+      "remaining_amount": 8.0,
+      "days_to_save": 4
+    }
+  },
+  "merged_assignment": {
+    "toy_car_cost": 3382.2,
+    "child_savings": 1127.4,
+    "daily_savings": 563.7,
+    "remaining_amount": 2254.8,
+    "days_to_save": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    toy_car_cost = 3382.2\n    child_savings = 1127.4\n    daily_savings = 563.7\n\n    remaining_amount = toy_car_cost - child_savings\n    days_to_save = remaining_amount / daily_savings\n\n    return {\n        \"toy_car_cost\": round(toy_car_cost, 2),\n        \"child_savings\": round(child_savings, 2),\n        \"daily_savings\": round(daily_savings, 2),\n        \"remaining_amount\": round(remaining_amount, 2),\n        \"days_to_save\": round(days_to_save)\n    }\n",
+    "results": {
+      "toy_car_cost": 3382.2,
+      "child_savings": 1127.4,
+      "daily_savings": 563.7,
+      "remaining_amount": 2254.8,
+      "days_to_save": 4
+    }
+  },
+  "final": {
+    "question": "An 8-year old child wants to buy a toy car which costs 3382.2. He already has 1127.4 savings. How many days will it take him to save the remaining amount of money if he promises to save 563.7 daily from his allowance?",
+    "answer_lines": [
+      "The boy still needs 3382.2 - 1127.4 = 2254.8.",
+      "If he saves 563.7 per day then it will take him 2254.8 / 563.7/day = 4 days to save the remaining amount.",
+      "#### 4"
+    ],
+    "final_scalar": 4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "An 8-year old child wants to buy a toy car which costs 3382.2 rupees. He already has 1127.4 rupees savings. How many days will it take him to save the remaining amount of money if he promises to save 563.7 rupees daily from his allowance?",
+    "adapted_answer": [
+      "The boy still needs 3382.2 - 1127.4 = 2254.8 rupees.",
+      "If he saves 563.7 rupees per day then it will take him 2254.8 / 563.7/day = 4 days to save the remaining amount."
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to give the question a Pakistani context."
+  }
+}

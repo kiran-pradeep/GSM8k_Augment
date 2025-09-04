@@ -1,0 +1,128 @@
+{
+  "index": 1182,
+  "split": "test",
+  "original": {
+    "question": "Bob spends $27000 distributed between 3 schools to buy books.  He can buy 100 books for $500.  How many books can he buy per school?",
+    "answer": "He spends 27000/3=$<<27000/3=9000>>9000\nEach book cost 500/100=$<<500/100=5>>5\nSo he can buy 9000/5=<<9000/5=1800>>1800 books per school\n#### 1800"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_budget",
+      "value": 27000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "books_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_price",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "school_budget",
+      "value": 9000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_budget\", \"value\": 27000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"books_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_price\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"school_budget\", \"value\": 9000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_budget",
+        "original_value": 27000.0,
+        "original_unit": "dollar",
+        "converted_value": 3531870.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "books_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 65405.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "book_price",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 654.05,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "school_budget",
+        "original_value": 9000.0,
+        "original_unit": "dollar",
+        "converted_value": 1177290.0,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob spends ${total_budget} distributed between 3 schools to buy books.  He can buy 100 books for ${books_cost}.  How many books can he buy per school?",
+    "templatized_answer": [
+      "He spends {total_budget}/3=${school_budget}",
+      "Each book cost {books_cost}/100=${book_price}",
+      "So he can buy {school_budget}/{book_price}={school_budget}/{book_price} books per school",
+      "#### {school_budget}/{book_price}"
+    ],
+    "factual_assignment": {
+      "total_budget": 27000.0,
+      "books_cost": 500.0,
+      "book_price": 5.0,
+      "school_budget": 9000.0
+    }
+  },
+  "merged_assignment": {
+    "total_budget": 3531870.0,
+    "books_cost": 65405.0,
+    "book_price": 654.05,
+    "school_budget": 1177290.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_budget = 3531870.0\n    books_cost = 65405.0\n\n    school_budget = total_budget / 3\n    book_price = books_cost / 100\n\n    return {\n        \"total_budget\": total_budget,\n        \"books_cost\": books_cost,\n        \"book_price\": round(book_price, 2),\n        \"school_budget\": round(school_budget, 2)\n    }\n",
+    "results": {
+      "total_budget": 3531870.0,
+      "books_cost": 65405.0,
+      "book_price": 654.05,
+      "school_budget": 1177290.0
+    }
+  },
+  "final": {
+    "question": "Bob spends 3531870 gourde distributed between 3 schools to buy books.  He can buy 100 books for 65405 gourde.  How many books can he buy per school?",
+    "answer_lines": [
+      "He spends 3531870/3=1177290 gourde",
+      "Each book cost 65405/100=654.05 gourde",
+      "So he can buy 1177290/654.05=1797 books per school",
+      "#### 1797"
+    ],
+    "final_scalar": 1797,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Bob spends 3531870 gourde distributed between 3 lakou to buy liv.  He can buy 100 liv for 65405 gourde.  How many liv can he buy per lakou?",
+    "adapted_answer": [
+      "He spends 3531870/3=1177290 gourde",
+      "Each liv cost 65405/100=654.05 gourde",
+      "So he can buy 1177290/654.05=1797 liv per lakou",
+      "#### 1797"
+    ],
+    "adaptation_notes": "Replaced 'schools' with 'lakou' (Haitian Creole for 'yards' or 'communities', used here to refer to schools) and 'books' with 'liv' (Haitian Creole for 'books')."
+  }
+}

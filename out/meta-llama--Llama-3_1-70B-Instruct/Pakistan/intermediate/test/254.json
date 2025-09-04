@@ -1,0 +1,82 @@
+{
+  "index": 254,
+  "split": "test",
+  "original": {
+    "question": "Shelly's 3 kids spent all day at the water park.  Mitchel went down the water slide 30 times.  Anne went down the slide 30% less than Mitchel and Robert went down 4 times as much as Anne.  How many times did Robert go down the water slide?",
+    "answer": "Anne went down the slide 30% less than Mitchel who went down 30 times so that's .30*30 = <<30*.01*30=9>>9 times less\nMitchel went down 30 times and Anne went down 9 times less than him for a total of 30-9 = <<30-9=21>>21 times\nRobert went down the slide 4 times as much as Anne, who went down 21 times so Robert went down the slide 4*21 = <<4*21=84>>84 times\n#### 84"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Shelly",
+      "Mitchel",
+      "Anne",
+      "Robert"
+    ],
+    "notes": "The names mentioned are culturally specific to Western regions."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 281.85, 'unit': 'rupee'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Shelly's {number_of_kids} kids spent all day at the water park.  Mitchel went down the water slide {mitchel_times} times.  Anne went down the slide {percentage_less}% less than Mitchel and Robert went down {robert_multiplier} times as much as Anne.  How many times did Robert go down the water slide?",
+    "templatized_answer": [
+      "Anne went down the slide {percentage_less}% less than Mitchel who went down {mitchel_times} times so that's {percentage_less}*{mitchel_times} = {percentage_less}*{mitchel_times}*0.01*{mitchel_times} times less",
+      "Mitchel went down {mitchel_times} times and Anne went down {percentage_less}*{mitchel_times}*0.01*{mitchel_times} times less than him for a total of {mitchel_times}-{percentage_less}*{mitchel_times}*0.01*{mitchel_times} = {anne_times} times",
+      "Robert went down the slide {robert_multiplier} times as much as Anne, who went down {anne_times} times so Robert went down the slide {robert_multiplier}*{anne_times} = {robert_multiplier}*{anne_times} times",
+      "#### {robert_multiplier}*{anne_times}"
+    ],
+    "factual_assignment": {
+      "number_of_kids": 3,
+      "mitchel_times": 30,
+      "percentage_less": 30,
+      "robert_multiplier": 4,
+      "anne_times": 21
+    }
+  },
+  "merged_assignment": {
+    "number_of_kids": 3,
+    "mitchel_times": 30,
+    "percentage_less": 30,
+    "robert_multiplier": 4,
+    "anne_times": 21
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"number_of_kids\": 3,\n        \"mitchel_times\": 30,\n        \"percentage_less\": 30,\n        \"robert_multiplier\": 4,\n    }\n\n    # Recompute anne_times\n    anne_times_less = factual_assignment[\"percentage_less\"] * factual_assignment[\"mitchel_times\"] * 0.01\n    anne_times = factual_assignment[\"mitchel_times\"] - anne_times_less\n\n    # Recompute robert_times\n    robert_times = factual_assignment[\"robert_multiplier\"] * anne_times\n\n    # Round to 2 decimal places where appropriate\n    anne_times_less = round(anne_times_less, 2)\n    anne_times = round(anne_times, 2)\n    robert_times = round(robert_times, 2)\n\n    return {\n        \"number_of_kids\": factual_assignment[\"number_of_kids\"],\n        \"mitchel_times\": factual_assignment[\"mitchel_times\"],\n        \"percentage_less\": factual_assignment[\"percentage_less\"],\n        \"robert_multiplier\": factual_assignment[\"robert_multiplier\"],\n        \"anne_times\": anne_times,\n        \"anne_times_less\": anne_times_less,\n        \"robert_times\": robert_times,\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_kids": 3,
+      "mitchel_times": 30,
+      "percentage_less": 30,
+      "robert_multiplier": 4,
+      "anne_times": 21.0,
+      "anne_times_less": 9.0,
+      "robert_times": 84.0
+    }
+  },
+  "final": {
+    "question": "Shelly's 3 kids spent all day at the water park.  Mitchel went down the water slide 30 times.  Anne went down the slide 30% less than Mitchel and Robert went down 4 times as much as Anne.  How many times did Robert go down the water slide?",
+    "answer_lines": [
+      "Anne went down the slide 30% less than Mitchel who went down 30 times so that's 30*0.01*30 = 9 times less",
+      "Mitchel went down 30 times and Anne went down 9 times less than him for a total of 30-9 = 21 times",
+      "Robert went down the slide 4 times as much as Anne, who went down 21 times so Robert went down the slide 4*21 = 84 times",
+      "#### 84"
+    ],
+    "final_scalar": 84.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Sara's 3 kids spent all day at the water park.  Danish went down the water slide 30 times.  Ayesha went down the slide 30% less than Danish and Rohan went down 4 times as much as Ayesha.  How many times did Rohan go down the water slide?",
+    "adapted_answer": [
+      "Ayesha went down the slide 30% less than Danish who went down 30 times so that's 30*0.01*30 = 9 times less",
+      "Danish went down 30 times and Ayesha went down 9 times less than him for a total of 30-9 = 21 times",
+      "Rohan went down the slide 4 times as much as Ayesha, who went down 21 times so Rohan went down the slide 4*21 = 84 times",
+      "#### 84"
+    ],
+    "adaptation_notes": "Replaced Shelly with Sara, Mitchel with Danish, Anne with Ayesha, and Robert with Rohan to give the question a Pakistani context."
+  }
+}

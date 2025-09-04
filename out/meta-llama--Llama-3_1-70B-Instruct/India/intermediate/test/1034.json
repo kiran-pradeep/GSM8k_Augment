@@ -1,0 +1,161 @@
+{
+  "index": 1034,
+  "split": "test",
+  "original": {
+    "question": "Ted starts with $200. He buys 3 books for 16 dollars each and 3 pencils for 6 dollars each. How much did he spend in total?",
+    "answer": "Ted spent a total of 3*16 = <<3*16=48>>48 dollars on books.\nTed spent a total of 3*6 = <<3*6=18>>18 dollars on pencils.\nIn total Ted spent 48+18 = <<48+18=66>>66 dollars.\n#### 66"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ted",
+      "dollars"
+    ],
+    "notes": "Name 'Ted' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_cost",
+      "value": 16.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pencil_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_book_cost",
+      "value": 48.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_pencil_cost",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 66.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_cost\", \"value\": 16.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pencil_cost\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_book_cost\", \"value\": 48.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_pencil_cost\", \"value\": 18.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 66.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 17400.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 16.0,
+        "original_unit": "dollar",
+        "converted_value": 1392.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "pencil_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 522.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_book_cost",
+        "original_value": 48.0,
+        "original_unit": "dollar",
+        "converted_value": 4176.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_pencil_cost",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 1566.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 66.0,
+        "original_unit": "dollar",
+        "converted_value": 5742.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ted starts with ${initial_money}. He buys 3 books for {book_cost} dollars each and 3 pencils for {pencil_cost} dollars each. How much did he spend in total?",
+    "templatized_answer": [
+      "Ted spent a total of 3*{book_cost} = {total_book_cost} dollars on books.",
+      "Ted spent a total of 3*{pencil_cost} = {total_pencil_cost} dollars on pencils.",
+      "In total Ted spent {total_book_cost}+{total_pencil_cost} = {total_spent} dollars.",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "initial_money": 200.0,
+      "book_cost": 16.0,
+      "pencil_cost": 6.0,
+      "total_book_cost": 48.0,
+      "total_pencil_cost": 18.0,
+      "total_spent": 66.0
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 17400.0,
+    "book_cost": 1392.0,
+    "pencil_cost": 522.0,
+    "total_book_cost": 4176.0,
+    "total_pencil_cost": 1566.0,
+    "total_spent": 5742.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 17400.0\n    book_cost = 1392.0\n    pencil_cost = 522.0\n\n    total_book_cost = 3 * book_cost\n    total_pencil_cost = 3 * pencil_cost\n    total_spent = total_book_cost + total_pencil_cost\n\n    return {\n        \"initial_money\": initial_money,\n        \"book_cost\": book_cost,\n        \"pencil_cost\": pencil_cost,\n        \"total_book_cost\": round(total_book_cost, 2),\n        \"total_pencil_cost\": round(total_pencil_cost, 2),\n        \"total_spent\": round(total_spent, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_money": 17400.0,
+      "book_cost": 1392.0,
+      "pencil_cost": 522.0,
+      "total_book_cost": 4176.0,
+      "total_pencil_cost": 1566.0,
+      "total_spent": 5742.0
+    }
+  },
+  "final": {
+    "question": "Ted starts with 17400. He buys 3 books for 1392 rupees each and 3 pencils for 522 rupees each. How much did he spend in total?",
+    "answer_lines": [
+      "Ted spent a total of 3*1392 = 4176 rupees on books.",
+      "Ted spent a total of 3*522 = 1566 rupees on pencils.",
+      "In total Ted spent 4176+1566 = 5742 rupees.",
+      "#### 5742"
+    ],
+    "final_scalar": 5742.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan starts with 17400. He buys 3 books for 1392 rupees each and 3 pencils for 522 rupees each. How much did he spend in total?",
+    "adapted_answer": [
+      "Rohan spent a total of 3*1392 = 4176 rupees on books.",
+      "Rohan spent a total of 3*522 = 1566 rupees on pencils.",
+      "In total Rohan spent 4176+1566 = 5742 rupees.",
+      "#### 5742"
+    ],
+    "adaptation_notes": "Replaced 'Ted' with 'Rohan' to give the name an Indian context."
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "index": 701,
+  "split": "test",
+  "original": {
+    "question": "Aiden and 12 of his friends are going to see a film at the cinema, and meet up with 7 more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost $2 each, how much money, in dollars, has the group spent overall on snacks and drinks?",
+    "answer": "Including Aiden, the whole group saves 1 + 12 + 7 = <<1+12+7=20>>20 seats.\nIn total, the seats can hold 2 drinks * 20 seats = <<2*20=40>>40 drinks.\nIn total, the seats can hold 3 snacks * 20 seats = <<3*20=60>>60 snacks.\nSo in total, the group buys 40 drinks + 60 snacks = <<40+60=100>>100 items.\nAs snacks and drinks cost $2 each, the group has spent 100 items * $2 = $<<100*2=200>>200 overall.\n#### 200"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Aiden",
+      "dollars"
+    ],
+    "notes": "The name 'Aiden' is of Western origin and 'dollars' is a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "drink_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "snack_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 200,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"drink_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"snack_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 200, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "drink_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "snack_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 200,
+        "original_unit": "dollar",
+        "converted_value": 17400,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aiden and {number_of_friends} of his friends are going to see a film at the cinema, and meet up with {additional_friends} more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost ${drink_cost} each, how much money, in dollars, has the group spent overall on snacks and drinks?",
+    "templatized_answer": [
+      "Including Aiden, the whole group saves 1 + {number_of_friends} + {additional_friends} = {number_of_friends} + {additional_friends} + 1 seats.",
+      "In total, the seats can hold 2 drinks * ({number_of_friends} + {additional_friends} + 1) seats = 2 * ({number_of_friends} + {additional_friends} + 1) drinks.",
+      "In total, the seats can hold 3 snacks * ({number_of_friends} + {additional_friends} + 1) seats = 3 * ({number_of_friends} + {additional_friends} + 1) snacks.",
+      "So in total, the group buys 2 * ({number_of_friends} + {additional_friends} + 1) drinks + 3 * ({number_of_friends} + {additional_friends} + 1) snacks = (2 + 3) * ({number_of_friends} + {additional_friends} + 1) items.",
+      "As snacks and drinks cost ${drink_cost} each, the group has spent (2 + 3) * ({number_of_friends} + {additional_friends} + 1) items * ${drink_cost} = ${drink_cost} * (5 * ({number_of_friends} + {additional_friends} + 1)).",
+      "#### ${drink_cost} * (5 * ({number_of_friends} + {additional_friends} + 1))"
+    ],
+    "factual_assignment": {
+      "number_of_friends": 12,
+      "additional_friends": 7,
+      "drink_cost": 2
+    }
+  },
+  "merged_assignment": {
+    "number_of_friends": 12,
+    "additional_friends": 7,
+    "drink_cost": 174
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_friends = 12\n    additional_friends = 7\n    drink_cost = 174\n\n    total_seats = number_of_friends + additional_friends + 1\n    total_drinks = 2 * total_seats\n    total_snacks = 3 * total_seats\n    total_items = total_drinks + total_snacks\n    total_cost = total_items * drink_cost\n\n    return {\n        \"number_of_friends\": number_of_friends,\n        \"additional_friends\": additional_friends,\n        \"number_of_friends + additional_friends + 1\": total_seats,\n        \"2 * ({number_of_friends} + {additional_friends} + 1)\": total_drinks,\n        \"3 * ({number_of_friends} + {additional_friends} + 1)\": total_snacks,\n        \"(2 + 3) * ({number_of_friends} + {additional_friends} + 1)\": total_items,\n        \"${drink_cost} * (5 * ({number_of_friends} + {additional_friends} + 1))\": round(total_cost, 2),\n        \"drink_cost\": drink_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_friends": 12,
+      "additional_friends": 7,
+      "number_of_friends + additional_friends + 1": 20,
+      "2 * ({number_of_friends} + {additional_friends} + 1)": 40,
+      "3 * ({number_of_friends} + {additional_friends} + 1)": 60,
+      "(2 + 3) * ({number_of_friends} + {additional_friends} + 1)": 100,
+      "${drink_cost} * (5 * ({number_of_friends} + {additional_friends} + 1))": 17400,
+      "drink_cost": 174
+    }
+  },
+  "final": {
+    "question": "Aiden and 12 of his friends are going to see a film at the cinema, and meet up with 7 more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost 174 rupees each, how much money, in rupees, has the group spent overall on snacks and drinks?",
+    "answer_lines": [
+      "Including Aiden, the whole group saves 1 + 12 + 7 = 20 seats.",
+      "In total, the seats can hold 2 drinks * 20 seats = 40 drinks.",
+      "In total, the seats can hold 3 snacks * 20 seats = 60 snacks.",
+      "So in total, the group buys 40 drinks + 60 snacks = 100 items.",
+      "As snacks and drinks cost 174 rupees each, the group has spent 100 items * 174 rupees = 17400 rupees.",
+      "#### 17400"
+    ],
+    "final_scalar": 17400,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aarav and 12 of his friends are going to see a film at the cinema, and meet up with 7 more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost 174 rupees each, how much money, in rupees, has the group spent overall on snacks and drinks?",
+    "adapted_answer": [
+      "Including Aarav, the whole group saves 1 + 12 + 7 = 20 seats.",
+      "In total, the seats can hold 2 drinks * 20 seats = 40 drinks.",
+      "In total, the seats can hold 3 snacks * 20 seats = 60 snacks.",
+      "So in total, the group buys 40 drinks + 60 snacks = 100 items.",
+      "As snacks and drinks cost 174 rupees each, the group has spent 100 items * 174 rupees = 17400 rupees.",
+      "#### 17400"
+    ],
+    "adaptation_notes": "Replaced 'Aiden' with 'Aarav' to give the name an Indian context."
+  }
+}

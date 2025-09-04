@@ -1,0 +1,124 @@
+{
+  "index": 69,
+  "split": "test",
+  "original": {
+    "question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of $5 for 8 weeks. At the end of the 8 weeks, if she has a total of $100, how much money did Bailey start with?",
+    "answer": "In 8 weeks, Bailey receives $5 * 8 = $<<5*8=40>>40 in allowance\nBailey started with $100 - $40 = $<<100-40=60>>60\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bailey",
+      "dollars"
+    ],
+    "notes": "Bailey is a Western name and dollars are a non-Moldovan currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_allowance",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_allowance",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "initial_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_allowance\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_allowance\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"initial_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_allowance",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_allowance",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 664.8,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "initial_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 997.2,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of ${initial_allowance} for 8 weeks. At the end of the 8 weeks, if she has a total of ${total_money}, how much money did Bailey start with?",
+    "templatized_answer": [
+      "In 8 weeks, Bailey receives ${initial_allowance} * 8 = ${initial_allowance} * 8 in allowance",
+      "Bailey started with ${total_money} - ${initial_allowance} * 8 = ${total_money} - ${initial_allowance} * 8",
+      "#### {initial_money}"
+    ],
+    "factual_assignment": {
+      "initial_allowance": 5,
+      "total_money": 100,
+      "initial_money": 60
+    }
+  },
+  "merged_assignment": {
+    "initial_allowance": 83.1,
+    "total_money": 1662.0,
+    "initial_money": 997.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_allowance = 83.1\n    total_money = 1662.0\n\n    initial_allowance_8 = round(initial_allowance * 8, 2)\n    initial_money = round(total_money - initial_allowance_8, 2)\n\n    return {\n        \"initial_allowance\": initial_allowance,\n        \"initial_allowance_8\": initial_allowance_8,\n        \"total_money\": total_money,\n        \"initial_money\": initial_money\n    }\n",
+    "results": {
+      "initial_allowance": 83.1,
+      "initial_allowance_8": 664.8,
+      "total_money": 1662.0,
+      "initial_money": 997.2
+    }
+  },
+  "final": {
+    "question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of 83.1 leu for 8 weeks. At the end of the 8 weeks, if she has a total of 1662.0 leu, how much money did Bailey start with?",
+    "answer_lines": [
+      "In 8 weeks, Bailey receives 83.1 leu * 8 = 664.8 leu in allowance",
+      "Bailey started with 1662.0 leu - 664.8 leu = 997.2 leu",
+      "#### 997.2"
+    ],
+    "final_scalar": 997.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ana starts with a certain amount of money. Then she receives a weekly allowance of 83.1 leu for 8 weeks. At the end of the 8 weeks, if she has a total of 1662.0 leu, how much money did Ana start with?",
+    "adapted_answer": [
+      "In 8 weeks, Ana receives 83.1 leu * 8 = 664.8 leu in allowance",
+      "Ana started with 1662.0 leu - 664.8 leu = 997.2 leu",
+      "#### 997.2"
+    ],
+    "adaptation_notes": "Replaced 'Bailey' with 'Ana', a more common Moldovan name."
+  }
+}

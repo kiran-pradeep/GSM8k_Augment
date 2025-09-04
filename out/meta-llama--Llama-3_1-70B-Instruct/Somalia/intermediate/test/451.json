@@ -1,0 +1,150 @@
+{
+  "index": 451,
+  "split": "test",
+  "original": {
+    "question": "On a certain day, the total cost of filling up 20 helium balloons was $900. Two days later, the cost of filling each balloon was increased by $20. How much did Bentley pay to fill 170 balloons if he went to fill them after the price increase?",
+    "answer": "If the total cost of filling up 20 helium balloons was $900 before the price increase, the cost of filling one balloon was $900/20=$<<900/20=45>>45\nTwo days later, the cost of filling each balloon was increased by $20 to $45+$20=$<<45+20=65>>65\nIf Bentley had 170 balloons that he wanted to fill, after the price increase, Bentley paid 170*$65=$<<170*65=11050>>11050 to fill 170 balloons.\n#### 11050"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Bentley"
+    ],
+    "notes": "The text contains the name 'Bentley' and the unit 'dollars', which are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 900,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "price_increase",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "initial_cost_per_balloon",
+      "value": 45,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "new_cost_per_balloon",
+      "value": 65,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost_after_increase",
+      "value": 11050,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 900, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"price_increase\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"initial_cost_per_balloon\", \"value\": 45, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"new_cost_per_balloon\", \"value\": 65, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost_after_increase\", \"value\": 11050, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 900,
+        "original_unit": "dollar",
+        "converted_value": 512442.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "price_increase",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 11387.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "initial_cost_per_balloon",
+        "original_value": 45,
+        "original_unit": "dollar",
+        "converted_value": 25622.1,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "new_cost_per_balloon",
+        "original_value": 65,
+        "original_unit": "dollar",
+        "converted_value": 37009.7,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost_after_increase",
+        "original_value": 11050,
+        "original_unit": "dollar",
+        "converted_value": 6291649.0,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "On a certain day, the total cost of filling up {initial_number_of_balloons} helium balloons was ${initial_cost}. Two days later, the cost of filling each balloon was increased by ${price_increase}. How much did Bentley pay to fill {final_number_of_balloons} balloons if he went to fill them after the price increase?",
+    "templatized_answer": [
+      "If the total cost of filling up {initial_number_of_balloons} helium balloons was ${initial_cost} before the price increase, the cost of filling one balloon was ${initial_cost}/{initial_number_of_balloons}=${initial_cost_per_balloon}",
+      "Two days later, the cost of filling each balloon was increased by ${price_increase} to ${initial_cost_per_balloon}+${price_increase}=${new_cost_per_balloon}",
+      "If Bentley had {final_number_of_balloons} balloons that he wanted to fill, after the price increase, Bentley paid {final_number_of_balloons}*${new_cost_per_balloon}=${total_cost_after_increase} to fill {final_number_of_balloons} balloons.",
+      "#### {total_cost_after_increase}"
+    ],
+    "factual_assignment": {
+      "initial_cost": 900,
+      "price_increase": 20,
+      "initial_cost_per_balloon": 45,
+      "new_cost_per_balloon": 65,
+      "total_cost_after_increase": 11050,
+      "initial_number_of_balloons": 20,
+      "final_number_of_balloons": 170
+    }
+  },
+  "merged_assignment": {
+    "initial_cost": 512442.0,
+    "price_increase": 11387.6,
+    "initial_cost_per_balloon": 25622.1,
+    "new_cost_per_balloon": 37009.7,
+    "total_cost_after_increase": 6291649.0,
+    "initial_number_of_balloons": 20,
+    "final_number_of_balloons": 170
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cost = 512442.0\n    price_increase = 11387.6\n    initial_number_of_balloons = 20\n    final_number_of_balloons = 170\n\n    initial_cost_per_balloon = round(initial_cost / initial_number_of_balloons, 2)\n    new_cost_per_balloon = round(initial_cost_per_balloon + price_increase, 2)\n    total_cost_after_increase = round(final_number_of_balloons * new_cost_per_balloon, 2)\n\n    return {\n        \"initial_cost\": round(initial_cost, 2),\n        \"price_increase\": round(price_increase, 2),\n        \"initial_cost_per_balloon\": initial_cost_per_balloon,\n        \"new_cost_per_balloon\": new_cost_per_balloon,\n        \"total_cost_after_increase\": total_cost_after_increase,\n        \"initial_number_of_balloons\": initial_number_of_balloons,\n        \"final_number_of_balloons\": final_number_of_balloons\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_cost": 512442.0,
+      "price_increase": 11387.6,
+      "initial_cost_per_balloon": 25622.1,
+      "new_cost_per_balloon": 37009.7,
+      "total_cost_after_increase": 6291649.0,
+      "initial_number_of_balloons": 20,
+      "final_number_of_balloons": 170
+    }
+  },
+  "final": {
+    "question": "On a certain day, the total cost of filling up 20 helium balloons was 512442 shilling. Two days later, the cost of filling each balloon was increased by 11387.6 shilling. How much did Bentley pay to fill 170 balloons if he went to fill them after the price increase?",
+    "answer_lines": [
+      "If the total cost of filling up 20 helium balloons was 512442 shilling before the price increase, the cost of filling one balloon was 512442/20=25622.1 shilling",
+      "Two days later, the cost of filling each balloon was increased by 11387.6 shilling to 25622.1+11387.6=37009.7 shilling",
+      "If Bentley had 170 balloons that he wanted to fill, after the price increase, Bentley paid 170*37009.7=6291649 shilling to fill 170 balloons.",
+      "#### 6291649"
+    ],
+    "final_scalar": 6291649.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "On a certain day, the total cost of filling up 20 helium balloons was 512442 shilling. Two days later, the cost of filling each balloon was increased by 11387.6 shilling. How much did Abdi pay to fill 170 balloons if he went to fill them after the price increase?",
+    "adapted_answer": [
+      "If the total cost of filling up 20 helium balloons was 512442 shilling before the price increase, the cost of filling one balloon was 512442/20=25622.1 shilling",
+      "Two days later, the cost of filling each balloon was increased by 11387.6 shilling to 25622.1+11387.6=37009.7 shilling",
+      "If Abdi had 170 balloons that he wanted to fill, after the price increase, Abdi paid 170*37009.7=6291649 shilling to fill 170 balloons."
+    ],
+    "adaptation_notes": "Replaced 'Bentley' with 'Abdi' to give the name a Somali context."
+  }
+}

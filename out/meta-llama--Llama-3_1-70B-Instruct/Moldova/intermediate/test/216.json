@@ -1,0 +1,163 @@
+{
+  "index": 216,
+  "split": "test",
+  "original": {
+    "question": "Janeth borrowed $2000 and promised to return it with an additional 10% of the amount. If she is going to pay $165 a month for 12 months, how much will be Janeth's remaining balance by then?",
+    "answer": "Janeth will pay an additional $2000x 10/100 =$<<2000*10/100=200>>200.\nSo she is going to pay off a total of $2000 + $200 = $<<2000+200=2200>>2200.\nJaneth will be able to pay off $165 x 12 = $<<165*12=1980>>1980 in 12 months.\nHence, her remaining balance by then will be $2200 - $1980 = $<<2200-1980=220>>220.\n#### 220"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Moldova, which uses the Moldovan leu as its official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "borrowed_amount",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_payment",
+      "value": 165.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_payment",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_payment",
+      "value": 2200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_paid",
+      "value": 1980.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_balance",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"borrowed_amount\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_payment\", \"value\": 165.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"additional_payment\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_payment\", \"value\": 2200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_paid\", \"value\": 1980.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_balance\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "borrowed_amount",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 33240.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "monthly_payment",
+        "original_value": 165.0,
+        "original_unit": "dollar",
+        "converted_value": 2742.3,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "additional_payment",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 3324.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_payment",
+        "original_value": 2200.0,
+        "original_unit": "dollar",
+        "converted_value": 36564.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_paid",
+        "original_value": 1980.0,
+        "original_unit": "dollar",
+        "converted_value": 32907.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "remaining_balance",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 3656.4,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Janeth borrowed ${borrowed_amount} and promised to return it with an additional 10% of the amount. If she is going to pay ${monthly_payment} a month for 12 months, how much will be Janeth's remaining balance by then?",
+    "templatized_answer": [
+      "Janeth will pay an additional ${borrowed_amount} x 10/100 = ${additional_payment}.",
+      "So she is going to pay off a total of ${borrowed_amount} + ${additional_payment} = ${total_payment}.",
+      "Janeth will be able to pay off ${monthly_payment} x 12 = ${total_paid} in 12 months.",
+      "Hence, her remaining balance by then will be ${total_payment} - ${total_paid} = ${remaining_balance}.",
+      "#### {remaining_balance}"
+    ],
+    "factual_assignment": {
+      "borrowed_amount": 2000.0,
+      "monthly_payment": 165.0,
+      "additional_payment": 200.0,
+      "total_payment": 2200.0,
+      "total_paid": 1980.0,
+      "remaining_balance": 220.0
+    }
+  },
+  "merged_assignment": {
+    "borrowed_amount": 33240.0,
+    "monthly_payment": 2742.3,
+    "additional_payment": 3324.0,
+    "total_payment": 36564.0,
+    "total_paid": 32907.6,
+    "remaining_balance": 3656.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    borrowed_amount = 33240.0\n    monthly_payment = 2742.3\n    additional_payment = borrowed_amount * 10 / 100\n    total_payment = borrowed_amount + additional_payment\n    total_paid = monthly_payment * 12\n    remaining_balance = total_payment - total_paid\n\n    return {\n        \"borrowed_amount\": borrowed_amount,\n        \"monthly_payment\": monthly_payment,\n        \"additional_payment\": round(additional_payment, 2),\n        \"total_payment\": round(total_payment, 2),\n        \"total_paid\": round(total_paid, 2),\n        \"remaining_balance\": round(remaining_balance, 2)\n    }\n",
+    "results": {
+      "borrowed_amount": 33240.0,
+      "monthly_payment": 2742.3,
+      "additional_payment": 3324.0,
+      "total_payment": 36564.0,
+      "total_paid": 32907.6,
+      "remaining_balance": 3656.4
+    }
+  },
+  "final": {
+    "question": "Janeth borrowed 33240 leu and promised to return it with an additional 10% of the amount. If she is going to pay 2742.3 leu a month for 12 months, how much will be Janeth's remaining balance by then?",
+    "answer_lines": [
+      "Janeth will pay an additional 33240 leu x 10/100 = 3324 leu.",
+      "So she is going to pay off a total of 33240 leu + 3324 leu = 36564 leu.",
+      "Janeth will be able to pay off 2742.3 leu x 12 = 32907.6 leu in 12 months.",
+      "Hence, her remaining balance by then will be 36564 leu - 32907.6 leu = 3656.4 leu.",
+      "#### 3656.4"
+    ],
+    "final_scalar": 3656.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Janeth borrowed 33240 lei and promised to return it with an additional 10% of the amount. If she is going to pay 2742.3 lei a month for 12 months, how much will be Janeth's remaining balance by then?",
+    "adapted_answer": [
+      "Janeth will pay an additional 33240 lei x 10/100 = 3324 lei.",
+      "So she is going to pay off a total of 33240 lei + 3324 lei = 36564 lei.",
+      "Janeth will be able to pay off 2742.3 lei x 12 = 32907.6 lei in 12 months.",
+      "Hence, her remaining balance by then will be 36564 lei - 32907.6 lei = 3656.4 lei.",
+      "#### 3656.4"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' to match the Moldovan currency."
+  }
+}

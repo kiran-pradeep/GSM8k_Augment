@@ -1,0 +1,150 @@
+{
+  "index": 859,
+  "split": "test",
+  "original": {
+    "question": "While working at the restaurant, each of the forty customers who came into the restaurant gave Rafaela a $20 tip. Julieta received 10% less money in tips than Rafaela. How much money did Julieta and Rafaela receive as tips altogether?",
+    "answer": "The total amount of money that Rafaela received as tips from the forty customers is 40*$20 = $<<40*20=800>>800\nJulieta got 10% less money in tips than Rafaela, a total of 10/100*$800 = $<<10/100*800=80>>80\nThe total amount of money that Julieta received as tips is $800-$80 = $<<800-80=720>>720\nAltogether, Julieta, and Rafaela received $720+$800 = $<<720+800=1520>>1520\n#### 1520"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "rafaela_tips",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rafaela_total_tips",
+      "value": 800.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "julieta_tips_difference",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "julieta_total_tips",
+      "value": 720.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_tips",
+      "value": 1520.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"rafaela_tips\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rafaela_total_tips\", \"value\": 800.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"julieta_tips_difference\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"julieta_total_tips\", \"value\": 720.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_tips\", \"value\": 1520.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "rafaela_tips",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 2616.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "rafaela_total_tips",
+        "original_value": 800.0,
+        "original_unit": "dollar",
+        "converted_value": 104648.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "julieta_tips_difference",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 10464.8,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "julieta_total_tips",
+        "original_value": 720.0,
+        "original_unit": "dollar",
+        "converted_value": 94183.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_tips",
+        "original_value": 1520.0,
+        "original_unit": "dollar",
+        "converted_value": 198831.2,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "While working at the restaurant, each of the {number_of_customers} customers who came into the restaurant gave Rafaela a ${rafaela_tips} tip. Julieta received 10% less money in tips than Rafaela. How much money did Julieta and Rafaela receive as tips altogether?",
+    "templatized_answer": [
+      "The total amount of money that Rafaela received as tips from the {number_of_customers} customers is {number_of_customers}*${rafaela_tips} = ${rafaela_total_tips}",
+      "Julieta got 10% less money in tips than Rafaela, a total of 10/100*${rafaela_total_tips} = ${julieta_tips_difference}",
+      "The total amount of money that Julieta received as tips is ${rafaela_total_tips}-${julieta_tips_difference} = ${julieta_total_tips}",
+      "Altogether, Julieta, and Rafaela received ${julieta_total_tips}+${rafaela_total_tips} = ${total_tips}",
+      "#### {total_tips}"
+    ],
+    "factual_assignment": {
+      "number_of_customers": 40,
+      "rafaela_tips": 20.0,
+      "rafaela_total_tips": 800.0,
+      "julieta_tips_difference": 80.0,
+      "julieta_total_tips": 720.0,
+      "total_tips": 1520.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_customers": 40,
+    "rafaela_tips": 2616.2,
+    "rafaela_total_tips": 104648.0,
+    "julieta_tips_difference": 10464.8,
+    "julieta_total_tips": 94183.2,
+    "total_tips": 198831.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_customers = 40\n    rafaela_tips = 2616.2\n\n    rafaela_total_tips = number_of_customers * rafaela_tips\n    julieta_tips_difference = rafaela_total_tips * 0.1\n    julieta_total_tips = rafaela_total_tips - julieta_tips_difference\n    total_tips = julieta_total_tips + rafaela_total_tips\n\n    return {\n        \"number_of_customers\": number_of_customers,\n        \"rafaela_tips\": round(rafaela_tips, 2),\n        \"rafaela_total_tips\": round(rafaela_total_tips, 2),\n        \"julieta_tips_difference\": round(julieta_tips_difference, 2),\n        \"julieta_total_tips\": round(julieta_total_tips, 2),\n        \"total_tips\": round(total_tips, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_customers": 40,
+      "rafaela_tips": 2616.2,
+      "rafaela_total_tips": 104648.0,
+      "julieta_tips_difference": 10464.8,
+      "julieta_total_tips": 94183.2,
+      "total_tips": 198831.2
+    }
+  },
+  "final": {
+    "question": "While working at the restaurant, each of the 40 customers who came into the restaurant gave Rafaela a 2616.2 gourde tip. Julieta received 10% less money in tips than Rafaela. How much money did Julieta and Rafaela receive as tips altogether?",
+    "answer_lines": [
+      "The total amount of money that Rafaela received as tips from the 40 customers is 40*2616.2 gourde = 104648.0 gourde",
+      "Julieta got 10% less money in tips than Rafaela, a total of 10/100*104648.0 gourde = 10464.8 gourde",
+      "The total amount of money that Julieta received as tips is 104648.0 gourde-10464.8 gourde = 94183.2 gourde",
+      "Altogether, Julieta, and Rafaela received 94183.2 gourde+104648.0 gourde = 198831.2 gourde",
+      "#### 198831.2"
+    ],
+    "final_scalar": 198831.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "While working at the restaurant, each of the 40 customers who came into the restaurant gave Rafaela a 2616.2 gourde tip. Julieta received 10% less money in tips than Rafaela. How much money did Julieta and Rafaela receive as tips altogether?",
+    "adapted_answer": [
+      "The total amount of money that Rafaela received as tips from the 40 customers is 40*2616.2 gourde = 104648.0 gourde",
+      "Julieta got 10% less money in tips than Rafaela, a total of 10/100*104648.0 gourde = 10464.8 gourde",
+      "The total amount of money that Julieta received as tips is 104648.0 gourde-10464.8 gourde = 94183.2 gourde",
+      "Altogether, Julieta, and Rafaela received 94183.2 gourde+104648.0 gourde = 198831.2 gourde",
+      "#### 198831.2"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

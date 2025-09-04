@@ -1,0 +1,177 @@
+{
+  "index": 841,
+  "split": "test",
+  "original": {
+    "question": "Gabriel wants to buy a car for $10000 and a phone for $800. Gabriel has $5000 from working on weekends and his brother gave him $200 to help him. How much money does he still need?",
+    "answer": "The amount of purchases Gabriel wants to make is $10000 + $800 = $<<10000+800=10800>>10800.\nAnd Gabriel has $5000 + $200 = $<<5000+200=5200>>5200.\nSo, Gabriel still needs $10800 - $5200 = $<<10800-5200=5600>>5600.\n#### 5600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Gabriel"
+    ],
+    "notes": "The use of 'dollars' as currency and the name 'Gabriel' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "car_cost",
+      "value": 10000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "phone_cost",
+      "value": 800.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gabriel_savings",
+      "value": 5000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "brother_gift",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_savings",
+      "value": 5200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 10800.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "amount_needed",
+      "value": 5600.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"car_cost\", \"value\": 10000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"phone_cost\", \"value\": 800.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gabriel_savings\", \"value\": 5000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"brother_gift\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_savings\", \"value\": 5200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 10800.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"amount_needed\", \"value\": 5600.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "car_cost",
+        "original_value": 10000.0,
+        "original_unit": "dollar",
+        "converted_value": 2818500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "phone_cost",
+        "original_value": 800.0,
+        "original_unit": "dollar",
+        "converted_value": 225480.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "gabriel_savings",
+        "original_value": 5000.0,
+        "original_unit": "dollar",
+        "converted_value": 1409250.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "brother_gift",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 56370.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_savings",
+        "original_value": 5200.0,
+        "original_unit": "dollar",
+        "converted_value": 1465620.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 10800.0,
+        "original_unit": "dollar",
+        "converted_value": 3043980.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "amount_needed",
+        "original_value": 5600.0,
+        "original_unit": "dollar",
+        "converted_value": 1578360.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gabriel wants to buy a car for ${car_cost} and a phone for ${phone_cost}. Gabriel has ${gabriel_savings} from working on weekends and his brother gave him ${brother_gift} to help him. How much money does he still need?",
+    "templatized_answer": [
+      "The amount of purchases Gabriel wants to make is ${car_cost} + ${phone_cost} = ${total_cost}.",
+      "And Gabriel has ${gabriel_savings} + ${brother_gift} = ${total_savings}.",
+      "So, Gabriel still needs ${total_cost} - ${total_savings} = ${amount_needed}.",
+      "#### {amount_needed}"
+    ],
+    "factual_assignment": {
+      "car_cost": 10000.0,
+      "phone_cost": 800.0,
+      "gabriel_savings": 5000.0,
+      "brother_gift": 200.0,
+      "total_savings": 5200.0,
+      "total_cost": 10800.0,
+      "amount_needed": 5600.0
+    }
+  },
+  "merged_assignment": {
+    "car_cost": 2818500.0,
+    "phone_cost": 225480.0,
+    "gabriel_savings": 1409250.0,
+    "brother_gift": 56370.0,
+    "total_savings": 1465620.0,
+    "total_cost": 3043980.0,
+    "amount_needed": 1578360.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    car_cost = 2818500.0\n    phone_cost = 225480.0\n    gabriel_savings = 1409250.0\n    brother_gift = 56370.0\n\n    total_cost = round(car_cost + phone_cost, 2)\n    total_savings = round(gabriel_savings + brother_gift, 2)\n    amount_needed = round(total_cost - total_savings, 2)\n\n    return {\n        \"car_cost\": car_cost,\n        \"phone_cost\": phone_cost,\n        \"gabriel_savings\": gabriel_savings,\n        \"brother_gift\": brother_gift,\n        \"total_cost\": total_cost,\n        \"total_savings\": total_savings,\n        \"amount_needed\": amount_needed\n    }\n",
+    "results": {
+      "car_cost": 2818500.0,
+      "phone_cost": 225480.0,
+      "gabriel_savings": 1409250.0,
+      "brother_gift": 56370.0,
+      "total_cost": 3043980.0,
+      "total_savings": 1465620.0,
+      "amount_needed": 1578360.0
+    }
+  },
+  "final": {
+    "question": "Gabriel wants to buy a car for 2818500 rupee and a phone for 225480 rupee. Gabriel has 1409250 rupee from working on weekends and his brother gave him 56370 rupee to help him. How much money does he still need?",
+    "answer_lines": [
+      "The amount of purchases Gabriel wants to make is 2818500 + 225480 = 3043980.",
+      "And Gabriel has 1409250 + 56370 = 1465620.",
+      "So, Gabriel still needs 3043980 - 1465620 = 1578360.",
+      "#### 1578360"
+    ],
+    "final_scalar": 1578360,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran wants to buy a car for 2818500 rupee and a phone for 225480 rupee. Kamran has 1409250 rupee from working on weekends and his brother gave him 56370 rupee to help him. How much money does he still need?",
+    "adapted_answer": [
+      "The amount of purchases Kamran wants to make is 2818500 + 225480 = 3043980.",
+      "And Kamran has 1409250 + 56370 = 1465620.",
+      "So, Kamran still needs 3043980 - 1465620 = 1578360.",
+      "#### 1578360"
+    ],
+    "adaptation_notes": "Replaced 'Gabriel' with 'Kamran' to give the name a Pakistani context."
+  }
+}

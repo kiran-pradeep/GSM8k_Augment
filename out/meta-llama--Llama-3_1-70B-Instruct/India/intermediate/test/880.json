@@ -1,0 +1,148 @@
+{
+  "index": 880,
+  "split": "test",
+  "original": {
+    "question": "Sarah has a rope that is 20 meters long. Her friend wants to buy the rope for $2 a meter. Sarah plans to use the profit to buy a new rope, which at the store costs $1.5 a meter. How much money will she have left over after she buys the new rope?",
+    "answer": "Her friend pays her $40 for the rope because 20 x 2 = <<20*2=40>>40\nShe can buy the rope at the store for $30 because 20 x 1.5 = <<20*1.5=30>>30\nShe has $10 left over because 40 - 30 = <<40-30=10>>10\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sarah",
+      "dollars"
+    ],
+    "notes": "The name 'Sarah' is of Western origin and 'dollars' is a currency primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "rope_selling_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rope_selling_total",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "new_rope_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "new_rope_total",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 10,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"rope_selling_price\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rope_selling_total\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"new_rope_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"new_rope_total\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "rope_selling_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "rope_selling_total",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 3480,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "new_rope_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 130.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "new_rope_total",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 2610,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "profit",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 870,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sarah has a rope that is {rope_length} meters long. Her friend wants to buy the rope for ${rope_selling_price} a meter. Sarah plans to use the profit to buy a new rope, which at the store costs ${new_rope_cost} a meter. How much money will she have left over after she buys the new rope?",
+    "templatized_answer": [
+      "Her friend pays her ${rope_selling_total} for the rope because {rope_length} x {rope_selling_price} = ${rope_selling_total}",
+      "She can buy the rope at the store for ${new_rope_total} because {rope_length} x {new_rope_cost} = ${new_rope_total}",
+      "She has ${profit} left over because {rope_selling_total} - {new_rope_total} = ${profit}",
+      "#### {profit}"
+    ],
+    "factual_assignment": {
+      "rope_length": 20,
+      "rope_selling_price": 2,
+      "rope_selling_total": 40,
+      "new_rope_cost": 1.5,
+      "new_rope_total": 30,
+      "profit": 10
+    }
+  },
+  "merged_assignment": {
+    "rope_length": 20,
+    "rope_selling_price": 174,
+    "rope_selling_total": 3480,
+    "new_rope_cost": 130.5,
+    "new_rope_total": 2610,
+    "profit": 870
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    rope_length = 20\n    rope_selling_price = 174\n    rope_selling_total = rope_length * rope_selling_price\n    new_rope_cost = 130.5\n    new_rope_total = rope_length * new_rope_cost\n    profit = rope_selling_total - new_rope_total\n\n    return {\n        \"rope_length\": rope_length,\n        \"rope_selling_price\": rope_selling_price,\n        \"rope_selling_total\": round(rope_selling_total, 2),\n        \"new_rope_cost\": round(new_rope_cost, 2),\n        \"new_rope_total\": round(new_rope_total, 2),\n        \"profit\": round(profit, 2)\n    }\n",
+    "results": {
+      "rope_length": 20,
+      "rope_selling_price": 174,
+      "rope_selling_total": 3480,
+      "new_rope_cost": 130.5,
+      "new_rope_total": 2610.0,
+      "profit": 870.0
+    }
+  },
+  "final": {
+    "question": "Sarah has a rope that is 20 meters long. Her friend wants to buy the rope for 174 rupees a meter. Sarah plans to use the profit to buy a new rope, which at the store costs 130.5 rupees a meter. How much money will she have left over after she buys the new rope?",
+    "answer_lines": [
+      "Her friend pays her 3480 rupees for the rope because 20 x 174 = 3480",
+      "She can buy the rope at the store for 2610 rupees because 20 x 130.5 = 2610",
+      "She has 870 rupees left over because 3480 - 2610 = 870",
+      "#### 870"
+    ],
+    "final_scalar": 870,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Riya has a rope that is 20 meters long. Her friend wants to buy the rope for 174 rupees a meter. Riya plans to use the profit to buy a new rope, which at the store costs 130.5 rupees a meter. How much money will she have left over after she buys the new rope?",
+    "adapted_answer": [
+      "Her friend pays her 3480 rupees for the rope because 20 x 174 = 3480",
+      "She can buy the rope at the store for 2610 rupees because 20 x 130.5 = 2610",
+      "She has 870 rupees left over because 3480 - 2610 = 870",
+      "#### 870"
+    ],
+    "adaptation_notes": "Replaced 'Sarah' with 'Riya' to give the name an Indian context."
+  }
+}

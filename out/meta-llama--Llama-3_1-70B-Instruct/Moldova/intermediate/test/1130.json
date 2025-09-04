@@ -1,0 +1,135 @@
+{
+  "index": 1130,
+  "split": "test",
+  "original": {
+    "question": "Nik has 200 crayons. He wants to separate them into groups of 8 and put them into boxes.  Each box weighs 8 ounces. Each crayon weighs 1 ounce. If he puts all of his crayons into boxes, what is the total weight, in pounds, of the crayons and the boxes, when there are 16 ounces to a pound?",
+    "answer": "First find how many boxes Nik needs. 200 crayons / 8 crayons per box = <<200/8=25>>25 boxes.\n25 boxes * 8 ounces per box = <<25*8=200>>200 ounces.\nEach crayon weighs 1 ounce, so 200 + 200 = <<200+200=400>>400 ounces.\n400 ounces / 16 ounces per pound = <<400/16=25>>25 pounds.\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Nik",
+      "pounds",
+      "ounces"
+    ],
+    "notes": "The name 'Nik' is culturally specific, and the units 'pounds' and 'ounces' are commonly used in the US and UK, but not in Moldova, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "crayon_weight",
+      "value": 1,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "box_weight",
+      "value": 8,
+      "unit": "ounces",
+      "context": "question"
+    },
+    {
+      "variable": "boxes_weight",
+      "value": 200,
+      "unit": "ounces",
+      "context": "answer"
+    },
+    {
+      "variable": "crayons_and_boxes_weight",
+      "value": 400,
+      "unit": "ounces",
+      "context": "answer"
+    },
+    {
+      "variable": "crayons_and_boxes_weight_pounds",
+      "value": 25,
+      "unit": "pounds",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'unit': 'leu', 'factor': 16.62},\n        'pounds': {'unit': 'kilograms', 'factor': 0.453592},\n        'ounces': {'unit': 'grams', 'factor': 28.3495},\n        'miles': {'unit': 'kilometers', 'factor': 1.60934},\n        'feet': {'unit': 'meters', 'factor': 0.3048},\n        'gallons': {'unit': 'liters', 'factor': 3.78541},\n        'cups': {'unit': 'milliliters', 'factor': 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric['value']\n        original_unit = metric['unit']\n        variable = metric['variable']\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit]['unit']\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"crayon_weight\", \"value\": 1, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"box_weight\", \"value\": 8, \"unit\": \"ounces\", \"context\": \"question\"},\n    {\"variable\": \"boxes_weight\", \"value\": 200, \"unit\": \"ounces\", \"context\": \"answer\"},\n    {\"variable\": \"crayons_and_boxes_weight\", \"value\": 400, \"unit\": \"ounces\", \"context\": \"answer\"},\n    {\"variable\": \"crayons_and_boxes_weight_pounds\", \"value\": 25, \"unit\": \"pounds\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "crayon_weight",
+        "original_value": 1,
+        "original_unit": "ounce",
+        "converted_value": 1,
+        "converted_unit": "ounce"
+      },
+      {
+        "variable": "box_weight",
+        "original_value": 8,
+        "original_unit": "ounces",
+        "converted_value": 226.8,
+        "converted_unit": "grams"
+      },
+      {
+        "variable": "boxes_weight",
+        "original_value": 200,
+        "original_unit": "ounces",
+        "converted_value": 5669.9,
+        "converted_unit": "grams"
+      },
+      {
+        "variable": "crayons_and_boxes_weight",
+        "original_value": 400,
+        "original_unit": "ounces",
+        "converted_value": 11339.8,
+        "converted_unit": "grams"
+      },
+      {
+        "variable": "crayons_and_boxes_weight_pounds",
+        "original_value": 25,
+        "original_unit": "pounds",
+        "converted_value": 11.34,
+        "converted_unit": "kilograms"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Nik has {total_crayons} crayons. He wants to separate them into groups of {crayons_per_box} and put them into boxes.  Each box weighs {box_weight} ounces. Each crayon weighs {crayon_weight} ounces. If he puts all of his crayons into boxes, what is the total weight, in pounds, of the crayons and the boxes, when there are {ounces_per_pound} ounces to a pound?",
+    "templatized_answer": [
+      "First find how many boxes Nik needs. {total_crayons} crayons / {crayons_per_box} crayons per box = {total_boxes} boxes.",
+      "{total_boxes} boxes * {box_weight} ounces per box = {boxes_weight} ounces.",
+      "Each crayon weighs {crayon_weight} ounces, so {boxes_weight} + {total_crayons} = {crayons_and_boxes_weight} ounces.",
+      "{crayons_and_boxes_weight} ounces / {ounces_per_pound} ounces per pound = {crayons_and_boxes_weight_pounds} pounds."
+    ],
+    "factual_assignment": {
+      "total_crayons": 200,
+      "crayons_per_box": 8,
+      "box_weight": 8,
+      "crayon_weight": 1,
+      "total_boxes": 25,
+      "boxes_weight": 200,
+      "crayons_and_boxes_weight": 400,
+      "crayons_and_boxes_weight_pounds": 25,
+      "ounces_per_pound": 16
+    }
+  },
+  "merged_assignment": {
+    "total_crayons": 200,
+    "crayons_per_box": 8,
+    "box_weight": 226.8,
+    "crayon_weight": 1,
+    "total_boxes": 25,
+    "boxes_weight": 5669.9,
+    "crayons_and_boxes_weight": 11339.8,
+    "crayons_and_boxes_weight_pounds": 11.34,
+    "ounces_per_pound": 16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_crayons = 200\n    crayons_per_box = 8\n    box_weight = 226.8\n    crayon_weight = 1\n    ounces_per_pound = 16\n\n    total_boxes = total_crayons / crayons_per_box\n    total_boxes = round(total_boxes, 2)\n\n    boxes_weight = total_boxes * box_weight\n    boxes_weight = round(boxes_weight, 2)\n\n    crayons_and_boxes_weight = boxes_weight + (total_crayons * crayon_weight)\n    crayons_and_boxes_weight = round(crayons_and_boxes_weight, 2)\n\n    crayons_and_boxes_weight_pounds = crayons_and_boxes_weight / ounces_per_pound\n    crayons_and_boxes_weight_pounds = round(crayons_and_boxes_weight_pounds, 2)\n\n    return {\n        \"total_crayons\": total_crayons,\n        \"crayons_per_box\": crayons_per_box,\n        \"box_weight\": box_weight,\n        \"crayon_weight\": crayon_weight,\n        \"total_boxes\": total_boxes,\n        \"boxes_weight\": boxes_weight,\n        \"crayons_and_boxes_weight\": crayons_and_boxes_weight,\n        \"crayons_and_boxes_weight_pounds\": crayons_and_boxes_weight_pounds,\n        \"ounces_per_pound\": ounces_per_pound\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_crayons": 200,
+      "crayons_per_box": 8,
+      "box_weight": 226.8,
+      "crayon_weight": 1,
+      "total_boxes": 25.0,
+      "boxes_weight": 5670.0,
+      "crayons_and_boxes_weight": 5870.0,
+      "crayons_and_boxes_weight_pounds": 366.88,
+      "ounces_per_pound": 16
+    }
+  },
+  "final": null
+}

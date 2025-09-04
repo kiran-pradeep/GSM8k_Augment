@@ -1,0 +1,109 @@
+{
+  "index": 1282,
+  "split": "test",
+  "original": {
+    "question": "John invited 20 people to a birthday party.  Each guest will eat 2 hot dogs.  He already has 4 hot dogs left over from a previous party.  If a pack of hot dogs contains 6 hot dogs and costs $2, how much does he need to spend on hot dogs?",
+    "answer": "He needs 2*20=<<2*20=40>>40 hot dogs\nSo he needs another 40-4=<<40-4=36>>36 hot dogs\nSo he needs to buy 36/6=<<36/6=6>>6 packs of hotdogs\nThat means he needs to spend 6*2=$<<6*2=12>>12\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "hot dogs",
+      "dollars"
+    ],
+    "notes": "The name 'John' and the food item 'hot dogs' are culturally specific to Western regions. The unit 'dollars' is also a non-Pakistani currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hot_dog_pack_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_hot_dog_spend",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hot_dog_pack_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_hot_dog_spend\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hot_dog_pack_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 563.7,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_hot_dog_spend",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 3382.2,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John invited {number_of_guests} people to a birthday party.  Each guest will eat {hot_dogs_per_guest} hot dogs.  He already has {initial_hot_dogs} hot dogs left over from a previous party.  If a pack of hot dogs contains {hot_dogs_per_pack} hot dogs and costs ${hot_dog_pack_cost}, how much does he need to spend on hot dogs?",
+    "templatized_answer": [
+      "He needs {hot_dogs_per_guest}*{number_of_guests}={hot_dogs_per_guest}*{number_of_guests} hot dogs",
+      "So he needs another {hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs}={hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs} hot dogs",
+      "So he needs to buy ({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}=(({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}) packs of hotdogs",
+      "That means he needs to spend (({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack})*{hot_dog_pack_cost}=$(({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack})*{hot_dog_pack_cost}",
+      "#### ({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}*{hot_dog_pack_cost}"
+    ],
+    "factual_assignment": {
+      "number_of_guests": 20,
+      "hot_dogs_per_guest": 2,
+      "initial_hot_dogs": 4,
+      "hot_dogs_per_pack": 6,
+      "hot_dog_pack_cost": 2
+    }
+  },
+  "merged_assignment": {
+    "number_of_guests": 20,
+    "hot_dogs_per_guest": 2,
+    "initial_hot_dogs": 4,
+    "hot_dogs_per_pack": 6,
+    "hot_dog_pack_cost": 563.7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"number_of_guests\": 20,\n        \"hot_dogs_per_guest\": 2,\n        \"initial_hot_dogs\": 4,\n        \"hot_dogs_per_pack\": 6,\n        \"hot_dog_pack_cost\": 563.7\n    }\n\n    placeholders = {\n        \"hot_dogs_per_guest*number_of_guests\": factual_assignment[\"hot_dogs_per_guest\"] * factual_assignment[\"number_of_guests\"],\n        \"hot_dogs_per_guest*number_of_guests-{initial_hot_dogs}\": factual_assignment[\"hot_dogs_per_guest\"] * factual_assignment[\"number_of_guests\"] - factual_assignment[\"initial_hot_dogs\"],\n        \"({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}\": round((factual_assignment[\"hot_dogs_per_guest\"] * factual_assignment[\"number_of_guests\"] - factual_assignment[\"initial_hot_dogs\"]) / factual_assignment[\"hot_dogs_per_pack\"], 2),\n        \"(({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack})*{hot_dog_pack_cost}\": round(((factual_assignment[\"hot_dogs_per_guest\"] * factual_assignment[\"number_of_guests\"] - factual_assignment[\"initial_hot_dogs\"]) / factual_assignment[\"hot_dogs_per_pack\"]) * factual_assignment[\"hot_dog_pack_cost\"], 2)\n    }\n\n    return placeholders\n\nprint(recompute())\n",
+    "results": {
+      "hot_dogs_per_guest*number_of_guests": 40,
+      "hot_dogs_per_guest*number_of_guests-{initial_hot_dogs}": 36,
+      "({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}": 6.0,
+      "(({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack})*{hot_dog_pack_cost}": 3382.2
+    }
+  },
+  "final": {
+    "question": "John invited 20 people to a birthday party.  Each guest will eat 2 hot dogs.  He already has 4 hot dogs left over from a previous party.  If a pack of hot dogs contains 6 hot dogs and costs 563.7 rupee, how much does he need to spend on hot dogs?",
+    "answer_lines": [
+      "He needs 2*20=40 hot dogs",
+      "So he needs another 40-4=36 hot dogs",
+      "So he needs to buy 36/6=6.0 packs of hotdogs",
+      "That means he needs to spend 6.0*563.7=3382.2 rupee",
+      "#### 3382.2"
+    ],
+    "final_scalar": 3382.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran invited 20 people to a birthday party.  Each guest will eat 2 kebabs.  He already has 4 kebabs left over from a previous party.  If a pack of kebabs contains 6 kebabs and costs 563.7 rupee, how much does he need to spend on kebabs?",
+    "adapted_answer": [
+      "He needs 2*20=40 kebabs",
+      "So he needs another 40-4=36 kebabs",
+      "So he needs to buy 36/6=6.0 packs of kebabs",
+      "That means he needs to spend 6.0*563.7=3382.2 rupee",
+      "#### 3382.2"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Kamran' (Pakistani name) and 'hot dogs' with 'kebabs' (Pakistani food)"
+  }
+}

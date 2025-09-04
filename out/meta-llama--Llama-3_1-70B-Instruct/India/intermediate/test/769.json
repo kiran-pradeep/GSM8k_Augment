@@ -1,0 +1,141 @@
+{
+  "index": 769,
+  "split": "test",
+  "original": {
+    "question": "Tanya is teaching at school. She earns $15 for every hour and an additional $5 per day if she teaches more than 3 classes. On Monday she teaches 4 classes for 5 hours, and on Wednesday 2 classes for 2 hours. How much did Tanya earn for these two days of teaching?",
+    "answer": "Tanya worked for 5 hours + 2 hours = <<5+2=7>>7 hours.\nShe earned therefore 7 hours * $15/hour = $<<7*15=105>>105.\nOn Monday she taught more than 3 classes, so she got a bonus and in total earned $105 + $5 = $110.\n#### 110"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tanya",
+      "dollars"
+    ],
+    "notes": "Name 'Tanya' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_earnings",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bonus_per_day",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 105,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings_with_bonus",
+      "value": 110,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_earnings\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bonus_per_day\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 105, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings_with_bonus\", \"value\": 110, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_earnings",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1305,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "bonus_per_day",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 105,
+        "original_unit": "dollar",
+        "converted_value": 9135,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings_with_bonus",
+        "original_value": 110,
+        "original_unit": "dollar",
+        "converted_value": 9570,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tanya is teaching at school. She earns ${hourly_earnings} for every hour and an additional ${bonus_per_day} per day if she teaches more than {number_of_classes_for_bonus} classes. On Monday she teaches {number_of_classes_on_monday} classes for {number_of_hours_on_monday} hours, and on Wednesday {number_of_classes_on_wednesday} classes for {number_of_hours_on_wednesday} hours. How much did Tanya earn for these two days of teaching?",
+    "templatized_answer": [
+      "Tanya worked for {number_of_hours_on_monday} hours + {number_of_hours_on_wednesday} hours = {number_of_hours_on_monday}+{number_of_hours_on_wednesday} hours.",
+      "She earned therefore {number_of_hours_on_monday}+{number_of_hours_on_wednesday} hours * ${hourly_earnings}/hour = ${hourly_earnings}*({number_of_hours_on_monday}+{number_of_hours_on_wednesday}).",
+      "On Monday she taught more than {number_of_classes_for_bonus} classes, so she got a bonus and in total earned ${hourly_earnings}*({number_of_hours_on_monday}+{number_of_hours_on_wednesday}) + ${bonus_per_day} = ${hourly_earnings}*({number_of_hours_on_monday}+{number_of_hours_on_wednesday})+${bonus_per_day}.",
+      "#### ${hourly_earnings}*({number_of_hours_on_monday}+{number_of_hours_on_wednesday})+${bonus_per_day}"
+    ],
+    "factual_assignment": {
+      "hourly_earnings": 15,
+      "bonus_per_day": 5,
+      "number_of_classes_for_bonus": 3,
+      "number_of_classes_on_monday": 4,
+      "number_of_hours_on_monday": 5,
+      "number_of_classes_on_wednesday": 2,
+      "number_of_hours_on_wednesday": 2
+    }
+  },
+  "merged_assignment": {
+    "hourly_earnings": 1305,
+    "bonus_per_day": 435,
+    "number_of_classes_for_bonus": 3,
+    "number_of_classes_on_monday": 4,
+    "number_of_hours_on_monday": 5,
+    "number_of_classes_on_wednesday": 2,
+    "number_of_hours_on_wednesday": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_earnings = 1305\n    bonus_per_day = 435\n    number_of_classes_for_bonus = 3\n    number_of_classes_on_monday = 4\n    number_of_hours_on_monday = 5\n    number_of_classes_on_wednesday = 2\n    number_of_hours_on_wednesday = 2\n\n    total_hours = number_of_hours_on_monday + number_of_hours_on_wednesday\n    total_earnings = hourly_earnings * total_hours\n    total_earnings_with_bonus = total_earnings + bonus_per_day\n\n    return {\n        \"hourly_earnings\": hourly_earnings,\n        \"bonus_per_day\": bonus_per_day,\n        \"number_of_classes_for_bonus\": number_of_classes_for_bonus,\n        \"number_of_classes_on_monday\": number_of_classes_on_monday,\n        \"number_of_hours_on_monday\": number_of_hours_on_monday,\n        \"number_of_classes_on_wednesday\": number_of_classes_on_wednesday,\n        \"number_of_hours_on_wednesday\": number_of_hours_on_wednesday,\n        \"number_of_hours_on_monday+number_of_hours_on_wednesday\": total_hours,\n        \"hourly_earnings*({number_of_hours_on_monday}+{number_of_hours_on_wednesday})\": round(total_earnings, 2),\n        \"hourly_earnings*({number_of_hours_on_monday}+{number_of_hours_on_wednesday})+${bonus_per_day}\": round(total_earnings_with_bonus, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hourly_earnings": 1305,
+      "bonus_per_day": 435,
+      "number_of_classes_for_bonus": 3,
+      "number_of_classes_on_monday": 4,
+      "number_of_hours_on_monday": 5,
+      "number_of_classes_on_wednesday": 2,
+      "number_of_hours_on_wednesday": 2,
+      "number_of_hours_on_monday+number_of_hours_on_wednesday": 7,
+      "hourly_earnings*({number_of_hours_on_monday}+{number_of_hours_on_wednesday})": 9135,
+      "hourly_earnings*({number_of_hours_on_monday}+{number_of_hours_on_wednesday})+${bonus_per_day}": 9570
+    }
+  },
+  "final": {
+    "question": "Tanya is teaching at school. She earns 1305 for every hour and an additional 435 per day if she teaches more than 3 classes. On Monday she teaches 4 classes for 5 hours, and on Wednesday 2 classes for 2 hours. How much did Tanya earn for these two days of teaching?",
+    "answer_lines": [
+      "Tanya worked for 5 hours + 2 hours = 7 hours.",
+      "She earned therefore 7 hours * 1305/hour = 9135.",
+      "On Monday she taught more than 3 classes, so she got a bonus and in total earned 9135 + 435 = 9570.",
+      "#### 9570"
+    ],
+    "final_scalar": 9570,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Tanvi is teaching at school. She earns 1305 for every hour and an additional 435 per day if she teaches more than 3 classes. On Monday she teaches 4 classes for 5 hours, and on Wednesday 2 classes for 2 hours. How much did Tanvi earn for these two days of teaching?",
+    "adapted_answer": [
+      "Tanvi worked for 5 hours + 2 hours = 7 hours.",
+      "She earned therefore 7 hours * 1305/hour = 9135.",
+      "On Monday she taught more than 3 classes, so she got a bonus and in total earned 9135 + 435 = 9570.",
+      "#### 9570"
+    ],
+    "adaptation_notes": "Replaced 'Tanya' with 'Tanvi' to give the name an Indian context."
+  }
+}

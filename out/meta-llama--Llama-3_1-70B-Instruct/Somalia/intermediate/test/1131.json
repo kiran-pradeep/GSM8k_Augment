@@ -1,0 +1,122 @@
+{
+  "index": 1131,
+  "split": "test",
+  "original": {
+    "question": "John cuts down an 80-foot tree.  He can make logs out of 80% of it. He cuts it into 4-foot logs.  From each of those logs, he cuts 5 planks.  He then sells each plank for $1.2.  How much does he make?",
+    "answer": "He can use 80*.8=<<80*.8=64>>64 feet of the tree.\nThat means he can make 64/4=<<64/4=16>>16 logs.\nThat gives him16*5=<<16*5=80>>80 planks.\nSo he makes 80*1.2=$<<80*1.2=96>>96.\n#### 96"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars",
+      "feet"
+    ],
+    "notes": "The name 'John' is Western, and the units 'dollars' and 'feet' are commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "plank_price",
+      "value": 1.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 96,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"plank_price\", \"value\": 1.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 96, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "plank_price",
+        "original_value": 1.2,
+        "original_unit": "dollar",
+        "converted_value": 683.26,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 96,
+        "original_unit": "dollar",
+        "converted_value": 54660.48,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John cuts down a {tree_length}-foot tree.  He can make logs out of {percentage_useable}% of it. He cuts it into {log_length}-foot logs.  From each of those logs, he cuts {planks_per_log} planks.  He then sells each plank for ${plank_price}.  How much does he make?",
+    "templatized_answer": [
+      "He can use {tree_length}*{percentage_useable}/100={usable_length} feet of the tree.",
+      "That means he can make {usable_length}/{log_length}={number_of_logs} logs.",
+      "That gives him {number_of_logs}*{planks_per_log}={total_planks} planks.",
+      "So he makes {total_planks}*{plank_price}=${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "tree_length": 80,
+      "percentage_useable": 80,
+      "log_length": 4,
+      "planks_per_log": 5,
+      "plank_price": 1.2,
+      "usable_length": 64,
+      "number_of_logs": 16,
+      "total_planks": 80,
+      "total_earnings": 96
+    }
+  },
+  "merged_assignment": {
+    "tree_length": 80,
+    "percentage_useable": 80,
+    "log_length": 4,
+    "planks_per_log": 5,
+    "plank_price": 683.26,
+    "usable_length": 64,
+    "number_of_logs": 16,
+    "total_planks": 80,
+    "total_earnings": 54660.48
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tree_length = 80\n    percentage_useable = 80\n    log_length = 4\n    planks_per_log = 5\n    plank_price = 683.26\n\n    usable_length = tree_length * percentage_useable / 100\n    number_of_logs = usable_length / log_length\n    total_planks = number_of_logs * planks_per_log\n    total_earnings = total_planks * plank_price\n\n    return {\n        \"tree_length\": tree_length,\n        \"percentage_useable\": percentage_useable,\n        \"log_length\": log_length,\n        \"planks_per_log\": planks_per_log,\n        \"plank_price\": round(plank_price, 2),\n        \"usable_length\": round(usable_length, 2),\n        \"number_of_logs\": round(number_of_logs, 2),\n        \"total_planks\": round(total_planks, 2),\n        \"total_earnings\": round(total_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "tree_length": 80,
+      "percentage_useable": 80,
+      "log_length": 4,
+      "planks_per_log": 5,
+      "plank_price": 683.26,
+      "usable_length": 64.0,
+      "number_of_logs": 16.0,
+      "total_planks": 80.0,
+      "total_earnings": 54660.8
+    }
+  },
+  "final": {
+    "question": "John cuts down a 80-foot tree.  He can make logs out of 80% of it. He cuts it into 4-foot logs.  From each of those logs, he cuts 5 planks.  He then sells each plank for 683.26 shilling.  How much does he make?",
+    "answer_lines": [
+      "He can use 80*0.8=64.0 feet of the tree.",
+      "That means he can make 64.0/4.0=16.0 logs.",
+      "That gives him 16.0*5.0=80.0 planks.",
+      "So he makes 80.0*683.26=54660.8 shilling.",
+      "#### 54660.8"
+    ],
+    "final_scalar": 54660.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cali cuts down a 80-foot tree.  He can make logs out of 80% of it. He cuts it into 4-foot logs.  From each of those logs, he cuts 5 planks.  He then sells each plank for 683.26 shilling.  How much does he make?",
+    "adapted_answer": [
+      "He can use 80*0.8=64.0 feet of the tree.",
+      "That means he can make 64.0/4.0=16.0 logs.",
+      "That gives him 16.0*5.0=80.0 planks.",
+      "So he makes 80.0*683.26=54660.8 shilling.",
+      "#### 54660.8"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Cali', a common Somali name."
+  }
+}

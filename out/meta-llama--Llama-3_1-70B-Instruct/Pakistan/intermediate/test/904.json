@@ -1,0 +1,99 @@
+{
+  "index": 904,
+  "split": "test",
+  "original": {
+    "question": "There are 9 Fast and the Furious movies, Deepa has seen each one in the theatre three times. She has spent $216 seeing these movies. What is the average price she paid per ticket?",
+    "answer": "She has seen 27 movies because 9 x 3 = <<9*3=27>>27\nThey cost $8 each because 216 / 27 = <<216/27=8>>8\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_spent",
+      "value": 216.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "average_price",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_spent\", \"value\": 216.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"average_price\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_spent",
+        "original_value": 216.0,
+        "original_unit": "dollar",
+        "converted_value": 60879.6,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "average_price",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 2254.8,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "There are {number_of_movies} Fast and the Furious movies, Deepa has seen each one in the theatre three times. She has spent ${total_spent} seeing these movies. What is the average price she paid per ticket?",
+    "templatized_answer": [
+      "She has seen {number_of_movies_seen} movies because {number_of_movies} x 3 = {number_of_movies_seen}",
+      "They cost ${average_price} each because {total_spent} / {number_of_movies_seen} = {average_price}",
+      "#### {average_price}"
+    ],
+    "factual_assignment": {
+      "number_of_movies": 9,
+      "number_of_movies_seen": 27,
+      "total_spent": 216.0,
+      "average_price": 8.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_movies": 9,
+    "number_of_movies_seen": 27,
+    "total_spent": 60879.6,
+    "average_price": 2254.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_movies = 9\n    total_spent = 60879.6\n\n    number_of_movies_seen = number_of_movies * 3\n    average_price = round(total_spent / number_of_movies_seen, 2)\n\n    return {\n        \"number_of_movies\": number_of_movies,\n        \"number_of_movies_seen\": number_of_movies_seen,\n        \"total_spent\": total_spent,\n        \"average_price\": average_price\n    }\n",
+    "results": {
+      "number_of_movies": 9,
+      "number_of_movies_seen": 27,
+      "total_spent": 60879.6,
+      "average_price": 2254.8
+    }
+  },
+  "final": {
+    "question": "There are 9 Fast and the Furious movies, Deepa has seen each one in the theatre three times. She has spent 60879.6 rupee seeing these movies. What is the average price she paid per ticket?",
+    "answer_lines": [
+      "She has seen 27 movies because 9 x 3 = 27",
+      "They cost 2254.8 rupee each because 60879.6 / 27 = 2254.8",
+      "#### 2254.8"
+    ],
+    "final_scalar": 2254.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "There are 9 Waar movies, Deepa has seen each one in the theatre three times. She has spent 60879.6 rupee seeing these movies. What is the average price she paid per ticket?",
+    "adapted_answer": [
+      "She has seen 27 movies because 9 x 3 = 27",
+      "They cost 2254.8 rupee each because 60879.6 / 27 = 2254.8",
+      "#### 2254.8"
+    ],
+    "adaptation_notes": "Replaced 'Fast and the Furious' with 'Waar', a popular Pakistani movie."
+  }
+}

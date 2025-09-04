@@ -1,0 +1,188 @@
+{
+  "index": 466,
+  "split": "test",
+  "original": {
+    "question": "Becky bought 20 apples for 45 cents each and received a $1 discount. Kelly bought 20 apples for 50 cents each and received a 10 percent discount. How much more did Kelly pay than Becky?",
+    "answer": "Before the discount, Becky would have paid 20 apples x $0.45/apple = $<<20*0.45=9>>9\nWith the discount, Becky paid $9 - $1 = $<<9-1=8>>8.\nBefore the discount Kelly would have paid 20 apples x $0.50/apple = $<<20*0.5=10>>10\nWith a 10 percent discount Kelly paid ($10 x 10)/100 = $<<(10*10)/100=1>>1 less\nIn total Kelly paid $10 - $1 = $<<10-1=9>>9.\nKelly paid $9 - $8 = $<<9-8=1>>1 more than Becky.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "apples"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in the United States, and 'apples' which is a food item not commonly associated with Somali cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "becky_apple_cost",
+      "value": 0.45,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "becky_discount",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "becky_total_cost",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "kelly_apple_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "kelly_discount",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "kelly_total_cost",
+      "value": 9,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "price_difference",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"becky_apple_cost\", \"value\": 0.45, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"becky_discount\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"becky_total_cost\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"kelly_apple_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"kelly_discount\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"kelly_total_cost\", \"value\": 9, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"price_difference\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "becky_apple_cost",
+        "original_value": 0.45,
+        "original_unit": "dollar",
+        "converted_value": 256.22,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "becky_discount",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 569.38,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "becky_total_cost",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 4555.04,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "kelly_apple_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 284.69,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "kelly_discount",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 569.38,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "kelly_total_cost",
+        "original_value": 9,
+        "original_unit": "dollar",
+        "converted_value": 5124.42,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "price_difference",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 569.38,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Becky bought 20 apples for {becky_apple_cost} each and received a ${becky_discount} discount. Kelly bought 20 apples for {kelly_apple_cost} each and received a 10 percent discount. How much more did Kelly pay than Becky?",
+    "templatized_answer": [
+      "Before the discount, Becky would have paid 20 apples x ${becky_apple_cost}/apple = ${20*becky_apple_cost}",
+      "With the discount, Becky paid ${20*becky_apple_cost} - ${becky_discount} = ${becky_total_cost}.",
+      "Before the discount Kelly would have paid 20 apples x ${kelly_apple_cost}/apple = ${20*kelly_apple_cost}",
+      "With a 10 percent discount Kelly paid (${20*kelly_apple_cost} x 10)/100 = ${kelly_discount} less",
+      "In total Kelly paid ${20*kelly_apple_cost} - ${kelly_discount} = ${kelly_total_cost}.",
+      "Kelly paid ${kelly_total_cost} - ${becky_total_cost} = ${price_difference} more than Becky.",
+      "#### {price_difference}"
+    ],
+    "factual_assignment": {
+      "becky_apple_cost": 0.45,
+      "becky_discount": 1,
+      "becky_total_cost": 8,
+      "kelly_apple_cost": 0.5,
+      "kelly_discount": 1,
+      "kelly_total_cost": 9,
+      "price_difference": 1
+    }
+  },
+  "merged_assignment": {
+    "becky_apple_cost": 256.22,
+    "becky_discount": 569.38,
+    "becky_total_cost": 4555.04,
+    "kelly_apple_cost": 284.69,
+    "kelly_discount": 569.38,
+    "kelly_total_cost": 5124.42,
+    "price_difference": 569.38
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    becky_apple_cost = 256.22\n    becky_discount = 569.38\n    kelly_apple_cost = 284.69\n\n    # Recompute intermediate values\n    becky_total_cost_before_discount = 20 * becky_apple_cost\n    becky_total_cost = becky_total_cost_before_discount - becky_discount\n    kelly_total_cost_before_discount = 20 * kelly_apple_cost\n    kelly_discount = (kelly_total_cost_before_discount * 10) / 100\n    kelly_total_cost = kelly_total_cost_before_discount - kelly_discount\n    price_difference = kelly_total_cost - becky_total_cost\n\n    # Round to 2 decimal places where appropriate\n    becky_total_cost_before_discount = round(becky_total_cost_before_discount, 2)\n    becky_total_cost = round(becky_total_cost, 2)\n    kelly_total_cost_before_discount = round(kelly_total_cost_before_discount, 2)\n    kelly_discount = round(kelly_discount, 2)\n    kelly_total_cost = round(kelly_total_cost, 2)\n    price_difference = round(price_difference, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"becky_apple_cost\": becky_apple_cost,\n        \"becky_discount\": becky_discount,\n        \"becky_total_cost\": becky_total_cost,\n        \"becky_total_cost_before_discount\": becky_total_cost_before_discount,\n        \"kelly_apple_cost\": kelly_apple_cost,\n        \"kelly_discount\": kelly_discount,\n        \"kelly_total_cost\": kelly_total_cost,\n        \"kelly_total_cost_before_discount\": kelly_total_cost_before_discount,\n        \"price_difference\": price_difference,\n    }\n\n# Example usage:\nresult = recompute()\nprint(result)\n",
+    "results": {
+      "becky_apple_cost": 256.22,
+      "becky_discount": 569.38,
+      "becky_total_cost": 4555.02,
+      "becky_total_cost_before_discount": 5124.4,
+      "kelly_apple_cost": 284.69,
+      "kelly_discount": 569.38,
+      "kelly_total_cost": 5124.42,
+      "kelly_total_cost_before_discount": 5693.8,
+      "price_difference": 569.4
+    }
+  },
+  "final": {
+    "question": "Becky bought 20 apples for 256.22 shilling each and received a 569.38 shilling discount. Kelly bought 20 apples for 284.69 shilling each and received a 10 percent discount. How much more did Kelly pay than Becky?",
+    "answer_lines": [
+      "Before the discount, Becky would have paid 20 apples x 256.22 shilling/apple = 5124.4 shilling",
+      "With the discount, Becky paid 5124.4 shilling - 569.38 shilling = 4555.02 shilling.",
+      "Before the discount Kelly would have paid 20 apples x 284.69 shilling/apple = 5693.8 shilling",
+      "With a 10 percent discount Kelly paid (5693.8 shilling x 10)/100 = 569.38 shilling less",
+      "In total Kelly paid 5693.8 shilling - 569.38 shilling = 5124.42 shilling.",
+      "Kelly paid 5124.42 shilling - 4555.02 shilling = 569.4 shilling more than Becky.",
+      "#### 569.4"
+    ],
+    "final_scalar": 569.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Becky bought 20 muus for 256.22 shilling each and received a 569.38 shilling discount. Kelly bought 20 muus for 284.69 shilling each and received a 10 percent discount. How much more did Kelly pay than Becky?",
+    "adapted_answer": [
+      "Before the discount, Becky would have paid 20 muus x 256.22 shilling/muu = 5124.4 shilling",
+      "With the discount, Becky paid 5124.4 shilling - 569.38 shilling = 4555.02 shilling.",
+      "Before the discount Kelly would have paid 20 muus x 284.69 shilling/muu = 5693.8 shilling",
+      "With a 10 percent discount Kelly paid (5693.8 shilling x 10)/100 = 569.38 shilling less",
+      "In total Kelly paid 5693.8 shilling - 569.38 shilling = 5124.42 shilling.",
+      "Kelly paid 5124.42 shilling - 4555.02 shilling = 569.4 shilling more than Becky.",
+      "#### 569.4"
+    ],
+    "adaptation_notes": "Replaced 'apples' with 'muus', a type of Somali fruit."
+  }
+}

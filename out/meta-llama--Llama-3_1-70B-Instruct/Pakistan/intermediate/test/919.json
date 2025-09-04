@@ -1,0 +1,120 @@
+{
+  "index": 919,
+  "split": "test",
+  "original": {
+    "question": "To raise money for their class fund, each of the 30 students from one class sold lollipops that cost $0.8 per lollypop. On average, each student sold 10 lollipops. If they bought the lollipops for $0.5 each, how much money was the class able to raise from the profit of selling lollipops?",
+    "answer": "The class got $0.8 - $0.5 = $<<0.8-0.5=0.3>>0.3 profit from each lollipop.\nSo each student raised $0.3 x 10 = $<<0.3*10=3>>3 from selling 10 lollipops.\nTherefore, they were able to raise a total of $3 x 30 = $<<3*30=90>>90.\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "lollipops"
+    ],
+    "notes": "The question contains 'dollars' which is a unit of currency commonly used in the US, and 'lollipops' which is a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lollypop_cost",
+      "value": 0.8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollypop_buying_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollypop_profit",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "student_earnings",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 90,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    converted_metrics = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        converted_metrics.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return converted_metrics\n\nmetrics = [\n    {\"variable\": \"lollypop_cost\", \"value\": 0.8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollypop_buying_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollypop_profit\", \"value\": 0.3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"student_earnings\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 90, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lollypop_cost",
+        "original_value": 0.8,
+        "original_unit": "dollar",
+        "converted_value": 225.48,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "lollypop_buying_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 140.93,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "lollypop_profit",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 84.56,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "student_earnings",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 845.55,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 25366.5,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To raise money for their class fund, each of the {number_of_students} students from one class sold lollipops that cost ${lollypop_cost} per lollypop. On average, each student sold {number_of_lollipops}. If they bought the lollipops for ${lollypop_buying_cost} each, how much money was the class able to raise from the profit of selling lollipops?",
+    "templatized_answer": [
+      "The class got ${lollypop_cost} - ${lollypop_buying_cost} = ${lollypop_profit} profit from each lollipop.",
+      "So each student raised ${lollypop_profit} x {number_of_lollipops} = ${student_earnings} from selling {number_of_lollipops} lollipops.",
+      "Therefore, they were able to raise a total of ${student_earnings} x {number_of_students} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "lollypop_cost": 0.8,
+      "lollypop_buying_cost": 0.5,
+      "lollypop_profit": 0.3,
+      "student_earnings": 3,
+      "total_earnings": 90,
+      "number_of_students": 30,
+      "number_of_lollipops": 10
+    }
+  },
+  "merged_assignment": {
+    "lollypop_cost": 225.48,
+    "lollypop_buying_cost": 140.93,
+    "lollypop_profit": 84.56,
+    "student_earnings": 845.55,
+    "total_earnings": 25366.5,
+    "number_of_students": 30,
+    "number_of_lollipops": 10
+  },
+  "recompute": {
+    "code": null,
+    "results": null
+  },
+  "final": null
+}

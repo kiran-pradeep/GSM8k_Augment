@@ -1,0 +1,114 @@
+{
+  "index": 1186,
+  "split": "test",
+  "original": {
+    "question": "Sam ran 3 miles on Monday, Wednesday and Friday.  On Tuesday and Thursday, Sam ran 5 miles.  How many miles did Sam run this week?",
+    "answer": "On Monday, Wednesday and Friday, Mike ran 3 * 3 = <<3*3=9>>9 miles\nOn Tuesday and Thursday, he ran 5 * 2 = <<5*2=10>>10 miles\nDuring the 5 days together, he ran a total of 10 + 9 = <<10+9=19>>19 miles\n#### 19"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles"
+    ],
+    "notes": "The unit 'miles' is commonly used in the United States and the United Kingdom, but not in Moldova, where the metric system is used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monday_wednesday_friday_run",
+      "value": 3.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "tuesday_thursday_run",
+      "value": 5.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "total_run",
+      "value": 19.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"leu\", \"factor\": 16.62}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"monday_wednesday_friday_run\",\n    \"value\": 3.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"tuesday_thursday_run\",\n    \"value\": 5.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_run\",\n    \"value\": 19.0,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monday_wednesday_friday_run",
+        "original_value": 3.0,
+        "original_unit": "mile",
+        "converted_value": 4.83,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "tuesday_thursday_run",
+        "original_value": 5.0,
+        "original_unit": "mile",
+        "converted_value": 8.05,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "total_run",
+        "original_value": 19.0,
+        "original_unit": "mile",
+        "converted_value": 30.58,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sam ran {monday_wednesday_friday_run} miles on Monday, Wednesday and Friday.  On Tuesday and Thursday, Sam ran {tuesday_thursday_run} miles.  How many miles did Sam run this week?",
+    "templatized_answer": [
+      "On Monday, Wednesday and Friday, Mike ran {monday_wednesday_friday_run} * 3 = {monday_wednesday_friday_run} * 3 miles",
+      "On Tuesday and Thursday, he ran {tuesday_thursday_run} * 2 = {tuesday_thursday_run} * 2 miles",
+      "During the 5 days together, he ran a total of {tuesday_thursday_run} * 2 + {monday_wednesday_friday_run} * 3 = {tuesday_thursday_run} * 2 + {monday_wednesday_friday_run} * 3 miles",
+      "#### {total_run}"
+    ],
+    "factual_assignment": {
+      "monday_wednesday_friday_run": 3.0,
+      "tuesday_thursday_run": 5.0,
+      "total_run": 19.0
+    }
+  },
+  "merged_assignment": {
+    "monday_wednesday_friday_run": 4.83,
+    "tuesday_thursday_run": 8.05,
+    "total_run": 30.58
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monday_wednesday_friday_run = 4.83\n    tuesday_thursday_run = 8.05\n\n    monday_wednesday_friday_run_total = monday_wednesday_friday_run * 3\n    tuesday_thursday_run_total = tuesday_thursday_run * 2\n    total_run = tuesday_thursday_run_total + monday_wednesday_friday_run_total\n\n    return {\n        \"monday_wednesday_friday_run\": round(monday_wednesday_friday_run, 2),\n        \"tuesday_thursday_run\": round(tuesday_thursday_run, 2),\n        \"monday_wednesday_friday_run_total\": round(monday_wednesday_friday_run_total, 2),\n        \"tuesday_thursday_run_total\": round(tuesday_thursday_run_total, 2),\n        \"total_run\": round(total_run, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "monday_wednesday_friday_run": 4.83,
+      "tuesday_thursday_run": 8.05,
+      "monday_wednesday_friday_run_total": 14.49,
+      "tuesday_thursday_run_total": 16.1,
+      "total_run": 30.59
+    }
+  },
+  "final": {
+    "question": "Sam ran 4.83 kilometers on Monday, Wednesday and Friday.  On Tuesday and Thursday, Sam ran 8.05 kilometers.  How many kilometers did Sam run this week?",
+    "answer_lines": [
+      "On Monday, Wednesday and Friday, Mike ran 4.83 * 3 = 14.49 kilometers",
+      "On Tuesday and Thursday, he ran 8.05 * 2 = 16.1 kilometers",
+      "During the 5 days together, he ran a total of 16.1 + 14.49 = 30.59 kilometers",
+      "#### 30.59"
+    ],
+    "final_scalar": 30.59,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion ran 4.83 kilometers on Monday, Wednesday and Friday.  On Tuesday and Thursday, Ion ran 8.05 kilometers.  How many kilometers did Ion run this week?",
+    "adapted_answer": [
+      "On Monday, Wednesday and Friday, Ion ran 4.83 * 3 = 14.49 kilometers",
+      "On Tuesday and Thursday, he ran 8.05 * 2 = 16.1 kilometers",
+      "During the 5 days together, he ran a total of 16.1 + 14.49 = 30.59 kilometers",
+      "#### 30.59"
+    ],
+    "adaptation_notes": "Replaced 'Sam' with 'Ion', a common Moldovan name."
+  }
+}

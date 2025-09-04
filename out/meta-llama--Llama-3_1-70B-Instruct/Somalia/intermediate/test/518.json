@@ -1,0 +1,174 @@
+{
+  "index": 518,
+  "split": "test",
+  "original": {
+    "question": "Ali has four $10 bills and six $20 bills that he saved after working for Mr. James on his farm. Ali gives her sister half of the total money he has and uses 3/5 of the remaining amount of money to buy dinner. Calculate the amount of money he has after buying the dinner.",
+    "answer": "Four $10 bills have a value of 4*$10 =$<<4*10=40>>40\nThe six $20 bills also are worth 6*$20 = $<<6*20=120>>120\nAli has $40+$120 = $<<40+120=160>>160\nWhen he gives his sister half of the money, he remains with the other half, which totals 1/2*$160 = $<<1/2*160=80>>80\nHe then spends 3/5*$80 = $<<3/5*80=48>>48 on dinner.\nThe total amount of money that Ali has now is $80-$48 = $<<80-48=32>>32\n#### 32"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mr. James",
+      "dollars"
+    ],
+    "notes": "The name 'Mr. James' and the unit 'dollars' are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ten_dollar_bills",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "twenty_dollar_bills",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_money",
+      "value": 160.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "money_after_gift",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "dinner_cost",
+      "value": 48.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 32.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ten_dollar_bills\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"twenty_dollar_bills\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_money\", \"value\": 160.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"money_after_gift\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"dinner_cost\", \"value\": 48.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 32.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ten_dollar_bills",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 22775.2,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "twenty_dollar_bills",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 68325.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 160.0,
+        "original_unit": "dollar",
+        "converted_value": 91100.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "money_after_gift",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 45550.4,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "dinner_cost",
+        "original_value": 48.0,
+        "original_unit": "dollar",
+        "converted_value": 27330.24,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 32.0,
+        "original_unit": "dollar",
+        "converted_value": 18220.16,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ali has {number_of_ten_dollar_bills} $10 bills and {number_of_twenty_dollar_bills} $20 bills that he saved after working for Mr. James on his farm. Ali gives her sister half of the total money he has and uses 3/5 of the remaining amount of money to buy dinner. Calculate the amount of money he has after buying the dinner.",
+    "templatized_answer": [
+      "{number_of_ten_dollar_bills} $10 bills have a value of {number_of_ten_dollar_bills}*$10 = ${ten_dollar_bills}",
+      "The {number_of_twenty_dollar_bills} $20 bills also are worth {number_of_twenty_dollar_bills}*$20 = ${twenty_dollar_bills}",
+      "Ali has ${ten_dollar_bills}+${twenty_dollar_bills} = ${total_money}",
+      "When he gives his sister half of the money, he remains with the other half, which totals 1/2*${total_money} = ${money_after_gift}",
+      "He then spends 3/5*${money_after_gift} = ${dinner_cost} on dinner.",
+      "The total amount of money that Ali has now is ${money_after_gift}-${dinner_cost} = ${remaining_money}"
+    ],
+    "factual_assignment": {
+      "number_of_ten_dollar_bills": 4,
+      "ten_dollar_bills": 40.0,
+      "number_of_twenty_dollar_bills": 6,
+      "twenty_dollar_bills": 120.0,
+      "total_money": 160.0,
+      "money_after_gift": 80.0,
+      "dinner_cost": 48.0,
+      "remaining_money": 32.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_ten_dollar_bills": 4,
+    "ten_dollar_bills": 22775.2,
+    "number_of_twenty_dollar_bills": 6,
+    "twenty_dollar_bills": 68325.6,
+    "total_money": 91100.8,
+    "money_after_gift": 45550.4,
+    "dinner_cost": 27330.24,
+    "remaining_money": 18220.16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_ten_dollar_bills = 4\n    number_of_twenty_dollar_bills = 6\n\n    ten_dollar_bills = number_of_ten_dollar_bills * 10 * 2277.52 / 100\n    twenty_dollar_bills = number_of_twenty_dollar_bills * 20 * 2277.52 / 100\n\n    total_money = ten_dollar_bills + twenty_dollar_bills\n    money_after_gift = total_money / 2\n    dinner_cost = (3/5) * money_after_gift\n    remaining_money = money_after_gift - dinner_cost\n\n    return {\n        \"number_of_ten_dollar_bills\": number_of_ten_dollar_bills,\n        \"number_of_twenty_dollar_bills\": number_of_twenty_dollar_bills,\n        \"ten_dollar_bills\": round(ten_dollar_bills, 2),\n        \"twenty_dollar_bills\": round(twenty_dollar_bills, 2),\n        \"total_money\": round(total_money, 2),\n        \"money_after_gift\": round(money_after_gift, 2),\n        \"dinner_cost\": round(dinner_cost, 2),\n        \"remaining_money\": round(remaining_money, 2)\n    }\n",
+    "results": {
+      "number_of_ten_dollar_bills": 4,
+      "number_of_twenty_dollar_bills": 6,
+      "ten_dollar_bills": 911.01,
+      "twenty_dollar_bills": 2733.02,
+      "total_money": 3644.03,
+      "money_after_gift": 1822.02,
+      "dinner_cost": 1093.21,
+      "remaining_money": 728.81
+    }
+  },
+  "final": {
+    "question": "Ali has 4 $10 bills and 6 $20 bills that he saved after working for Mr. James on his farm. Ali gives her sister half of the total money he has and uses 3/5 of the remaining amount of money to buy dinner. Calculate the amount of money he has after buying the dinner.",
+    "answer_lines": [
+      "4 $10 bills have a value of 4*$10 = 911.01",
+      "The 6 $20 bills also are worth 6*$20 = 2733.02",
+      "Ali has 911.01+2733.02 = 3644.03",
+      "When he gives his sister half of the money, he remains with the other half, which totals 1/2*3644.03 = 1822.02",
+      "He then spends 3/5*1822.02 = 1093.21 on dinner.",
+      "The total amount of money that Ali has now is 1822.02-1093.21 = 728.81",
+      "#### 728.81"
+    ],
+    "final_scalar": 728.81,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Amina has 4 $10 bills and 6 $20 bills that she saved after working for Cumar Xasan on his farm. Amina gives her sister half of the total money she has and uses 3/5 of the remaining amount of money to buy dinner. Calculate the amount of money she has after buying the dinner.",
+    "adapted_answer": [
+      "4 $10 bills have a value of 4*$10 = 40",
+      "The 6 $20 bills also are worth 6*$20 = 120",
+      "Amina has 40+120 = 160",
+      "When she gives her sister half of the money, she remains with the other half, which totals 1/2*160 = 80",
+      "She then spends 3/5*80 = 48 on dinner.",
+      "The total amount of money that Amina has now is 80-48 = 32"
+    ],
+    "adaptation_notes": "Replaced 'Ali' with 'Amina', 'Mr. James' with 'Cumar Xasan', and adjusted dollar amounts to match the original calculation results."
+  }
+}
