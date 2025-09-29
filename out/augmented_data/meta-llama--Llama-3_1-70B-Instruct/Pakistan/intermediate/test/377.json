@@ -1,0 +1,116 @@
+{
+  "index": 377,
+  "split": "test",
+  "original": {
+    "question": "Lucy sells apples from her orchard at $4 per piece. On Monday, she sold all the apples picked. On Tuesday, she picked 12 apples. Come Wednesday, Lucy picked double the number of apples she did the previous day. If Lucy got $56 from selling the apples picked on Monday, how many apples did she pick over the three days?",
+    "answer": "Since each apple costs $4, it means that on Monday, Lucy picked 56/4 = <<56/4=14>>14 apples\nCombining Monday and Tuesday, Lucy picked 14 + 12 = <<14+12=26>>26 apples\nOn Wednesday, she picked 2 * 12 = <<2*12=24>>24 apples\nAll together, Lucy picked 26 + 24 = <<26+24=50>>50 apples.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Lucy",
+      "dollars",
+      "apples"
+    ],
+    "notes": "The name 'Lucy' is Western, 'dollars' is a US unit of currency, and 'apples' are commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apple_price",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monday_earnings",
+      "value": 56,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apple_price\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monday_earnings\", \"value\": 56, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apple_price",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "monday_earnings",
+        "original_value": 56,
+        "original_unit": "dollar",
+        "converted_value": 15783.6,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Lucy sells apples from her orchard at ${apple_price} per piece. On Monday, she sold all the apples picked. On Tuesday, she picked {tuesday_apples} apples. Come Wednesday, Lucy picked double the number of apples she did the previous day. If Lucy got ${monday_earnings} from selling the apples picked on Monday, how many apples did she pick over the three days?",
+    "templatized_answer": [
+      "Since each apple costs ${apple_price}, it means that on Monday, Lucy picked ${monday_earnings}/${apple_price} = <<${monday_earnings}/${apple_price}={monday_apples}>>{monday_apples} apples",
+      "Combining Monday and Tuesday, Lucy picked {monday_apples} + {tuesday_apples} = <<{monday_apples}+{tuesday_apples}={monday_and_tuesday_apples}>>{monday_and_tuesday_apples} apples",
+      "On Wednesday, she picked 2 * {tuesday_apples} = <<2*{tuesday_apples}={wednesday_apples}>>{wednesday_apples} apples",
+      "All together, Lucy picked {monday_and_tuesday_apples} + {wednesday_apples} = <<{monday_and_tuesday_apples}+{wednesday_apples}={total_apples}>>{total_apples} apples.",
+      "#### {total_apples}"
+    ],
+    "factual_assignment": {
+      "apple_price": 4,
+      "monday_earnings": 56,
+      "tuesday_apples": 12,
+      "monday_apples": 14,
+      "monday_and_tuesday_apples": 26,
+      "wednesday_apples": 24,
+      "total_apples": 50
+    }
+  },
+  "merged_assignment": {
+    "apple_price": 1127.4,
+    "monday_earnings": 15783.6,
+    "tuesday_apples": 12,
+    "monday_apples": 14,
+    "monday_and_tuesday_apples": 26,
+    "wednesday_apples": 24,
+    "total_apples": 50
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apple_price = 1127.4\n    monday_earnings = 15783.6\n    tuesday_apples = 12\n\n    monday_apples = monday_earnings / apple_price\n    monday_apples = round(monday_apples, 2)\n\n    monday_and_tuesday_apples = monday_apples + tuesday_apples\n\n    wednesday_apples = 2 * tuesday_apples\n\n    total_apples = monday_and_tuesday_apples + wednesday_apples\n\n    return {\n        \"apple_price\": apple_price,\n        \"monday_earnings\": monday_earnings,\n        \"tuesday_apples\": tuesday_apples,\n        \"monday_apples\": monday_apples,\n        \"monday_and_tuesday_apples\": monday_and_tuesday_apples,\n        \"wednesday_apples\": wednesday_apples,\n        \"total_apples\": total_apples\n    }\n\nprint(recompute())\n",
+    "results": {
+      "apple_price": 1127.4,
+      "monday_earnings": 15783.6,
+      "tuesday_apples": 12,
+      "monday_apples": 14.0,
+      "monday_and_tuesday_apples": 26.0,
+      "wednesday_apples": 24,
+      "total_apples": 50.0
+    }
+  },
+  "final": {
+    "question": "Lucy sells apples from her orchard at 1127.4 per piece. On Monday, she sold all the apples picked. On Tuesday, she picked 12 apples. Come Wednesday, Lucy picked double the number of apples she did the previous day. If Lucy got 15783.6 from selling the apples picked on Monday, how many apples did she pick over the three days?",
+    "answer_lines": [
+      "Since each apple costs 1127.4, it means that on Monday, Lucy picked 15783.6/1127.4 = 14.0 apples",
+      "Combining Monday and Tuesday, Lucy picked 14.0 + 12 = 26.0 apples",
+      "On Wednesday, she picked 2 * 12 = 24 apples",
+      "All together, Lucy picked 26.0 + 24 = 50.0 apples.",
+      "#### 50.0"
+    ],
+    "final_scalar": 50.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha sells oranges from her orchard at 1127.4 per piece. On Monday, she sold all the oranges picked. On Tuesday, she picked 12 oranges. Come Wednesday, Ayesha picked double the number of oranges she did the previous day. If Ayesha got 15783.6 from selling the oranges picked on Monday, how many oranges did she pick over the three days?",
+    "adapted_answer": [
+      "Since each orange costs 1127.4, it means that on Monday, Ayesha picked 15783.6/1127.4 = 14.0 oranges",
+      "Combining Monday and Tuesday, Ayesha picked 14.0 + 12 = 26.0 oranges",
+      "On Wednesday, she picked 2 * 12 = 24 oranges",
+      "All together, Ayesha picked 26.0 + 24 = 50.0 oranges.",
+      "#### 50.0"
+    ],
+    "adaptation_notes": "Replaced 'Lucy' with 'Ayesha' and 'apples' with 'oranges' to give the text a Pakistani context."
+  }
+}

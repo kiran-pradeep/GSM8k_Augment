@@ -1,0 +1,161 @@
+{
+  "index": 1261,
+  "split": "test",
+  "original": {
+    "question": "Alicia's clothes have to be sent to the dry cleaners weekly.  Her weekly drop-off includes 5 blouses, 2 pants and 1 skirt.  If they charge her $5.00 per blouse, $6.00 per skirt and $8.00 per pair of pants, how much does she spend on dry-cleaning in 5 weeks?",
+    "answer": "The blouses cost $5.00 each to dry clean and she has 5 so that's 5*5 = $<<5*5=25.00>>25.00\nThe one skirt she has costs $6.00 to dry clean\nThe pants cost $8.00 to dry clean and she has 2 pairs so that's 8*2 = $<<8*2=16.00>>16.00\nIn one week she spends 25+6+16 = $<<25+6+16=47.00>>47.00 on dry cleaning\nOver 5 weeks, she will spend 5*47 = $<<5*47=235.00>>235.00 on dry cleaning\n#### 235"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Alicia",
+      "dollars"
+    ],
+    "notes": "The name Alicia and the use of dollars as currency are culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "blouse_cost",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "skirt_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pants_cost",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_cost",
+      "value": 47.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 235.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"],\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"],\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"blouse_cost\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"skirt_cost\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pants_cost\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_cost\", \"value\": 47.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 235.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "blouse_cost",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 654.05,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "skirt_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 784.86,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "pants_cost",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 1046.48,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "weekly_cost",
+        "original_value": 47.0,
+        "original_unit": "dollar",
+        "converted_value": 6148.07,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 235.0,
+        "original_unit": "dollar",
+        "converted_value": 30740.35,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Alicia's clothes have to be sent to the dry cleaners weekly.  Her weekly drop-off includes {num_blouses} blouses, {num_pants} pants and {num_skirts} skirt.  If they charge her ${blouse_cost} per blouse, ${skirt_cost} per skirt and ${pants_cost} per pair of pants, how much does she spend on dry-cleaning in {num_weeks} weeks?",
+    "templatized_answer": [
+      "The blouses cost ${blouse_cost} each to dry clean and she has {num_blouses} so that's {num_blouses}*{blouse_cost} = ${num_blouses}*{blouse_cost}",
+      "The one skirt she has costs ${skirt_cost} to dry clean",
+      "The pants cost ${pants_cost} to dry clean and she has {num_pants} pairs so that's {num_pants}*{pants_cost} = ${num_pants}*{pants_cost}",
+      "In one week she spends {num_blouses}*{blouse_cost}+{skirt_cost}+{num_pants}*{pants_cost} = ${num_blouses}*{blouse_cost}+{skirt_cost}+{num_pants}*{pants_cost} on dry cleaning",
+      "Over {num_weeks} weeks, she will spend {num_weeks}*({num_blouses}*{blouse_cost}+{skirt_cost}+{num_pants}*{pants_cost}) = ${num_weeks}*({num_blouses}*{blouse_cost}+{skirt_cost}+{num_pants}*{pants_cost}) on dry cleaning",
+      "#### {num_weeks}*({num_blouses}*{blouse_cost}+{skirt_cost}+{num_pants}*{pants_cost})"
+    ],
+    "factual_assignment": {
+      "blouse_cost": 5.0,
+      "skirt_cost": 6.0,
+      "pants_cost": 8.0,
+      "num_blouses": 5,
+      "num_pants": 2,
+      "num_skirts": 1,
+      "num_weeks": 5
+    }
+  },
+  "merged_assignment": {
+    "blouse_cost": 654.05,
+    "skirt_cost": 784.86,
+    "pants_cost": 1046.48,
+    "num_blouses": 5,
+    "num_pants": 2,
+    "num_skirts": 1,
+    "num_weeks": 5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    blouse_cost = 654.05\n    skirt_cost = 784.86\n    pants_cost = 1046.48\n    num_blouses = 5\n    num_pants = 2\n    num_skirts = 1\n    num_weeks = 5\n\n    blouse_total = round(num_blouses * blouse_cost, 2)\n    skirt_total = round(skirt_cost, 2)\n    pants_total = round(num_pants * pants_cost, 2)\n    weekly_total = round(blouse_total + skirt_total + pants_total, 2)\n    total_cost = round(num_weeks * weekly_total, 2)\n\n    return {\n        \"blouse_cost\": blouse_cost,\n        \"skirt_cost\": skirt_cost,\n        \"pants_cost\": pants_cost,\n        \"num_blouses\": num_blouses,\n        \"num_pants\": num_pants,\n        \"num_skirts\": num_skirts,\n        \"num_weeks\": num_weeks,\n        \"num_blouses*num_blouses\": num_blouses,\n        \"num_blouses*blouse_cost\": blouse_total,\n        \"num_pants*pants_cost\": pants_total,\n        \"num_weeks*({num_blouses}*{blouse_cost}+{skirt_cost}+{num_pants}*{pants_cost})\": total_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "blouse_cost": 654.05,
+      "skirt_cost": 784.86,
+      "pants_cost": 1046.48,
+      "num_blouses": 5,
+      "num_pants": 2,
+      "num_skirts": 1,
+      "num_weeks": 5,
+      "num_blouses*num_blouses": 5,
+      "num_blouses*blouse_cost": 3270.25,
+      "num_pants*pants_cost": 2092.96,
+      "num_weeks*({num_blouses}*{blouse_cost}+{skirt_cost}+{num_pants}*{pants_cost})": 30740.35
+    }
+  },
+  "final": {
+    "question": "Alicia's clothes have to be sent to the dry cleaners weekly.  Her weekly drop-off includes 5 blouses, 2 pants and 1 skirt.  If they charge her 654.05 gourde per blouse, 784.86 gourde per skirt and 1046.48 gourde per pair of pants, how much does she spend on dry-cleaning in 5 weeks?",
+    "answer_lines": [
+      "The blouses cost 654.05 gourde each to dry clean and she has 5 so that's 5*654.05 = 3270.25 gourde",
+      "The one skirt she has costs 784.86 gourde to dry clean",
+      "The pants cost 1046.48 gourde to dry clean and she has 2 pairs so that's 2*1046.48 = 2092.96 gourde",
+      "In one week she spends 3270.25+784.86+2092.96 = 6148.07 gourde on dry cleaning",
+      "Over 5 weeks, she will spend 5*6148.07 = 30740.35 gourde on dry cleaning",
+      "#### 30740.35"
+    ],
+    "final_scalar": 30740.35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine's clothes have to be sent to the dry cleaners weekly.  Her weekly drop-off includes 5 blouses, 2 pants and 1 skirt.  If they charge her 654.05 gourde per blouse, 784.86 gourde per skirt and 1046.48 gourde per pair of pants, how much does she spend on dry-cleaning in 5 weeks?",
+    "adapted_answer": [
+      "The blouses cost 654.05 gourde each to dry clean and she has 5 so that's 5*654.05 = 3270.25 gourde",
+      "The one skirt she has costs 784.86 gourde to dry clean",
+      "The pants cost 1046.48 gourde to dry clean and she has 2 pairs so that's 2*1046.48 = 2092.96 gourde",
+      "In one week she spends 3270.25+784.86+2092.96 = 6148.07 gourde on dry cleaning",
+      "Over 5 weeks, she will spend 5*6148.07 = 30740.35 gourde on dry cleaning",
+      "#### 30740.35"
+    ],
+    "adaptation_notes": "Replaced 'Alicia' with 'Nadine', a more common Haitian name."
+  }
+}

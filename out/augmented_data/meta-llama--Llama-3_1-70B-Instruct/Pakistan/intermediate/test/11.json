@@ -1,0 +1,192 @@
+{
+  "index": 11,
+  "split": "test",
+  "original": {
+    "question": "Toula went to the bakery and bought various types of pastries. She bought 3 dozen donuts which cost $68 per dozen, 2 dozen mini cupcakes which cost $80 per dozen, and 6 dozen mini cheesecakes for $55 per dozen. How much was the total cost?",
+    "answer": "The total charge for the doughnuts was 3 x $68 = $<<3*68=204>>204.\nThe total charge for the mini cupcakes was 2 x $80 = $<<2*80=160>>160.\nThe total charge for the mini cheesecakes was 6 x $55 = $<<6*55=330>>330.\nTherefore the total amount Toula paid for the pastries was $204 + $160 + $330 = $<<204+160+330=694>>694.\n#### 694"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Toula",
+      "donuts",
+      "mini cupcakes",
+      "mini cheesecakes",
+      "dollars"
+    ],
+    "notes": "The text contains culturally specific entities such as a Greek name (Toula), Western baked goods (donuts, mini cupcakes, mini cheesecakes), and a US unit of currency (dollars)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "donut_cost",
+      "value": 68,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cupcake_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cheesecake_cost",
+      "value": 55,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_donut_cost",
+      "value": 204,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cupcake_cost",
+      "value": 160,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cheesecake_cost",
+      "value": 330,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 694,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"donut_cost\", \"value\": 68, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cupcake_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cheesecake_cost\", \"value\": 55, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_donut_cost\", \"value\": 204, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cupcake_cost\", \"value\": 160, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cheesecake_cost\", \"value\": 330, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 694, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "donut_cost",
+        "original_value": 68,
+        "original_unit": "dollar",
+        "converted_value": 19165.8,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cupcake_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 22548.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cheesecake_cost",
+        "original_value": 55,
+        "original_unit": "dollar",
+        "converted_value": 15501.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_donut_cost",
+        "original_value": 204,
+        "original_unit": "dollar",
+        "converted_value": 57497.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cupcake_cost",
+        "original_value": 160,
+        "original_unit": "dollar",
+        "converted_value": 45096.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cheesecake_cost",
+        "original_value": 330,
+        "original_unit": "dollar",
+        "converted_value": 93010.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 694,
+        "original_unit": "dollar",
+        "converted_value": 195603.9,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Toula went to the bakery and bought various types of pastries. She bought {donut_quantity} dozen donuts which cost ${donut_cost} per dozen, {cupcake_quantity} dozen mini cupcakes which cost ${cupcake_cost} per dozen, and {cheesecake_quantity} dozen mini cheesecakes for ${cheesecake_cost} per dozen. How much was the total cost?",
+    "templatized_answer": [
+      "The total charge for the doughnuts was {donut_quantity} x ${donut_cost} = ${total_donut_cost}.",
+      "The total charge for the mini cupcakes was {cupcake_quantity} x ${cupcake_cost} = ${total_cupcake_cost}.",
+      "The total charge for the mini cheesecakes was {cheesecake_quantity} x ${cheesecake_cost} = ${total_cheesecake_cost}.",
+      "Therefore the total amount Toula paid for the pastries was ${total_donut_cost} + ${total_cupcake_cost} + ${total_cheesecake_cost} = ${total_cost}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "donut_quantity": 3,
+      "donut_cost": 68,
+      "cupcake_quantity": 2,
+      "cupcake_cost": 80,
+      "cheesecake_quantity": 6,
+      "cheesecake_cost": 55,
+      "total_donut_cost": 204,
+      "total_cupcake_cost": 160,
+      "total_cheesecake_cost": 330,
+      "total_cost": 694
+    }
+  },
+  "merged_assignment": {
+    "donut_quantity": 3,
+    "donut_cost": 19165.8,
+    "cupcake_quantity": 2,
+    "cupcake_cost": 22548.0,
+    "cheesecake_quantity": 6,
+    "cheesecake_cost": 15501.75,
+    "total_donut_cost": 57497.4,
+    "total_cupcake_cost": 45096.0,
+    "total_cheesecake_cost": 93010.5,
+    "total_cost": 195603.9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    donut_quantity = 3\n    donut_cost = 19165.8\n    cupcake_quantity = 2\n    cupcake_cost = 22548.0\n    cheesecake_quantity = 6\n    cheesecake_cost = 15501.75\n\n    total_donut_cost = round(donut_quantity * donut_cost, 2)\n    total_cupcake_cost = round(cupcake_quantity * cupcake_cost, 2)\n    total_cheesecake_cost = round(cheesecake_quantity * cheesecake_cost, 2)\n    total_cost = round(total_donut_cost + total_cupcake_cost + total_cheesecake_cost, 2)\n\n    return {\n        \"donut_quantity\": donut_quantity,\n        \"donut_cost\": donut_cost,\n        \"cupcake_quantity\": cupcake_quantity,\n        \"cupcake_cost\": cupcake_cost,\n        \"cheesecake_quantity\": cheesecake_quantity,\n        \"cheesecake_cost\": cheesecake_cost,\n        \"total_donut_cost\": total_donut_cost,\n        \"total_cupcake_cost\": total_cupcake_cost,\n        \"total_cheesecake_cost\": total_cheesecake_cost,\n        \"total_cost\": total_cost\n    }\n",
+    "results": {
+      "donut_quantity": 3,
+      "donut_cost": 19165.8,
+      "cupcake_quantity": 2,
+      "cupcake_cost": 22548.0,
+      "cheesecake_quantity": 6,
+      "cheesecake_cost": 15501.75,
+      "total_donut_cost": 57497.4,
+      "total_cupcake_cost": 45096.0,
+      "total_cheesecake_cost": 93010.5,
+      "total_cost": 195603.9
+    }
+  },
+  "final": {
+    "question": "Toula went to the bakery and bought various types of pastries. She bought 3 dozen donuts which cost 19165.8 rupee per dozen, 2 dozen mini cupcakes which cost 22548.0 rupee per dozen, and 6 dozen mini cheesecakes for 15501.75 rupee per dozen. How much was the total cost?",
+    "answer_lines": [
+      "The total charge for the doughnuts was 3 x 19165.8 = 57497.4.",
+      "The total charge for the mini cupcakes was 2 x 22548.0 = 45096.0.",
+      "The total charge for the mini cheesecakes was 6 x 15501.75 = 93010.5.",
+      "Therefore the total amount Toula paid for the pastries was 57497.4 + 45096.0 + 93010.5 = 195603.9.",
+      "#### 195603.9"
+    ],
+    "final_scalar": 195603.9,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Tahira went to the bakery and bought various types of pastries. She bought 3 dozen gulab jamun which cost 19165.8 rupee per dozen, 2 dozen falooda which cost 22548.0 rupee per dozen, and 6 dozen kulfi for 15501.75 rupee per dozen. How much was the total cost?",
+    "adapted_answer": [
+      "The total charge for the gulab jamun was 3 x 19165.8 = 57497.4.",
+      "The total charge for the falooda was 2 x 22548.0 = 45096.0.",
+      "The total charge for the kulfi was 6 x 15501.75 = 93010.5.",
+      "Therefore the total amount Tahira paid for the pastries was 57497.4 + 45096.0 + 93010.5 = 195603.9.",
+      "#### 195603.9"
+    ],
+    "adaptation_notes": "Replaced 'Toula' with 'Tahira', 'donuts' with 'gulab jamun', 'mini cupcakes' with 'falooda', and 'mini cheesecakes' with 'kulfi' to give the text a Pakistani context."
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "index": 268,
+  "split": "test",
+  "original": {
+    "question": "A real estate agent has spent $5 on each newspaper ad and spent $75 on each television ad. He bought 50 newspaper ads and 15 television ads. How much did the real estate agent spend on buying all the ads?",
+    "answer": "He spent a total of $5 x 50 = $<<5*50=250>>250 for the newspaper ads.\nHe spent a total of $75 x 15 = $<<75*15=1125>>1125 for the television ads.\nTherefore, the real estate agent spent $250 + $1125 = $<<250+1125=1375>>1375 on buying all the ads.\n#### 1375"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in India, where the rupee is the standard unit of currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "newspaper_ad_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "television_ad_cost",
+      "value": 75,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "newspaper_ads_total",
+      "value": 250,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "television_ads_total",
+      "value": 1125,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_ad_spend",
+      "value": 1375,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"newspaper_ad_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"television_ad_cost\", \"value\": 75, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"newspaper_ads_total\", \"value\": 250, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"television_ads_total\", \"value\": 1125, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_ad_spend\", \"value\": 1375, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "newspaper_ad_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "television_ad_cost",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 6525,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "newspaper_ads_total",
+        "original_value": 250,
+        "original_unit": "dollar",
+        "converted_value": 21750,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "television_ads_total",
+        "original_value": 1125,
+        "original_unit": "dollar",
+        "converted_value": 97875,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_ad_spend",
+        "original_value": 1375,
+        "original_unit": "dollar",
+        "converted_value": 119625,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A real estate agent has spent ${newspaper_ad_cost} on each newspaper ad and spent ${television_ad_cost} on each television ad. He bought {newspaper_ads_bought} newspaper ads and {television_ads_bought} television ads. How much did the real estate agent spend on buying all the ads?",
+    "templatized_answer": [
+      "He spent a total of ${newspaper_ad_cost} x {newspaper_ads_bought} = ${newspaper_ads_total} for the newspaper ads.",
+      "He spent a total of ${television_ad_cost} x {television_ads_bought} = ${television_ads_total} for the television ads.",
+      "Therefore, the real estate agent spent ${newspaper_ads_total} + ${television_ads_total} = ${total_ad_spend} on buying all the ads.",
+      "#### {total_ad_spend}"
+    ],
+    "factual_assignment": {
+      "newspaper_ad_cost": 5,
+      "television_ad_cost": 75,
+      "newspaper_ads_bought": 50,
+      "television_ads_bought": 15,
+      "newspaper_ads_total": 250,
+      "television_ads_total": 1125,
+      "total_ad_spend": 1375
+    }
+  },
+  "merged_assignment": {
+    "newspaper_ad_cost": 435,
+    "television_ad_cost": 6525,
+    "newspaper_ads_bought": 50,
+    "television_ads_bought": 15,
+    "newspaper_ads_total": 21750,
+    "television_ads_total": 97875,
+    "total_ad_spend": 119625
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    newspaper_ad_cost = 435\n    television_ad_cost = 6525\n    newspaper_ads_bought = 50\n    television_ads_bought = 15\n\n    newspaper_ads_total = round(newspaper_ad_cost * newspaper_ads_bought, 2)\n    television_ads_total = round(television_ad_cost * television_ads_bought, 2)\n    total_ad_spend = round(newspaper_ads_total + television_ads_total, 2)\n\n    return {\n        \"newspaper_ad_cost\": newspaper_ad_cost,\n        \"television_ad_cost\": television_ad_cost,\n        \"newspaper_ads_bought\": newspaper_ads_bought,\n        \"television_ads_bought\": television_ads_bought,\n        \"newspaper_ads_total\": newspaper_ads_total,\n        \"television_ads_total\": television_ads_total,\n        \"total_ad_spend\": total_ad_spend\n    }\n",
+    "results": {
+      "newspaper_ad_cost": 435,
+      "television_ad_cost": 6525,
+      "newspaper_ads_bought": 50,
+      "television_ads_bought": 15,
+      "newspaper_ads_total": 21750,
+      "television_ads_total": 97875,
+      "total_ad_spend": 119625
+    }
+  },
+  "final": {
+    "question": "A real estate agent has spent 435 on each newspaper ad and spent 6525 on each television ad. He bought 50 newspaper ads and 15 television ads. How much did the real estate agent spend on buying all the ads?",
+    "answer_lines": [
+      "He spent a total of 435 x 50 = 21750 for the newspaper ads.",
+      "He spent a total of 6525 x 15 = 97875 for the television ads.",
+      "Therefore, the real estate agent spent 21750 + 97875 = 119625 on buying all the ads.",
+      "#### 119625"
+    ],
+    "final_scalar": 119625,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A real estate agent has spent ₹435 on each newspaper ad and spent ₹6525 on each television ad. He bought 50 newspaper ads and 15 television ads. How much did the real estate agent spend on buying all the ads?",
+    "adapted_answer": [
+      "He spent a total of ₹435 x 50 = ₹21750 for the newspaper ads.",
+      "He spent a total of ₹6525 x 15 = ₹97875 for the television ads.",
+      "Therefore, the real estate agent spent ₹21750 + ₹97875 = ₹119625 on buying all the ads.",
+      "#### 119625"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to provide an Indian context."
+  }
+}

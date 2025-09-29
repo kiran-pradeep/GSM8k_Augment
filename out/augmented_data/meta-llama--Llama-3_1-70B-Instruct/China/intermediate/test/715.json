@@ -1,0 +1,128 @@
+{
+  "index": 715,
+  "split": "test",
+  "original": {
+    "question": "A company wanted to buy 500 computers and had $700 for each computer. However, when they went to order, they realized the price of each computer was 10% higher than they had planned for. Calculate the total amount of money they paid to buy the computers at the new prices.",
+    "answer": "When they went to order, the company realized the prices of each computer had increased by 10/100*700 = $<<10/100*700=70>>70\nThe total buying price at the new prize is $700+$70 = $<<700+70=770>>770\nSince they wanted to buy 500 computers, they paid a total of $770*500 = $<<770*500=385000>>385000\n#### 385000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, particularly in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "planned_cost_per_computer",
+      "value": 700,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "price_increase_per_computer",
+      "value": 70,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "new_cost_per_computer",
+      "value": 770,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 385000,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"planned_cost_per_computer\",\n    \"value\": 700,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"price_increase_per_computer\",\n    \"value\": 70,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"new_cost_per_computer\",\n    \"value\": 770,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cost\",\n    \"value\": 385000,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "planned_cost_per_computer",
+        "original_value": 700,
+        "original_unit": "dollar",
+        "converted_value": 4991.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "price_increase_per_computer",
+        "original_value": 70,
+        "original_unit": "dollar",
+        "converted_value": 499.1,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "new_cost_per_computer",
+        "original_value": 770,
+        "original_unit": "dollar",
+        "converted_value": 5490.1,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 385000,
+        "original_unit": "dollar",
+        "converted_value": 2745050.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company wanted to buy 500 computers and had ${planned_cost_per_computer} for each computer. However, when they went to order, they realized the price of each computer was 10% higher than they had planned for. Calculate the total amount of money they paid to buy the computers at the new prices.",
+    "templatized_answer": [
+      "When they went to order, the company realized the prices of each computer had increased by 10/100*{planned_cost_per_computer} = ${price_increase_per_computer}",
+      "The total buying price at the new prize is ${planned_cost_per_computer}+{price_increase_per_computer} = ${new_cost_per_computer}",
+      "Since they wanted to buy 500 computers, they paid a total of {new_cost_per_computer}*500 = ${total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "planned_cost_per_computer": 700,
+      "price_increase_per_computer": 70,
+      "new_cost_per_computer": 770,
+      "total_cost": 385000
+    }
+  },
+  "merged_assignment": {
+    "planned_cost_per_computer": 4991.0,
+    "price_increase_per_computer": 499.1,
+    "new_cost_per_computer": 5490.1,
+    "total_cost": 2745050.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    planned_cost_per_computer = 4991.0\n    price_increase_per_computer = (10/100) * planned_cost_per_computer\n    new_cost_per_computer = planned_cost_per_computer + price_increase_per_computer\n    total_cost = new_cost_per_computer * 500\n\n    return {\n        \"planned_cost_per_computer\": round(planned_cost_per_computer, 2),\n        \"price_increase_per_computer\": round(price_increase_per_computer, 2),\n        \"new_cost_per_computer\": round(new_cost_per_computer, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "planned_cost_per_computer": 4991.0,
+      "price_increase_per_computer": 499.1,
+      "new_cost_per_computer": 5490.1,
+      "total_cost": 2745050.0
+    }
+  },
+  "final": {
+    "question": "A company wanted to buy 500 computers and had 4991.0 renminbi for each computer. However, when they went to order, they realized the price of each computer was 10% higher than they had planned for. Calculate the total amount of money they paid to buy the computers at the new prices.",
+    "answer_lines": [
+      "When they went to order, the company realized the prices of each computer had increased by 10/100*4991.0 = 499.1 renminbi",
+      "The total buying price at the new prize is 4991.0+499.1 = 5490.1 renminbi",
+      "Since they wanted to buy 500 computers, they paid a total of 5490.1*500 = 2745050.0 renminbi",
+      "#### 2745050.0"
+    ],
+    "final_scalar": 2745050.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company wanted to buy 500 computers and had 4991.0 renminbi for each computer. However, when they went to order, they realized the price of each computer was 10% higher than they had planned for. Calculate the total amount of money they paid to buy the computers at the new prices.",
+    "adapted_answer": [
+      "When they went to order, the company realized the prices of each computer had increased by 10/100*4991.0 = 499.1 renminbi",
+      "The total buying price at the new prize is 4991.0+499.1 = 5490.1 renminbi",
+      "Since they wanted to buy 500 computers, they paid a total of 5490.1*500 = 2745050.0 renminbi",
+      "#### 2745050.0"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "index": 29,
+  "split": "test",
+  "original": {
+    "question": "Gloria is shoe shopping when she comes across a pair of boots that fit her shoe budget. However, she has to choose between the boots and two pairs of high heels that together cost five dollars less than the boots. If one pair of heels costs $33 and the other costs twice as much, how many dollars are the boots?",
+    "answer": "The second pair of heels costs 33 * 2 = $<<33*2=66>>66.\nThe heels together cost 66 + 33 = $<<66+33=99>>99.\nThe boots cost $5 more than both pairs of heels together, so the boots cost 99 + 5 = $104.\n#### 104"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gloria",
+      "dollars"
+    ],
+    "notes": "Name 'Gloria' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_pair_heels",
+      "value": 33,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_pair_heels",
+      "value": 66,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_heels_cost",
+      "value": 99,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "boots_cost",
+      "value": 104,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_pair_heels\", \"value\": 33, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_pair_heels\", \"value\": 66, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_heels_cost\", \"value\": 99, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"boots_cost\", \"value\": 104, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_pair_heels",
+        "original_value": 33,
+        "original_unit": "dollar",
+        "converted_value": 2871,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_pair_heels",
+        "original_value": 66,
+        "original_unit": "dollar",
+        "converted_value": 5742,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_heels_cost",
+        "original_value": 99,
+        "original_unit": "dollar",
+        "converted_value": 8613,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "boots_cost",
+        "original_value": 104,
+        "original_unit": "dollar",
+        "converted_value": 9048,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gloria is shoe shopping when she comes across a pair of boots that fit her shoe budget. However, she has to choose between the boots and two pairs of high heels that together cost five dollars less than the boots. If one pair of heels costs ${first_pair_heels} and the other costs twice as much, how many dollars are the boots?",
+    "templatized_answer": [
+      "The second pair of heels costs {first_pair_heels} * 2 = ${second_pair_heels}.",
+      "The heels together cost {second_pair_heels} + {first_pair_heels} = ${total_heels_cost}.",
+      "The boots cost $5 more than both pairs of heels together, so the boots cost {total_heels_cost} + 5 = ${boots_cost}.",
+      "#### {boots_cost}"
+    ],
+    "factual_assignment": {
+      "first_pair_heels": 33,
+      "second_pair_heels": 66,
+      "total_heels_cost": 99,
+      "boots_cost": 104
+    }
+  },
+  "merged_assignment": {
+    "first_pair_heels": 2871,
+    "second_pair_heels": 5742,
+    "total_heels_cost": 8613,
+    "boots_cost": 9048
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_pair_heels = 2871\n    second_pair_heels = first_pair_heels * 2\n    total_heels_cost = second_pair_heels + first_pair_heels\n    boots_cost = total_heels_cost + 5\n\n    return {\n        \"first_pair_heels\": first_pair_heels,\n        \"second_pair_heels\": second_pair_heels,\n        \"total_heels_cost\": total_heels_cost,\n        \"boots_cost\": boots_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "first_pair_heels": 2871,
+      "second_pair_heels": 5742,
+      "total_heels_cost": 8613,
+      "boots_cost": 8618
+    }
+  },
+  "final": {
+    "question": "Gloria is shoe shopping when she comes across a pair of boots that fit her shoe budget. However, she has to choose between the boots and two pairs of high heels that together cost five rupees less than the boots. If one pair of heels costs 2871 rupees and the other costs twice as much, how many rupees are the boots?",
+    "answer_lines": [
+      "The second pair of heels costs 2871 * 2 = 5742 rupees.",
+      "The heels together cost 5742 + 2871 = 8613 rupees.",
+      "The boots cost 5 rupees more than both pairs of heels together, so the boots cost 8613 + 5 = 8618 rupees.",
+      "#### 8618"
+    ],
+    "final_scalar": 8618,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rukmini is shoe shopping when she comes across a pair of boots that fit her shoe budget. However, she has to choose between the boots and two pairs of high heels that together cost five rupees less than the boots. If one pair of heels costs 2871 rupees and the other costs twice as much, how many rupees are the boots?",
+    "adapted_answer": [
+      "The second pair of heels costs 2871 * 2 = 5742 rupees.",
+      "The heels together cost 5742 + 2871 = 8613 rupees.",
+      "The boots cost 5 rupees more than both pairs of heels together, so the boots cost 8613 + 5 = 8618 rupees.",
+      "#### 8618"
+    ],
+    "adaptation_notes": "Replaced 'Gloria' with 'Rukmini' to give the name an Indian context."
+  }
+}

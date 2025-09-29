@@ -1,0 +1,117 @@
+{
+  "index": 1281,
+  "split": "test",
+  "original": {
+    "question": "Dexter has five pigs. Each one eats 4 pounds of feed, twice a day. If Dexter ordered 300 pounds of feed, how many pounds of feed is left after a week?",
+    "answer": "In a day, one pig consumes 4 x 2 = <<4*2=8>>8 pounds of feed.\nIn a day, five pigs consume 8 x 5 = <<8*5=40>>40 pounds.\nIn a week, five pigs consume 40 x 7 = <<40*7=280>>280 pounds.\nSo, there are 300 - 280 = <<300-280=20>>20 pounds of feed left.\n#### 20"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Dexter",
+      "pounds"
+    ],
+    "notes": "Name 'Dexter' and unit 'pounds' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "feed_ordered",
+      "value": 300.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "feed_per_pig_per_meal",
+      "value": 4.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "feed_left",
+      "value": 20.0,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"renminbi\", 7.13),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"feed_ordered\",\n        \"value\": 300.0,\n        \"unit\": \"pound\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"feed_per_pig_per_meal\",\n        \"value\": 4.0,\n        \"unit\": \"pound\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"feed_left\",\n        \"value\": 20.0,\n        \"unit\": \"pound\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "feed_ordered",
+        "original_value": 300.0,
+        "original_unit": "pound",
+        "converted_value": 136.08,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "feed_per_pig_per_meal",
+        "original_value": 4.0,
+        "original_unit": "pound",
+        "converted_value": 1.81,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "feed_left",
+        "original_value": 20.0,
+        "original_unit": "pound",
+        "converted_value": 9.07,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Dexter has five pigs. Each one eats {feed_per_pig_per_meal} pounds of feed, twice a day. If Dexter ordered {feed_ordered} pounds of feed, how many pounds of feed is left after a week?",
+    "templatized_answer": [
+      "In a day, one pig consumes {feed_per_pig_per_meal} x 2 = {feed_per_pig_per_meal} * 2 pounds of feed.",
+      "In a day, five pigs consume {feed_per_pig_per_meal} * 2 x 5 = {feed_per_pig_per_meal} * 2 * 5 pounds.",
+      "In a week, five pigs consume {feed_per_pig_per_meal} * 2 * 5 x 7 = {feed_per_pig_per_meal} * 2 * 5 * 7 pounds.",
+      "So, there are {feed_ordered} - {feed_per_pig_per_meal} * 2 * 5 * 7 = {feed_ordered} - {feed_per_pig_per_meal} * 2 * 5 * 7 pounds of feed left.",
+      "#### {feed_ordered} - {feed_per_pig_per_meal} * 2 * 5 * 7"
+    ],
+    "factual_assignment": {
+      "feed_ordered": 300.0,
+      "feed_per_pig_per_meal": 4.0
+    }
+  },
+  "merged_assignment": {
+    "feed_ordered": 136.08,
+    "feed_per_pig_per_meal": 1.81
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    feed_ordered = 136.08\n    feed_per_pig_per_meal = 1.81\n\n    feed_per_pig_per_day = feed_per_pig_per_meal * 2\n    feed_per_five_pigs_per_day = feed_per_pig_per_day * 5\n    feed_per_five_pigs_per_week = feed_per_five_pigs_per_day * 7\n\n    feed_left = feed_ordered - feed_per_five_pigs_per_week\n\n    return {\n        \"feed_ordered\": round(feed_ordered, 2),\n        \"feed_per_pig_per_meal\": round(feed_per_pig_per_meal, 2),\n        \"feed_per_pig_per_meal * 2\": round(feed_per_pig_per_meal * 2, 2),\n        \"feed_per_pig_per_meal * 2 * 5\": round(feed_per_pig_per_meal * 2 * 5, 2),\n        \"feed_per_pig_per_meal * 2 * 5 * 7\": round(feed_per_five_pigs_per_week, 2),\n        \"feed_ordered - feed_per_pig_per_meal * 2 * 5 * 7\": round(feed_left, 2)\n    }\n",
+    "results": {
+      "feed_ordered": 136.08,
+      "feed_per_pig_per_meal": 1.81,
+      "feed_per_pig_per_meal * 2": 3.62,
+      "feed_per_pig_per_meal * 2 * 5": 18.1,
+      "feed_per_pig_per_meal * 2 * 5 * 7": 126.7,
+      "feed_ordered - feed_per_pig_per_meal * 2 * 5 * 7": 9.38
+    }
+  },
+  "final": {
+    "question": "Dexter has five pigs. Each one eats 1.81 kilograms of feed, twice a day. If Dexter ordered 136.08 kilograms of feed, how many kilograms of feed is left after a week?",
+    "answer_lines": [
+      "In a day, one pig consumes 1.81 x 2 = 3.62 kilograms of feed.",
+      "In a day, five pigs consume 3.62 x 5 = 18.1 kilograms.",
+      "In a week, five pigs consume 18.1 x 7 = 126.7 kilograms.",
+      "So, there are 136.08 - 126.7 = 9.38 kilograms of feed left.",
+      "#### 9.38"
+    ],
+    "final_scalar": 9.38,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang has five pigs. Each one eats 1.81 kilograms of feed, twice a day. If Wang ordered 136.08 kilograms of feed, how many kilograms of feed is left after a week?",
+    "adapted_answer": [
+      "In a day, one pig consumes 1.81 x 2 = 3.62 kilograms of feed.",
+      "In a day, five pigs consume 3.62 x 5 = 18.1 kilograms.",
+      "In a week, five pigs consume 18.1 x 7 = 126.7 kilograms.",
+      "So, there are 136.08 - 126.7 = 9.38 kilograms of feed left.",
+      "#### 9.38"
+    ],
+    "adaptation_notes": "Replaced 'Dexter' with 'Wang' to give the name a Chinese context."
+  }
+}

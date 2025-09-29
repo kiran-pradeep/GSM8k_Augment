@@ -1,0 +1,122 @@
+{
+  "index": 1313,
+  "split": "test",
+  "original": {
+    "question": "A fruit vendor bought 50 watermelons for $80. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer": "The fruit vendor's profit for the 50 watermelons was $80 x 25/100 = $<<80*25/100=20>>20.\nSo, he was able to sell them all for $80 + $20 = $<<80+20=100>>100.\nThus, the vendor sold each watermelon for $100/$50 = $<<100/50=2>>2 each.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "watermelons"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than China, and 'watermelons' is a food item commonly found in many cultures, but the context of the problem suggests a non-Chinese setting."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "profit",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_selling_price",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "watermelon_selling_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_cost\",\n    \"value\": 80,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"profit\",\n    \"value\": 20,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_selling_price\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"watermelon_selling_price\",\n    \"value\": 2,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "profit",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_selling_price",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "watermelon_selling_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A fruit vendor bought 50 watermelons for ${initial_cost}. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "templatized_answer": [
+      "The fruit vendor's profit for the 50 watermelons was ${initial_cost} x 25/100 = ${initial_cost} * 25/100.",
+      "So, he was able to sell them all for ${initial_cost} + ${initial_cost} * 25/100.",
+      "Thus, the vendor sold each watermelon for (${initial_cost} + ${initial_cost} * 25/100)/50."
+    ],
+    "factual_assignment": {
+      "initial_cost": 80
+    }
+  },
+  "merged_assignment": {
+    "initial_cost": 570.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cost = 570.4\n    profit = initial_cost * 25 / 100\n    total_selling_price = initial_cost + profit\n    selling_price_per_watermelon = total_selling_price / 50\n\n    return {\n        \"initial_cost\": round(initial_cost, 2),\n        \"initial_cost * 25/100\": round(profit, 2),\n        \"initial_cost + initial_cost * 25/100\": round(total_selling_price, 2),\n        \"(initial_cost + initial_cost * 25/100)/50\": round(selling_price_per_watermelon, 2)\n    }\n",
+    "results": {
+      "initial_cost": 570.4,
+      "initial_cost * 25/100": 142.6,
+      "initial_cost + initial_cost * 25/100": 713.0,
+      "(initial_cost + initial_cost * 25/100)/50": 14.26
+    }
+  },
+  "final": {
+    "question": "A fruit vendor bought 50 watermelons for 570.4 renminbi. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer_lines": [
+      "The fruit vendor's profit for the 50 watermelons was 570.4 renminbi x 25/100 = 570.4 renminbi * 25/100 = 142.6 renminbi.",
+      "So, he was able to sell them all for 570.4 renminbi + 142.6 renminbi = 713.0 renminbi.",
+      "Thus, the vendor sold each watermelon for (570.4 renminbi + 142.6 renminbi)/50 = 713.0 renminbi/50 = 14.26 renminbi.",
+      "#### 14.26"
+    ],
+    "final_scalar": 14.26,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A fruit vendor bought 50 hami melons for 570.4 renminbi. He sold all of them at a profit of 25%. How much was each hami melon sold?",
+    "adapted_answer": [
+      "The fruit vendor's profit for the 50 hami melons was 570.4 renminbi x 25/100 = 570.4 renminbi * 25/100 = 142.6 renminbi.",
+      "So, he was able to sell them all for 570.4 renminbi + 142.6 renminbi = 713.0 renminbi.",
+      "Thus, the vendor sold each hami melon for (570.4 renminbi + 142.6 renminbi)/50 = 713.0 renminbi/50 = 14.26 renminbi.",
+      "#### 14.26"
+    ],
+    "adaptation_notes": "Replaced 'watermelons' with 'hami melons' to provide a Chinese context."
+  }
+}

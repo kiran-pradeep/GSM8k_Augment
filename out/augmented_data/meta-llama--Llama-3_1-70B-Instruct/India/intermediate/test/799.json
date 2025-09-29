@@ -1,0 +1,152 @@
+{
+  "index": 799,
+  "split": "test",
+  "original": {
+    "question": "A loaf of bread at the bakery costs $2. Bagels cost $1 each. How much more do 3 loaves of bread cost than 2 bagels?",
+    "answer": "3 loaves of bread cost 3 * $2 = $<<3*2=6>>6.\n2 bagels cost 2 * $1 = $<<2*1=2>>2.\nThe loaves of bread cost $6 - $2 = $<<6-2=4>>4 more than the bagels.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "loaf of bread",
+      "bagels"
+    ],
+    "notes": "The question contains units (dollars) and food items (loaf of bread, bagels) that are not specific to India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "loaf_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bagel_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_loaf_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_bagel_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cost_difference",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"loaf_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bagel_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_loaf_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_bagel_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cost_difference\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "loaf_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "bagel_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 87,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_loaf_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 522,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_bagel_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cost_difference",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 348,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A loaf of bread at the bakery costs ${loaf_cost}. Bagels cost ${bagel_cost} each. How much more do {num_loaves} loaves of bread cost than {num_bagels} bagels?",
+    "templatized_answer": [
+      "{num_loaves} loaves of bread cost {num_loaves} * ${loaf_cost} = ${total_loaf_cost}.",
+      "{num_bagels} bagels cost {num_bagels} * ${bagel_cost} = ${total_bagel_cost}.",
+      "The loaves of bread cost ${total_loaf_cost} - ${total_bagel_cost} = ${cost_difference} more than the bagels.",
+      "#### {cost_difference}"
+    ],
+    "factual_assignment": {
+      "loaf_cost": 2,
+      "bagel_cost": 1,
+      "total_loaf_cost": 6,
+      "total_bagel_cost": 2,
+      "cost_difference": 4,
+      "num_loaves": 3,
+      "num_bagels": 2
+    }
+  },
+  "merged_assignment": {
+    "loaf_cost": 174,
+    "bagel_cost": 87,
+    "total_loaf_cost": 522,
+    "total_bagel_cost": 174,
+    "cost_difference": 348,
+    "num_loaves": 3,
+    "num_bagels": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    loaf_cost = 174\n    bagel_cost = 87\n    num_loaves = 3\n    num_bagels = 2\n\n    total_loaf_cost = round(num_loaves * loaf_cost, 2)\n    total_bagel_cost = round(num_bagels * bagel_cost, 2)\n    cost_difference = round(total_loaf_cost - total_bagel_cost, 2)\n\n    return {\n        \"loaf_cost\": loaf_cost,\n        \"bagel_cost\": bagel_cost,\n        \"total_loaf_cost\": total_loaf_cost,\n        \"total_bagel_cost\": total_bagel_cost,\n        \"cost_difference\": cost_difference,\n        \"num_loaves\": num_loaves,\n        \"num_bagels\": num_bagels\n    }\n",
+    "results": {
+      "loaf_cost": 174,
+      "bagel_cost": 87,
+      "total_loaf_cost": 522,
+      "total_bagel_cost": 174,
+      "cost_difference": 348,
+      "num_loaves": 3,
+      "num_bagels": 2
+    }
+  },
+  "final": {
+    "question": "A loaf of bread at the bakery costs 174. Bagels cost 87 each. How much more do 3 loaves of bread cost than 2 bagels?",
+    "answer_lines": [
+      "3 loaves of bread cost 3 * 174 = 522.",
+      "2 bagels cost 2 * 87 = 174.",
+      "The loaves of bread cost 522 - 174 = 348 more than the bagels.",
+      "#### 348"
+    ],
+    "final_scalar": 348,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A packet of Britannia biscuits at the bakery costs 174. Parathas cost 87 each. How much more do 3 packets of Britannia biscuits cost than 2 parathas?",
+    "adapted_answer": [
+      "3 packets of Britannia biscuits cost 3 * 174 = 522.",
+      "2 parathas cost 2 * 87 = 174.",
+      "The packets of Britannia biscuits cost 522 - 174 = 348 more than the parathas.",
+      "#### 348"
+    ],
+    "adaptation_notes": "Replaced 'loaf of bread' with 'packet of Britannia biscuits' and 'bagels' with 'parathas' to provide an Indian context."
+  }
+}

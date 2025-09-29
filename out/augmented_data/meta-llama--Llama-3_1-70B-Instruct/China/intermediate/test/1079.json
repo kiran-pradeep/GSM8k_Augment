@@ -1,0 +1,133 @@
+{
+  "index": 1079,
+  "split": "test",
+  "original": {
+    "question": "A $2000 watch was put on sale so that Mr. Rogers bought it at 75% of its original price. He then sold the watch to his friend at 120% of the price that he bought it. What is the percentage discount obtained by Mr. Roger's friend from the original price?",
+    "answer": "Mr. Roger bought the perfume at $2000 x 75/100 = $<<2000*75/100=1500>>1500.\nHe then sold it to his friend at $1500 x 120/100 = $<<1500*120/100=1800>>1800\nSo, Mr. Roger's friend paid $2000 - $1800 = $<<2000-1800=200>>200 less than the original price.\nSo, his friend got $200/$2000 x 100% = <<200/2000*100=10>>10% discount.\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mr. Rogers",
+      "dollars"
+    ],
+    "notes": "The name 'Mr. Rogers' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "original_price",
+      "value": 2000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "buying_price",
+      "value": 1500,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "selling_price",
+      "value": 1800,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount_amount",
+      "value": 200,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context != \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if unit == \"dollar\":\n            converted_unit = \"renminbi\"\n            converted_value = value * 7.13\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"original_price\",\n    \"value\": 2000,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"buying_price\",\n    \"value\": 1500,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"selling_price\",\n    \"value\": 1800,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"discount_amount\",\n    \"value\": 200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "original_price",
+        "original_value": 2000,
+        "original_unit": "dollar",
+        "converted_value": 14260.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "buying_price",
+        "original_value": 1500,
+        "original_unit": "dollar",
+        "converted_value": 10695.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "selling_price",
+        "original_value": 1800,
+        "original_unit": "dollar",
+        "converted_value": 12834.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "discount_amount",
+        "original_value": 200,
+        "original_unit": "dollar",
+        "converted_value": 1426.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A ${original_price} watch was put on sale so that Mr. Rogers bought it at 75% of its original price. He then sold the watch to his friend at 120% of the price that he bought it. What is the percentage discount obtained by Mr. Roger's friend from the original price?",
+    "templatized_answer": [
+      "Mr. Roger bought the watch at ${original_price} x 75/100 = ${buying_price}.",
+      "He then sold it to his friend at ${buying_price} x 120/100 = ${selling_price}",
+      "So, Mr. Roger's friend paid ${original_price} - ${selling_price} = ${discount_amount} less than the original price.",
+      "So, his friend got ${discount_amount}/${original_price} x 100% = ${discount_amount}/${original_price} * 100% discount.",
+      "#### ${discount_amount}/${original_price} * 100%"
+    ],
+    "factual_assignment": {
+      "original_price": 2000,
+      "buying_price": 1500,
+      "selling_price": 1800,
+      "discount_amount": 200
+    }
+  },
+  "merged_assignment": {
+    "original_price": 14260.0,
+    "buying_price": 10695.0,
+    "selling_price": 12834.0,
+    "discount_amount": 1426.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    original_price = 14260.0\n    buying_price = original_price * 0.75\n    selling_price = buying_price * 1.2\n    discount_amount = original_price - selling_price\n    discount_percentage = (discount_amount / original_price) * 100\n\n    return {\n        \"original_price\": original_price,\n        \"buying_price\": round(buying_price, 2),\n        \"selling_price\": round(selling_price, 2),\n        \"discount_amount\": round(discount_amount, 2),\n        \"discount_amount/original_price * 100%\": round(discount_percentage, 2)\n    }\n",
+    "results": {
+      "original_price": 14260.0,
+      "buying_price": 10695.0,
+      "selling_price": 12834.0,
+      "discount_amount": 1426.0,
+      "discount_amount/original_price * 100%": 10.0
+    }
+  },
+  "final": {
+    "question": "A 14260.0 renminbi watch was put on sale so that Mr. Rogers bought it at 75% of its original price. He then sold the watch to his friend at 120% of the price that he bought it. What is the percentage discount obtained by Mr. Roger's friend from the original price?",
+    "answer_lines": [
+      "Mr. Roger bought the watch at 14260.0 renminbi x 75/100 = 10695.0 renminbi.",
+      "He then sold it to his friend at 10695.0 renminbi x 120/100 = 12834.0 renminbi",
+      "So, Mr. Roger's friend paid 14260.0 renminbi - 12834.0 renminbi = 1426.0 renminbi less than the original price.",
+      "So, his friend got 1426.0 renminbi/14260.0 renminbi x 100% = 10.0% discount.",
+      "#### 10.0"
+    ],
+    "final_scalar": 10.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A 14260.0 renminbi watch was put on sale so that Mr. Li bought it at 75% of its original price. He then sold the watch to his friend at 120% of the price that he bought it. What is the percentage discount obtained by Mr. Li's friend from the original price?",
+    "adapted_answer": [
+      "Mr. Li bought the watch at 14260.0 renminbi x 75/100 = 10695.0 renminbi.",
+      "He then sold it to his friend at 10695.0 renminbi x 120/100 = 12834.0 renminbi",
+      "So, Mr. Li's friend paid 14260.0 renminbi - 12834.0 renminbi = 1426.0 renminbi less than the original price.",
+      "So, his friend got 1426.0 renminbi/14260.0 renminbi x 100% = 10.0% discount.",
+      "#### 10.0"
+    ],
+    "adaptation_notes": "Replaced 'Mr. Rogers' with 'Mr. Li' to provide a Chinese equivalent."
+  }
+}

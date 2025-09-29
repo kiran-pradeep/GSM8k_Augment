@@ -1,0 +1,129 @@
+{
+  "index": 56,
+  "split": "test",
+  "original": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for $7 and popcorn for $7. If he has 42 dollars for the week, how many times can he go to the movies?",
+    "answer": "It costs him $14 to go to the movies because 7 + 7 = <<7+7=14>>14\nHe can go to the movies 3 times because 42 / 14 = <<42/14=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Peter",
+      "dollars",
+      "movies",
+      "popcorn"
+    ],
+    "notes": "The name 'Peter' is Western, 'dollars' is a non-Indian currency, 'movies' is a Western form of entertainment, and 'popcorn' is a Western snack."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weekly_budget",
+      "value": 42.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "movie_ticket_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popcorn_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_movie_cost",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"weekly_budget\", \"value\": 42.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"movie_ticket_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"popcorn_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_movie_cost\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weekly_budget",
+        "original_value": 42.0,
+        "original_unit": "dollar",
+        "converted_value": 3654.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "movie_ticket_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 609.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "popcorn_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 609.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_movie_cost",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 1218.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Peter plans to go to the movies this week. He always gets a ticket for ${movie_ticket_cost} and popcorn for ${popcorn_cost}. If he has ${weekly_budget} dollars for the week, how many times can he go to the movies?",
+    "templatized_answer": [
+      "It costs him ${total_movie_cost} to go to the movies because {movie_ticket_cost} + {popcorn_cost} = {total_movie_cost}",
+      "He can go to the movies {weekly_budget} / {total_movie_cost} times",
+      "#### {weekly_budget} / {total_movie_cost}"
+    ],
+    "factual_assignment": {
+      "weekly_budget": 42,
+      "movie_ticket_cost": 7,
+      "popcorn_cost": 7,
+      "total_movie_cost": 14
+    }
+  },
+  "merged_assignment": {
+    "weekly_budget": 3654.0,
+    "movie_ticket_cost": 609.0,
+    "popcorn_cost": 609.0,
+    "total_movie_cost": 1218.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    weekly_budget = 3654.0\n    movie_ticket_cost = 609.0\n    popcorn_cost = 609.0\n\n    total_movie_cost = movie_ticket_cost + popcorn_cost\n    times_can_go_to_movies = round(weekly_budget / total_movie_cost, 2)\n\n    return {\n        \"weekly_budget\": weekly_budget,\n        \"movie_ticket_cost\": movie_ticket_cost,\n        \"popcorn_cost\": popcorn_cost,\n        \"total_movie_cost\": total_movie_cost,\n        \"times_can_go_to_movies\": times_can_go_to_movies\n    }\n\nprint(recompute())\n",
+    "results": {
+      "weekly_budget": 3654.0,
+      "movie_ticket_cost": 609.0,
+      "popcorn_cost": 609.0,
+      "total_movie_cost": 1218.0,
+      "times_can_go_to_movies": 3.0
+    }
+  },
+  "final": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for 609 rupees and popcorn for 609 rupees. If he has 3654 rupees for the week, how many times can he go to the movies?",
+    "answer_lines": [
+      "It costs him 1218 rupees to go to the movies because 609 + 609 = 1218",
+      "He can go to the movies 3654 / 1218 times",
+      "#### 3.0"
+    ],
+    "final_scalar": 3.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan plans to go to the cinema this week. He always gets a ticket for 609 rupees and samosas for 609 rupees. If he has 3654 rupees for the week, how many times can he go to the cinema?",
+    "adapted_answer": [
+      "It costs him 1218 rupees to go to the cinema because 609 + 609 = 1218",
+      "He can go to the cinema 3654 / 1218 times",
+      "#### 3.0"
+    ],
+    "adaptation_notes": "Replaced 'Peter' with 'Rohan', 'movies' with 'cinema', and 'popcorn' with 'samosas' to give the text an Indian context."
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "index": 1140,
+  "split": "test",
+  "original": {
+    "question": "Gomer ate 5 less than 23 scoops of mashed potatoes.  If it takes 3 less than 6 potatoes to make 1 less than 3 scoops of mashed potatoes, how many potatoes did Gomer eat?",
+    "answer": "5 less than 23 scoops of mashed potatoes is 23-5=<<23-5=18>>18 scoops of mashed potatoes.\n3 less than 6 potatoes is 6-3=<<6-3=3>>3 potatoes.\n1 less than 3 scoops of mashed potatoes is 3-1=<<3-1=2>>2 scoops of mashed potatoes.\nThus, if Gomer ate 18 scoops of mashed potatoes, and it takes 3 potatoes to make 2 scoops of mashed potatoes, then Gomer ate 18*(3/2)=<<18*(3/2)=27>>27 potatoes.\n#### 27"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gomer",
+      "mashed potatoes"
+    ],
+    "notes": "Gomer is a culturally specific name and mashed potatoes are not a staple food in Haitian cuisine."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 130.81, 'unit': 'gourde'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Gomer ate {scoops_eaten_less} less than {total_scoops} scoops of mashed potatoes.  If it takes {potatoes_needed_less} less than {total_potatoes} potatoes to make {scoops_made_less} less than {total_scoops_made} scoops of mashed potatoes, how many potatoes did Gomer eat?",
+    "templatized_answer": [
+      "{total_scoops} less {scoops_eaten_less} scoops of mashed potatoes is {total_scoops}-{scoops_eaten_less}={scoops_eaten} scoops of mashed potatoes.",
+      "{total_potatoes} less {potatoes_needed_less} potatoes is {total_potatoes}-{potatoes_needed_less}={potatoes_needed} potatoes.",
+      "{total_scoops_made} less {scoops_made_less} scoops of mashed potatoes is {total_scoops_made}-{scoops_made_less}={scoops_made} scoops of mashed potatoes.",
+      "Thus, if Gomer ate {scoops_eaten} scoops of mashed potatoes, and it takes {potatoes_needed} potatoes to make {scoops_made} scoops of mashed potatoes, then Gomer ate {scoops_eaten}*({potatoes_needed}/{scoops_made})={total_potatoes_eaten} potatoes."
+    ],
+    "factual_assignment": {
+      "scoops_eaten_less": 5,
+      "total_scoops": 23,
+      "potatoes_needed_less": 3,
+      "total_potatoes": 6,
+      "scoops_made_less": 1,
+      "total_scoops_made": 3,
+      "scoops_eaten": 18,
+      "potatoes_needed": 3,
+      "scoops_made": 2,
+      "total_potatoes_eaten": 27
+    }
+  },
+  "merged_assignment": {
+    "scoops_eaten_less": 5,
+    "total_scoops": 23,
+    "potatoes_needed_less": 3,
+    "total_potatoes": 6,
+    "scoops_made_less": 1,
+    "total_scoops_made": 3,
+    "scoops_eaten": 18,
+    "potatoes_needed": 3,
+    "scoops_made": 2,
+    "total_potatoes_eaten": 27
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"scoops_eaten_less\": 5,\n        \"total_scoops\": 23,\n        \"potatoes_needed_less\": 3,\n        \"total_potatoes\": 6,\n        \"scoops_made_less\": 1,\n        \"total_scoops_made\": 3,\n    }\n\n    scoops_eaten = factual_assignment[\"total_scoops\"] - factual_assignment[\"scoops_eaten_less\"]\n    potatoes_needed = factual_assignment[\"total_potatoes\"] - factual_assignment[\"potatoes_needed_less\"]\n    scoops_made = factual_assignment[\"total_scoops_made\"] - factual_assignment[\"scoops_made_less\"]\n    total_potatoes_eaten = round(scoops_eaten * (potatoes_needed / scoops_made), 2)\n\n    return {\n        \"scoops_eaten_less\": factual_assignment[\"scoops_eaten_less\"],\n        \"total_scoops\": factual_assignment[\"total_scoops\"],\n        \"potatoes_needed_less\": factual_assignment[\"potatoes_needed_less\"],\n        \"total_potatoes\": factual_assignment[\"total_potatoes\"],\n        \"scoops_made_less\": factual_assignment[\"scoops_made_less\"],\n        \"total_scoops_made\": factual_assignment[\"total_scoops_made\"],\n        \"scoops_eaten\": scoops_eaten,\n        \"potatoes_needed\": potatoes_needed,\n        \"scoops_made\": scoops_made,\n        \"total_potatoes_eaten\": total_potatoes_eaten,\n    }\n\nprint(recompute())\n",
+    "results": {
+      "scoops_eaten_less": 5,
+      "total_scoops": 23,
+      "potatoes_needed_less": 3,
+      "total_potatoes": 6,
+      "scoops_made_less": 1,
+      "total_scoops_made": 3,
+      "scoops_eaten": 18,
+      "potatoes_needed": 3,
+      "scoops_made": 2,
+      "total_potatoes_eaten": 27.0
+    }
+  },
+  "final": {
+    "question": "Gomer ate 5 less than 23 scoops of mashed potatoes.  If it takes 3 less than 6 potatoes to make 1 less than 3 scoops of mashed potatoes, how many potatoes did Gomer eat?",
+    "answer_lines": [
+      "5 less than 23 scoops of mashed potatoes is 23-5=18 scoops of mashed potatoes.",
+      "3 less than 6 potatoes is 6-3=3 potatoes.",
+      "1 less than 3 scoops of mashed potatoes is 3-1=2 scoops of mashed potatoes.",
+      "Thus, if Gomer ate 18 scoops of mashed potatoes, and it takes 3 potatoes to make 2 scoops of mashed potatoes, then Gomer ate 18*(3/2)=27.0 potatoes.",
+      "#### 27.0"
+    ],
+    "final_scalar": 27.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ti-Manno ate 5 less than 23 scoops of diri djon djon.  If it takes 3 less than 6 potatoes to make 1 less than 3 scoops of diri djon djon, how many potatoes did Ti-Manno eat?",
+    "adapted_answer": [
+      "5 less than 23 scoops of diri djon djon is 23-5=18 scoops of diri djon djon.",
+      "3 less than 6 potatoes is 6-3=3 potatoes.",
+      "1 less than 3 scoops of diri djon djon is 3-1=2 scoops of diri djon djon.",
+      "Thus, if Ti-Manno ate 18 scoops of diri djon djon, and it takes 3 potatoes to make 2 scoops of diri djon djon, then Ti-Manno ate 18*(3/2)=27.0 potatoes.",
+      "#### 27.0"
+    ],
+    "adaptation_notes": "Replaced 'Gomer' with 'Ti-Manno' (a common Haitian name) and 'mashed potatoes' with 'diri djon djon' (a traditional Haitian dish)."
+  }
+}

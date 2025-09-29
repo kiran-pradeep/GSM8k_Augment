@@ -1,0 +1,144 @@
+{
+  "index": 832,
+  "split": "test",
+  "original": {
+    "question": "Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved $10.00 more than their sister Eva.   Eva has saved $20.00.  How much money does Roy have?",
+    "answer": "Anthony has saved $10.00 more than Eva who has $20.00 so he has 10+20 = $<<10+20=30.00>>30.00\nRoy has saved 40% more than his brother who has $30.00 so Roy has saved .40*30 = $12.00\nAll total, Roy has 12.00 more than his brother, so he has 12+30 = $<<12+30=42.00>>42.00\n#### 42"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "eva_savings",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "anthony_savings",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "anthony_total_savings",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "roy_additional_savings",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "roy_total_savings",
+      "value": 42.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"eva_savings\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"anthony_savings\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"anthony_total_savings\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"roy_additional_savings\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"roy_total_savings\", \"value\": 42.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "eva_savings",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "anthony_savings",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "anthony_total_savings",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "roy_additional_savings",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 85.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "roy_total_savings",
+        "original_value": 42.0,
+        "original_unit": "dollar",
+        "converted_value": 299.46,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved ${anthony_savings} more than their sister Eva.   Eva has saved ${eva_savings}.  How much money does Roy have?",
+    "templatized_answer": [
+      "Anthony has saved ${anthony_savings} more than Eva who has ${eva_savings} so he has {anthony_savings}+{eva_savings} = ${anthony_total_savings}",
+      "Roy has saved 40% more than his brother who has ${anthony_total_savings} so Roy has saved .40*{anthony_total_savings} = ${roy_additional_savings}",
+      "All total, Roy has {roy_additional_savings} more than his brother, so he has {roy_additional_savings}+{anthony_total_savings} = ${roy_total_savings}",
+      "#### {roy_total_savings}"
+    ],
+    "factual_assignment": {
+      "eva_savings": 20.0,
+      "anthony_savings": 10.0,
+      "anthony_total_savings": 30.0,
+      "roy_additional_savings": 12.0,
+      "roy_total_savings": 42.0
+    }
+  },
+  "merged_assignment": {
+    "eva_savings": 142.6,
+    "anthony_savings": 71.3,
+    "anthony_total_savings": 213.9,
+    "roy_additional_savings": 85.56,
+    "roy_total_savings": 299.46
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    eva_savings = 142.6\n    anthony_savings = 71.3\n    anthony_total_savings = round(anthony_savings + eva_savings, 2)\n    roy_additional_savings = round(0.4 * anthony_total_savings, 2)\n    roy_total_savings = round(roy_additional_savings + anthony_total_savings, 2)\n\n    return {\n        \"eva_savings\": eva_savings,\n        \"anthony_savings\": anthony_savings,\n        \"anthony_total_savings\": anthony_total_savings,\n        \"roy_additional_savings\": roy_additional_savings,\n        \"roy_total_savings\": roy_total_savings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "eva_savings": 142.6,
+      "anthony_savings": 71.3,
+      "anthony_total_savings": 213.9,
+      "roy_additional_savings": 85.56,
+      "roy_total_savings": 299.46
+    }
+  },
+  "final": {
+    "question": "Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved 71.3 renminbi more than their sister Eva.   Eva has saved 142.6 renminbi.  How much money does Roy have?",
+    "answer_lines": [
+      "Anthony has saved 71.3 renminbi more than Eva who has 142.6 renminbi so he has 71.3+142.6 = 213.9 renminbi",
+      "Roy has saved 40% more than his brother who has 213.9 renminbi so Roy has saved .40*213.9 = 85.56 renminbi",
+      "All total, Roy has 85.56 renminbi more than his brother, so he has 85.56+213.9 = 299.46 renminbi",
+      "#### 299.46"
+    ],
+    "final_scalar": 299.46,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rui has saved 40% more in money earned by chores than his brother An Dong.  An Dong has saved 71.3 renminbi more than their sister Wei.   Wei has saved 142.6 renminbi.  How much money does Rui have?",
+    "adapted_answer": [
+      "An Dong has saved 71.3 renminbi more than Wei who has 142.6 renminbi so he has 71.3+142.6 = 213.9 renminbi",
+      "Rui has saved 40% more than his brother who has 213.9 renminbi so Rui has saved .40*213.9 = 85.56 renminbi",
+      "All total, Rui has 85.56 renminbi more than his brother, so he has 85.56+213.9 = 299.46 renminbi",
+      "#### 299.46"
+    ],
+    "adaptation_notes": "Replaced names 'Roy' with 'Rui', 'Anthony' with 'An Dong', and 'Eva' with 'Wei' to provide Chinese equivalents."
+  }
+}

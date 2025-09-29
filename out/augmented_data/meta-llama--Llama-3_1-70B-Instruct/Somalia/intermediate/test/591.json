@@ -1,0 +1,130 @@
+{
+  "index": 591,
+  "split": "test",
+  "original": {
+    "question": "Four dogs sat in a line within the veterinarian's waiting room.  The first dog was the Affenpinscher, who weighed only 10 pounds.  Next to him sat a Dachshund, who weighed twice as much as the Affenpinscher.  Next to the Dachshund sat a Papillon, who weighed one-fourth as much as the Dachshund.  And at the end of the line sat a Mastiff, who weighed 44 times the weight of the Papillon.  How much did the Mastiff weigh, in pounds?",
+    "answer": "The Affenpinscher weighed 10 pounds, and the Dachshund weighed twice as much as the Affenpinscher, or 2*10=20 pounds.\nThe Papillon weighed one-fourth as much as the Dachshund, or 20/4=<<20/4=5>>5 pounds.\nAnd the Mastiff weighed 44 times the weight of the Papillon, or 5*44=<<44*5=220>>220 pounds.\n#### 220"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "pounds"
+    ],
+    "notes": "The unit 'pounds' is commonly used in Western countries, but not in Somalia where the metric system is used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "affenpinscher_weight",
+      "value": 10,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "dachshund_weight",
+      "value": 20,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "papillon_weight",
+      "value": 5,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "mastiff_weight",
+      "value": 220,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"shilling\", 569.38),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_unit, conversion_rate = conversions[metric[\"unit\"]]\n            converted_value = round(metric[\"value\"] * conversion_rate, 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"affenpinscher_weight\",\n    \"value\": 10,\n    \"unit\": \"pound\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"dachshund_weight\",\n    \"value\": 20,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"papillon_weight\",\n    \"value\": 5,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"mastiff_weight\",\n    \"value\": 220,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "affenpinscher_weight",
+        "original_value": 10,
+        "original_unit": "pound",
+        "converted_value": 4.54,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "dachshund_weight",
+        "original_value": 20,
+        "original_unit": "pound",
+        "converted_value": 9.07,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "papillon_weight",
+        "original_value": 5,
+        "original_unit": "pound",
+        "converted_value": 2.27,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "mastiff_weight",
+        "original_value": 220,
+        "original_unit": "pound",
+        "converted_value": 99.79,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Four dogs sat in a line within the veterinarian's waiting room.  The first dog was the Affenpinscher, who weighed only {affenpinscher_weight} pounds.  Next to him sat a Dachshund, who weighed twice as much as the Affenpinscher.  Next to the Dachshund sat a Papillon, who weighed one-fourth as much as the Dachshund.  And at the end of the line sat a Mastiff, who weighed {mastiff_multiplier} times the weight of the Papillon.  How much did the Mastiff weigh, in pounds?",
+    "templatized_answer": [
+      "The Affenpinscher weighed {affenpinscher_weight} pounds, and the Dachshund weighed twice as much as the Affenpinscher, or 2*{affenpinscher_weight}={dachshund_weight} pounds.",
+      "The Papillon weighed one-fourth as much as the Dachshund, or {dachshund_weight}/4={papillon_weight} pounds.",
+      "And the Mastiff weighed {mastiff_multiplier} times the weight of the Papillon, or {papillon_weight}*{mastiff_multiplier}={mastiff_weight} pounds."
+    ],
+    "factual_assignment": {
+      "affenpinscher_weight": 10,
+      "dachshund_weight": 20,
+      "papillon_weight": 5,
+      "mastiff_weight": 220,
+      "mastiff_multiplier": 44
+    }
+  },
+  "merged_assignment": {
+    "affenpinscher_weight": 4.54,
+    "dachshund_weight": 9.07,
+    "papillon_weight": 2.27,
+    "mastiff_weight": 99.79,
+    "mastiff_multiplier": 44
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"affenpinscher_weight\": 4.54,\n        \"dachshund_weight\": 9.07,\n        \"papillon_weight\": 2.27,\n        \"mastiff_weight\": 99.79,\n        \"mastiff_multiplier\": 44\n    }\n\n    recomputed_values = {}\n\n    # Recompute affenpinscher_weight\n    recomputed_values[\"affenpinscher_weight\"] = factual_assignment[\"affenpinscher_weight\"]\n\n    # Recompute dachshund_weight\n    recomputed_values[\"dachshund_weight\"] = 2 * recomputed_values[\"affenpinscher_weight\"]\n\n    # Recompute papillon_weight\n    recomputed_values[\"papillon_weight\"] = recomputed_values[\"dachshund_weight\"] / 4\n\n    # Recompute mastiff_multiplier\n    recomputed_values[\"mastiff_multiplier\"] = factual_assignment[\"mastiff_weight\"] / recomputed_values[\"papillon_weight\"]\n\n    # Recompute mastiff_weight\n    recomputed_values[\"mastiff_weight\"] = recomputed_values[\"papillon_weight\"] * recomputed_values[\"mastiff_multiplier\"]\n\n    # Round to 2 decimal places where appropriate\n    for key, value in recomputed_values.items():\n        if key != \"mastiff_multiplier\":\n            recomputed_values[key] = round(value, 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "affenpinscher_weight": 4.54,
+      "dachshund_weight": 9.08,
+      "papillon_weight": 2.27,
+      "mastiff_multiplier": 43.96035242290749,
+      "mastiff_weight": 99.79
+    }
+  },
+  "final": {
+    "question": "Four dogs sat in a line within the veterinarian's waiting room.  The first dog was the Affenpinscher, who weighed only 4.54 kilograms.  Next to him sat a Dachshund, who weighed twice as much as the Affenpinscher.  Next to the Dachshund sat a Papillon, who weighed one-fourth as much as the Dachshund.  And at the end of the line sat a Mastiff, who weighed 43.96035242290749 times the weight of the Papillon.  How much did the Mastiff weigh, in kilograms?",
+    "answer_lines": [
+      "The Affenpinscher weighed 4.54 kilograms, and the Dachshund weighed twice as much as the Affenpinscher, or 2*4.54=9.08 kilograms.",
+      "The Papillon weighed one-fourth as much as the Dachshund, or 9.08/4=2.27 kilograms.",
+      "And the Mastiff weighed 43.96035242290749 times the weight of the Papillon, or 2.27*43.96035242290749=99.79 kilograms.",
+      "#### 99.79"
+    ],
+    "final_scalar": 99.79,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Afarta dhiig u jooga xarunta ka hor inta badan ee daryeelka xayawaanka.  Dhiigii ugu horeysay waxay ahayd Cadceed, oo u baahday 4.54 kilograms.  Dhiigii labaad waxay ahayd Jirrig, oo u baahday mar labaad Cadceed.  Dhiigii saddexaad waxay ahayd Qarboosh, oo u baahday rubuc ka mid ah Jirrig.  Iyo dhiigii ugu dambeeyay waxay ahayd Xarago, oo u baahday 43.96035242290749 mar Qarboosh.  Inta ugu badan Xarago u baahdaa, kilograms?",
+    "adapted_answer": [
+      "Cadceed waxay u baahday 4.54 kilograms, iyo Jirrig waxay u baahday mar labaad Cadceed, ama 2*4.54=9.08 kilograms.",
+      "Qarboosh waxay u baahday rubuc ka mid ah Jirrig, ama 9.08/4=2.27 kilograms.",
+      "Iyo Xarago waxay u baahday 43.96035242290749 mar Qarboosh, ama 2.27*43.96035242290749=99.79 kilograms.",
+      "#### 99.79"
+    ],
+    "adaptation_notes": "Affenpinscher replaced with Cadceed (a Somali name), Dachshund replaced with Jirrig (a Somali word for 'short'), Papillon replaced with Qarboosh (a Somali word for 'butterfly'), and Mastiff replaced with Xarago (a Somali word for 'giant')."
+  }
+}

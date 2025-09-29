@@ -1,0 +1,146 @@
+{
+  "index": 152,
+  "split": "test",
+  "original": {
+    "question": "Carl buys ten packs of cookies. Each pack of cookies has six cookies inside. Each cookie cost $0.10. How much change does Carl receive if he pay with a $10 bill?",
+    "answer": "A pack of cookies costs 6 x $0.10 = $<<6*0.1=0.60>>0.60.\nThus, ten packs of cookies cost 10 x $0.6 = $<<10*0.6=6>>6.\nTherefore, Carl will receive a $10 - $6 = $<<10-6=4>>4 change.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Carl",
+      "cookies",
+      "dollars"
+    ],
+    "notes": "The name 'Carl' and the use of 'dollars' are culturally specific to regions other than India. Cookies are also not a traditional Indian food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cookie_cost",
+      "value": 0.1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pack_cost",
+      "value": 0.6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "bill_value",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change_received",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cookie_cost\", \"value\": 0.1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pack_cost\", \"value\": 0.6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"bill_value\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change_received\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cookie_cost",
+        "original_value": 0.1,
+        "original_unit": "dollar",
+        "converted_value": 8.7,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "pack_cost",
+        "original_value": 0.6,
+        "original_unit": "dollar",
+        "converted_value": 52.2,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 522,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "bill_value",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 870,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "change_received",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 348,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carl buys ten packs of cookies. Each pack of cookies has six cookies inside. Each cookie cost ${cookie_cost}. How much change does Carl receive if he pay with a ${bill_value} bill?",
+    "templatized_answer": [
+      "A pack of cookies costs 6 x ${cookie_cost} = ${pack_cost}.",
+      "Thus, ten packs of cookies cost 10 x ${pack_cost} = ${total_cost}.",
+      "Therefore, Carl will receive a ${bill_value} - ${total_cost} = ${change_received} change.",
+      "#### {change_received}"
+    ],
+    "factual_assignment": {
+      "cookie_cost": 0.1,
+      "pack_cost": 0.6,
+      "total_cost": 6,
+      "bill_value": 10,
+      "change_received": 4
+    }
+  },
+  "merged_assignment": {
+    "cookie_cost": 8.7,
+    "pack_cost": 52.2,
+    "total_cost": 522,
+    "bill_value": 870,
+    "change_received": 348
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cookie_cost = 8.7\n    pack_cost = round(6 * cookie_cost, 2)\n    total_cost = round(10 * pack_cost, 2)\n    bill_value = 870\n    change_received = round(bill_value - total_cost, 2)\n\n    return {\n        \"cookie_cost\": cookie_cost,\n        \"pack_cost\": pack_cost,\n        \"total_cost\": total_cost,\n        \"bill_value\": bill_value,\n        \"change_received\": change_received\n    }\n",
+    "results": {
+      "cookie_cost": 8.7,
+      "pack_cost": 52.2,
+      "total_cost": 522.0,
+      "bill_value": 870,
+      "change_received": 348.0
+    }
+  },
+  "final": {
+    "question": "Carl buys ten packs of cookies. Each pack of cookies has six cookies inside. Each cookie cost 8.7 rupees. How much change does Carl receive if he pay with a 870 rupees?",
+    "answer_lines": [
+      "A pack of cookies costs 6 x 8.7 = 52.2 rupees.",
+      "Thus, ten packs of cookies cost 10 x 52.2 = 522 rupees.",
+      "Therefore, Carl will receive a 870 - 522 = 348 rupees change.",
+      "#### 348"
+    ],
+    "final_scalar": 348,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan buys ten packs of nankhatais. Each pack of nankhatais has six nankhatais inside. Each nankhatai costs 8.7 rupees. How much change does Rohan receive if he pays with 870 rupees?",
+    "adapted_answer": [
+      "A pack of nankhatais costs 6 x 8.7 = 52.2 rupees.",
+      "Thus, ten packs of nankhatais cost 10 x 52.2 = 522 rupees.",
+      "Therefore, Rohan will receive a 870 - 522 = 348 rupees change.",
+      "#### 348"
+    ],
+    "adaptation_notes": "Replaced 'Carl' with 'Rohan', 'cookies' with 'nankhatais'."
+  }
+}

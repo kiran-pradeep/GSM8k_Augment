@@ -1,0 +1,123 @@
+{
+  "index": 868,
+  "split": "test",
+  "original": {
+    "question": "A three-ounce box of flavored jello makes 10 small jello cups.  Greg wants to make small jello cups for his son's outdoor birthday party.  There will be 30 kids and he wants to have enough so that each kid can have 4 jello cups.  Jello is currently on sale for $1.25.  How much will he spend on jello?",
+    "answer": "There will be 30 kids and he wants each kid to have 4 servings so that's 30*4 = <<30*4=120>>120 jello cups\n1 box of jello makes 10 jello cups and he needs to make 120 jello cups so he needs 120/10 = <<120/10=12>>12 boxes of jello\nEach box of jello is $1.25 and he needs 12 boxes so he will spend 1.25*12 = $<<1.25*12=15.00>>15.00 on jello\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Greg",
+      "jello",
+      "dollars"
+    ],
+    "notes": "The name 'Greg' is Western, 'jello' is a Western dessert, and 'dollars' is a currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "jello_box_weight",
+      "value": 3,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "jello_cost",
+      "value": 1.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_jello_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"jello_box_weight\", \"value\": 3, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"jello_cost\", \"value\": 1.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_jello_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "jello_box_weight",
+        "original_value": 3,
+        "original_unit": "ounce",
+        "converted_value": 85.05,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "jello_cost",
+        "original_value": 1.25,
+        "original_unit": "dollar",
+        "converted_value": 352.31,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_jello_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 4227.75,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A {jello_box_weight}-ounce box of flavored jello makes 10 small jello cups.  Greg wants to make small jello cups for his son's outdoor birthday party.  There will be {number_of_kids} kids and he wants to have enough so that each kid can have {jello_cups_per_kid} jello cups.  Jello is currently on sale for ${jello_cost}.  How much will he spend on jello?",
+    "templatized_answer": [
+      "There will be {number_of_kids} kids and he wants each kid to have {jello_cups_per_kid} servings so that's {number_of_kids}*{jello_cups_per_kid} = {number_of_kids}*{jello_cups_per_kid} jello cups",
+      "1 box of jello makes 10 jello cups and he needs to make {number_of_kids}*{jello_cups_per_kid} jello cups so he needs ({number_of_kids}*{jello_cups_per_kid})/10 = ({number_of_kids}*{jello_cups_per_kid})/10 boxes of jello",
+      "Each box of jello is ${jello_cost} and he needs ({number_of_kids}*{jello_cups_per_kid})/10 boxes so he will spend {jello_cost}*(({number_of_kids}*{jello_cups_per_kid})/10) = ${jello_cost}*(({number_of_kids}*{jello_cups_per_kid})/10) on jello",
+      "#### ${jello_cost}*(({number_of_kids}*{jello_cups_per_kid})/10)"
+    ],
+    "factual_assignment": {
+      "jello_box_weight": 3,
+      "jello_cost": 1.25,
+      "total_jello_cost": 15.0,
+      "number_of_kids": 30,
+      "jello_cups_per_kid": 4
+    }
+  },
+  "merged_assignment": {
+    "jello_box_weight": 85.05,
+    "jello_cost": 352.31,
+    "total_jello_cost": 4227.75,
+    "number_of_kids": 30,
+    "jello_cups_per_kid": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    jello_box_weight = 85.05\n    jello_cost = 352.31\n    number_of_kids = 30\n    jello_cups_per_kid = 4\n\n    total_jello_cups = number_of_kids * jello_cups_per_kid\n    total_jello_boxes = total_jello_cups / 10\n    total_jello_cost = jello_cost * total_jello_boxes\n\n    return {\n        \"jello_box_weight\": jello_box_weight,\n        \"jello_cost\": round(jello_cost, 2),\n        \"total_jello_cost\": round(total_jello_cost, 2),\n        \"number_of_kids\": number_of_kids,\n        \"jello_cups_per_kid\": jello_cups_per_kid,\n        \"number_of_kids*jello_cups_per_kid\": total_jello_cups,\n        \"({number_of_kids}*{jello_cups_per_kid})/10\": round(total_jello_boxes, 2),\n        \"{jello_cost}*(({number_of_kids}*{jello_cups_per_kid})/10)\": round(total_jello_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "jello_box_weight": 85.05,
+      "jello_cost": 352.31,
+      "total_jello_cost": 4227.72,
+      "number_of_kids": 30,
+      "jello_cups_per_kid": 4,
+      "number_of_kids*jello_cups_per_kid": 120,
+      "({number_of_kids}*{jello_cups_per_kid})/10": 12.0,
+      "{jello_cost}*(({number_of_kids}*{jello_cups_per_kid})/10)": 4227.72
+    }
+  },
+  "final": {
+    "question": "A 85.05-gram box of flavored jello makes 10 small jello cups.  Greg wants to make small jello cups for his son's outdoor birthday party.  There will be 30 kids and he wants to have enough so that each kid can have 4 jello cups.  Jello is currently on sale for 352.31 rupee.  How much will he spend on jello?",
+    "answer_lines": [
+      "There will be 30 kids and he wants each kid to have 4 servings so that's 30*4 = 120 jello cups",
+      "1 box of jello makes 10 jello cups and he needs to make 120 jello cups so he needs 120/10 = 12 boxes of jello",
+      "Each box of jello is 352.31 rupee and he needs 12 boxes so he will spend 352.31*(12) = 4227.72 rupee on jello",
+      "#### 4227.72"
+    ],
+    "final_scalar": 4227.72,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A 85.05-gram box of flavored falooda makes 10 small falooda cups.  Kashif wants to make small falooda cups for his son's outdoor birthday party.  There will be 30 kids and he wants to have enough so that each kid can have 4 falooda cups.  Falooda is currently on sale for 352.31 rupee.  How much will he spend on falooda?",
+    "adapted_answer": [
+      "There will be 30 kids and he wants each kid to have 4 servings so that's 30*4 = 120 falooda cups",
+      "1 box of falooda makes 10 falooda cups and he needs to make 120 falooda cups so he needs 120/10 = 12 boxes of falooda",
+      "Each box of falooda is 352.31 rupee and he needs 12 boxes so he will spend 352.31*(12) = 4227.72 rupee on falooda",
+      "#### 4227.72"
+    ],
+    "adaptation_notes": "Replaced 'Greg' with 'Kashif', 'jello' with 'falooda', and assumed 'rupee' is already Pakistani currency, so no change was needed."
+  }
+}

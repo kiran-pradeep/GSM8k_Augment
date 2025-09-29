@@ -1,0 +1,104 @@
+{
+  "index": 1088,
+  "split": "test",
+  "original": {
+    "question": "There are 6 periods in the day for a normal student but John has to take 2 extra classes.  Each class is 40 minutes long.  He goes to class for 5 days a week.  He then spends 1/16 of his weekly minutes each on Saturday and Sunday as extra learning time.  How many hours a week does he spend learning?",
+    "answer": "He takes 6+2=<<6+2=8>>8 classes a day\nThat means he spends 40*8=<<40*8=320>>320 minutes per day in class\nSo he spends 320*5=<<320*5=1600>>1600 minutes a week\nThat means he spends 1600/16=<<1600/16=100>>100 minutes each on Saturday and Sunday\nSo he spends 1600+100+100=<<1600+100+100=1800>>1800 minutes per week\nSo he spends 1800/60=<<1800/60=30>>30 hours per week\n#### 30"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John"
+    ],
+    "notes": "The name 'John' is culturally specific to Western regions."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 16.62, 'unit': 'leu'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "There are {number_of_periods} periods in the day for a normal student but John has to take {number_of_extra_classes} extra classes.  Each class is {class_length_minutes} minutes long.  He goes to class for {number_of_days_per_week} days a week.  He then spends 1/{fraction_of_weekly_minutes} of his weekly minutes each on Saturday and Sunday as extra learning time.  How many hours a week does he spend learning?",
+    "templatized_answer": [
+      "He takes {number_of_periods}+{number_of_extra_classes}={number_of_periods_plus_extra_classes} classes a day",
+      "That means he spends {class_length_minutes}*{number_of_periods_plus_extra_classes}={total_minutes_per_day} minutes per day in class",
+      "So he spends {total_minutes_per_day}*{number_of_days_per_week}={total_minutes_per_week} minutes a week",
+      "That means he spends {total_minutes_per_week}/{fraction_of_weekly_minutes}={minutes_per_weekend_day} minutes each on Saturday and Sunday",
+      "So he spends {total_minutes_per_week}+{minutes_per_weekend_day}+{minutes_per_weekend_day}={total_minutes_per_week_with_weekends} minutes per week",
+      "So he spends {total_minutes_per_week_with_weekends}/60={total_hours_per_week} hours per week",
+      "#### {total_hours_per_week}"
+    ],
+    "factual_assignment": {
+      "number_of_periods": 6,
+      "number_of_extra_classes": 2,
+      "class_length_minutes": 40,
+      "number_of_days_per_week": 5,
+      "fraction_of_weekly_minutes": 16,
+      "number_of_periods_plus_extra_classes": 8,
+      "total_minutes_per_day": 320,
+      "total_minutes_per_week": 1600,
+      "minutes_per_weekend_day": 100,
+      "total_minutes_per_week_with_weekends": 1800,
+      "total_hours_per_week": 30
+    }
+  },
+  "merged_assignment": {
+    "number_of_periods": 6,
+    "number_of_extra_classes": 2,
+    "class_length_minutes": 40,
+    "number_of_days_per_week": 5,
+    "fraction_of_weekly_minutes": 16,
+    "number_of_periods_plus_extra_classes": 8,
+    "total_minutes_per_day": 320,
+    "total_minutes_per_week": 1600,
+    "minutes_per_weekend_day": 100,
+    "total_minutes_per_week_with_weekends": 1800,
+    "total_hours_per_week": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    number_of_periods = 6\n    number_of_extra_classes = 2\n    class_length_minutes = 40\n    number_of_days_per_week = 5\n    fraction_of_weekly_minutes = 16\n\n    # Recompute placeholders\n    number_of_periods_plus_extra_classes = number_of_periods + number_of_extra_classes\n    total_minutes_per_day = class_length_minutes * number_of_periods_plus_extra_classes\n    total_minutes_per_week = total_minutes_per_day * number_of_days_per_week\n    minutes_per_weekend_day = total_minutes_per_week / fraction_of_weekly_minutes\n    total_minutes_per_week_with_weekends = total_minutes_per_week + minutes_per_weekend_day + minutes_per_weekend_day\n    total_hours_per_week = round(total_minutes_per_week_with_weekends / 60, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"number_of_periods\": number_of_periods,\n        \"number_of_extra_classes\": number_of_extra_classes,\n        \"class_length_minutes\": class_length_minutes,\n        \"number_of_days_per_week\": number_of_days_per_week,\n        \"fraction_of_weekly_minutes\": fraction_of_weekly_minutes,\n        \"number_of_periods_plus_extra_classes\": number_of_periods_plus_extra_classes,\n        \"total_minutes_per_day\": total_minutes_per_day,\n        \"total_minutes_per_week\": total_minutes_per_week,\n        \"minutes_per_weekend_day\": minutes_per_weekend_day,\n        \"total_minutes_per_week_with_weekends\": total_minutes_per_week_with_weekends,\n        \"total_hours_per_week\": total_hours_per_week\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_periods": 6,
+      "number_of_extra_classes": 2,
+      "class_length_minutes": 40,
+      "number_of_days_per_week": 5,
+      "fraction_of_weekly_minutes": 16,
+      "number_of_periods_plus_extra_classes": 8,
+      "total_minutes_per_day": 320,
+      "total_minutes_per_week": 1600,
+      "minutes_per_weekend_day": 100.0,
+      "total_minutes_per_week_with_weekends": 1800.0,
+      "total_hours_per_week": 30.0
+    }
+  },
+  "final": {
+    "question": "There are 6 periods in the day for a normal student but John has to take 2 extra classes.  Each class is 40 minutes long.  He goes to class for 5 days a week.  He then spends 1/16 of his weekly minutes each on Saturday and Sunday as extra learning time.  How many hours a week does he spend learning?",
+    "answer_lines": [
+      "He takes 6+2=8 classes a day",
+      "That means he spends 40*8=320 minutes per day in class",
+      "So he spends 320*5=1600 minutes a week",
+      "That means he spends 1600/16=100.0 minutes each on Saturday and Sunday",
+      "So he spends 1600+100.0+100.0=1800.0 minutes per week",
+      "So he spends 1800.0/60=30.0 hours per week",
+      "#### 30.0"
+    ],
+    "final_scalar": 30.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "There are 6 periods in the day for a normal student but Ion has to take 2 extra classes.  Each class is 40 minutes long.  He goes to class for 5 days a week.  He then spends 1/16 of his weekly minutes each on Saturday and Sunday as extra learning time.  How many hours a week does he spend learning?",
+    "adapted_answer": [
+      "He takes 6+2=8 classes a day",
+      "That means he spends 40*8=320 minutes per day in class",
+      "So he spends 320*5=1600 minutes a week",
+      "That means he spends 1600/16=100.0 minutes each on Saturday and Sunday",
+      "So he spends 1600+100.0+100.0=1800.0 minutes per week",
+      "So he spends 1800.0/60=30.0 hours per week",
+      "#### 30.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Ion', a common Moldovan name."
+  }
+}

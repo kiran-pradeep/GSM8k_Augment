@@ -1,0 +1,93 @@
+{
+  "index": 1215,
+  "split": "test",
+  "original": {
+    "question": "Tim enters a competition and has to try and guess the number of red jelly beans in a jar.  The jar has a square base and is 6 inches by 6 inches and 15 inches tall.  He knows that a jelly bean is .15 cubic inches.  He also knows that they get about 80% efficiency in packing.  He estimates 30% of the jelly beans are red.  The true number of red jelly beans in the container is 900.  How far off was his guess?",
+    "answer": "The volume of the container is 6*6*15=<<6*6*15=540>>540 cubic inches\nThat means it can fit 540/.15=<<540/.15=3600>>3600 jelly beans\nWith 80% packing efficiency, you can fit 3600*.8=<<3600*.8=2880>>2880 jelly beans in there\nSo that means he guesses 2880*.3=<<2880*.3=864>>864 are red\nSo his guess is off by 900-864=<<900-864=36>>36\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "inches"
+    ],
+    "notes": "The unit of measurement 'inches' is commonly used in the United States and other Western countries, but not typically in Somalia, which uses the metric system."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 569.38, 'unit': 'shilling'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Tim enters a competition and has to try and guess the number of red jelly beans in a jar.  The jar has a square base and is {jar_base_length} inches by {jar_base_length} inches and {jar_height} inches tall.  He knows that a jelly bean is {jelly_bean_volume} cubic inches.  He also knows that they get about {packing_efficiency}% efficiency in packing.  He estimates {red_jelly_bean_percentage}% of the jelly beans are red.  The true number of red jelly beans in the container is {true_red_jelly_beans}.  How far off was his guess?",
+    "templatized_answer": [
+      "The volume of the container is {jar_base_length}*{jar_base_length}*{jar_height}={jar_base_length}*{jar_base_length}*{jar_height} cubic inches",
+      "That means it can fit {jar_base_length}*{jar_base_length}*{jar_height}/{jelly_bean_volume}={jar_base_length}*{jar_base_length}*{jar_height}/{jelly_bean_volume} jelly beans",
+      "With {packing_efficiency}% packing efficiency, you can fit ({jar_base_length}*{jar_base_length}*{jar_height}/{jelly_bean_volume})*({packing_efficiency}/100)=({jar_base_length}*{jar_base_length}*{jar_height}/{jelly_bean_volume})*({packing_efficiency}/100) jelly beans in there",
+      "So that means he guesses ({jar_base_length}*{jar_base_length}*{jar_height}/{jelly_bean_volume})*({packing_efficiency}/100)*({red_jelly_bean_percentage}/100)=({jar_base_length}*{jar_base_length}*{jar_height}/{jelly_bean_volume})*({packing_efficiency}/100)*({red_jelly_bean_percentage}/100) are red",
+      "So his guess is off by {true_red_jelly_beans}-({jar_base_length}*{jar_base_length}*{jar_height}/{jelly_bean_volume})*({packing_efficiency}/100)*({red_jelly_bean_percentage}/100)={guess_error}",
+      "#### {guess_error}"
+    ],
+    "factual_assignment": {
+      "jar_base_length": 6,
+      "jar_height": 15,
+      "jelly_bean_volume": 0.15,
+      "packing_efficiency": 80,
+      "red_jelly_bean_percentage": 30,
+      "true_red_jelly_beans": 900,
+      "guess_error": 36
+    }
+  },
+  "merged_assignment": {
+    "jar_base_length": 6,
+    "jar_height": 15,
+    "jelly_bean_volume": 0.15,
+    "packing_efficiency": 80,
+    "red_jelly_bean_percentage": 30,
+    "true_red_jelly_beans": 900,
+    "guess_error": 36
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    jar_base_length = 6\n    jar_height = 15\n    jelly_bean_volume = 0.15\n    packing_efficiency = 80\n    red_jelly_bean_percentage = 30\n    true_red_jelly_beans = 900\n\n    container_volume = jar_base_length * jar_base_length * jar_height\n    max_jelly_beans = container_volume / jelly_bean_volume\n    jelly_beans_with_efficiency = (max_jelly_beans * (packing_efficiency / 100))\n    guessed_red_jelly_beans = jelly_beans_with_efficiency * (red_jelly_bean_percentage / 100)\n    guess_error = true_red_jelly_beans - guessed_red_jelly_beans\n\n    return {\n        \"jar_base_length\": jar_base_length,\n        \"jar_height\": jar_height,\n        \"jelly_bean_volume\": jelly_bean_volume,\n        \"packing_efficiency\": packing_efficiency,\n        \"red_jelly_bean_percentage\": red_jelly_bean_percentage,\n        \"true_red_jelly_beans\": true_red_jelly_beans,\n        \"container_volume\": round(container_volume, 2),\n        \"max_jelly_beans\": round(max_jelly_beans, 2),\n        \"jelly_beans_with_efficiency\": round(jelly_beans_with_efficiency, 2),\n        \"guessed_red_jelly_beans\": round(guessed_red_jelly_beans, 2),\n        \"guess_error\": round(guess_error, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "jar_base_length": 6,
+      "jar_height": 15,
+      "jelly_bean_volume": 0.15,
+      "packing_efficiency": 80,
+      "red_jelly_bean_percentage": 30,
+      "true_red_jelly_beans": 900,
+      "container_volume": 540,
+      "max_jelly_beans": 3600.0,
+      "jelly_beans_with_efficiency": 2880.0,
+      "guessed_red_jelly_beans": 864.0,
+      "guess_error": 36.0
+    }
+  },
+  "final": {
+    "question": "Tim enters a competition and has to try and guess the number of red jelly beans in a jar.  The jar has a square base and is 6 inches by 6 inches and 15 inches tall.  He knows that a jelly bean is 0.15 cubic inches.  He also knows that they get about 80% efficiency in packing.  He estimates 30% of the jelly beans are red.  The true number of red jelly beans in the container is 900.  How far off was his guess?",
+    "answer_lines": [
+      "The volume of the container is 6*6*15=540 cubic inches",
+      "That means it can fit 540/0.15=3600 jelly beans",
+      "With 80% packing efficiency, you can fit (540/0.15)*(80/100)=2880 jelly beans in there",
+      "So that means he guesses 2880*(30/100)=864 are red",
+      "So his guess is off by 900-864=36",
+      "#### 36"
+    ],
+    "final_scalar": 36,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan waxay galeen masuuliyad ka qabata inay wax ku dhaqdaan tirada miroodiga ah ee miroodiga ah ee ku jira jar.  Jariga waxa uu leeyahay baas isle'eg ah iyo waa 6 dujimo iyo 6 dujimo iyo 15 dujimo joor.  Waxa uu garanayaa in miroodiga ay tahay 0.15 cubic dujimo.  Waxa uu sidoo kale garanayaa inay helaan 80% nadiifinta guri.  Waxa uu xisabiyaa 30% miroodiga ay tahay cas.  Tira miroodiga cas ah ee jariga waa 900.  Kuma dhow ahaa xisabtayda?",
+    "adapted_answer": [
+      "Volume jariga waa 6*6*15=540 cubic dujimo",
+      "Waxaasuu ku noqonayaa inay ku fidi 540/0.15=3600 miroodiga",
+      "Nadiifinta 80% waxay ku noqonayaa inay ku fidi (540/0.15)*(80/100)=2880 miroodiga",
+      "Waxaasuu ku noqonayaa inuu xisabto 2880*(30/100)=864 ay cas yihiin",
+      "Waxaasuu ku noqonayaa inuu xisabto 900-864=36",
+      "#### 36"
+    ],
+    "adaptation_notes": "Replaced inches with dujimo (Somali for inches), jelly beans with miroodiga (Somali for beans), and jar with jariga (Somali for jar)"
+  }
+}

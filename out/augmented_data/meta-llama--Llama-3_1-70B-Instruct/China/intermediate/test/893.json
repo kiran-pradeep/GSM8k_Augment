@@ -1,0 +1,131 @@
+{
+  "index": 893,
+  "split": "test",
+  "original": {
+    "question": "Mark works at his job for 8 hours a day for 5 days a week.  He used to make $10 an hour but they raised his pay by $2 per hour.  How much does he make a week?",
+    "answer": "He works 8*5=<<8*5=40>>40 hours a week\nHe gets paid 10+2=$<<10+2=12>>12 an hour\nSo he now gets 40*12=$<<40*12=480>>480 per week\n#### 480"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage_before",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_wage_increase",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_wage_after",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 480,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * conversions[unit][converted_unit], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage_before\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_wage_increase\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_wage_after\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 480, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage_before",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hourly_wage_increase",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hourly_wage_after",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 12,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 480,
+        "original_unit": "dollar",
+        "converted_value": 480,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark works at his job for {hours_per_day} hours a day for {days_per_week} days a week.  He used to make ${hourly_wage_before} an hour but they raised his pay by ${hourly_wage_increase} per hour.  How much does he make a week?",
+    "templatized_answer": [
+      "He works {hours_per_day}*{days_per_week}={hours_per_day}*{days_per_week} hours a week",
+      "He gets paid {hourly_wage_before}+{hourly_wage_increase}=${hourly_wage_before}+{hourly_wage_increase} an hour",
+      "So he now gets {hours_per_day}*{days_per_week}*({hourly_wage_before}+{hourly_wage_increase})=${hours_per_day}*{days_per_week}*({hourly_wage_before}+{hourly_wage_increase}) per week",
+      "#### {hours_per_day}*{days_per_week}*({hourly_wage_before}+{hourly_wage_increase})"
+    ],
+    "factual_assignment": {
+      "hours_per_day": 8,
+      "days_per_week": 5,
+      "hourly_wage_before": 10,
+      "hourly_wage_increase": 2
+    }
+  },
+  "merged_assignment": {
+    "hours_per_day": 8,
+    "days_per_week": 5,
+    "hourly_wage_before": 71.3,
+    "hourly_wage_increase": 14.26
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hours_per_day = 8\n    days_per_week = 5\n    hourly_wage_before = 71.3\n    hourly_wage_increase = 14.26\n\n    hours_per_week = hours_per_day * days_per_week\n    hourly_wage_after = hourly_wage_before + hourly_wage_increase\n    weekly_wage = hours_per_week * hourly_wage_after\n\n    return {\n        \"hours_per_day\": hours_per_day,\n        \"days_per_week\": days_per_week,\n        \"hourly_wage_before\": round(hourly_wage_before, 2),\n        \"hourly_wage_increase\": round(hourly_wage_increase, 2),\n        \"hours_per_week\": hours_per_week,\n        \"hourly_wage_after\": round(hourly_wage_after, 2),\n        \"weekly_wage\": round(weekly_wage, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hours_per_day": 8,
+      "days_per_week": 5,
+      "hourly_wage_before": 71.3,
+      "hourly_wage_increase": 14.26,
+      "hours_per_week": 40,
+      "hourly_wage_after": 85.56,
+      "weekly_wage": 3422.4
+    }
+  },
+  "final": {
+    "question": "Mark works at his job for 8 hours a day for 5 days a week.  He used to make 71.3 renminbi an hour but they raised his pay by 14.26 renminbi per hour.  How much does he make a week?",
+    "answer_lines": [
+      "He works 8*5=40 hours a week",
+      "He gets paid 71.3+14.26=85.56 renminbi an hour",
+      "So he now gets 40*85.56=3422.4 renminbi per week",
+      "#### 3422.4"
+    ],
+    "final_scalar": 3422.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mark works at his job for 8 hours a day for 5 days a week.  He used to make 71.3 renminbi an hour but they raised his pay by 14.26 renminbi per hour.  How much does he make a week?",
+    "adapted_answer": [
+      "He works 8*5=40 hours a week",
+      "He gets paid 71.3+14.26=85.56 renminbi an hour",
+      "So he now gets 40*85.56=3422.4 renminbi per week",
+      "#### 3422.4"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

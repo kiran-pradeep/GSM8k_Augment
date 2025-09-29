@@ -1,0 +1,173 @@
+{
+  "index": 408,
+  "split": "test",
+  "original": {
+    "question": "Toby is reading a book that is 45 pages long. It averages 200 words a page. Toby can read at a rate of 300 words per minute. He has to be at the airport in 60 minutes and plans to leave as soon as he finishes the book. It takes 10 minutes to get to the airport. How many minutes early will Toby be?",
+    "answer": "He can read 1.5 pages in a minute because 300 / 200 = <<300/200=1.5>>1.5\nIt will take 30 minutes to read the book because 45 / 1.5 = <<45/1.5=30>>30\nHe will arrive at the airport 40 minutes from now because 30 + 10 = <<30+10=40>>40\nHe will be 20 minutes early because 60 - 40 = <<60-40=20>>20\n#### 20"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Toby",
+      "airport"
+    ],
+    "notes": "Name 'Toby' and the concept of an 'airport' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "airport_arrival_time",
+      "value": 60.0,
+      "unit": "minute",
+      "context": "question"
+    },
+    {
+      "variable": "reading_speed",
+      "value": 300.0,
+      "unit": "words_per_minute",
+      "context": "question"
+    },
+    {
+      "variable": "travel_time_to_airport",
+      "value": 10.0,
+      "unit": "minute",
+      "context": "question"
+    },
+    {
+      "variable": "time_to_finish_book",
+      "value": 30.0,
+      "unit": "minute",
+      "context": "answer"
+    },
+    {
+      "variable": "arrival_time_at_airport",
+      "value": 40.0,
+      "unit": "minute",
+      "context": "answer"
+    },
+    {
+      "variable": "time_early",
+      "value": 20.0,
+      "unit": "minute",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 7.13, \"unit\": \"renminbi\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"},\n        \"minute\": {\"factor\": 1, \"unit\": \"minute\"},\n        \"hour\": {\"factor\": 1, \"unit\": \"hour\"},\n        \"words_per_minute\": {\"factor\": 1, \"unit\": \"words_per_minute\"}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            factor = conversions[original_unit][\"factor\"]\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * factor, 2)\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"airport_arrival_time\",\n    \"value\": 60.0,\n    \"unit\": \"minute\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"reading_speed\",\n    \"value\": 300.0,\n    \"unit\": \"words_per_minute\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"travel_time_to_airport\",\n    \"value\": 10.0,\n    \"unit\": \"minute\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"time_to_finish_book\",\n    \"value\": 30.0,\n    \"unit\": \"minute\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"arrival_time_at_airport\",\n    \"value\": 40.0,\n    \"unit\": \"minute\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"time_early\",\n    \"value\": 20.0,\n    \"unit\": \"minute\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "airport_arrival_time",
+        "original_value": 60.0,
+        "original_unit": "minute",
+        "converted_value": 60.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "reading_speed",
+        "original_value": 300.0,
+        "original_unit": "words_per_minute",
+        "converted_value": 300.0,
+        "converted_unit": "words_per_minute"
+      },
+      {
+        "variable": "travel_time_to_airport",
+        "original_value": 10.0,
+        "original_unit": "minute",
+        "converted_value": 10.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "time_to_finish_book",
+        "original_value": 30.0,
+        "original_unit": "minute",
+        "converted_value": 30.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "arrival_time_at_airport",
+        "original_value": 40.0,
+        "original_unit": "minute",
+        "converted_value": 40.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "time_early",
+        "original_value": 20.0,
+        "original_unit": "minute",
+        "converted_value": 20.0,
+        "converted_unit": "minute"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Toby is reading a book that is {book_length} pages long. It averages {words_per_page} words a page. Toby can read at a rate of {reading_speed} words per minute. He has to be at the airport in {airport_arrival_time} minutes and plans to leave as soon as he finishes the book. It takes {travel_time_to_airport} minutes to get to the airport. How many minutes early will Toby be?",
+    "templatized_answer": [
+      "He can read {reading_speed} / {words_per_page} = {reading_speed_per_page} pages in a minute",
+      "It will take {book_length} / {reading_speed_per_page} = {time_to_finish_book} minutes to read the book",
+      "He will arrive at the airport {time_to_finish_book} + {travel_time_to_airport} = {arrival_time_at_airport} minutes from now",
+      "He will be {airport_arrival_time} - {arrival_time_at_airport} = {time_early} minutes early",
+      "#### {time_early}"
+    ],
+    "factual_assignment": {
+      "book_length": 45,
+      "words_per_page": 200,
+      "reading_speed": 300,
+      "reading_speed_per_page": 1.5,
+      "airport_arrival_time": 60,
+      "travel_time_to_airport": 10,
+      "time_to_finish_book": 30,
+      "arrival_time_at_airport": 40,
+      "time_early": 20
+    }
+  },
+  "merged_assignment": {
+    "book_length": 45,
+    "words_per_page": 200,
+    "reading_speed": 300.0,
+    "reading_speed_per_page": 1.5,
+    "airport_arrival_time": 60.0,
+    "travel_time_to_airport": 10.0,
+    "time_to_finish_book": 30.0,
+    "arrival_time_at_airport": 40.0,
+    "time_early": 20.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    book_length = 45\n    words_per_page = 200\n    reading_speed = 300.0\n    airport_arrival_time = 60.0\n    travel_time_to_airport = 10.0\n\n    reading_speed_per_page = round(reading_speed / words_per_page, 2)\n    time_to_finish_book = round(book_length / reading_speed_per_page, 2)\n    arrival_time_at_airport = round(time_to_finish_book + travel_time_to_airport, 2)\n    time_early = round(airport_arrival_time - arrival_time_at_airport, 2)\n\n    return {\n        \"book_length\": book_length,\n        \"words_per_page\": words_per_page,\n        \"reading_speed\": reading_speed,\n        \"reading_speed_per_page\": reading_speed_per_page,\n        \"airport_arrival_time\": airport_arrival_time,\n        \"travel_time_to_airport\": travel_time_to_airport,\n        \"time_to_finish_book\": time_to_finish_book,\n        \"arrival_time_at_airport\": arrival_time_at_airport,\n        \"time_early\": time_early\n    }\n\nprint(recompute())\n",
+    "results": {
+      "book_length": 45,
+      "words_per_page": 200,
+      "reading_speed": 300.0,
+      "reading_speed_per_page": 1.5,
+      "airport_arrival_time": 60.0,
+      "travel_time_to_airport": 10.0,
+      "time_to_finish_book": 30.0,
+      "arrival_time_at_airport": 40.0,
+      "time_early": 20.0
+    }
+  },
+  "final": {
+    "question": "Toby is reading a book that is 45 pages long. It averages 200 words a page. Toby can read at a rate of 300 words per minute. He has to be at the airport in 60 minutes and plans to leave as soon as he finishes the book. It takes 10 minutes to get to the airport. How many minutes early will Toby be?",
+    "answer_lines": [
+      "He can read 1.5 pages in a minute because 300 / 200 = 1.5",
+      "It will take 30 minutes to read the book because 45 / 1.5 = 30",
+      "He will arrive at the airport 40 minutes from now because 30 + 10 = 40",
+      "He will be 20 minutes early because 60 - 40 = 20",
+      "#### 20"
+    ],
+    "final_scalar": 20.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Tang is reading a book that is 45 pages long. It averages 200 words a page. Tang can read at a rate of 300 words per minute. He has to be at the train station in 60 minutes and plans to leave as soon as he finishes the book. It takes 10 minutes to get to the train station. How many minutes early will Tang be?",
+    "adapted_answer": [
+      "He can read 1.5 pages in a minute because 300 / 200 = 1.5",
+      "It will take 30 minutes to read the book because 45 / 1.5 = 30",
+      "He will arrive at the train station 40 minutes from now because 30 + 10 = 40",
+      "He will be 20 minutes early because 60 - 40 = 20",
+      "#### 20"
+    ],
+    "adaptation_notes": "Replaced 'Toby' with 'Tang' and 'airport' with 'train station' to give the text a Chinese context."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "index": 573,
+  "split": "test",
+  "original": {
+    "question": "Katina has $3000 in her savings account. If she removes $100 from the account every month, how much money will be remaining within the account after 2 years?",
+    "answer": "A year has 12 months, and since she withdraws money from the account every month, after 2 years, she will have withdrawn money for 2*12= <<24=24>>24 months.\nSince she withdraws money from the account every month, after 24 months, she would have withdrawn 24*$100 = $<<24*100=2400>>2400.\nThe total amount of money remaining in the account after two years is $3000-$2400= $<<3000-2400=600>>600\n#### 600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The use of dollars as a unit of currency is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_savings",
+      "value": 3000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_withdrawal",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_withdrawn",
+      "value": 2400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_savings",
+      "value": 600,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_savings\", \"value\": 3000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_withdrawal\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_withdrawn\", \"value\": 2400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_savings\", \"value\": 600, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_savings",
+        "original_value": 3000,
+        "original_unit": "dollar",
+        "converted_value": 49860.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "monthly_withdrawal",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_withdrawn",
+        "original_value": 2400,
+        "original_unit": "dollar",
+        "converted_value": 39888.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "remaining_savings",
+        "original_value": 600,
+        "original_unit": "dollar",
+        "converted_value": 9972.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Katina has ${initial_savings} in her savings account. If she removes ${monthly_withdrawal} from the account every month, how much money will be remaining within the account after 2 years?",
+    "templatized_answer": [
+      "A year has 12 months, and since she withdraws money from the account every month, after 2 years, she will have withdrawn money for 2*12={months_withdrawn} months.",
+      "Since she withdraws money from the account every month, after {months_withdrawn} months, she would have withdrawn {months_withdrawn}*${monthly_withdrawal} = ${total_withdrawn}.",
+      "The total amount of money remaining in the account after two years is ${initial_savings}-${total_withdrawn}= ${remaining_savings}"
+    ],
+    "factual_assignment": {
+      "initial_savings": 3000,
+      "monthly_withdrawal": 100,
+      "total_withdrawn": 2400,
+      "remaining_savings": 600,
+      "months_withdrawn": 24
+    }
+  },
+  "merged_assignment": {
+    "initial_savings": 49860.0,
+    "monthly_withdrawal": 1662.0,
+    "total_withdrawn": 39888.0,
+    "remaining_savings": 9972.0,
+    "months_withdrawn": 24
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_savings = 49860.0\n    monthly_withdrawal = 1662.0\n\n    months_withdrawn = 2 * 12\n    total_withdrawn = months_withdrawn * monthly_withdrawal\n    remaining_savings = initial_savings - total_withdrawn\n\n    return {\n        \"initial_savings\": initial_savings,\n        \"monthly_withdrawal\": monthly_withdrawal,\n        \"total_withdrawn\": round(total_withdrawn, 2),\n        \"remaining_savings\": round(remaining_savings, 2),\n        \"months_withdrawn\": months_withdrawn\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_savings": 49860.0,
+      "monthly_withdrawal": 1662.0,
+      "total_withdrawn": 39888.0,
+      "remaining_savings": 9972.0,
+      "months_withdrawn": 24
+    }
+  },
+  "final": {
+    "question": "Katina has 49860 leu in her savings account. If she removes 1662 leu from the account every month, how much money will be remaining within the account after 2 years?",
+    "answer_lines": [
+      "A year has 12 months, and since she withdraws money from the account every month, after 2 years, she will have withdrawn money for 2*12=24 months.",
+      "Since she withdraws money from the account every month, after 24 months, she would have withdrawn 24*1662 = 39888 leu.",
+      "The total amount of money remaining in the account after two years is 49860-39888= 9972 leu",
+      "#### 9972"
+    ],
+    "final_scalar": 9972,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Katina has 49860 lei in her savings account. If she removes 1662 lei from the account every month, how much money will be remaining within the account after 2 years?",
+    "adapted_answer": [
+      "A year has 12 months, and since she withdraws money from the account every month, after 2 years, she will have withdrawn money for 2*12=24 months.",
+      "Since she withdraws money from the account every month, after 24 months, she would have withdrawn 24*1662 = 39888 lei.",
+      "The total amount of money remaining in the account after two years is 49860-39888= 9972 lei",
+      "#### 9972"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' to use the correct plural form of the Moldovan currency."
+  }
+}

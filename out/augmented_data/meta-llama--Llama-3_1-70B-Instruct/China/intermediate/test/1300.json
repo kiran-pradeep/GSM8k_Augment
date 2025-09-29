@@ -1,0 +1,133 @@
+{
+  "index": 1300,
+  "split": "test",
+  "original": {
+    "question": "Josh runs a car shop and services 3 cars a day.  He is open every day of the week except Sunday and Wednesday.  He gets paid $4 per car.  How much does he make in 2 weeks?",
+    "answer": "He runs 7-2=<<7-2=5>>5 days a week\nThat means he serves 5*3=<<5*3=15>>15 cars a week\nSo he makes 15*4=$<<15*4=60>>60 a week\nSo he makes 60*2=$<<60*2=120>>120 in 2 weeks\n#### 120"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not in China where the yuan is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "car_service_fee",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "two_week_earnings",
+      "value": 120,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(metric):\n        if metric[\"unit\"] in conversions:\n            converted_unit = list(conversions[metric[\"unit\"]].keys())[0]\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][converted_unit], 2)\n            return {\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            }\n        else:\n            return {\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            }\n\n    return [convert(metric) for metric in metrics]\n\nmetrics = [\n    {\"variable\": \"car_service_fee\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"two_week_earnings\", \"value\": 120, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "car_service_fee",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "two_week_earnings",
+        "original_value": 120,
+        "original_unit": "dollar",
+        "converted_value": 855.6,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Josh runs a car shop and services {number_of_cars_per_day} cars a day.  He is open every day of the week except Sunday and Wednesday.  He gets paid ${car_service_fee} per car.  How much does he make in {number_of_weeks} weeks?",
+    "templatized_answer": [
+      "He runs {number_of_days_in_week}-{days_off_per_week}={number_of_days_open_per_week} days a week",
+      "That means he serves {number_of_days_open_per_week}*{number_of_cars_per_day}={number_of_cars_per_week} cars a week",
+      "So he makes {number_of_cars_per_week}*{car_service_fee}=${weekly_earnings} a week",
+      "So he makes {weekly_earnings}*{number_of_weeks}=${two_week_earnings} in {number_of_weeks} weeks",
+      "#### {two_week_earnings}"
+    ],
+    "factual_assignment": {
+      "car_service_fee": 4,
+      "weekly_earnings": 60,
+      "two_week_earnings": 120,
+      "number_of_cars_per_day": 3,
+      "number_of_days_in_week": 7,
+      "days_off_per_week": 2,
+      "number_of_days_open_per_week": 5,
+      "number_of_cars_per_week": 15,
+      "number_of_weeks": 2
+    }
+  },
+  "merged_assignment": {
+    "car_service_fee": 28.52,
+    "weekly_earnings": 427.8,
+    "two_week_earnings": 855.6,
+    "number_of_cars_per_day": 3,
+    "number_of_days_in_week": 7,
+    "days_off_per_week": 2,
+    "number_of_days_open_per_week": 5,
+    "number_of_cars_per_week": 15,
+    "number_of_weeks": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    car_service_fee = 28.52\n    number_of_cars_per_day = 3\n    number_of_days_in_week = 7\n    days_off_per_week = 2\n    number_of_weeks = 2\n\n    number_of_days_open_per_week = number_of_days_in_week - days_off_per_week\n    number_of_cars_per_week = number_of_days_open_per_week * number_of_cars_per_day\n    weekly_earnings = number_of_cars_per_week * car_service_fee\n    two_week_earnings = weekly_earnings * number_of_weeks\n\n    return {\n        \"car_service_fee\": round(car_service_fee, 2),\n        \"number_of_cars_per_day\": number_of_cars_per_day,\n        \"number_of_days_in_week\": number_of_days_in_week,\n        \"days_off_per_week\": days_off_per_week,\n        \"number_of_days_open_per_week\": number_of_days_open_per_week,\n        \"number_of_cars_per_week\": number_of_cars_per_week,\n        \"weekly_earnings\": round(weekly_earnings, 2),\n        \"two_week_earnings\": round(two_week_earnings, 2),\n        \"number_of_weeks\": number_of_weeks\n    }\n\nprint(recompute())\n",
+    "results": {
+      "car_service_fee": 28.52,
+      "number_of_cars_per_day": 3,
+      "number_of_days_in_week": 7,
+      "days_off_per_week": 2,
+      "number_of_days_open_per_week": 5,
+      "number_of_cars_per_week": 15,
+      "weekly_earnings": 427.8,
+      "two_week_earnings": 855.6,
+      "number_of_weeks": 2
+    }
+  },
+  "final": {
+    "question": "Josh runs a car shop and services 3 cars a day.  He is open every day of the week except Sunday and Wednesday.  He gets paid 28.52 renminbi per car.  How much does he make in 2 weeks?",
+    "answer_lines": [
+      "He runs 7-2=5 days a week",
+      "That means he serves 5*3=15 cars a week",
+      "So he makes 15*28.52=427.8 renminbi a week",
+      "So he makes 427.8*2=855.6 renminbi in 2 weeks",
+      "#### 855.6"
+    ],
+    "final_scalar": 855.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Li runs a car shop and services 3 cars a day.  He is open every day of the week except Sunday and Wednesday.  He gets paid 28.52 renminbi per car.  How much does he make in 2 weeks?",
+    "adapted_answer": [
+      "He runs 7-2=5 days a week",
+      "That means he serves 5*3=15 cars a week",
+      "So he makes 15*28.52=427.8 renminbi a week",
+      "So he makes 427.8*2=855.6 renminbi in 2 weeks",
+      "#### 855.6"
+    ],
+    "adaptation_notes": "Replaced 'Josh' with 'Li' to give the name a Chinese context."
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "index": 671,
+  "split": "test",
+  "original": {
+    "question": "Adam went to a store to buy some sweets. He bought 7 candies of type A and 10 candies of type B. One candy of type A costs $0.5, and one candy of type B costs $0.75. How much change did Adam get, if he paid the cashier $15?",
+    "answer": "For type A candies Adam needed to pay 7 * 0.5 = $<<7*0.5=3.5>>3.5.\nFor the other type of candies, Adam needed to pay 10 * 0.75 = $<<10*0.75=7.5>>7.5.\nSo Adam had to pay 3.5 + 7.5 = $<<3.5+7.5=11>>11 in total for his shopping.\nIf Adam gave the cashier $15, that means he got 15 - 11 = $<<15-11=4>>4 of change.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Adam",
+      "dollars",
+      "candies"
+    ],
+    "notes": "The name 'Adam' is Western, 'dollars' is a currency commonly used in the US, and 'candies' is a general term but the context implies Western sweets."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "candy_a_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_b_cost",
+      "value": 0.75,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "payment",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"candy_a_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_b_cost\", \"value\": 0.75, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"payment\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "candy_a_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 140.93,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "candy_b_cost",
+        "original_value": 0.75,
+        "original_unit": "dollar",
+        "converted_value": 211.39,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 3100.35,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "payment",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 4227.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "change",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Adam went to a store to buy some sweets. He bought {candy_a_quantity} candies of type A and {candy_b_quantity} candies of type B. One candy of type A costs ${candy_a_cost}, and one candy of type B costs ${candy_b_cost}. How much change did Adam get, if he paid the cashier ${payment}?",
+    "templatized_answer": [
+      "For type A candies Adam needed to pay {candy_a_quantity} * {candy_a_cost} = ${candy_a_quantity * candy_a_cost}.",
+      "For the other type of candies, Adam needed to pay {candy_b_quantity} * {candy_b_cost} = ${candy_b_quantity * candy_b_cost}.",
+      "So Adam had to pay {candy_a_quantity * candy_a_cost} + {candy_b_quantity * candy_b_cost} = ${candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost} in total for his shopping.",
+      "If Adam gave the cashier ${payment}, that means he got {payment} - {candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost} = ${payment - (candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost)} of change.",
+      "#### {payment - (candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost)}"
+    ],
+    "factual_assignment": {
+      "candy_a_quantity": 7,
+      "candy_b_quantity": 10,
+      "candy_a_cost": 0.5,
+      "candy_b_cost": 0.75,
+      "payment": 15
+    }
+  },
+  "merged_assignment": {
+    "candy_a_quantity": 7,
+    "candy_b_quantity": 10,
+    "candy_a_cost": 140.93,
+    "candy_b_cost": 211.39,
+    "payment": 4227.75
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    candy_a_quantity = 7\n    candy_b_quantity = 10\n    candy_a_cost = 140.93\n    candy_b_cost = 211.39\n    payment = 4227.75\n\n    candy_a_total_cost = round(candy_a_quantity * candy_a_cost, 2)\n    candy_b_total_cost = round(candy_b_quantity * candy_b_cost, 2)\n    total_cost = round(candy_a_total_cost + candy_b_total_cost, 2)\n    change = round(payment - total_cost, 2)\n\n    return {\n        \"candy_a_quantity\": candy_a_quantity,\n        \"candy_b_quantity\": candy_b_quantity,\n        \"candy_a_cost\": candy_a_cost,\n        \"candy_b_cost\": candy_b_cost,\n        \"payment\": payment,\n        \"candy_a_quantity * candy_a_cost\": candy_a_total_cost,\n        \"candy_b_quantity * candy_b_cost\": candy_b_total_cost,\n        \"candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost\": total_cost,\n        \"payment - (candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost)\": change\n    }\n",
+    "results": {
+      "candy_a_quantity": 7,
+      "candy_b_quantity": 10,
+      "candy_a_cost": 140.93,
+      "candy_b_cost": 211.39,
+      "payment": 4227.75,
+      "candy_a_quantity * candy_a_cost": 986.51,
+      "candy_b_quantity * candy_b_cost": 2113.9,
+      "candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost": 3100.41,
+      "payment - (candy_a_quantity * candy_a_cost + candy_b_quantity * candy_b_cost)": 1127.34
+    }
+  },
+  "final": {
+    "question": "Adam went to a store to buy some sweets. He bought 7 candies of type A and 10 candies of type B. One candy of type A costs 140.93 rupee, and one candy of type B costs 211.39 rupee. How much change did Adam get, if he paid the cashier 4227.75 rupee?",
+    "answer_lines": [
+      "For type A candies Adam needed to pay 7 * 140.93 = 986.51 rupee.",
+      "For the other type of candies, Adam needed to pay 10 * 211.39 = 2113.9 rupee.",
+      "So Adam had to pay 986.51 + 2113.9 = 3100.41 rupee in total for his shopping.",
+      "If Adam gave the cashier 4227.75 rupee, that means he got 4227.75 - 3100.41 = 1127.34 rupee of change.",
+      "#### 1127.34"
+    ],
+    "final_scalar": 1127.34,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ali went to a store to buy some sweets. He bought 7 laddus and 10 barfis. One laddu costs 140.93 rupee, and one barfi costs 211.39 rupee. How much change did Ali get, if he paid the cashier 4227.75 rupee?",
+    "adapted_answer": [
+      "For laddus Ali needed to pay 7 * 140.93 = 986.51 rupee.",
+      "For the other type of sweets, Ali needed to pay 10 * 211.39 = 2113.9 rupee.",
+      "So Ali had to pay 986.51 + 2113.9 = 3100.41 rupee in total for his shopping.",
+      "If Ali gave the cashier 4227.75 rupee, that means he got 4227.75 - 3100.41 = 1127.34 rupee of change.",
+      "#### 1127.34"
+    ],
+    "adaptation_notes": "Replaced 'Adam' with 'Ali', 'candies' with 'laddus' and 'barfis' to give the text a Pakistani context."
+  }
+}

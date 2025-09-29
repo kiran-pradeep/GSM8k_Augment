@@ -1,0 +1,151 @@
+{
+  "index": 330,
+  "split": "test",
+  "original": {
+    "question": "A customer’s loyalty card at a store gives them rewards of $1 off their next purchase for every $20 they spend. Their last shopping trip, they spent $80. This shopping trip, they spent $43, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many dollars did the customer pay on this shopping trip?",
+    "answer": "The customer had 80 / 20 = $<<80/20=4>>4 in rewards.\nTheir coupon was worth 4 * 2 = $<<4*2=8>>8.\nThus, they paid 43 - 4 - 8 = $<<43-4-8=31>>31 on this shopping trip.\n#### 31"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_spend",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "reward_threshold",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "current_spend",
+      "value": 43.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rewards_earned",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "coupon_value",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_cost",
+      "value": 31.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_spend\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"reward_threshold\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"current_spend\", \"value\": 43.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rewards_earned\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"coupon_value\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_cost\", \"value\": 31.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_spend",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 1329.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "reward_threshold",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "current_spend",
+        "original_value": 43.0,
+        "original_unit": "dollar",
+        "converted_value": 714.66,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "rewards_earned",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 66.48,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "coupon_value",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 132.96,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "final_cost",
+        "original_value": 31.0,
+        "original_unit": "dollar",
+        "converted_value": 515.22,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A customer’s loyalty card at a store gives them rewards of $1 off their next purchase for every ${reward_threshold} they spend. Their last shopping trip, they spent ${initial_spend}. This shopping trip, they spent ${current_spend}, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many dollars did the customer pay on this shopping trip?",
+    "templatized_answer": [
+      "The customer had {initial_spend} / {reward_threshold} = ${rewards_earned} in rewards.",
+      "Their coupon was worth {rewards_earned} * 2 = ${coupon_value}.",
+      "Thus, they paid {current_spend} - {rewards_earned} - {coupon_value} = ${final_cost} on this shopping trip.",
+      "#### {final_cost}"
+    ],
+    "factual_assignment": {
+      "initial_spend": 80.0,
+      "reward_threshold": 20.0,
+      "current_spend": 43.0,
+      "rewards_earned": 4.0,
+      "coupon_value": 8.0,
+      "final_cost": 31.0
+    }
+  },
+  "merged_assignment": {
+    "initial_spend": 1329.6,
+    "reward_threshold": 332.4,
+    "current_spend": 714.66,
+    "rewards_earned": 66.48,
+    "coupon_value": 132.96,
+    "final_cost": 515.22
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_spend = 1329.6\n    reward_threshold = 332.4\n    current_spend = 714.66\n\n    rewards_earned = round(initial_spend / reward_threshold, 2)\n    coupon_value = round(rewards_earned * 2, 2)\n    final_cost = round(current_spend - rewards_earned - coupon_value, 2)\n\n    return {\n        \"initial_spend\": initial_spend,\n        \"reward_threshold\": reward_threshold,\n        \"current_spend\": current_spend,\n        \"rewards_earned\": rewards_earned,\n        \"coupon_value\": coupon_value,\n        \"final_cost\": final_cost\n    }\n",
+    "results": {
+      "initial_spend": 1329.6,
+      "reward_threshold": 332.4,
+      "current_spend": 714.66,
+      "rewards_earned": 4.0,
+      "coupon_value": 8.0,
+      "final_cost": 702.66
+    }
+  },
+  "final": {
+    "question": "A customer’s loyalty card at a store gives them rewards of 1 leu off their next purchase for every 332.4 leu they spend. Their last shopping trip, they spent 1329.6 leu. This shopping trip, they spent 714.66 leu, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many leu did the customer pay on this shopping trip?",
+    "answer_lines": [
+      "The customer had 1329.6 / 332.4 = 4.0 in rewards.",
+      "Their coupon was worth 4.0 * 2 = 8.0 leu.",
+      "Thus, they paid 714.66 - 66.48 - 132.96 = 515.22 leu on this shopping trip.",
+      "#### 515.22"
+    ],
+    "final_scalar": 515.22,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": null
+}

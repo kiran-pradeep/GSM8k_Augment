@@ -1,0 +1,187 @@
+{
+  "index": 466,
+  "split": "test",
+  "original": {
+    "question": "Becky bought 20 apples for 45 cents each and received a $1 discount. Kelly bought 20 apples for 50 cents each and received a 10 percent discount. How much more did Kelly pay than Becky?",
+    "answer": "Before the discount, Becky would have paid 20 apples x $0.45/apple = $<<20*0.45=9>>9\nWith the discount, Becky paid $9 - $1 = $<<9-1=8>>8.\nBefore the discount Kelly would have paid 20 apples x $0.50/apple = $<<20*0.5=10>>10\nWith a 10 percent discount Kelly paid ($10 x 10)/100 = $<<(10*10)/100=1>>1 less\nIn total Kelly paid $10 - $1 = $<<10-1=9>>9.\nKelly paid $9 - $8 = $<<9-8=1>>1 more than Becky.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Becky",
+      "Kelly"
+    ],
+    "notes": "The text contains names (Becky, Kelly) and a unit (dollars) that are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "becky_apple_cost",
+      "value": 0.45,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "becky_discount",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "becky_total_cost",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "kelly_apple_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "kelly_discount",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "kelly_total_cost",
+      "value": 9,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "kelly_becky_difference",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"becky_apple_cost\", \"value\": 0.45, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"becky_discount\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"becky_total_cost\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"kelly_apple_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"kelly_discount\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"kelly_total_cost\", \"value\": 9, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"kelly_becky_difference\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "becky_apple_cost",
+        "original_value": 0.45,
+        "original_unit": "dollar",
+        "converted_value": 7.48,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "becky_discount",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "becky_total_cost",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 132.96,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "kelly_apple_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 8.31,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "kelly_discount",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "kelly_total_cost",
+        "original_value": 9,
+        "original_unit": "dollar",
+        "converted_value": 149.58,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "kelly_becky_difference",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Becky bought 20 apples for {becky_apple_cost} each and received a ${becky_discount} discount. Kelly bought 20 apples for {kelly_apple_cost} each and received a 10 percent discount. How much more did Kelly pay than Becky?",
+    "templatized_answer": [
+      "Before the discount, Becky would have paid 20 apples x ${becky_apple_cost}/apple = ${20*becky_apple_cost}",
+      "With the discount, Becky paid ${20*becky_apple_cost} - ${becky_discount} = ${becky_total_cost}.",
+      "Before the discount Kelly would have paid 20 apples x ${kelly_apple_cost}/apple = ${20*kelly_apple_cost}",
+      "With a 10 percent discount Kelly paid (${20*kelly_apple_cost} x 10)/100 = ${kelly_discount} less",
+      "In total Kelly paid ${20*kelly_apple_cost} - ${kelly_discount} = ${kelly_total_cost}.",
+      "Kelly paid ${kelly_total_cost} - ${becky_total_cost} = ${kelly_becky_difference} more than Becky.",
+      "#### {kelly_becky_difference}"
+    ],
+    "factual_assignment": {
+      "becky_apple_cost": 0.45,
+      "becky_discount": 1,
+      "becky_total_cost": 8,
+      "kelly_apple_cost": 0.5,
+      "kelly_discount": 1,
+      "kelly_total_cost": 9,
+      "kelly_becky_difference": 1
+    }
+  },
+  "merged_assignment": {
+    "becky_apple_cost": 7.48,
+    "becky_discount": 16.62,
+    "becky_total_cost": 132.96,
+    "kelly_apple_cost": 8.31,
+    "kelly_discount": 16.62,
+    "kelly_total_cost": 149.58,
+    "kelly_becky_difference": 16.62
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    becky_apple_cost = 7.48\n    becky_discount = 16.62\n    kelly_apple_cost = 8.31\n\n    # Recompute intermediate values\n    becky_total_cost = round(20 * becky_apple_cost - becky_discount, 2)\n    kelly_discount = round((20 * kelly_apple_cost) * 0.1, 2)\n    kelly_total_cost = round(20 * kelly_apple_cost - kelly_discount, 2)\n    kelly_becky_difference = round(kelly_total_cost - becky_total_cost, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"becky_apple_cost\": becky_apple_cost,\n        \"becky_discount\": becky_discount,\n        \"becky_total_cost\": becky_total_cost,\n        \"kelly_apple_cost\": kelly_apple_cost,\n        \"kelly_discount\": kelly_discount,\n        \"kelly_total_cost\": kelly_total_cost,\n        \"kelly_becky_difference\": kelly_becky_difference,\n    }\n",
+    "results": {
+      "becky_apple_cost": 7.48,
+      "becky_discount": 16.62,
+      "becky_total_cost": 132.98,
+      "kelly_apple_cost": 8.31,
+      "kelly_discount": 16.62,
+      "kelly_total_cost": 149.58,
+      "kelly_becky_difference": 16.6
+    }
+  },
+  "final": {
+    "question": "Becky bought 20 apples for 7.48 leu each and received a 16.62 leu discount. Kelly bought 20 apples for 8.31 leu each and received a 10 percent discount. How much more did Kelly pay than Becky?",
+    "answer_lines": [
+      "Before the discount, Becky would have paid 20 apples x 7.48 leu/apple = 149.6 leu",
+      "With the discount, Becky paid 149.6 leu - 16.62 leu = 132.98 leu.",
+      "Before the discount Kelly would have paid 20 apples x 8.31 leu/apple = 166.2 leu",
+      "With a 10 percent discount Kelly paid (166.2 leu x 10)/100 = 16.62 leu less",
+      "In total Kelly paid 166.2 leu - 16.62 leu = 149.58 leu.",
+      "Kelly paid 149.58 leu - 132.98 leu = 16.6 leu more than Becky.",
+      "#### 16.6"
+    ],
+    "final_scalar": 16.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Natalia bought 20 prune for 7.48 lei each and received a 16.62 lei discount. Anastasia bought 20 prune for 8.31 lei each and received a 10 percent discount. How much more did Anastasia pay than Natalia?",
+    "adapted_answer": [
+      "Before the discount, Natalia would have paid 20 prune x 7.48 lei/prune = 149.6 lei",
+      "With the discount, Natalia paid 149.6 lei - 16.62 lei = 132.98 lei.",
+      "Before the discount Anastasia would have paid 20 prune x 8.31 lei/prune = 166.2 lei",
+      "With a 10 percent discount Anastasia paid (166.2 lei x 10)/100 = 16.62 lei less",
+      "In total Anastasia paid 166.2 lei - 16.62 lei = 149.58 lei.",
+      "Anastasia paid 149.58 lei - 132.98 lei = 16.6 lei more than Natalia.",
+      "#### 16.6"
+    ],
+    "adaptation_notes": "Replaced 'Becky' with 'Natalia', 'Kelly' with 'Anastasia', and 'apples' with 'prune' to give the text a Moldovan context."
+  }
+}

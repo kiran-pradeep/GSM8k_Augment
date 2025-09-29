@@ -1,0 +1,167 @@
+{
+  "index": 158,
+  "split": "test",
+  "original": {
+    "question": "Raphael went to buy some school supplies. He bought 4 pens which cost $1.5 each, 2 notebooks which cost $4 each, and a rim of bond paper which cost $20. How much did Raphael spend on everything?",
+    "answer": "Raphael spent 4 x $1.5 = $<<4*1.5=6>>6 for the pens.\nHe also spent 2 x $4 = $<<2*4=8>>8 for the notebooks.\nTherefore, Raphael spent a total of $6 + $8 + $20 = $<<6+8+20=34>>34 for the school supplies.\n#### 34"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Raphael",
+      "dollars"
+    ],
+    "notes": "The name Raphael is of Western origin and the unit of currency is dollars, commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pen_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pen_total_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "notebook_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "notebook_total_cost",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "bond_paper_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 34,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pen_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pen_total_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"notebook_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"notebook_total_cost\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"bond_paper_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 34, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pen_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 10.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "pen_total_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "notebook_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "notebook_total_cost",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bond_paper_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 34,
+        "original_unit": "dollar",
+        "converted_value": 242.42,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Raphael went to buy some school supplies. He bought {num_pens} pens which cost ${pen_cost} each, {num_notebooks} notebooks which cost ${notebook_cost} each, and a rim of bond paper which cost ${bond_paper_cost}. How much did Raphael spend on everything?",
+    "templatized_answer": [
+      "Raphael spent {num_pens} x ${pen_cost} = ${pen_total_cost} for the pens.",
+      "He also spent {num_notebooks} x ${notebook_cost} = ${notebook_total_cost} for the notebooks.",
+      "Therefore, Raphael spent a total of ${pen_total_cost} + ${notebook_total_cost} + ${bond_paper_cost} = ${total_cost} for the school supplies.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "num_pens": 4,
+      "pen_cost": 1.5,
+      "num_notebooks": 2,
+      "notebook_cost": 4,
+      "bond_paper_cost": 20,
+      "pen_total_cost": 6,
+      "notebook_total_cost": 8,
+      "total_cost": 34
+    }
+  },
+  "merged_assignment": {
+    "num_pens": 4,
+    "pen_cost": 10.7,
+    "num_notebooks": 2,
+    "notebook_cost": 28.52,
+    "bond_paper_cost": 142.6,
+    "pen_total_cost": 42.78,
+    "notebook_total_cost": 57.04,
+    "total_cost": 242.42
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    num_pens = 4\n    pen_cost = 10.7\n    num_notebooks = 2\n    notebook_cost = 28.52\n    bond_paper_cost = 142.6\n\n    pen_total_cost = round(num_pens * pen_cost, 2)\n    notebook_total_cost = round(num_notebooks * notebook_cost, 2)\n    total_cost = round(pen_total_cost + notebook_total_cost + bond_paper_cost, 2)\n\n    return {\n        \"num_pens\": num_pens,\n        \"pen_cost\": pen_cost,\n        \"num_notebooks\": num_notebooks,\n        \"notebook_cost\": notebook_cost,\n        \"bond_paper_cost\": bond_paper_cost,\n        \"pen_total_cost\": pen_total_cost,\n        \"notebook_total_cost\": notebook_total_cost,\n        \"total_cost\": total_cost\n    }\n",
+    "results": {
+      "num_pens": 4,
+      "pen_cost": 10.7,
+      "num_notebooks": 2,
+      "notebook_cost": 28.52,
+      "bond_paper_cost": 142.6,
+      "pen_total_cost": 42.8,
+      "notebook_total_cost": 57.04,
+      "total_cost": 242.44
+    }
+  },
+  "final": {
+    "question": "Raphael went to buy some school supplies. He bought 4 pens which cost 10.7 renminbi each, 2 notebooks which cost 28.52 renminbi each, and a rim of bond paper which cost 142.6 renminbi. How much did Raphael spend on everything?",
+    "answer_lines": [
+      "Raphael spent 4 x 10.7 renminbi = 42.8 renminbi for the pens.",
+      "He also spent 2 x 28.52 renminbi = 57.04 renminbi for the notebooks.",
+      "Therefore, Raphael spent a total of 42.8 renminbi + 57.04 renminbi + 142.6 renminbi = 242.44 renminbi for the school supplies.",
+      "#### 242.44"
+    ],
+    "final_scalar": 242.44,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Li Ming went to buy some school supplies. He bought 4 pens which cost 10.7 renminbi each, 2 notebooks which cost 28.52 renminbi each, and a rim of bond paper which cost 142.6 renminbi. How much did Li Ming spend on everything?",
+    "adapted_answer": [
+      "Li Ming spent 4 x 10.7 renminbi = 42.8 renminbi for the pens.",
+      "He also spent 2 x 28.52 renminbi = 57.04 renminbi for the notebooks.",
+      "Therefore, Li Ming spent a total of 42.8 renminbi + 57.04 renminbi + 142.6 renminbi = 242.44 renminbi for the school supplies.",
+      "#### 242.44"
+    ],
+    "adaptation_notes": "Replaced 'Raphael' with 'Li Ming' to give the name a Chinese context."
+  }
+}

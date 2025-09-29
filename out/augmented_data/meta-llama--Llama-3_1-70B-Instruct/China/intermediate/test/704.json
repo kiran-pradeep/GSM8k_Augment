@@ -1,0 +1,133 @@
+{
+  "index": 704,
+  "split": "test",
+  "original": {
+    "question": "Gerald and Julia divided $100 in the ratio 3:2. If Gerald spent $10 on a book, how much money did he have left?",
+    "answer": "The $100 was divided into 3 + 2 = <<3+2=5>>5 parts.\nSo each part is $100/5 = $<<100/5=20>>20.\nSo Gerald received $20 x 3 = $<<20*3=60>>60.\nGerald bought a book at $<<10=10>>10.\nTherefore, Gerald was left with $60 - $10 = $<<60-10=50>>50.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gerald",
+      "Julia",
+      "dollars"
+    ],
+    "notes": "Contains Western names and a non-Chinese currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "geralds_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "geralds_money_left",
+      "value": 50,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_money\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"book_cost\",\n    \"value\": 10,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"geralds_money\",\n    \"value\": 60,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"geralds_money_left\",\n    \"value\": 50,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "geralds_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 60,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "geralds_money_left",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 50,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gerald and Julia divided ${initial_money} in the ratio 3:2. If Gerald spent ${book_cost} on a book, how much money did he have left?",
+    "templatized_answer": [
+      "The ${initial_money} was divided into 3 + 2 = 5 parts.",
+      "So each part is ${initial_money}/5 = ${initial_money/5}.",
+      "So Gerald received ${initial_money/5} x 3 = ${initial_money/5*3}.",
+      "Gerald bought a book at ${book_cost}.",
+      "Therefore, Gerald was left with ${initial_money/5*3} - ${book_cost} = ${initial_money/5*3-book_cost}.",
+      "#### {initial_money/5*3-book_cost}"
+    ],
+    "factual_assignment": {
+      "initial_money": 100,
+      "book_cost": 10
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 713.0,
+    "book_cost": 71.3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 713.0\n    book_cost = 71.3\n\n    initial_money_div_5 = round(initial_money / 5, 2)\n    gerald_received = round(initial_money_div_5 * 3, 2)\n    gerald_left = round(gerald_received - book_cost, 2)\n\n    return {\n        \"initial_money\": initial_money,\n        \"initial_money/5\": initial_money_div_5,\n        \"initial_money/5*3\": gerald_received,\n        \"book_cost\": book_cost,\n        \"initial_money/5*3-book_cost\": gerald_left\n    }\n",
+    "results": {
+      "initial_money": 713.0,
+      "initial_money/5": 142.6,
+      "initial_money/5*3": 427.8,
+      "book_cost": 71.3,
+      "initial_money/5*3-book_cost": 356.5
+    }
+  },
+  "final": {
+    "question": "Gerald and Julia divided 713.0 renminbi in the ratio 3:2. If Gerald spent 71.3 renminbi on a book, how much money did he have left?",
+    "answer_lines": [
+      "The 713.0 renminbi was divided into 3 + 2 = 5 parts.",
+      "So each part is 713.0 renminbi/5 = 142.6 renminbi.",
+      "So Gerald received 142.6 renminbi x 3 = 427.8 renminbi.",
+      "Gerald bought a book at 71.3 renminbi.",
+      "Therefore, Gerald was left with 427.8 renminbi - 71.3 renminbi = 356.5 renminbi.",
+      "#### 356.5"
+    ],
+    "final_scalar": 356.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang and Li divided 713.0 renminbi in the ratio 3:2. If Wang spent 71.3 renminbi on a book, how much money did he have left?",
+    "adapted_answer": [
+      "The 713.0 renminbi was divided into 3 + 2 = 5 parts.",
+      "So each part is 713.0 renminbi/5 = 142.6 renminbi.",
+      "So Wang received 142.6 renminbi x 3 = 427.8 renminbi.",
+      "Wang bought a book at 71.3 renminbi.",
+      "Therefore, Wang was left with 427.8 renminbi - 71.3 renminbi = 356.5 renminbi.",
+      "#### 356.5"
+    ],
+    "adaptation_notes": "Replaced 'Gerald' with 'Wang' and 'Julia' with 'Li' to give the names a Chinese context."
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "index": 188,
+  "split": "test",
+  "original": {
+    "question": "A trader buys some bags of wheat from a farmer at a rate of $20 per bag. If it costs $2 to transport each bag from the farm to the warehouse, and the trader made a total profit of $400 after selling all the bags at a rate of $30 each, how many bags did he sell?",
+    "answer": "Each bag of wheat cost the trader $20+$2=$<<20+2=22>>22 (taking transportation costs into account)\nEach bag of wheat was sold for $30 each giving a profit of $30-$22=$<<30-22=8>>8 on each bag\nSince a total of $400 profit was made, the total number of bags sold is $400/$8=<<400/8=50>>50 bags\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bag_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "transportation_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_profit",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "selling_price",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 22.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit_per_bag",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bag_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"transportation_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_profit\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"selling_price\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 22.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit_per_bag\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bag_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "transportation_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_profit",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 2852.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "selling_price",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 22.0,
+        "original_unit": "dollar",
+        "converted_value": 156.86,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "profit_per_bag",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A trader buys some bags of wheat from a farmer at a rate of ${bag_cost} per bag. If it costs ${transportation_cost} to transport each bag from the farm to the warehouse, and the trader made a total profit of ${total_profit} after selling all the bags at a rate of ${selling_price} each, how many bags did he sell?",
+    "templatized_answer": [
+      "Each bag of wheat cost the trader ${bag_cost}+${transportation_cost}=${{bag_cost+transportation_cost}} (taking transportation costs into account)",
+      "Each bag of wheat was sold for ${selling_price} each giving a profit of ${selling_price}-${{bag_cost+transportation_cost}}=${{selling_price-(bag_cost+transportation_cost)}} on each bag",
+      "Since a total of ${total_profit} profit was made, the total number of bags sold is ${total_profit}/${{selling_price-(bag_cost+transportation_cost)}}=#### {{total_profit/(selling_price-(bag_cost+transportation_cost))}}"
+    ],
+    "factual_assignment": {
+      "bag_cost": 20.0,
+      "transportation_cost": 2.0,
+      "total_profit": 400.0,
+      "selling_price": 30.0
+    }
+  },
+  "merged_assignment": {
+    "bag_cost": 142.6,
+    "transportation_cost": 14.26,
+    "total_profit": 2852.0,
+    "selling_price": 213.9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"bag_cost\": 142.6,\n        \"transportation_cost\": 14.26,\n        \"total_profit\": 2852.0,\n        \"selling_price\": 213.9\n    }\n\n    recompute_dict = {}\n\n    recompute_dict[\"bag_cost\"] = factual_assignment[\"bag_cost\"]\n    recompute_dict[\"transportation_cost\"] = factual_assignment[\"transportation_cost\"]\n    recompute_dict[\"total_profit\"] = factual_assignment[\"total_profit\"]\n    recompute_dict[\"selling_price\"] = factual_assignment[\"selling_price\"]\n\n    recompute_dict[\"bag_cost+transportation_cost\"] = round(recompute_dict[\"bag_cost\"] + recompute_dict[\"transportation_cost\"], 2)\n    recompute_dict[\"selling_price-(bag_cost+transportation_cost)\"] = round(recompute_dict[\"selling_price\"] - recompute_dict[\"bag_cost+transportation_cost\"], 2)\n    recompute_dict[\"total_profit/(selling_price-(bag_cost+transportation_cost))\"] = round(recompute_dict[\"total_profit\"] / recompute_dict[\"selling_price-(bag_cost+transportation_cost)\"], 2)\n\n    return recompute_dict\n\nprint(recompute())\n",
+    "results": {
+      "bag_cost": 142.6,
+      "transportation_cost": 14.26,
+      "total_profit": 2852.0,
+      "selling_price": 213.9,
+      "bag_cost+transportation_cost": 156.86,
+      "selling_price-(bag_cost+transportation_cost)": 57.04,
+      "total_profit/(selling_price-(bag_cost+transportation_cost))": 50.0
+    }
+  },
+  "final": {
+    "question": "A trader buys some bags of wheat from a farmer at a rate of 142.6 renminbi per bag. If it costs 14.26 renminbi to transport each bag from the farm to the warehouse, and the trader made a total profit of 2852.0 renminbi after selling all the bags at a rate of 213.9 renminbi each, how many bags did he sell?",
+    "answer_lines": [
+      "Each bag of wheat cost the trader 142.6+14.26=156.86 renminbi (taking transportation costs into account)",
+      "Each bag of wheat was sold for 213.9 renminbi each giving a profit of 213.9-156.86=57.04 renminbi on each bag",
+      "Since a total of 2852.0 renminbi profit was made, the total number of bags sold is 2852.0/57.04=50.0 bags",
+      "#### 50.0"
+    ],
+    "final_scalar": 50.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A trader buys some bags of wheat from a farmer at a rate of 142.6 renminbi per bag. If it costs 14.26 renminbi to transport each bag from the farm to the warehouse, and the trader made a total profit of 2852.0 renminbi after selling all the bags at a rate of 213.9 renminbi each, how many bags did he sell?",
+    "adapted_answer": [
+      "Each bag of wheat cost the trader 142.6+14.26=156.86 renminbi (taking transportation costs into account)",
+      "Each bag of wheat was sold for 213.9 renminbi each giving a profit of 213.9-156.86=57.04 renminbi on each bag",
+      "Since a total of 2852.0 renminbi profit was made, the total number of bags sold is 2852.0/57.04=50.0 bags",
+      "#### 50.0"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

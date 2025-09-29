@@ -1,0 +1,143 @@
+{
+  "index": 683,
+  "split": "test",
+  "original": {
+    "question": "Chris has a two-speed lawn mower. He can mow his entire lawn in \"turtle\" mode in 1 hour, or 40 minutes in \"rabbit\" mode. Today, he experimented by mowing half in turtle mode and half in rabbit mode. How many minutes did it take him to mow the lawn?",
+    "answer": "He spends 60/2=<<60/2=30>>30 minutes in turtle mode\nHe spends 40/2=<<40/2=20>>20 minutes in rabbit mode\nHe took 30+20=<<30+20=50>>50 minutes to mow the lawn.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Chris"
+    ],
+    "notes": "The name 'Chris' is culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "turtle_mode_time",
+      "value": 60.0,
+      "unit": "minute",
+      "context": "question"
+    },
+    {
+      "variable": "rabbit_mode_time",
+      "value": 40.0,
+      "unit": "minute",
+      "context": "question"
+    },
+    {
+      "variable": "turtle_mode_half_time",
+      "value": 30.0,
+      "unit": "minute",
+      "context": "answer"
+    },
+    {
+      "variable": "rabbit_mode_half_time",
+      "value": 20.0,
+      "unit": "minute",
+      "context": "answer"
+    },
+    {
+      "variable": "total_time",
+      "value": 50.0,
+      "unit": "minute",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"minute\": {\"to\": \"minute\", \"rate\": 1},\n        \"hour\": {\"to\": \"hour\", \"rate\": 1},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"turtle_mode_time\", \"value\": 60.0, \"unit\": \"minute\", \"context\": \"question\"},\n    {\"variable\": \"rabbit_mode_time\", \"value\": 40.0, \"unit\": \"minute\", \"context\": \"question\"},\n    {\"variable\": \"turtle_mode_half_time\", \"value\": 30.0, \"unit\": \"minute\", \"context\": \"answer\"},\n    {\"variable\": \"rabbit_mode_half_time\", \"value\": 20.0, \"unit\": \"minute\", \"context\": \"answer\"},\n    {\"variable\": \"total_time\", \"value\": 50.0, \"unit\": \"minute\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "turtle_mode_time",
+        "original_value": 60.0,
+        "original_unit": "minute",
+        "converted_value": 60.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "rabbit_mode_time",
+        "original_value": 40.0,
+        "original_unit": "minute",
+        "converted_value": 40.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "turtle_mode_half_time",
+        "original_value": 30.0,
+        "original_unit": "minute",
+        "converted_value": 30.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "rabbit_mode_half_time",
+        "original_value": 20.0,
+        "original_unit": "minute",
+        "converted_value": 20.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "total_time",
+        "original_value": 50.0,
+        "original_unit": "minute",
+        "converted_value": 50.0,
+        "converted_unit": "minute"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Chris has a two-speed lawn mower. He can mow his entire lawn in \"turtle\" mode in {turtle_mode_time} minutes, or {rabbit_mode_time} minutes in \"rabbit\" mode. Today, he experimented by mowing half in turtle mode and half in rabbit mode. How many minutes did it take him to mow the lawn?",
+    "templatized_answer": [
+      "He spends {turtle_mode_time}/2={turtle_mode_half_time} minutes in turtle mode",
+      "He spends {rabbit_mode_time}/2={rabbit_mode_half_time} minutes in rabbit mode",
+      "He took {turtle_mode_half_time}+{rabbit_mode_half_time}={total_time} minutes to mow the lawn.",
+      "#### {total_time}"
+    ],
+    "factual_assignment": {
+      "turtle_mode_time": 60.0,
+      "rabbit_mode_time": 40.0,
+      "turtle_mode_half_time": 30.0,
+      "rabbit_mode_half_time": 20.0,
+      "total_time": 50.0
+    }
+  },
+  "merged_assignment": {
+    "turtle_mode_time": 60.0,
+    "rabbit_mode_time": 40.0,
+    "turtle_mode_half_time": 30.0,
+    "rabbit_mode_half_time": 20.0,
+    "total_time": 50.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"turtle_mode_time\": 60.0,\n        \"rabbit_mode_time\": 40.0\n    }\n\n    turtle_mode_half_time = factual_assignment[\"turtle_mode_time\"] / 2\n    rabbit_mode_half_time = factual_assignment[\"rabbit_mode_time\"] / 2\n    total_time = turtle_mode_half_time + rabbit_mode_half_time\n\n    recomputed_values = {\n        \"turtle_mode_time\": factual_assignment[\"turtle_mode_time\"],\n        \"rabbit_mode_time\": factual_assignment[\"rabbit_mode_time\"],\n        \"turtle_mode_half_time\": round(turtle_mode_half_time, 2),\n        \"rabbit_mode_half_time\": round(rabbit_mode_half_time, 2),\n        \"total_time\": round(total_time, 2)\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "turtle_mode_time": 60.0,
+      "rabbit_mode_time": 40.0,
+      "turtle_mode_half_time": 30.0,
+      "rabbit_mode_half_time": 20.0,
+      "total_time": 50.0
+    }
+  },
+  "final": {
+    "question": "Chris has a two-speed lawn mower. He can mow his entire lawn in \"turtle\" mode in 60 minutes, or 40 minutes in \"rabbit\" mode. Today, he experimented by mowing half in turtle mode and half in rabbit mode. How many minutes did it take him to mow the lawn?",
+    "answer_lines": [
+      "He spends 60/2=30 minutes in turtle mode",
+      "He spends 40/2=20 minutes in rabbit mode",
+      "He took 30+20=50 minutes to mow the lawn.",
+      "#### 50"
+    ],
+    "final_scalar": 50.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cismaan waxa uu leeyahay lawn mower laba-speed. Wiilka ugu weynaa lawnkiisa dhaqtar ahaan 60 daqiiqo, ama 40 daqiiqo dhaqtar ahaan. Maanta, waxa uu caynayay mow-ing half in dhaqtar mode iyo half in dhaqtar ahaan. Inta badan waxa uu ugu tagay lawnkiisa?",
+    "adapted_answer": [
+      "Waxa uu ku siiyay 60/2=30 daqiiqo dhaqtar ahaan",
+      "Waxa uu ku siiyay 40/2=20 daqiiqo dhaqtar ahaan",
+      "Waxa uu ugu tagay 30+20=50 daqiiqo lawnkiisa"
+    ],
+    "adaptation_notes": "Replaced 'Chris' with 'Cismaan', a common Somali name, and adjusted the text to fit Somali language and context."
+  }
+}

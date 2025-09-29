@@ -1,0 +1,180 @@
+{
+  "index": 662,
+  "split": "test",
+  "original": {
+    "question": "Gus spent $20.00 at the grocery store.  He bought 2 bag of chips for $2.00 each, a bucket of fried chicken for $8.00 and a bottle of soda for $1.00.  How much did the apple pie cost?",
+    "answer": "He bought 2 bags of chips at $2.00 each so they cost 2*2 = $<<2*2=4.00>>4.00\nHe spent $4.00 on chips, $8.00 on fried chicken and $1.00 on soda so he spent 4+8+1 = $<<4+8+1=13.00>>13.00\nHe spent $20.00 and all of the groceries, except for the pie cost $13.00 so that means the apple pie cost 20-13 = $<<20-13=7.00>>7.00\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gus",
+      "dollars",
+      "bag of chips",
+      "fried chicken",
+      "apple pie"
+    ],
+    "notes": "The text contains Western names, units, and food items not commonly associated with Chinese cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "grocery_store_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bag_of_chips_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fried_chicken_cost",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bottle_of_soda_cost",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "chips_total_cost",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "groceries_total_cost",
+      "value": 13.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "apple_pie_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"grocery_store_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bag_of_chips_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fried_chicken_cost\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bottle_of_soda_cost\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"chips_total_cost\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"groceries_total_cost\", \"value\": 13.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"apple_pie_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "grocery_store_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bag_of_chips_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "fried_chicken_cost",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bottle_of_soda_cost",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "chips_total_cost",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "groceries_total_cost",
+        "original_value": 13.0,
+        "original_unit": "dollar",
+        "converted_value": 92.69,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "apple_pie_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 49.91,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gus spent ${grocery_store_cost} at the grocery store.  He bought 2 bag of chips for ${bag_of_chips_cost} each, a bucket of fried chicken for ${fried_chicken_cost} and a bottle of soda for ${bottle_of_soda_cost}.  How much did the apple pie cost?",
+    "templatized_answer": [
+      "He bought 2 bags of chips at ${bag_of_chips_cost} each so they cost 2*{bag_of_chips_cost} = ${chips_total_cost}",
+      "He spent ${chips_total_cost} on chips, ${fried_chicken_cost} on fried chicken and ${bottle_of_soda_cost} on soda so he spent {chips_total_cost}+{fried_chicken_cost}+{bottle_of_soda_cost} = ${groceries_total_cost}",
+      "He spent ${grocery_store_cost} and all of the groceries, except for the pie cost ${groceries_total_cost} so that means the apple pie cost {grocery_store_cost}-{groceries_total_cost} = ${apple_pie_cost}",
+      "#### {apple_pie_cost}"
+    ],
+    "factual_assignment": {
+      "grocery_store_cost": 20.0,
+      "bag_of_chips_cost": 2.0,
+      "fried_chicken_cost": 8.0,
+      "bottle_of_soda_cost": 1.0,
+      "chips_total_cost": 4.0,
+      "groceries_total_cost": 13.0,
+      "apple_pie_cost": 7.0
+    }
+  },
+  "merged_assignment": {
+    "grocery_store_cost": 142.6,
+    "bag_of_chips_cost": 14.26,
+    "fried_chicken_cost": 57.04,
+    "bottle_of_soda_cost": 7.13,
+    "chips_total_cost": 28.52,
+    "groceries_total_cost": 92.69,
+    "apple_pie_cost": 49.91
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    grocery_store_cost = 142.6\n    bag_of_chips_cost = 14.26\n    fried_chicken_cost = 57.04\n    bottle_of_soda_cost = 7.13\n\n    chips_total_cost = round(2 * bag_of_chips_cost, 2)\n    groceries_total_cost = round(chips_total_cost + fried_chicken_cost + bottle_of_soda_cost, 2)\n    apple_pie_cost = round(grocery_store_cost - groceries_total_cost, 2)\n\n    return {\n        \"grocery_store_cost\": grocery_store_cost,\n        \"bag_of_chips_cost\": bag_of_chips_cost,\n        \"fried_chicken_cost\": fried_chicken_cost,\n        \"bottle_of_soda_cost\": bottle_of_soda_cost,\n        \"chips_total_cost\": chips_total_cost,\n        \"groceries_total_cost\": groceries_total_cost,\n        \"apple_pie_cost\": apple_pie_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "grocery_store_cost": 142.6,
+      "bag_of_chips_cost": 14.26,
+      "fried_chicken_cost": 57.04,
+      "bottle_of_soda_cost": 7.13,
+      "chips_total_cost": 28.52,
+      "groceries_total_cost": 92.69,
+      "apple_pie_cost": 49.91
+    }
+  },
+  "final": {
+    "question": "Gus spent 142.6 renminbi at the grocery store.  He bought 2 bag of chips for 14.26 renminbi each, a bucket of fried chicken for 57.04 renminbi and a bottle of soda for 7.13 renminbi.  How much did the apple pie cost?",
+    "answer_lines": [
+      "He bought 2 bags of chips at 14.26 renminbi each so they cost 2*14.26 = 28.52 renminbi",
+      "He spent 28.52 renminbi on chips, 57.04 renminbi on fried chicken and 7.13 renminbi on soda so he spent 28.52+57.04+7.13 = 92.69 renminbi",
+      "He spent 142.6 renminbi and all of the groceries, except for the pie cost 92.69 renminbi so that means the apple pie cost 142.6-92.69 = 49.91 renminbi",
+      "#### 49.91"
+    ],
+    "final_scalar": 49.91,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wei spent 142.6 renminbi at the grocery store.  He bought 2 bags of rice crackers for 14.26 renminbi each, a bucket of roast duck for 57.04 renminbi and a bottle of green tea for 7.13 renminbi.  How much did the egg tart cost?",
+    "adapted_answer": [
+      "He bought 2 bags of rice crackers at 14.26 renminbi each so they cost 2*14.26 = 28.52 renminbi",
+      "He spent 28.52 renminbi on rice crackers, 57.04 renminbi on roast duck and 7.13 renminbi on green tea so he spent 28.52+57.04+7.13 = 92.69 renminbi",
+      "He spent 142.6 renminbi and all of the groceries, except for the egg tart cost 92.69 renminbi so that means the egg tart cost 142.6-92.69 = 49.91 renminbi",
+      "#### 49.91"
+    ],
+    "adaptation_notes": "Replaced 'Gus' with 'Wei', 'bag of chips' with 'bags of rice crackers', 'fried chicken' with 'roast duck', 'soda' with 'green tea', and 'apple pie' with 'egg tart'."
+  }
+}

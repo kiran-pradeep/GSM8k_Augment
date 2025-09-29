@@ -1,0 +1,128 @@
+{
+  "index": 258,
+  "split": "test",
+  "original": {
+    "question": "Nancy is returning her overdue books to the library. She owes $0.50 cents each on 8 books, plus a flat $2.00 fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "answer": "First multiply the late fee per book by the number of books: $0.50/book * 8 books = $<<0.5*8=4.00>>4.00\nThen add the \"more than a week overdue\" fee to the answer from the previous step to find the total: $4.00 + $2.00 = $<<4+2=6.00>>6.00\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Nancy",
+      "dollars"
+    ],
+    "notes": "The name 'Nancy' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "late_fee_per_book",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "flat_fee",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_late_fee",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * list(conversions[original_unit].values())[0], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"late_fee_per_book\",\n    \"value\": 0.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"flat_fee\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_late_fee\",\n    \"value\": 4.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cost\",\n    \"value\": 6.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "late_fee_per_book",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "flat_fee",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_late_fee",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Nancy is returning her overdue books to the library. She owes ${late_fee_per_book} cents each on 8 books, plus a flat ${flat_fee} fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "templatized_answer": [
+      "First multiply the late fee per book by the number of books: ${late_fee_per_book}/book * 8 books = ${late_fee_per_book}*8",
+      "Then add the \"more than a week overdue\" fee to the answer from the previous step to find the total: ${late_fee_per_book}*8 + ${flat_fee} = ${late_fee_per_book}*8+${flat_fee}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "late_fee_per_book": 0.5,
+      "flat_fee": 2.0,
+      "total_late_fee": 4.0,
+      "total_cost": 6.0
+    }
+  },
+  "merged_assignment": {
+    "late_fee_per_book": 3.56,
+    "flat_fee": 14.26,
+    "total_late_fee": 28.52,
+    "total_cost": 42.78
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    late_fee_per_book = 3.56\n    flat_fee = 14.26\n\n    total_late_fee = late_fee_per_book * 8\n    total_cost = total_late_fee + flat_fee\n\n    return {\n        \"late_fee_per_book\": round(late_fee_per_book, 2),\n        \"flat_fee\": round(flat_fee, 2),\n        \"total_late_fee\": round(total_late_fee, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"late_fee_per_book*8\": round(total_late_fee, 2),\n        \"late_fee_per_book*8+flat_fee\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "late_fee_per_book": 3.56,
+      "flat_fee": 14.26,
+      "total_late_fee": 28.48,
+      "total_cost": 42.74,
+      "late_fee_per_book*8": 28.48,
+      "late_fee_per_book*8+flat_fee": 42.74
+    }
+  },
+  "final": {
+    "question": "Nancy is returning her overdue books to the library. She owes 3.56 renminbi each on 8 books, plus a flat 14.26 renminbi fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "answer_lines": [
+      "First multiply the late fee per book by the number of books: 3.56 renminbi/book * 8 books = 28.48 renminbi",
+      "Then add the \"more than a week overdue\" fee to the answer from the previous step to find the total: 28.48 renminbi + 14.26 renminbi = 42.74 renminbi",
+      "#### 42.74"
+    ],
+    "final_scalar": 42.74,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling is returning her overdue books to the library. She owes 3.56 renminbi each on 8 books, plus a flat 14.26 renminbi fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "adapted_answer": [
+      "First multiply the late fee per book by the number of books: 3.56 renminbi/book * 8 books = 28.48 renminbi",
+      "Then add the 'more than a week overdue' fee to the answer from the previous step to find the total: 28.48 renminbi + 14.26 renminbi = 42.74 renminbi",
+      "#### 42.74"
+    ],
+    "adaptation_notes": "Replaced 'Nancy' with 'Ling' to provide a Chinese equivalent."
+  }
+}

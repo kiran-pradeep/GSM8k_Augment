@@ -1,0 +1,135 @@
+{
+  "index": 942,
+  "split": "test",
+  "original": {
+    "question": "Patty's Plumbing charges $40 to visit a house to make a repair, plus $35 per hour, or part thereof, for labor, plus parts. One job took 2.25 hours and used $60 in parts. How much did Patty charge?",
+    "answer": "She charged for 3 hours.\nThe total cost from the hourly rate was 3*35=$<<3*35=105>>105.\nShe charged 40+105+60=<<40+105+60=205>>205.\n#### 205"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Patty",
+      "dollars"
+    ],
+    "notes": "The name 'Patty' and the unit 'dollars' are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "visit_cost",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_rate",
+      "value": 35.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "parts_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 205.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"visit_cost\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_rate\", \"value\": 35.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"parts_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 205.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "visit_cost",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 664.8,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "hourly_rate",
+        "original_value": 35.0,
+        "original_unit": "dollar",
+        "converted_value": 581.7,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "parts_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 997.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 205.0,
+        "original_unit": "dollar",
+        "converted_value": 3407.1,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Patty's Plumbing charges ${visit_cost} to visit a house to make a repair, plus ${hourly_rate} per hour, or part thereof, for labor, plus parts. One job took 2.25 hours and used ${parts_cost} in parts. How much did Patty charge?",
+    "templatized_answer": [
+      "She charged for {hours_charged} hours.",
+      "The total cost from the hourly rate was {hours_charged}*{hourly_rate}=${hourly_rate_per_job}.",
+      "She charged {visit_cost}+{hourly_rate_per_job}+{parts_cost}={total_cost}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "visit_cost": 40.0,
+      "hourly_rate": 35.0,
+      "parts_cost": 60.0,
+      "hours_charged": 3,
+      "hourly_rate_per_job": 105,
+      "total_cost": 205.0
+    }
+  },
+  "merged_assignment": {
+    "visit_cost": 664.8,
+    "hourly_rate": 581.7,
+    "parts_cost": 997.2,
+    "hours_charged": 3,
+    "hourly_rate_per_job": 105,
+    "total_cost": 3407.1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    visit_cost = 664.8\n    hourly_rate = 581.7\n    parts_cost = 997.2\n    hours_worked = 2.25\n\n    # Round up to the nearest whole number to get hours charged\n    hours_charged = int(hours_worked) + 1 if hours_worked % 1 != 0 else int(hours_worked)\n\n    # Calculate hourly rate per job\n    hourly_rate_per_job = round(hours_charged * hourly_rate, 2)\n\n    # Calculate total cost\n    total_cost = round(visit_cost + hourly_rate_per_job + parts_cost, 2)\n\n    return {\n        \"visit_cost\": visit_cost,\n        \"hourly_rate\": hourly_rate,\n        \"parts_cost\": parts_cost,\n        \"hours_charged\": hours_charged,\n        \"hourly_rate_per_job\": hourly_rate_per_job,\n        \"total_cost\": total_cost\n    }\n",
+    "results": {
+      "visit_cost": 664.8,
+      "hourly_rate": 581.7,
+      "parts_cost": 997.2,
+      "hours_charged": 3,
+      "hourly_rate_per_job": 1745.1,
+      "total_cost": 3407.1
+    }
+  },
+  "final": {
+    "question": "Patty's Plumbing charges 664.8 leu to visit a house to make a repair, plus 581.7 leu per hour, or part thereof, for labor, plus parts. One job took 2.25 hours and used 997.2 leu in parts. How much did Patty charge?",
+    "answer_lines": [
+      "She charged for 3 hours.",
+      "The total cost from the hourly rate was 3*581.7=1745.1 leu.",
+      "She charged 664.8+1745.1+997.2=3407.1 leu.",
+      "#### 3407.1"
+    ],
+    "final_scalar": 3407.1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Vasile's Plumbing charges 664.8 leu to visit a house to make a repair, plus 581.7 leu per hour, or part thereof, for labor, plus parts. One job took 2.25 hours and used 997.2 leu in parts. How much did Vasile charge?",
+    "adapted_answer": [
+      "He charged for 3 hours.",
+      "The total cost from the hourly rate was 3*581.7=1745.1 leu.",
+      "He charged 664.8+1745.1+997.2=3407.1 leu.",
+      "#### 3407.1"
+    ],
+    "adaptation_notes": "Replaced 'Patty' with 'Vasile', a common Moldovan name."
+  }
+}

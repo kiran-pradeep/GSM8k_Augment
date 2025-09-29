@@ -1,0 +1,150 @@
+{
+  "index": 115,
+  "split": "test",
+  "original": {
+    "question": "Sasha notices that prices for lumber have gone up 50% in the last few months after she bought some lumber. Since she has leftovers, she decides to sell them. She has leftover ten 2 x 4 x 10 boards that cost her $10 each. She also has five 4 x 4 x 10 boards she bought for $16 each. If she sells them all, how much profit does she make?",
+    "answer": "She bought the 2 x 4s for $100 because 10 x 10 = 100\nShe bought the 4 x 4s for 80 because 5 x 16 = 80\nShe paid $180 for the lumber because 100 + 80 = <<100+80=180>>180\nThe same number now sells for $270 because 180 x 1.5 = <<180*1.5=270>>270\nShe made $90 in profit because 270 - 180 = <<270-180=90>>90\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sasha",
+      "dollars"
+    ],
+    "notes": "The name Sasha is of Russian origin and dollars is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lumber_cost_2x4",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lumber_cost_4x4",
+      "value": 16,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_lumber_cost",
+      "value": 180,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lumber_selling_price",
+      "value": 270,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 90,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * list(conversions[original_unit].values())[0], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"lumber_cost_2x4\",\n    \"value\": 10,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lumber_cost_4x4\",\n    \"value\": 16,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_lumber_cost\",\n    \"value\": 180,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lumber_selling_price\",\n    \"value\": 270,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"profit\",\n    \"value\": 90,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lumber_cost_2x4",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lumber_cost_4x4",
+        "original_value": 16,
+        "original_unit": "dollar",
+        "converted_value": 114.08,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_lumber_cost",
+        "original_value": 180,
+        "original_unit": "dollar",
+        "converted_value": 1283.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lumber_selling_price",
+        "original_value": 270,
+        "original_unit": "dollar",
+        "converted_value": 1925.1,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "profit",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 641.7,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sasha notices that prices for lumber have gone up 50% in the last few months after she bought some lumber. Since she has leftovers, she decides to sell them. She has leftover ten 2 x 4 x 10 boards that cost her ${lumber_cost_2x4} each. She also has five 4 x 4 x 10 boards she bought for ${lumber_cost_4x4} each. If she sells them all, how much profit does she make?",
+    "templatized_answer": [
+      "She bought the 2 x 4s for ${lumber_cost_2x4} * 10 = ${lumber_cost_2x4} * 10",
+      "She bought the 4 x 4s for ${lumber_cost_4x4} * 5 = ${lumber_cost_4x4} * 5",
+      "She paid ${lumber_cost_2x4} * 10 + ${lumber_cost_4x4} * 5 for the lumber",
+      "The same number now sells for (${lumber_cost_2x4} * 10 + ${lumber_cost_4x4} * 5) * 1.5",
+      "She made (${lumber_cost_2x4} * 10 + ${lumber_cost_4x4} * 5) * 1.5 - (${lumber_cost_2x4} * 10 + ${lumber_cost_4x4} * 5) in profit",
+      "#### ${profit}"
+    ],
+    "factual_assignment": {
+      "lumber_cost_2x4": 10,
+      "lumber_cost_4x4": 16,
+      "profit": 90
+    }
+  },
+  "merged_assignment": {
+    "lumber_cost_2x4": 71.3,
+    "lumber_cost_4x4": 114.08,
+    "profit": 641.7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    lumber_cost_2x4 = 71.3\n    lumber_cost_4x4 = 114.08\n\n    cost_2x4s = lumber_cost_2x4 * 10\n    cost_4x4s = lumber_cost_4x4 * 5\n    total_cost = cost_2x4s + cost_4x4s\n    total_selling_price = total_cost * 1.5\n    profit = total_selling_price - total_cost\n\n    return {\n        \"lumber_cost_2x4\": lumber_cost_2x4,\n        \"lumber_cost_4x4\": lumber_cost_4x4,\n        \"lumber_cost_2x4 * 10\": round(cost_2x4s, 2),\n        \"lumber_cost_4x4 * 5\": round(cost_4x4s, 2),\n        \"lumber_cost_2x4 * 10 + lumber_cost_4x4 * 5\": round(total_cost, 2),\n        \"({lumber_cost_2x4} * 10 + {lumber_cost_4x4} * 5) * 1.5\": round(total_selling_price, 2),\n        \"({lumber_cost_2x4} * 10 + {lumber_cost_4x4} * 5) * 1.5 - ({lumber_cost_2x4} * 10 + {lumber_cost_4x4} * 5)\": round(profit, 2),\n        \"profit\": round(profit, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "lumber_cost_2x4": 71.3,
+      "lumber_cost_4x4": 114.08,
+      "lumber_cost_2x4 * 10": 713.0,
+      "lumber_cost_4x4 * 5": 570.4,
+      "lumber_cost_2x4 * 10 + lumber_cost_4x4 * 5": 1283.4,
+      "({lumber_cost_2x4} * 10 + {lumber_cost_4x4} * 5) * 1.5": 1925.1,
+      "({lumber_cost_2x4} * 10 + {lumber_cost_4x4} * 5) * 1.5 - ({lumber_cost_2x4} * 10 + {lumber_cost_4x4} * 5)": 641.7,
+      "profit": 641.7
+    }
+  },
+  "final": {
+    "question": "Sasha notices that prices for lumber have gone up 50% in the last few months after she bought some lumber. Since she has leftovers, she decides to sell them. She has leftover ten 2 x 4 x 10 boards that cost her 71.3 renminbi each. She also has five 4 x 4 x 10 boards she bought for 114.08 renminbi each. If she sells them all, how much profit does she make?",
+    "answer_lines": [
+      "She bought the 2 x 4s for 71.3 renminbi * 10 = 713.0 renminbi",
+      "She bought the 4 x 4s for 114.08 renminbi * 5 = 570.4 renminbi",
+      "She paid 713.0 renminbi + 570.4 renminbi for the lumber",
+      "The same number now sells for (713.0 renminbi + 570.4 renminbi) * 1.5",
+      "She made (713.0 renminbi + 570.4 renminbi) * 1.5 - (713.0 renminbi + 570.4 renminbi) in profit",
+      "#### 641.7"
+    ],
+    "final_scalar": 641.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling notices that prices for lumber have gone up 50% in the last few months after she bought some lumber. Since she has leftovers, she decides to sell them. She has leftover ten 2 x 4 x 10 boards that cost her 71.3 renminbi each. She also has five 4 x 4 x 10 boards she bought for 114.08 renminbi each. If she sells them all, how much profit does she make?",
+    "adapted_answer": [
+      "She bought the 2 x 4s for 71.3 renminbi * 10 = 713.0 renminbi",
+      "She bought the 4 x 4s for 114.08 renminbi * 5 = 570.4 renminbi",
+      "She paid 713.0 renminbi + 570.4 renminbi for the lumber",
+      "The same number now sells for (713.0 renminbi + 570.4 renminbi) * 1.5",
+      "She made (713.0 renminbi + 570.4 renminbi) * 1.5 - (713.0 renminbi + 570.4 renminbi) in profit",
+      "#### 641.7"
+    ],
+    "adaptation_notes": "Replaced 'Sasha' with 'Ling' to give the name a Chinese context."
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "index": 1197,
+  "split": "test",
+  "original": {
+    "question": "John buys 10 bottles of scotch for a total cost of $600.  He also buys twice as many bottles of cognac that cost 50% more per bottle.  How much does he spend on everything?",
+    "answer": "The scotch cost $600/10=$<<600/10=60>>60 each\nHe bought 10*2=<<10*2=20>>20 bottles of cognac\nEach bottle cost .5*60=$<<.5*60=30>>30 more than the scotch\nSo they cost $60+$30=$<<60+30=90>>90\nThat means he spent $90*20=$<<90*20=1800>>1800 on the cognac\nSo he spent a total of $600+$1800=$<<600+1800=2400>>2400\n#### 2400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars",
+      "scotch",
+      "cognac"
+    ],
+    "notes": "The text contains a Western name, a non-Chinese unit of currency, and types of liquor that are not commonly associated with Chinese culture."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "scotch_cost",
+      "value": 600.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "scotch_bottle_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cognac_bottle_cost",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cognac_total_cost",
+      "value": 1800.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spend",
+      "value": 2400.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"scotch_cost\", \"value\": 600.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"scotch_bottle_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cognac_bottle_cost\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cognac_total_cost\", \"value\": 1800.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spend\", \"value\": 2400.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "scotch_cost",
+        "original_value": 600.0,
+        "original_unit": "dollar",
+        "converted_value": 4278.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "scotch_bottle_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "cognac_bottle_cost",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 641.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "cognac_total_cost",
+        "original_value": 1800.0,
+        "original_unit": "dollar",
+        "converted_value": 12834.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spend",
+        "original_value": 2400.0,
+        "original_unit": "dollar",
+        "converted_value": 17112.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John buys {num_bottles} bottles of scotch for a total cost of ${scotch_cost}.  He also buys twice as many bottles of cognac that cost 50% more per bottle.  How much does he spend on everything?",
+    "templatized_answer": [
+      "The scotch cost ${scotch_cost}/{num_bottles}=${scotch_bottle_cost} each",
+      "He bought {num_bottles}*2={num_cognac_bottles} bottles of cognac",
+      "Each bottle cost .5*{scotch_bottle_cost}=${cognac_extra_cost} more than the scotch",
+      "So they cost ${scotch_bottle_cost}+${cognac_extra_cost}=${cognac_bottle_cost}",
+      "That means he spent ${cognac_bottle_cost}*{num_cognac_bottles}=${cognac_total_cost} on the cognac",
+      "So he spent a total of ${scotch_cost}+${cognac_total_cost}=${total_spend}"
+    ],
+    "factual_assignment": {
+      "scotch_cost": 600.0,
+      "num_bottles": 10,
+      "scotch_bottle_cost": 60.0,
+      "num_cognac_bottles": 20,
+      "cognac_extra_cost": 30.0,
+      "cognac_bottle_cost": 90.0,
+      "cognac_total_cost": 1800.0,
+      "total_spend": 2400.0
+    }
+  },
+  "merged_assignment": {
+    "scotch_cost": 4278.0,
+    "num_bottles": 10,
+    "scotch_bottle_cost": 427.8,
+    "num_cognac_bottles": 20,
+    "cognac_extra_cost": 30.0,
+    "cognac_bottle_cost": 641.7,
+    "cognac_total_cost": 12834.0,
+    "total_spend": 17112.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    scotch_cost = 4278.0\n    num_bottles = 10\n    scotch_bottle_cost = round(scotch_cost / num_bottles, 2)\n    num_cognac_bottles = num_bottles * 2\n    cognac_extra_cost = round(0.5 * scotch_bottle_cost, 2)\n    cognac_bottle_cost = round(scotch_bottle_cost + cognac_extra_cost, 2)\n    cognac_total_cost = round(cognac_bottle_cost * num_cognac_bottles, 2)\n    total_spend = round(scotch_cost + cognac_total_cost, 2)\n\n    return {\n        \"scotch_cost\": scotch_cost,\n        \"num_bottles\": num_bottles,\n        \"scotch_bottle_cost\": scotch_bottle_cost,\n        \"num_cognac_bottles\": num_cognac_bottles,\n        \"cognac_extra_cost\": cognac_extra_cost,\n        \"cognac_bottle_cost\": cognac_bottle_cost,\n        \"cognac_total_cost\": cognac_total_cost,\n        \"total_spend\": total_spend\n    }\n",
+    "results": {
+      "scotch_cost": 4278.0,
+      "num_bottles": 10,
+      "scotch_bottle_cost": 427.8,
+      "num_cognac_bottles": 20,
+      "cognac_extra_cost": 213.9,
+      "cognac_bottle_cost": 641.7,
+      "cognac_total_cost": 12834.0,
+      "total_spend": 17112.0
+    }
+  },
+  "final": {
+    "question": "John buys 10 bottles of scotch for a total cost of 4278 renminbi.  He also buys twice as many bottles of cognac that cost 50% more per bottle.  How much does he spend on everything?",
+    "answer_lines": [
+      "The scotch cost 4278/10=427.8 renminbi each",
+      "He bought 10*2=20 bottles of cognac",
+      "Each bottle cost .5*427.8=213.9 renminbi more than the scotch",
+      "So they cost 427.8+213.9=641.7 renminbi",
+      "That means he spent 641.7*20=12834 renminbi on the cognac",
+      "So he spent a total of 4278+12834=17112 renminbi",
+      "#### 17112"
+    ],
+    "final_scalar": 17112.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang buys 10 bottles of baijiu for a total cost of 4278 renminbi.  He also buys twice as many bottles of huangjiu that cost 50% more per bottle.  How much does he spend on everything?",
+    "adapted_answer": [
+      "The baijiu cost 4278/10=427.8 renminbi each",
+      "He bought 10*2=20 bottles of huangjiu",
+      "Each bottle cost .5*427.8=213.9 renminbi more than the baijiu",
+      "So they cost 427.8+213.9=641.7 renminbi",
+      "That means he spent 641.7*20=12834 renminbi on the huangjiu",
+      "So he spent a total of 4278+12834=17112 renminbi",
+      "#### 17112"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang', 'scotch' with 'baijiu', and 'cognac' with 'huangjiu' to give the text a Chinese context."
+  }
+}

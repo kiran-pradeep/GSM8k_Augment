@@ -1,0 +1,111 @@
+{
+  "index": 492,
+  "split": "test",
+  "original": {
+    "question": "Sally buys one small pizza at $8 and one family-size pizza that costs 3 times as much as the small pizza. How much does she spend in all?",
+    "answer": "The cost of the family-size pizza is 3 x $8 = $<<3*8=24>>24.\nTherefore, Sally spends $8 + $24 = $<<8+24=32>>32 in all.\n#### 32"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sally",
+      "dollars",
+      "pizza"
+    ],
+    "notes": "The name Sally and the use of dollars are culturally specific to Western regions, and pizza is a food item not commonly associated with traditional Chinese cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "small_pizza_cost",
+      "value": 8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "family_pizza_cost",
+      "value": 24,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 32,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"small_pizza_cost\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"family_pizza_cost\", \"value\": 24, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 32, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "small_pizza_cost",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "family_pizza_cost",
+        "original_value": 24,
+        "original_unit": "dollar",
+        "converted_value": 171.12,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 32,
+        "original_unit": "dollar",
+        "converted_value": 228.16,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sally buys one small pizza at ${small_pizza_cost} and one family-size pizza that costs 3 times as much as the small pizza. How much does she spend in all?",
+    "templatized_answer": [
+      "The cost of the family-size pizza is 3 x ${small_pizza_cost} = ${family_pizza_cost}.",
+      "Therefore, Sally spends ${small_pizza_cost} + ${family_pizza_cost} = ${total_spent} in all.",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "small_pizza_cost": 8,
+      "family_pizza_cost": 24,
+      "total_spent": 32
+    }
+  },
+  "merged_assignment": {
+    "small_pizza_cost": 57.04,
+    "family_pizza_cost": 171.12,
+    "total_spent": 228.16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    small_pizza_cost = 57.04\n    family_pizza_cost = 3 * small_pizza_cost\n    total_spent = small_pizza_cost + family_pizza_cost\n\n    return {\n        \"small_pizza_cost\": round(small_pizza_cost, 2),\n        \"family_pizza_cost\": round(family_pizza_cost, 2),\n        \"total_spent\": round(total_spent, 2)\n    }\n",
+    "results": {
+      "small_pizza_cost": 57.04,
+      "family_pizza_cost": 171.12,
+      "total_spent": 228.16
+    }
+  },
+  "final": {
+    "question": "Sally buys one small pizza at 57.04 renminbi and one family-size pizza that costs 3 times as much as the small pizza. How much does she spend in all?",
+    "answer_lines": [
+      "The cost of the family-size pizza is 3 x 57.04 renminbi = 171.12 renminbi.",
+      "Therefore, Sally spends 57.04 renminbi + 171.12 renminbi = 228.16 renminbi in all.",
+      "#### 228.16"
+    ],
+    "final_scalar": 228.16,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Xiaoyu buys one small jiaozi at 57.04 renminbi and one family-size jiaozi that costs 3 times as much as the small jiaozi. How much does she spend in all?",
+    "adapted_answer": [
+      "The cost of the family-size jiaozi is 3 x 57.04 renminbi = 171.12 renminbi.",
+      "Therefore, Xiaoyu spends 57.04 renminbi + 171.12 renminbi = 228.16 renminbi in all.",
+      "#### 228.16"
+    ],
+    "adaptation_notes": "Replaced 'Sally' with 'Xiaoyu' (a common Chinese name) and 'pizza' with 'jiaozi' (a traditional Chinese dish)."
+  }
+}

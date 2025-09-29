@@ -1,0 +1,148 @@
+{
+  "index": 691,
+  "split": "test",
+  "original": {
+    "question": "John brings his dog to the vet. His dog needs 2 vaccines, which are $20 each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought $125 with him, how much does he leave with?",
+    "answer": "The vaccines cost 40 because 2 x 20 = <<2*20=40>>40\nThe vaccines are 40% of his total bill because 100 - 60 = <<100-60=40>>40\nThe total bill is $100 because 40 / .4 = <<40/.4=100>>100\nHe leaves with $25 because 125 - 100 = <<125-100=25>>25\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "vaccine_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "vaccine_total_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_bill",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "initial_cash",
+      "value": 125,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_cash",
+      "value": 25,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"vaccine_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"vaccine_total_cost\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_bill\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"initial_cash\", \"value\": 125, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_cash\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "vaccine_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "vaccine_total_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_bill",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "initial_cash",
+        "original_value": 125,
+        "original_unit": "dollar",
+        "converted_value": 891.25,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "remaining_cash",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 178.25,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John brings his dog to the vet. His dog needs 2 vaccines, which are ${vaccine_cost} each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought ${initial_cash} with him, how much does he leave with?",
+    "templatized_answer": [
+      "The vaccines cost ${vaccine_total_cost} because 2 x ${vaccine_cost} = ${vaccine_total_cost}",
+      "The vaccines are 40% of his total bill because 100 - 60 = 40",
+      "The total bill is ${total_bill} because ${vaccine_total_cost} / .4 = ${total_bill}",
+      "He leaves with ${remaining_cash} because ${initial_cash} - ${total_bill} = ${remaining_cash}",
+      "#### ${remaining_cash}"
+    ],
+    "factual_assignment": {
+      "vaccine_cost": 20,
+      "vaccine_total_cost": 40,
+      "total_bill": 100,
+      "initial_cash": 125,
+      "remaining_cash": 25
+    }
+  },
+  "merged_assignment": {
+    "vaccine_cost": 142.6,
+    "vaccine_total_cost": 285.2,
+    "total_bill": 713.0,
+    "initial_cash": 891.25,
+    "remaining_cash": 178.25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    vaccine_cost = 142.6\n    vaccine_total_cost = round(2 * vaccine_cost, 2)\n    total_bill = round(vaccine_total_cost / 0.4, 2)\n    initial_cash = 891.25\n    remaining_cash = round(initial_cash - total_bill, 2)\n\n    return {\n        \"vaccine_cost\": vaccine_cost,\n        \"vaccine_total_cost\": vaccine_total_cost,\n        \"total_bill\": total_bill,\n        \"initial_cash\": initial_cash,\n        \"remaining_cash\": remaining_cash\n    }\n",
+    "results": {
+      "vaccine_cost": 142.6,
+      "vaccine_total_cost": 285.2,
+      "total_bill": 713.0,
+      "initial_cash": 891.25,
+      "remaining_cash": 178.25
+    }
+  },
+  "final": {
+    "question": "John brings his dog to the vet. His dog needs 2 vaccines, which are 142.6 renminbi each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought 891.25 renminbi with him, how much does he leave with?",
+    "answer_lines": [
+      "The vaccines cost 285.2 renminbi because 2 x 142.6 = 285.2",
+      "The vaccines are 40% of his total bill because 100 - 60 = 40",
+      "The total bill is 713.0 renminbi because 285.2 / .4 = 713.0",
+      "He leaves with 178.25 renminbi because 891.25 - 713.0 = 178.25",
+      "#### 178.25"
+    ],
+    "final_scalar": 178.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang brings his dog to the vet. His dog needs 2 vaccines, which are 142.6 renminbi each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought 891.25 renminbi with him, how much does he leave with?",
+    "adapted_answer": [
+      "The vaccines cost 285.2 renminbi because 2 x 142.6 = 285.2",
+      "The vaccines are 40% of his total bill because 100 - 60 = 40",
+      "The total bill is 713.0 renminbi because 285.2 / .4 = 713.0",
+      "He leaves with 178.25 renminbi because 891.25 - 713.0 = 178.25",
+      "#### 178.25"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang' to give the character a Chinese name."
+  }
+}

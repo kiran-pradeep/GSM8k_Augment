@@ -1,0 +1,120 @@
+{
+  "index": 674,
+  "split": "test",
+  "original": {
+    "question": "Mrs. Jameson's bamboo in the backyard grows up to 30 inches a day. Today, its height is 20 feet. In how many days will its height be 600 inches?",
+    "answer": "Since 1 foot is equal to 12 inches, then 20 feet is equal to 20 x 12 = <<20*12=240>>240 inches.\nSo, the bamboo needs to grow 600 - 240 = <<600-240=360>>360 inches more.\nTherefore, it will take 360/30 = <<360/30=12>>12 days for its height to be 600 inches.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mrs. Jameson",
+      "feet",
+      "inches"
+    ],
+    "notes": "Western name and imperial units"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_height_inches",
+      "value": 30.0,
+      "unit": "inches",
+      "context": "question"
+    },
+    {
+      "variable": "initial_height_feet",
+      "value": 20.0,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "target_height_inches",
+      "value": 600.0,
+      "unit": "inches",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pounds\": {\"unit\": \"kilograms\", \"factor\": 0.453592},\n        \"ounces\": {\"unit\": \"grams\", \"factor\": 28.3495},\n        \"miles\": {\"unit\": \"kilometers\", \"factor\": 1.60934},\n        \"feet\": {\"unit\": \"meters\", \"factor\": 0.3048},\n        \"inches\": {\"unit\": \"centimeters\", \"factor\": 2.54},\n        \"gallons\": {\"unit\": \"liters\", \"factor\": 3.78541},\n        \"cups\": {\"unit\": \"milliliters\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_height_inches\", \"value\": 30.0, \"unit\": \"inches\", \"context\": \"question\"},\n    {\"variable\": \"initial_height_feet\", \"value\": 20.0, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"target_height_inches\", \"value\": 600.0, \"unit\": \"inches\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_height_inches",
+        "original_value": 30.0,
+        "original_unit": "inches",
+        "converted_value": 76.2,
+        "converted_unit": "centimeters"
+      },
+      {
+        "variable": "initial_height_feet",
+        "original_value": 20.0,
+        "original_unit": "feet",
+        "converted_value": 6.1,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "target_height_inches",
+        "original_value": 600.0,
+        "original_unit": "inches",
+        "converted_value": 1524.0,
+        "converted_unit": "centimeters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mrs. Jameson's bamboo in the backyard grows up to {growth_rate_inches} inches a day. Today, its height is {initial_height_feet} feet. In how many days will its height be {target_height_inches} inches?",
+    "templatized_answer": [
+      "Since 1 foot is equal to {inches_per_foot} inches, then {initial_height_feet} feet is equal to {initial_height_feet} x {inches_per_foot} = {initial_height_feet} * {inches_per_foot} inches.",
+      "So, the bamboo needs to grow {target_height_inches} - {initial_height_feet} * {inches_per_foot} = {target_height_inches} - ({initial_height_feet} * {inches_per_foot}) inches more.",
+      "Therefore, it will take ({target_height_inches} - ({initial_height_feet} * {inches_per_foot})) / {growth_rate_inches} = ({target_height_inches} - ({initial_height_feet} * {inches_per_foot})) / {growth_rate_inches} days for its height to be {target_height_inches} inches.",
+      "#### ({target_height_inches} - ({initial_height_feet} * {inches_per_foot})) / {growth_rate_inches}"
+    ],
+    "factual_assignment": {
+      "growth_rate_inches": 30,
+      "initial_height_feet": 20,
+      "target_height_inches": 600,
+      "inches_per_foot": 12
+    }
+  },
+  "merged_assignment": {
+    "growth_rate_inches": 30,
+    "initial_height_feet": 6.1,
+    "target_height_inches": 1524.0,
+    "inches_per_foot": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    growth_rate_inches = 30\n    initial_height_feet = 6.1\n    target_height_inches = 1524.0\n    inches_per_foot = 12\n\n    initial_height_inches = initial_height_feet * inches_per_foot\n    additional_growth_inches = target_height_inches - initial_height_inches\n    days_to_target = round(additional_growth_inches / growth_rate_inches, 2)\n\n    return {\n        \"growth_rate_inches\": growth_rate_inches,\n        \"initial_height_feet\": initial_height_feet,\n        \"target_height_inches\": target_height_inches,\n        \"inches_per_foot\": inches_per_foot,\n        \"initial_height_inches\": initial_height_inches,\n        \"additional_growth_inches\": additional_growth_inches,\n        \"days_to_target\": days_to_target\n    }\n\nprint(recompute())\n",
+    "results": {
+      "growth_rate_inches": 30,
+      "initial_height_feet": 6.1,
+      "target_height_inches": 1524.0,
+      "inches_per_foot": 12,
+      "initial_height_inches": 73.19999999999999,
+      "additional_growth_inches": 1450.8,
+      "days_to_target": 48.36
+    }
+  },
+  "final": {
+    "question": "Mrs. Jameson's bamboo in the backyard grows up to 30 inches a day. Today, its height is 6.1 meters. In how many days will its height be 1524.0 centimeters?",
+    "answer_lines": [
+      "Since 1 meter is equal to 100 centimeters, then 6.1 meters is equal to 6.1 x 100 = 610 centimeters.",
+      "So, the bamboo needs to grow 1524.0 - 610 = 914 centimeters more.",
+      "Therefore, it will take 914 / 30 = 30.47 days for its height to be 1524.0 centimeters.",
+      "#### 48.36"
+    ],
+    "final_scalar": 48.36,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ms. Li's bamboo in the backyard grows up to 30 inches a day. Today, its height is 6.1 meters. In how many days will its height be 1524.0 centimeters?",
+    "adapted_answer": [
+      "Since 1 meter is equal to 100 centimeters, then 6.1 meters is equal to 6.1 x 100 = 610 centimeters.",
+      "So, the bamboo needs to grow 1524.0 - 610 = 914 centimeters more.",
+      "Therefore, it will take 914 / 30 = 30.47 days for its height to be 1524.0 centimeters.",
+      "#### 48.36"
+    ],
+    "adaptation_notes": "Replaced 'Mrs. Jameson' with 'Ms. Li' to provide a Chinese context."
+  }
+}

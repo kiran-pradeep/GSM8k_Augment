@@ -1,0 +1,141 @@
+{
+  "index": 272,
+  "split": "test",
+  "original": {
+    "question": "A mother goes shopping. She buys cocoa at $4.20, laundry at $9.45 and a package of pasta at $1.35. She pays $20. How much change does the cashier give back?",
+    "answer": "The total shopping cost is $4.2 + $9.45 + $1.35 = $<<4.2+9.45+1.35=15>>15.\nThe cashier gives back $20 - 1$5 = $<<20-15=5>>5.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "pasta"
+    ],
+    "notes": "The use of dollars as currency and pasta as a food item are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cocoa_cost",
+      "value": 4.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "laundry_cost",
+      "value": 9.45,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pasta_cost",
+      "value": 1.35,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "payment",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cocoa_cost\", \"value\": 4.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"laundry_cost\", \"value\": 9.45, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pasta_cost\", \"value\": 1.35, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"payment\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cocoa_cost",
+        "original_value": 4.2,
+        "original_unit": "dollar",
+        "converted_value": 1183.77,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "laundry_cost",
+        "original_value": 9.45,
+        "original_unit": "dollar",
+        "converted_value": 2663.48,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "pasta_cost",
+        "original_value": 1.35,
+        "original_unit": "dollar",
+        "converted_value": 380.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "payment",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 5637.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "change",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 1409.25,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A mother goes shopping. She buys cocoa at ${cocoa_cost}, laundry at ${laundry_cost} and a package of pasta at ${pasta_cost}. She pays ${payment}. How much change does the cashier give back?",
+    "templatized_answer": [
+      "The total shopping cost is ${cocoa_cost} + ${laundry_cost} + ${pasta_cost} = ${cocoa_cost} + ${laundry_cost} + ${pasta_cost}.",
+      "The cashier gives back ${payment} - (${cocoa_cost} + ${laundry_cost} + ${pasta_cost}) = ${payment} - (${cocoa_cost} + ${laundry_cost} + ${pasta_cost}).",
+      "#### ${payment} - (${cocoa_cost} + ${laundry_cost} + ${pasta_cost})"
+    ],
+    "factual_assignment": {
+      "cocoa_cost": 4.2,
+      "laundry_cost": 9.45,
+      "pasta_cost": 1.35,
+      "payment": 20.0
+    }
+  },
+  "merged_assignment": {
+    "cocoa_cost": 1183.77,
+    "laundry_cost": 2663.48,
+    "pasta_cost": 380.5,
+    "payment": 5637.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"cocoa_cost\": 1183.77,\n        \"laundry_cost\": 2663.48,\n        \"pasta_cost\": 380.5,\n        \"payment\": 5637.0\n    }\n\n    total_shopping_cost = round(factual_assignment[\"cocoa_cost\"] + factual_assignment[\"laundry_cost\"] + factual_assignment[\"pasta_cost\"], 2)\n    change = round(factual_assignment[\"payment\"] - total_shopping_cost, 2)\n\n    return {\n        \"cocoa_cost\": factual_assignment[\"cocoa_cost\"],\n        \"laundry_cost\": factual_assignment[\"laundry_cost\"],\n        \"pasta_cost\": factual_assignment[\"pasta_cost\"],\n        \"payment\": factual_assignment[\"payment\"],\n        \"cocoa_cost + laundry_cost + pasta_cost\": total_shopping_cost,\n        \"payment - (cocoa_cost + laundry_cost + pasta_cost)\": change\n    }\n\nprint(recompute())\n",
+    "results": {
+      "cocoa_cost": 1183.77,
+      "laundry_cost": 2663.48,
+      "pasta_cost": 380.5,
+      "payment": 5637.0,
+      "cocoa_cost + laundry_cost + pasta_cost": 4227.75,
+      "payment - (cocoa_cost + laundry_cost + pasta_cost)": 1409.25
+    }
+  },
+  "final": {
+    "question": "A mother goes shopping. She buys cocoa at 1183.77, laundry at 2663.48 and a package of pasta at 380.5. She pays 5637.0. How much change does the cashier give back?",
+    "answer_lines": [
+      "The total shopping cost is 1183.77 + 2663.48 + 380.5 = 4227.75.",
+      "The cashier gives back 5637.0 - 4227.75 = 1409.25.",
+      "#### 1409.25"
+    ],
+    "final_scalar": 1409.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A mother goes shopping. She buys chai masala at 1183.77, laundry at 2663.48 and a package of haleem at 380.5. She pays 5637.0. How much change does the cashier give back?",
+    "adapted_answer": [
+      "The total shopping cost is 1183.77 + 2663.48 + 380.5 = 4227.75.",
+      "The cashier gives back 5637.0 - 4227.75 = 1409.25.",
+      "#### 1409.25"
+    ],
+    "adaptation_notes": "Replaced 'cocoa' with 'chai masala' and 'pasta' with 'haleem' to give the question a Pakistani context."
+  }
+}

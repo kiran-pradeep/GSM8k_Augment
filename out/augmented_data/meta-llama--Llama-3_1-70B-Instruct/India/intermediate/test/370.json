@@ -1,0 +1,108 @@
+{
+  "index": 370,
+  "split": "test",
+  "original": {
+    "question": "A hand-painted wallpaper costs $400 at the market. A DIY will saves 20% after considering the materials cost. If Ethan made his own hand-painted wallpaper, how much was the total cost?",
+    "answer": "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*$400=$<<20/100*400=80>>80 if you make your own hand-painted wallpaper.\nThe total cost of a hand-painted wallpaper made at home is $400-$80 = $<<400-80=320>>320\n#### 320"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "market_cost",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "diy_savings",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_diy_cost",
+      "value": 320.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87.0},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"market_cost\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"diy_savings\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_diy_cost\", \"value\": 320.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "market_cost",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 34800.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "diy_savings",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 6960.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_diy_cost",
+        "original_value": 320.0,
+        "original_unit": "dollar",
+        "converted_value": 27840.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A hand-painted wallpaper costs ${market_cost} at the market. A DIY will saves 20% after considering the materials cost. If Ethan made his own hand-painted wallpaper, how much was the total cost?",
+    "templatized_answer": [
+      "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*${market_cost}=${{20/100*market_cost}} if you make your own hand-painted wallpaper.",
+      "The total cost of a hand-painted wallpaper made at home is ${market_cost}-${{20/100*market_cost}} = ${{{market_cost-(20/100*market_cost)}}}",
+      "#### {total_diy_cost}"
+    ],
+    "factual_assignment": {
+      "market_cost": 400.0,
+      "total_diy_cost": 320.0
+    }
+  },
+  "merged_assignment": {
+    "market_cost": 34800.0,
+    "total_diy_cost": 27840.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    market_cost = 34800.0\n    savings = round(20/100 * market_cost, 2)\n    total_diy_cost = round(market_cost - savings, 2)\n    \n    return {\n        \"market_cost\": market_cost,\n        \"20/100*market_cost\": savings,\n        \"market_cost-(20/100*market_cost)\": total_diy_cost,\n        \"total_diy_cost\": total_diy_cost\n    }\n",
+    "results": {
+      "market_cost": 34800.0,
+      "20/100*market_cost": 6960.0,
+      "market_cost-(20/100*market_cost)": 27840.0,
+      "total_diy_cost": 27840.0
+    }
+  },
+  "final": {
+    "question": "A hand-painted wallpaper costs 34800 rupee at the market. A DIY will saves 20% after considering the materials cost. If Ethan made his own hand-painted wallpaper, how much was the total cost?",
+    "answer_lines": [
+      "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*34800=6960 rupee if you make your own hand-painted wallpaper.",
+      "The total cost of a hand-painted wallpaper made at home is 34800-6960 = 27840 rupee",
+      "#### 27840"
+    ],
+    "final_scalar": 27840.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A hand-painted wallpaper costs 34800 rupee at the market. A DIY will saves 20% after considering the materials cost. If Ethan made his own hand-painted wallpaper, how much was the total cost?",
+    "adapted_answer": [
+      "A DIY will saves 20% after considering the materials cost, meaning you will save 20/100*34800=6960 rupee if you make your own hand-painted wallpaper.",
+      "The total cost of a hand-painted wallpaper made at home is 34800-6960 = 27840 rupee",
+      "#### 27840"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

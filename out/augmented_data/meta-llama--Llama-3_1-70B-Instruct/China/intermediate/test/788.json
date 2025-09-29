@@ -1,0 +1,139 @@
+{
+  "index": 788,
+  "split": "test",
+  "original": {
+    "question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has $50 and the trip costs $300?",
+    "answer": "John's school has decided to pay 300 / 2 = $<<300/2=150>>150 for his trip.\nIn total John has covered 150 + 50 = $<<150+50=200>>200 for his trip\nTherefore, John needs 300 - 200 = $<<300-200=100>>100 more for the trip.\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_fund",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "trip_cost",
+      "value": 300,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "school_contribution",
+      "value": 150,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_covered",
+      "value": 200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "missing_fund",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_fund\",\n    \"value\": 50,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"trip_cost\",\n    \"value\": 300,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"school_contribution\",\n    \"value\": 150,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_covered\",\n    \"value\": 200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"missing_fund\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_fund",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 356.5,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "trip_cost",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "school_contribution",
+        "original_value": 150,
+        "original_unit": "dollar",
+        "converted_value": 1069.5,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_covered",
+        "original_value": 200,
+        "original_unit": "dollar",
+        "converted_value": 1426.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "missing_fund",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has ${initial_fund} and the trip costs ${trip_cost}?",
+    "templatized_answer": [
+      "John's school has decided to pay {trip_cost} / 2 = ${trip_cost / 2} for his trip.",
+      "In total John has covered {trip_cost / 2} + {initial_fund} = ${trip_cost / 2 + initial_fund} for his trip",
+      "Therefore, John needs {trip_cost} - {trip_cost / 2 + initial_fund} = ${trip_cost - (trip_cost / 2 + initial_fund)} more for the trip.",
+      "#### {trip_cost - (trip_cost / 2 + initial_fund)}"
+    ],
+    "factual_assignment": {
+      "initial_fund": 50,
+      "trip_cost": 300
+    }
+  },
+  "merged_assignment": {
+    "initial_fund": 356.5,
+    "trip_cost": 2139.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_fund = 356.5\n    trip_cost = 2139.0\n\n    school_contribution = trip_cost / 2\n    total_covered = school_contribution + initial_fund\n    amount_missing = trip_cost - total_covered\n\n    return {\n        \"initial_fund\": initial_fund,\n        \"trip_cost\": trip_cost,\n        \"trip_cost / 2\": round(school_contribution, 2),\n        \"trip_cost / 2 + initial_fund\": round(total_covered, 2),\n        \"trip_cost - (trip_cost / 2 + initial_fund)\": round(amount_missing, 2)\n    }\n",
+    "results": {
+      "initial_fund": 356.5,
+      "trip_cost": 2139.0,
+      "trip_cost / 2": 1069.5,
+      "trip_cost / 2 + initial_fund": 1426.0,
+      "trip_cost - (trip_cost / 2 + initial_fund)": 713.0
+    }
+  },
+  "final": {
+    "question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has 356.5 renminbi and the trip costs 2139.0 renminbi?",
+    "answer_lines": [
+      "John's school has decided to pay 2139.0 / 2 = 1069.5 renminbi for his trip.",
+      "In total John has covered 1069.5 + 356.5 = 1426.0 renminbi for his trip",
+      "Therefore, John needs 2139.0 - 1426.0 = 713.0 renminbi more for the trip.",
+      "#### 713.0"
+    ],
+    "final_scalar": 713.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is Wang missing if he has 356.5 renminbi and the trip costs 2139.0 renminbi?",
+    "adapted_answer": [
+      "Wang's school has decided to pay 2139.0 / 2 = 1069.5 renminbi for his trip.",
+      "In total Wang has covered 1069.5 + 356.5 = 1426.0 renminbi for his trip",
+      "Therefore, Wang needs 2139.0 - 1426.0 = 713.0 renminbi more for the trip.",
+      "#### 713.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang' to give the name a Chinese context."
+  }
+}

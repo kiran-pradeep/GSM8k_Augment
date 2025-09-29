@@ -1,0 +1,108 @@
+{
+  "index": 1208,
+  "split": "test",
+  "original": {
+    "question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at $72, what is her profit?",
+    "answer": "Trinity sells magazines at 11/8*$72=$<<11/8*72=99>>99.\nIf she bought the magazines at $72, she makes a profit of $99-$72=$27\n#### 27"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Trinity",
+      "dollars"
+    ],
+    "notes": "The name 'Trinity' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "buy_price",
+      "value": 72,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sell_price",
+      "value": 99,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 27,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"buy_price\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sell_price\", \"value\": 99, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 27, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "buy_price",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 513.36,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "sell_price",
+        "original_value": 99,
+        "original_unit": "dollar",
+        "converted_value": 705.87,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "profit",
+        "original_value": 27,
+        "original_unit": "dollar",
+        "converted_value": 192.51,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at ${buy_price}, what is her profit?",
+    "templatized_answer": [
+      "Trinity sells magazines at 11/8*${buy_price}=${sell_price}.",
+      "If she bought the magazines at ${buy_price}, she makes a profit of ${sell_price}-${buy_price}=${profit}"
+    ],
+    "factual_assignment": {
+      "buy_price": 72,
+      "sell_price": 99,
+      "profit": 27
+    }
+  },
+  "merged_assignment": {
+    "buy_price": 513.36,
+    "sell_price": 705.87,
+    "profit": 192.51
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    buy_price = 513.36\n    sell_price = buy_price * (11/8)\n    profit = sell_price - buy_price\n\n    return {\n        \"buy_price\": round(buy_price, 2),\n        \"sell_price\": round(sell_price, 2),\n        \"profit\": round(profit, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "buy_price": 513.36,
+      "sell_price": 705.87,
+      "profit": 192.51
+    }
+  },
+  "final": {
+    "question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at 513.36 renminbi, what is her profit?",
+    "answer_lines": [
+      "Trinity sells magazines at 11/8*513.36=705.87 renminbi.",
+      "If she bought the magazines at 513.36 renminbi, she makes a profit of 705.87-513.36=192.51 renminbi",
+      "#### 192.51"
+    ],
+    "final_scalar": 192.51,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mei sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at 513.36 renminbi, what is her profit?",
+    "adapted_answer": [
+      "Mei sells magazines at 11/8*513.36=705.87 renminbi.",
+      "If she bought the magazines at 513.36 renminbi, she makes a profit of 705.87-513.36=192.51 renminbi"
+    ],
+    "adaptation_notes": "Replaced 'Trinity' with 'Mei', a common Chinese name."
+  }
+}

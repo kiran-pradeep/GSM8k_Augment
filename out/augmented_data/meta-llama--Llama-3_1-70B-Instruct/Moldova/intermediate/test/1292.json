@@ -1,0 +1,150 @@
+{
+  "index": 1292,
+  "split": "test",
+  "original": {
+    "question": "Jackie grew 3\" over the summer.  She is now 2\" shorter than Anne, who is twice the size of Albert.  If Albert is 36\" tall, how tall was Jackie before summer?",
+    "answer": "Anne is twice the size of Albert, who is 36\", so Anne is 2*36 = <<72=72>>72\" tall\nAnne is 72\" tall and Jackie is 2\" shorter than Anne, so Jackie is 72-2 = <<72-2=70>>70\" tall\nJackie is currently 70\" tall and grew 3\" over summer, so before summer she was 70-3= <<70-3=67>>67\" tall\n#### 67"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jackie",
+      "Anne",
+      "Albert",
+      "inches"
+    ],
+    "notes": "The names Jackie, Anne, and Albert are culturally specific to Western regions, and the unit of measurement 'inches' is commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "albert_height",
+      "value": 36.0,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "anne_height",
+      "value": 72.0,
+      "unit": "inch",
+      "context": "answer"
+    },
+    {
+      "variable": "jackie_height_current",
+      "value": 70.0,
+      "unit": "inch",
+      "context": "answer"
+    },
+    {
+      "variable": "jackie_height_before",
+      "value": 67.0,
+      "unit": "inch",
+      "context": "answer"
+    },
+    {
+      "variable": "jackie_growth",
+      "value": 3.0,
+      "unit": "inch",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"inch\": {\"to\": \"cm\", \"factor\": 2.54},\n        \"mile\": {\"to\": \"km\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"m\", \"factor\": 0.3048},\n        \"pound\": {\"to\": \"kg\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"g\", \"factor\": 28.3495},\n        \"gallon\": {\"to\": \"l\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"ml\", \"factor\": 236.588},\n        \"dollar\": {\"to\": \"leu\", \"factor\": 16.62}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"albert_height\", \"value\": 36.0, \"unit\": \"inch\", \"context\": \"question\"},\n    {\"variable\": \"anne_height\", \"value\": 72.0, \"unit\": \"inch\", \"context\": \"answer\"},\n    {\"variable\": \"jackie_height_current\", \"value\": 70.0, \"unit\": \"inch\", \"context\": \"answer\"},\n    {\"variable\": \"jackie_height_before\", \"value\": 67.0, \"unit\": \"inch\", \"context\": \"answer\"},\n    {\"variable\": \"jackie_growth\", \"value\": 3.0, \"unit\": \"inch\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "albert_height",
+        "original_value": 36.0,
+        "original_unit": "inch",
+        "converted_value": 91.44,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "anne_height",
+        "original_value": 72.0,
+        "original_unit": "inch",
+        "converted_value": 182.88,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "jackie_height_current",
+        "original_value": 70.0,
+        "original_unit": "inch",
+        "converted_value": 177.8,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "jackie_height_before",
+        "original_value": 67.0,
+        "original_unit": "inch",
+        "converted_value": 170.18,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "jackie_growth",
+        "original_value": 3.0,
+        "original_unit": "inch",
+        "converted_value": 7.62,
+        "converted_unit": "cm"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jackie grew {jackie_growth}\" over the summer.  She is now {unknown_height_difference}\" shorter than Anne, who is twice the size of Albert.  If Albert is {albert_height}\" tall, how tall was Jackie before summer?",
+    "templatized_answer": [
+      "Anne is twice the size of Albert, who is {albert_height}\", so Anne is 2*{albert_height} = {anne_height}\" tall",
+      "Anne is {anne_height}\" tall and Jackie is {unknown_height_difference}\" shorter than Anne, so Jackie is {anne_height}-{unknown_height_difference} = {jackie_height_current}\" tall",
+      "Jackie is currently {jackie_height_current}\" tall and grew {jackie_growth}\" over summer, so before summer she was {jackie_height_current}-{jackie_growth} = {jackie_height_before}\" tall",
+      "#### {jackie_height_before}"
+    ],
+    "factual_assignment": {
+      "albert_height": 36.0,
+      "anne_height": 72.0,
+      "jackie_height_current": 70.0,
+      "jackie_height_before": 67.0,
+      "jackie_growth": 3.0,
+      "unknown_height_difference": 2.0
+    }
+  },
+  "merged_assignment": {
+    "albert_height": 91.44,
+    "anne_height": 182.88,
+    "jackie_height_current": 177.8,
+    "jackie_height_before": 170.18,
+    "jackie_growth": 7.62,
+    "unknown_height_difference": 2.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    albert_height = 91.44\n    anne_height = 2 * albert_height\n    unknown_height_difference = 2.0\n    jackie_height_current = anne_height - unknown_height_difference\n    jackie_growth = 7.62\n    jackie_height_before = jackie_height_current - jackie_growth\n\n    return {\n        \"albert_height\": round(albert_height, 2),\n        \"anne_height\": round(anne_height, 2),\n        \"jackie_height_current\": round(jackie_height_current, 2),\n        \"jackie_height_before\": round(jackie_height_before, 2),\n        \"jackie_growth\": round(jackie_growth, 2),\n        \"unknown_height_difference\": round(unknown_height_difference, 2)\n    }\n",
+    "results": {
+      "albert_height": 91.44,
+      "anne_height": 182.88,
+      "jackie_height_current": 180.88,
+      "jackie_height_before": 173.26,
+      "jackie_growth": 7.62,
+      "unknown_height_difference": 2.0
+    }
+  },
+  "final": {
+    "question": "Jackie grew 7.62cm over the summer.  She is now 2.0cm shorter than Anne, who is twice the size of Albert.  If Albert is 91.44cm tall, how tall was Jackie before summer?",
+    "answer_lines": [
+      "Anne is twice the size of Albert, who is 91.44cm, so Anne is 2*91.44 = 182.88cm tall",
+      "Anne is 182.88cm tall and Jackie is 2.0cm shorter than Anne, so Jackie is 182.88-2.0 = 180.88cm tall",
+      "Jackie is currently 180.88cm tall and grew 7.62cm over summer, so before summer she was 180.88-7.62 = 173.26cm tall",
+      "#### 173.26"
+    ],
+    "final_scalar": 173.26,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Natalia grew 7.62cm over the summer.  She is now 2.0cm shorter than Anastasia, who is twice the size of Andrei.  If Andrei is 91.44cm tall, how tall was Natalia before summer?",
+    "adapted_answer": [
+      "Anastasia is twice the size of Andrei, who is 91.44cm, so Anastasia is 2*91.44 = 182.88cm tall",
+      "Anastasia is 182.88cm tall and Natalia is 2.0cm shorter than Anastasia, so Natalia is 182.88-2.0 = 180.88cm tall",
+      "Natalia is currently 180.88cm tall and grew 7.62cm over summer, so before summer she was 180.88-7.62 = 173.26cm tall",
+      "#### 173.26"
+    ],
+    "adaptation_notes": "Replaced names with Moldovan equivalents: Jackie -> Natalia, Anne -> Anastasia, Albert -> Andrei."
+  }
+}

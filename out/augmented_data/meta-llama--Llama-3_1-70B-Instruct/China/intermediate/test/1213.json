@@ -1,0 +1,164 @@
+{
+  "index": 1213,
+  "split": "test",
+  "original": {
+    "question": "Stephen borrowed $300 from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Stephen will give his sister $25 per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Stephen pay in the twelfth month?",
+    "answer": "Stephen will pay an additional $300 x 2/100 = $<<300*2/100=6>>6.\nHe should return a total of $300 + $6 = $<<300+6=306>>306.\nFor eleven months Stephen will pay a total of $25 x 11 = $<<25*11=275>>275.\nTherefore, Stephen will pay 306 - 275 = $<<306-275=31>>31 on the twelfth month.\n#### 31"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Stephen"
+    ],
+    "notes": "The text contains a non-Chinese name and a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_borrow",
+      "value": 300,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_payment",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "interest",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_return",
+      "value": 306,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "eleven_months_payment",
+      "value": 275,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "twelfth_month_payment",
+      "value": 31,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_borrow\",\n    \"value\": 300,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"monthly_payment\",\n    \"value\": 25,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"interest\",\n    \"value\": 6,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_return\",\n    \"value\": 306,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"eleven_months_payment\",\n    \"value\": 275,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"twelfth_month_payment\",\n    \"value\": 31,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_borrow",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_payment",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 178.25,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "interest",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_return",
+        "original_value": 306,
+        "original_unit": "dollar",
+        "converted_value": 2181.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eleven_months_payment",
+        "original_value": 275,
+        "original_unit": "dollar",
+        "converted_value": 1960.75,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "twelfth_month_payment",
+        "original_value": 31,
+        "original_unit": "dollar",
+        "converted_value": 221.03,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Stephen borrowed ${initial_borrow} from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Stephen will give his sister ${monthly_payment} per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Stephen pay in the twelfth month?",
+    "templatized_answer": [
+      "Stephen will pay an additional ${initial_borrow} x 2/100 = ${interest}.",
+      "He should return a total of ${initial_borrow} + ${interest} = ${total_return}.",
+      "For eleven months Stephen will pay a total of ${monthly_payment} x 11 = ${eleven_months_payment}.",
+      "Therefore, Stephen will pay ${total_return} - ${eleven_months_payment} = ${twelfth_month_payment} on the twelfth month.",
+      "#### {twelfth_month_payment}"
+    ],
+    "factual_assignment": {
+      "initial_borrow": 300,
+      "monthly_payment": 25,
+      "interest": 6,
+      "total_return": 306,
+      "eleven_months_payment": 275,
+      "twelfth_month_payment": 31
+    }
+  },
+  "merged_assignment": {
+    "initial_borrow": 2139.0,
+    "monthly_payment": 178.25,
+    "interest": 42.78,
+    "total_return": 2181.78,
+    "eleven_months_payment": 1960.75,
+    "twelfth_month_payment": 221.03
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_borrow = 2139.0\n    monthly_payment = 178.25\n    interest = round(initial_borrow * 0.02, 2)\n    total_return = round(initial_borrow + interest, 2)\n    eleven_months_payment = round(monthly_payment * 11, 2)\n    twelfth_month_payment = round(total_return - eleven_months_payment, 2)\n\n    return {\n        \"initial_borrow\": initial_borrow,\n        \"monthly_payment\": monthly_payment,\n        \"interest\": interest,\n        \"total_return\": total_return,\n        \"eleven_months_payment\": eleven_months_payment,\n        \"twelfth_month_payment\": twelfth_month_payment\n    }\n",
+    "results": {
+      "initial_borrow": 2139.0,
+      "monthly_payment": 178.25,
+      "interest": 42.78,
+      "total_return": 2181.78,
+      "eleven_months_payment": 1960.75,
+      "twelfth_month_payment": 221.03
+    }
+  },
+  "final": {
+    "question": "Stephen borrowed 2139.0 renminbi from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Stephen will give his sister 178.25 renminbi per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Stephen pay in the twelfth month?",
+    "answer_lines": [
+      "Stephen will pay an additional 2139.0 x 2/100 = 42.78.",
+      "He should return a total of 2139.0 + 42.78 = 2181.78.",
+      "For eleven months Stephen will pay a total of 178.25 x 11 = 1960.75.",
+      "Therefore, Stephen will pay 2181.78 - 1960.75 = 221.03 on the twelfth month.",
+      "#### 221.03"
+    ],
+    "final_scalar": 221.03,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wei borrowed 2139.0 renminbi from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Wei will give his sister 178.25 renminbi per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Wei pay in the twelfth month?",
+    "adapted_answer": [
+      "Wei will pay an additional 2139.0 x 2/100 = 42.78.",
+      "He should return a total of 2139.0 + 42.78 = 2181.78.",
+      "For eleven months Wei will pay a total of 178.25 x 11 = 1960.75.",
+      "Therefore, Wei will pay 2181.78 - 1960.75 = 221.03 on the twelfth month.",
+      "#### 221.03"
+    ],
+    "adaptation_notes": "Replaced 'Stephen' with 'Wei' to give the name a Chinese context."
+  }
+}

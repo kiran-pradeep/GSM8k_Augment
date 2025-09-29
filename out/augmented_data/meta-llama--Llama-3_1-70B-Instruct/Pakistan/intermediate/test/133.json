@@ -1,0 +1,132 @@
+{
+  "index": 133,
+  "split": "test",
+  "original": {
+    "question": "On Monday, Walt walked 4 miles. Tuesday, he walked 6 times as many miles as he walked on Monday. His total mileage Monday through Wednesday was 41 miles. How many miles did he walk on Wednesday?",
+    "answer": "Walt’s Tuesday walk was 4*6 = <<4*6=24>>24 miles.\nWalt’s Monday and Tuesday walk were 4+24 = <<4+24=28>>28 miles combined.\nWalt’s Wednesday walk was 41-28 = <<41-28=13>>13 miles.\n#### 13"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Walt",
+      "miles"
+    ],
+    "notes": "Name 'Walt' and unit 'miles' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monday_walk",
+      "value": 4.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "tuesday_walk",
+      "value": 24.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "total_mileage",
+      "value": 41.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "wednesday_walk",
+      "value": 13.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monday_walk\", \"value\": 4.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"tuesday_walk\", \"value\": 24.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"total_mileage\", \"value\": 41.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"wednesday_walk\", \"value\": 13.0, \"unit\": \"mile\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monday_walk",
+        "original_value": 4.0,
+        "original_unit": "mile",
+        "converted_value": 6.44,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "tuesday_walk",
+        "original_value": 24.0,
+        "original_unit": "mile",
+        "converted_value": 38.62,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "total_mileage",
+        "original_value": 41.0,
+        "original_unit": "mile",
+        "converted_value": 65.98,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "wednesday_walk",
+        "original_value": 13.0,
+        "original_unit": "mile",
+        "converted_value": 20.92,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "On Monday, Walt walked {monday_walk} miles. Tuesday, he walked 6 times as many miles as he walked on Monday. His total mileage Monday through Wednesday was {total_mileage} miles. How many miles did he walk on Wednesday?",
+    "templatized_answer": [
+      "Walt’s Tuesday walk was {monday_walk}*6 = {tuesday_walk} miles.",
+      "Walt’s Monday and Tuesday walk were {monday_walk}+{tuesday_walk} = {monday_walk}+{tuesday_walk} miles combined.",
+      "Walt’s Wednesday walk was {total_mileage}-{monday_walk}+{tuesday_walk} = {total_mileage}-{monday_walk}-{tuesday_walk} miles.",
+      "Walt’s Wednesday walk was {total_mileage}-{monday_walk}-{tuesday_walk} = {wednesday_walk} miles.",
+      "#### {wednesday_walk}"
+    ],
+    "factual_assignment": {
+      "monday_walk": 4.0,
+      "tuesday_walk": 24.0,
+      "total_mileage": 41.0,
+      "wednesday_walk": 13.0
+    }
+  },
+  "merged_assignment": {
+    "monday_walk": 6.44,
+    "tuesday_walk": 38.62,
+    "total_mileage": 65.98,
+    "wednesday_walk": 20.92
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monday_walk = 6.44\n    tuesday_walk = monday_walk * 6\n    total_mileage = 65.98\n    wednesday_walk = total_mileage - monday_walk - tuesday_walk\n\n    return {\n        \"monday_walk\": round(monday_walk, 2),\n        \"tuesday_walk\": round(tuesday_walk, 2),\n        \"total_mileage\": round(total_mileage, 2),\n        \"wednesday_walk\": round(wednesday_walk, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "monday_walk": 6.44,
+      "tuesday_walk": 38.64,
+      "total_mileage": 65.98,
+      "wednesday_walk": 20.9
+    }
+  },
+  "final": {
+    "question": "On Monday, Walt walked 6.44 kilometers. Tuesday, he walked 6 times as many kilometers as he walked on Monday. His total mileage Monday through Wednesday was 65.98 kilometers. How many kilometers did he walk on Wednesday?",
+    "answer_lines": [
+      "Walt’s Tuesday walk was 6.44*6 = 38.64 kilometers.",
+      "Walt’s Monday and Tuesday walk were 6.44+38.64 = 45.08 kilometers combined.",
+      "Walt’s Wednesday walk was 65.98-45.08 = 20.9 kilometers.",
+      "Walt’s Wednesday walk was 20.9 kilometers.",
+      "#### 20.9"
+    ],
+    "final_scalar": 20.9,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "On Monday, Waqar walked 6.44 kilometers. Tuesday, he walked 6 times as many kilometers as he walked on Monday. His total mileage Monday through Wednesday was 65.98 kilometers. How many kilometers did he walk on Wednesday?",
+    "adapted_answer": [
+      "Waqar’s Tuesday walk was 6.44*6 = 38.64 kilometers.",
+      "Waqar’s Monday and Tuesday walk were 6.44+38.64 = 45.08 kilometers combined.",
+      "Waqar’s Wednesday walk was 65.98-45.08 = 20.9 kilometers.",
+      "Waqar’s Wednesday walk was 20.9 kilometers.",
+      "#### 20.9"
+    ],
+    "adaptation_notes": "Replaced 'Walt' with 'Waqar', a common Pakistani name."
+  }
+}

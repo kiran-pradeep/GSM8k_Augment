@@ -1,0 +1,126 @@
+{
+  "index": 163,
+  "split": "test",
+  "original": {
+    "question": "In a room, there are various toys: 5 red cars, 3 action figures, and a doll. The doll cost as much as 3 action figures and one red car cost $4. How much are all toys worth, of an action figure costs $5?",
+    "answer": "Three actions figures are worth 3 * 5 = $<<3*5=15>>15, as much as the doll.\nThe red cars are worth 5 * 4 = $<<5*4=20>>20.\nSo all toys are worth 20 + 15 + 15 = $<<20+15+15=50>>50.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "doll",
+      "doll is not specific but the price is in dollars"
+    ],
+    "notes": "doll is not specific but the price is in dollars which is a unit commonly used in the US"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "action_figure_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "doll_cost",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "red_car_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_toys_worth",
+      "value": 50,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"action_figure_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"doll_cost\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"red_car_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_toys_worth\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "action_figure_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "doll_cost",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1305,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "red_car_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 348,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_toys_worth",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 4350,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "In a room, there are various toys: 5 red cars, 3 action figures, and a doll. The doll cost as much as 3 action figures and one red car cost ${red_car_cost}. How much are all toys worth, of an action figure costs ${action_figure_cost}?",
+    "templatized_answer": [
+      "Three actions figures are worth 3 * {action_figure_cost} = ${3 * action_figure_cost}, as much as the doll.",
+      "The red cars are worth 5 * {red_car_cost} = ${5 * red_car_cost}.",
+      "So all toys are worth {5 * red_car_cost} + {3 * action_figure_cost} + {3 * action_figure_cost} = ${5 * red_car_cost + 3 * action_figure_cost + 3 * action_figure_cost}.",
+      "#### {5 * red_car_cost + 3 * action_figure_cost + 3 * action_figure_cost}"
+    ],
+    "factual_assignment": {
+      "action_figure_cost": 5,
+      "red_car_cost": 4
+    }
+  },
+  "merged_assignment": {
+    "action_figure_cost": 435,
+    "red_car_cost": 348
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    action_figure_cost = 435\n    red_car_cost = 348\n\n    doll_cost = 3 * action_figure_cost\n    red_cars_cost = 5 * red_car_cost\n    total_cost = red_cars_cost + doll_cost + doll_cost\n\n    return {\n        \"action_figure_cost\": action_figure_cost,\n        \"red_car_cost\": red_car_cost,\n        \"3 * action_figure_cost\": round(3 * action_figure_cost, 2),\n        \"5 * red_car_cost\": round(5 * red_car_cost, 2),\n        \"5 * red_car_cost + 3 * action_figure_cost + 3 * action_figure_cost\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "action_figure_cost": 435,
+      "red_car_cost": 348,
+      "3 * action_figure_cost": 1305,
+      "5 * red_car_cost": 1740,
+      "5 * red_car_cost + 3 * action_figure_cost + 3 * action_figure_cost": 4350
+    }
+  },
+  "final": {
+    "question": "In a room, there are various toys: 5 red cars, 3 action figures, and a doll. The doll cost as much as 3 action figures and one red car cost 348. How much are all toys worth, of an action figure costs 435?",
+    "answer_lines": [
+      "Three actions figures are worth 3 * 435 = 1305, as much as the doll.",
+      "The red cars are worth 5 * 348 = 1740.",
+      "So all toys are worth 1740 + 1305 + 1305 = 4350.",
+      "#### 4350"
+    ],
+    "final_scalar": 4350,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "In a room, there are various toys: 5 red cars, 3 action figures, and a Ganesha idol. The Ganesha idol cost as much as 3 action figures and one red car cost 348. How much are all toys worth, if an action figure costs 435?",
+    "adapted_answer": [
+      "Three actions figures are worth 3 * 435 = 1305, as much as the Ganesha idol.",
+      "The red cars are worth 5 * 348 = 1740.",
+      "So all toys are worth 1740 + 1305 + 1305 = 4350.",
+      "#### 4350"
+    ],
+    "adaptation_notes": "Replaced 'doll' with 'Ganesha idol' to provide an Indian context."
+  }
+}

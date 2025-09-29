@@ -1,0 +1,130 @@
+{
+  "index": 589,
+  "split": "test",
+  "original": {
+    "question": "If Martin eats Cheerios every day for breakfast, he'll lose 1.25 pounds/week. If he eats donuts every day for breakfast, he'll gain 1.75 pounds/week. What will be the difference in his weight at the end of 5 weeks between the two breakfast options?",
+    "answer": "First find the difference in weight gain per week: 1.75 pounds/week - ( -1.25 pounds/week) = 1.75 pounds/week + 1.25 pounds/week = <<1.75-(-1.25)=3>>3 pounds/week\nThen multiply the weight gain per week by the number of weeks to find the total difference at the end of 5 weeks: 5 weeks * 3 pounds/week = <<5*3=15>>15 pounds\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Martin",
+      "Cheerios",
+      "donuts",
+      "pounds"
+    ],
+    "notes": "The text contains a Western name, non-Somali food items, and a unit of weight commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cheerios_weight_loss",
+      "value": 1.25,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "donuts_weight_gain",
+      "value": 1.75,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_weight_difference",
+      "value": 3,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "total_weight_difference",
+      "value": 15,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"dollar\": {\"unit\": \"shilling\", \"factor\": 569.38}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = value * conversions[unit][\"factor\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"cheerios_weight_loss\",\n    \"value\": 1.25,\n    \"unit\": \"pound\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"donuts_weight_gain\",\n    \"value\": 1.75,\n    \"unit\": \"pound\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"weekly_weight_difference\",\n    \"value\": 3,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_weight_difference\",\n    \"value\": 15,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cheerios_weight_loss",
+        "original_value": 1.25,
+        "original_unit": "pound",
+        "converted_value": 0.57,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "donuts_weight_gain",
+        "original_value": 1.75,
+        "original_unit": "pound",
+        "converted_value": 0.79,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "weekly_weight_difference",
+        "original_value": 3,
+        "original_unit": "pound",
+        "converted_value": 1.36,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "total_weight_difference",
+        "original_value": 15,
+        "original_unit": "pound",
+        "converted_value": 6.8,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "If Martin eats Cheerios every day for breakfast, he'll lose {cheerios_weight_loss} pounds/week. If he eats donuts every day for breakfast, he'll gain {donuts_weight_gain} pounds/week. What will be the difference in his weight at the end of {number_of_weeks} weeks between the two breakfast options?",
+    "templatized_answer": [
+      "First find the difference in weight gain per week: {donuts_weight_gain} pounds/week - ( -{cheerios_weight_loss} pounds/week) = {donuts_weight_gain} pounds/week + {cheerios_weight_loss} pounds/week = {weekly_weight_difference} pounds/week",
+      "Then multiply the weight gain per week by the number of weeks to find the total difference at the end of {number_of_weeks} weeks: {number_of_weeks} weeks * {weekly_weight_difference} pounds/week = {total_weight_difference} pounds"
+    ],
+    "factual_assignment": {
+      "cheerios_weight_loss": 1.25,
+      "donuts_weight_gain": 1.75,
+      "weekly_weight_difference": 3,
+      "total_weight_difference": 15,
+      "number_of_weeks": 5
+    }
+  },
+  "merged_assignment": {
+    "cheerios_weight_loss": 0.57,
+    "donuts_weight_gain": 0.79,
+    "weekly_weight_difference": 1.36,
+    "total_weight_difference": 6.8,
+    "number_of_weeks": 5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    cheerios_weight_loss = 0.57\n    donuts_weight_gain = 0.79\n    number_of_weeks = 5\n\n    # Recompute weekly weight difference\n    weekly_weight_difference = donuts_weight_gain + cheerios_weight_loss\n\n    # Recompute total weight difference\n    total_weight_difference = round(number_of_weeks * weekly_weight_difference, 2)\n\n    return {\n        \"cheerios_weight_loss\": round(cheerios_weight_loss, 2),\n        \"donuts_weight_gain\": round(donuts_weight_gain, 2),\n        \"weekly_weight_difference\": round(weekly_weight_difference, 2),\n        \"total_weight_difference\": total_weight_difference,\n        \"number_of_weeks\": number_of_weeks\n    }\n\nprint(recompute())\n",
+    "results": {
+      "cheerios_weight_loss": 0.57,
+      "donuts_weight_gain": 0.79,
+      "weekly_weight_difference": 1.36,
+      "total_weight_difference": 6.8,
+      "number_of_weeks": 5
+    }
+  },
+  "final": {
+    "question": "If Martin eats Cheerios every day for breakfast, he'll lose 0.57 kilograms/week. If he eats donuts every day for breakfast, he'll gain 0.79 kilograms/week. What will be the difference in his weight at the end of 5 weeks between the two breakfast options?",
+    "answer_lines": [
+      "First find the difference in weight gain per week: 0.79 kilograms/week - ( -0.57 kilograms/week) = 0.79 kilograms/week + 0.57 kilograms/week = 1.36 kilograms/week",
+      "Then multiply the weight gain per week by the number of weeks to find the total difference at the end of 5 weeks: 5 weeks * 1.36 kilograms/week = 6.8 kilograms",
+      "#### 6.8"
+    ],
+    "final_scalar": 6.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "If Abdi eats Muufo every day for breakfast, he'll lose 0.57 kilograms/week. If he eats Sabaayad every day for breakfast, he'll gain 0.79 kilograms/week. What will be the difference in his weight at the end of 5 weeks between the two breakfast options?",
+    "adapted_answer": [
+      "First find the difference in weight gain per week: 0.79 kilograms/week - ( -0.57 kilograms/week) = 0.79 kilograms/week + 0.57 kilograms/week = 1.36 kilograms/week",
+      "Then multiply the weight gain per week by the number of weeks to find the total difference at the end of 5 weeks: 5 weeks * 1.36 kilograms/week = 6.8 kilograms",
+      "#### 6.8"
+    ],
+    "adaptation_notes": "Replaced 'Martin' with 'Abdi', 'Cheerios' with 'Muufo', and 'donuts' with 'Sabaayad' to give the text a Somali context."
+  }
+}

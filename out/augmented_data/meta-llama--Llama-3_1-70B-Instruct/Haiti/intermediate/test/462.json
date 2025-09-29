@@ -1,0 +1,125 @@
+{
+  "index": 462,
+  "split": "test",
+  "original": {
+    "question": "Ali had $21. Leila gave him half of her $100. How much does Ali have now?",
+    "answer": "Leila gave 100/2 = $<<100/2=50>>50 to Ali.\nAli now has $21+ $50 = $<<21+50=71>>71.\n#### 71"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is commonly used in the United States and other countries, but Haiti's official currency is the Haitian gourde."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 21,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "leila_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "leila_gift",
+      "value": 50,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "ali_total",
+      "value": 71,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 21, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"leila_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"leila_gift\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"ali_total\", \"value\": 71, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 2747.01,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "leila_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 13081.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "leila_gift",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 6540.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "ali_total",
+        "original_value": 71,
+        "original_unit": "dollar",
+        "converted_value": 9287.51,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ali had ${initial_money}. Leila gave him half of her ${leila_money}. How much does Ali have now?",
+    "templatized_answer": [
+      "Leila gave {leila_money}/2 = ${leila_gift} to Ali.",
+      "Ali now has ${initial_money} + ${leila_gift} = ${ali_total}.",
+      "#### {ali_total}"
+    ],
+    "factual_assignment": {
+      "initial_money": 21,
+      "leila_money": 100,
+      "leila_gift": 50,
+      "ali_total": 71
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 2747.01,
+    "leila_money": 13081.0,
+    "leila_gift": 6540.5,
+    "ali_total": 9287.51
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 2747.01\n    leila_money = 13081.0\n    leila_gift = leila_money / 2\n    ali_total = initial_money + leila_gift\n\n    return {\n        \"initial_money\": round(initial_money, 2),\n        \"leila_money\": round(leila_money, 2),\n        \"leila_gift\": round(leila_gift, 2),\n        \"ali_total\": round(ali_total, 2)\n    }\n",
+    "results": {
+      "initial_money": 2747.01,
+      "leila_money": 13081.0,
+      "leila_gift": 6540.5,
+      "ali_total": 9287.51
+    }
+  },
+  "final": {
+    "question": "Ali had 2747.01 gourde. Leila gave him half of her 13081.0 gourde. How much does Ali have now?",
+    "answer_lines": [
+      "Leila gave 13081.0/2 = 6540.5 gourde to Ali.",
+      "Ali now has 2747.01 + 6540.5 = 9287.51 gourde.",
+      "#### 9287.51"
+    ],
+    "final_scalar": 9287.51,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ali had 2747.01 gourde. Leila gave him half of her 13081.0 gourde. How much does Ali have now?",
+    "adapted_answer": [
+      "Leila gave 13081.0/2 = 6540.5 gourde to Ali.",
+      "Ali now has 2747.01 + 6540.5 = 9287.51 gourde.",
+      "#### 9287.51"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

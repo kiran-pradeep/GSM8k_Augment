@@ -1,0 +1,155 @@
+{
+  "index": 38,
+  "split": "test",
+  "original": {
+    "question": "John runs 60 miles a week. He runs 3 days a week.  He runs 3 hours the first day and half as much the other two days he runs.  How fast does he run?",
+    "answer": "He has 7-1=<<7-1=6>>6 possible running days.\nHe runs half of those so he runs 6/2=<<6/2=3>>3 days.\nSo for two days, he runs 3/2=<<3/2=1.5>>1.5 hours.\nSo in total, he runs 3+1.5+1.5=<<3+1.5+1.5=6>>6 hours.\nSo he runs 60/6=<<60/6=10>>10 mph.\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "miles",
+      "mph"
+    ],
+    "notes": "Name 'John' and units 'miles' and 'mph' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weekly_run_distance",
+      "value": 60,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "first_day_run_time",
+      "value": 3,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "other_days_run_time",
+      "value": 1.5,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "total_run_time",
+      "value": 6,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "run_speed",
+      "value": 10,
+      "unit": "mph",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"km\", \"factor\": 1.60934},\n        \"hour\": {\"unit\": \"hour\", \"factor\": 1},\n        \"mph\": {\"unit\": \"km/h\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kg\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"g\", \"factor\": 28.3495},\n        \"gallon\": {\"unit\": \"L\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"mL\", \"factor\": 236.588},\n        \"foot\": {\"unit\": \"m\", \"factor\": 0.3048},\n        \"dollar\": {\"unit\": \"PKR\", \"factor\": 281.85}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"weekly_run_distance\",\n    \"value\": 60,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"first_day_run_time\",\n    \"value\": 3,\n    \"unit\": \"hour\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"other_days_run_time\",\n    \"value\": 1.5,\n    \"unit\": \"hour\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_run_time\",\n    \"value\": 6,\n    \"unit\": \"hour\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"run_speed\",\n    \"value\": 10,\n    \"unit\": \"mph\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weekly_run_distance",
+        "original_value": 60,
+        "original_unit": "mile",
+        "converted_value": 96.56,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "first_day_run_time",
+        "original_value": 3,
+        "original_unit": "hour",
+        "converted_value": 3,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "other_days_run_time",
+        "original_value": 1.5,
+        "original_unit": "hour",
+        "converted_value": 1.5,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "total_run_time",
+        "original_value": 6,
+        "original_unit": "hour",
+        "converted_value": 6,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "run_speed",
+        "original_value": 10,
+        "original_unit": "mph",
+        "converted_value": 16.09,
+        "converted_unit": "km/h"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John runs {weekly_run_distance} miles a week. He runs {days_run_per_week} days a week.  He runs {first_day_run_time} hours the first day and half as much the other two days he runs.  How fast does he run?",
+    "templatized_answer": [
+      "He has 7-{days_run_per_week}=6 possible running days.",
+      "He runs half of those so he runs 6/2={days_run_per_week} days.",
+      "So for two days, he runs {first_day_run_time}/2={other_days_run_time} hours.",
+      "So in total, he runs {first_day_run_time}+{other_days_run_time}+{other_days_run_time}={total_run_time} hours.",
+      "So he runs {weekly_run_distance}/{total_run_time}={run_speed} mph.",
+      "#### {run_speed}"
+    ],
+    "factual_assignment": {
+      "weekly_run_distance": 60,
+      "days_run_per_week": 3,
+      "first_day_run_time": 3,
+      "other_days_run_time": 1.5,
+      "total_run_time": 6,
+      "run_speed": 10
+    }
+  },
+  "merged_assignment": {
+    "weekly_run_distance": 96.56,
+    "days_run_per_week": 3,
+    "first_day_run_time": 3,
+    "other_days_run_time": 1.5,
+    "total_run_time": 6,
+    "run_speed": 16.09
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    weekly_run_distance = 96.56\n    days_run_per_week = 3\n    first_day_run_time = 3\n\n    other_days_run_time = first_day_run_time / 2\n    total_run_time = first_day_run_time + other_days_run_time + other_days_run_time\n    run_speed = weekly_run_distance / total_run_time\n\n    return {\n        \"weekly_run_distance\": weekly_run_distance,\n        \"days_run_per_week\": days_run_per_week,\n        \"first_day_run_time\": first_day_run_time,\n        \"other_days_run_time\": round(other_days_run_time, 2),\n        \"total_run_time\": round(total_run_time, 2),\n        \"run_speed\": round(run_speed, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "weekly_run_distance": 96.56,
+      "days_run_per_week": 3,
+      "first_day_run_time": 3,
+      "other_days_run_time": 1.5,
+      "total_run_time": 6.0,
+      "run_speed": 16.09
+    }
+  },
+  "final": {
+    "question": "John runs 96.56 km a week. He runs 3 days a week.  He runs 3 hours the first day and half as much the other two days he runs.  How fast does he run?",
+    "answer_lines": [
+      "He has 7-3=4 possible running days.",
+      "He runs half of those so he runs 4/2=2 days.",
+      "So for two days, he runs 3/2=1.5 hours.",
+      "So in total, he runs 3+1.5+1.5=6 hours.",
+      "So he runs 96.56/6=16.09 km/h.",
+      "#### 16.09"
+    ],
+    "final_scalar": 16.09,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran runs 96.56 km a week. He runs 3 days a week.  He runs 3 hours the first day and half as much the other two days he runs.  How fast does he run?",
+    "adapted_answer": [
+      "He has 7-3=4 possible running days.",
+      "He runs half of those so he runs 4/2=2 days.",
+      "So for two days, he runs 3/2=1.5 hours.",
+      "So in total, he runs 3+1.5+1.5=6 hours.",
+      "So he runs 96.56/6=16.09 km/h.",
+      "#### 16.09"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Kamran' to give the name a Pakistani context."
+  }
+}

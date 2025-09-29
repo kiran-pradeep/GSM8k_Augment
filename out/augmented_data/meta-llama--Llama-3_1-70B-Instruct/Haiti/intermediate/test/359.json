@@ -1,0 +1,185 @@
+{
+  "index": 359,
+  "split": "test",
+  "original": {
+    "question": "Billy is buying some candy with $10 his father gave him. The candy costs $1.5 a pound. After buying candy, he takes half his change and spends it on gumballs, which cost $.05 each. If he bought 40 gumballs, how many pounds of candy did he buy?",
+    "answer": "He spent $2 on gumballs because 40 x .05 = <<40*.05=2>>2\nHe had $4 in change because 2 / .5 = <<2/.5=4>>4\nHe spent $6 on candy because 10 - 4 = <<10-4=6>>6\nHe bought 4 pounds of candy because 6 / 1.5 = <<6/1.5=4>>4\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "pounds",
+      "gumballs",
+      "candy"
+    ],
+    "notes": "The question contains units (dollars, pounds) and food items (gumballs, candy) that are not specific to Haitian culture."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gumball_cost",
+      "value": 0.05,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gumball_spend",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "candy_spend",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "candy_bought",
+      "value": 4,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gumball_cost\", \"value\": 0.05, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gumball_spend\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"candy_spend\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"candy_bought\", \"value\": 4, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1308.1,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "candy_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 196.22,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "gumball_cost",
+        "original_value": 0.05,
+        "original_unit": "dollar",
+        "converted_value": 6.54,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "gumball_spend",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 261.62,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "change",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 523.24,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "candy_spend",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 784.86,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "candy_bought",
+        "original_value": 4,
+        "original_unit": "pound",
+        "converted_value": 1.81,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Billy is buying some candy with ${initial_money} his father gave him. The candy costs ${candy_cost} a pound. After buying candy, he takes half his change and spends it on gumballs, which cost ${gumball_cost} each. If he bought {gumball_count} gumballs, how many pounds of candy did he buy?",
+    "templatized_answer": [
+      "He spent ${gumball_spend} on gumballs because {gumball_count} x {gumball_cost} = {gumball_spend}",
+      "He had ${change} in change because {gumball_spend} / 0.5 = {change}",
+      "He spent ${candy_spend} on candy because {initial_money} - {change} = {candy_spend}",
+      "He bought {candy_bought} pounds of candy because {candy_spend} / {candy_cost} = {candy_bought}",
+      "#### {candy_bought}"
+    ],
+    "factual_assignment": {
+      "initial_money": 10,
+      "candy_cost": 1.5,
+      "gumball_cost": 0.05,
+      "gumball_spend": 2,
+      "change": 4,
+      "candy_spend": 6,
+      "candy_bought": 4,
+      "gumball_count": 40
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 1308.1,
+    "candy_cost": 196.22,
+    "gumball_cost": 6.54,
+    "gumball_spend": 261.62,
+    "change": 523.24,
+    "candy_spend": 784.86,
+    "candy_bought": 1.81,
+    "gumball_count": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 1308.1\n    candy_cost = 196.22\n    gumball_cost = 6.54\n    gumball_count = 40\n\n    gumball_spend = round(gumball_count * gumball_cost, 2)\n    change = round(gumball_spend / 0.5, 2)\n    candy_spend = round(initial_money - change, 2)\n    candy_bought = round(candy_spend / candy_cost, 2)\n\n    return {\n        \"initial_money\": initial_money,\n        \"candy_cost\": candy_cost,\n        \"gumball_cost\": gumball_cost,\n        \"gumball_spend\": gumball_spend,\n        \"change\": change,\n        \"candy_spend\": candy_spend,\n        \"candy_bought\": candy_bought,\n        \"gumball_count\": gumball_count\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_money": 1308.1,
+      "candy_cost": 196.22,
+      "gumball_cost": 6.54,
+      "gumball_spend": 261.6,
+      "change": 523.2,
+      "candy_spend": 784.9,
+      "candy_bought": 4.0,
+      "gumball_count": 40
+    }
+  },
+  "final": {
+    "question": "Billy is buying some candy with 1308.1 gourde his father gave him. The candy costs 196.22 gourde a kilogram. After buying candy, he takes half his change and spends it on gumballs, which cost 6.54 gourde each. If he bought 40 gumballs, how many kilograms of candy did he buy?",
+    "answer_lines": [
+      "He spent 261.6 gourde on gumballs because 40 x 6.54 = 261.6",
+      "He had 523.2 gourde in change because 261.6 / 0.5 = 523.2",
+      "He spent 784.9 gourde on candy because 1308.1 - 523.2 = 784.9",
+      "He bought 4.0 kilograms of candy because 784.9 / 196.22 = 4.0",
+      "#### 4.0"
+    ],
+    "final_scalar": 4.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Billy is buying some tablet with 1308.1 gourde his father gave him. The tablet costs 196.22 gourde a kilogram. After buying tablet, he takes half his change and spends it on bonbons, which cost 6.54 gourde each. If he bought 40 bonbons, how many kilograms of tablet did he buy?",
+    "adapted_answer": [
+      "He spent 261.6 gourde on bonbons because 40 x 6.54 = 261.6",
+      "He had 523.2 gourde in change because 261.6 / 0.5 = 523.2",
+      "He spent 784.9 gourde on tablet because 1308.1 - 523.2 = 784.9",
+      "He bought 4.0 kilograms of tablet because 784.9 / 196.22 = 4.0",
+      "#### 4.0"
+    ],
+    "adaptation_notes": "Replaced 'candy' with 'tablet' (a traditional Haitian sweet treat) and 'gumballs' with 'bonbons' (a more common term in Haiti)."
+  }
+}

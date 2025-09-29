@@ -1,0 +1,147 @@
+{
+  "index": 274,
+  "split": "test",
+  "original": {
+    "question": "It's April, and Mrs. Rylan has been busy on her farm planting different types of vegetables for the season. She has bought 20 packets of tomato seeds and 80 packets of celery seeds to plant. If a packet of tomato seeds costs $40 and a packet of celery seeds costs $30, how much money did she use to buy the seeds?",
+    "answer": "The total amount of money she used to buy the tomato seeds is 20 packets * $40/packet = $<<20*40=800>>800\nThe celery seeds cost her 80 packets * $30/packet = $<<80*30=2400>>2400\nFor the seeds, Mrs. Rylan paid $2400 + $800 = $<<2400+800=3200>>3200\n#### 3200"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mrs. Rylan",
+      "dollars",
+      "tomato",
+      "celery"
+    ],
+    "notes": "The name 'Mrs. Rylan' is Western, 'dollars' is a non-Chinese currency unit, and 'tomato' and 'celery' are not exclusively Chinese food items."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tomato_seeds_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "celery_seeds_cost",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_seeds_cost",
+      "value": 800,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_seeds_cost_2",
+      "value": 2400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_seeds_cost_3",
+      "value": 3200,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"tomato_seeds_cost\",\n    \"value\": 40,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"celery_seeds_cost\",\n    \"value\": 30,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_seeds_cost\",\n    \"value\": 800,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_seeds_cost_2\",\n    \"value\": 2400,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_seeds_cost_3\",\n    \"value\": 3200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tomato_seeds_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "celery_seeds_cost",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_seeds_cost",
+        "original_value": 800,
+        "original_unit": "dollar",
+        "converted_value": 5704.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_seeds_cost_2",
+        "original_value": 2400,
+        "original_unit": "dollar",
+        "converted_value": 17112.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_seeds_cost_3",
+        "original_value": 3200,
+        "original_unit": "dollar",
+        "converted_value": 22816.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "It's April, and Mrs. Rylan has been busy on her farm planting different types of vegetables for the season. She has bought {tomato_packets} packets of tomato seeds and {celery_packets} packets of celery seeds to plant. If a packet of tomato seeds costs ${tomato_seeds_cost} and a packet of celery seeds costs ${celery_seeds_cost}, how much money did she use to buy the seeds?",
+    "templatized_answer": [
+      "The total amount of money she used to buy the tomato seeds is {tomato_packets} packets * ${tomato_seeds_cost}/packet = ${tomato_packets * tomato_seeds_cost}",
+      "The celery seeds cost her {celery_packets} packets * ${celery_seeds_cost}/packet = ${celery_packets * celery_seeds_cost}",
+      "For the seeds, Mrs. Rylan paid ${celery_packets * celery_seeds_cost} + ${tomato_packets * tomato_seeds_cost} = ${celery_packets * celery_seeds_cost + tomato_packets * tomato_seeds_cost}",
+      "#### {celery_packets * celery_seeds_cost + tomato_packets * tomato_seeds_cost}"
+    ],
+    "factual_assignment": {
+      "tomato_packets": 20,
+      "celery_packets": 80,
+      "tomato_seeds_cost": 40,
+      "celery_seeds_cost": 30
+    }
+  },
+  "merged_assignment": {
+    "tomato_packets": 20,
+    "celery_packets": 80,
+    "tomato_seeds_cost": 285.2,
+    "celery_seeds_cost": 213.9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tomato_packets = 20\n    celery_packets = 80\n    tomato_seeds_cost = 285.2\n    celery_seeds_cost = 213.9\n\n    tomato_seeds_total_cost = tomato_packets * tomato_seeds_cost\n    celery_seeds_total_cost = celery_packets * celery_seeds_cost\n    total_seeds_cost = celery_seeds_total_cost + tomato_seeds_total_cost\n\n    return {\n        \"tomato_packets\": tomato_packets,\n        \"celery_packets\": celery_packets,\n        \"tomato_seeds_cost\": round(tomato_seeds_cost, 2),\n        \"celery_seeds_cost\": round(celery_seeds_cost, 2),\n        \"tomato_packets * tomato_seeds_cost\": round(tomato_seeds_total_cost, 2),\n        \"celery_packets * celery_seeds_cost\": round(celery_seeds_total_cost, 2),\n        \"celery_packets * celery_seeds_cost + tomato_packets * tomato_seeds_cost\": round(total_seeds_cost, 2)\n    }\n",
+    "results": {
+      "tomato_packets": 20,
+      "celery_packets": 80,
+      "tomato_seeds_cost": 285.2,
+      "celery_seeds_cost": 213.9,
+      "tomato_packets * tomato_seeds_cost": 5704.0,
+      "celery_packets * celery_seeds_cost": 17112.0,
+      "celery_packets * celery_seeds_cost + tomato_packets * tomato_seeds_cost": 22816.0
+    }
+  },
+  "final": {
+    "question": "It's April, and Mrs. Rylan has been busy on her farm planting different types of vegetables for the season. She has bought 20 packets of tomato seeds and 80 packets of celery seeds to plant. If a packet of tomato seeds costs 285.2 renminbi and a packet of celery seeds costs 213.9 renminbi, how much money did she use to buy the seeds?",
+    "answer_lines": [
+      "The total amount of money she used to buy the tomato seeds is 20 packets * 285.2 renminbi/packet = 5704.0 renminbi",
+      "The celery seeds cost her 80 packets * 213.9 renminbi/packet = 17112.0 renminbi",
+      "For the seeds, Mrs. Rylan paid 17112.0 renminbi + 5704.0 renminbi = 22816.0 renminbi",
+      "#### 22816.0"
+    ],
+    "final_scalar": 22816.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "It's April, and Ms. Li has been busy on her farm planting different types of vegetables for the season. She has bought 20 packets of eggplant seeds and 80 packets of bok choy seeds to plant. If a packet of eggplant seeds costs 285.2 renminbi and a packet of bok choy seeds costs 213.9 renminbi, how much money did she use to buy the seeds?",
+    "adapted_answer": [
+      "The total amount of money she used to buy the eggplant seeds is 20 packets * 285.2 renminbi/packet = 5704.0 renminbi",
+      "The bok choy seeds cost her 80 packets * 213.9 renminbi/packet = 17112.0 renminbi",
+      "For the seeds, Ms. Li paid 17112.0 renminbi + 5704.0 renminbi = 22816.0 renminbi",
+      "#### 22816.0"
+    ],
+    "adaptation_notes": "Replaced 'Mrs. Rylan' with 'Ms. Li', 'tomato' with 'eggplant', and 'celery' with 'bok choy' to give the text a Chinese context."
+  }
+}

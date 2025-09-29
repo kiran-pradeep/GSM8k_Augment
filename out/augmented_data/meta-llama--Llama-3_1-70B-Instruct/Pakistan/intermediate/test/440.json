@@ -1,0 +1,144 @@
+{
+  "index": 440,
+  "split": "test",
+  "original": {
+    "question": "The area of Billie's rectangular bedroom is 360 square feet. If the length of his room is 3 yards, what is the perimeter of the room in feet?",
+    "answer": "The length of the room is 3 yards * (3 feet / 1 yard) = <<3*(3/1)=9>>9 feet.\nThe width of the room is 360 square feet / 9 feet = <<360/9=40>>40 feet.\nThe room's perimeter is 2(40+9) = 98\n#### 98"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "yards",
+      "feet"
+    ],
+    "notes": "The units 'yards' and 'feet' are commonly used in the US and UK, but not in Pakistan where the metric system is officially used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "room_area",
+      "value": 360,
+      "unit": "square_feet",
+      "context": "question"
+    },
+    {
+      "variable": "room_length_yards",
+      "value": 3,
+      "unit": "yard",
+      "context": "question"
+    },
+    {
+      "variable": "room_length_feet",
+      "value": 9,
+      "unit": "feet",
+      "context": "answer"
+    },
+    {
+      "variable": "room_width",
+      "value": 40,
+      "unit": "feet",
+      "context": "answer"
+    },
+    {
+      "variable": "room_perimeter",
+      "value": 98,
+      "unit": "feet",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"yard\": {\"to\": \"meter\", \"rate\": 0.9144},\n        \"feet\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"square_feet\": {\"to\": \"square_meter\", \"rate\": 0.092903}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"to\"]\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"room_area\",\n    \"value\": 360,\n    \"unit\": \"square_feet\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"room_length_yards\",\n    \"value\": 3,\n    \"unit\": \"yard\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"room_length_feet\",\n    \"value\": 9,\n    \"unit\": \"feet\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"room_width\",\n    \"value\": 40,\n    \"unit\": \"feet\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"room_perimeter\",\n    \"value\": 98,\n    \"unit\": \"feet\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "room_area",
+        "original_value": 360,
+        "original_unit": "square_feet",
+        "converted_value": 33.45,
+        "converted_unit": "square_meter"
+      },
+      {
+        "variable": "room_length_yards",
+        "original_value": 3,
+        "original_unit": "yard",
+        "converted_value": 2.74,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "room_length_feet",
+        "original_value": 9,
+        "original_unit": "feet",
+        "converted_value": 2.74,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "room_width",
+        "original_value": 40,
+        "original_unit": "feet",
+        "converted_value": 12.19,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "room_perimeter",
+        "original_value": 98,
+        "original_unit": "feet",
+        "converted_value": 29.87,
+        "converted_unit": "meter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The area of Billie's rectangular bedroom is {room_area} square feet. If the length of his room is {room_length_yards} yards, what is the perimeter of the room in feet?",
+    "templatized_answer": [
+      "The length of the room is {room_length_yards} yards * (3 feet / 1 yard) = {room_length_feet} feet.",
+      "The width of the room is {room_area} square feet / {room_length_feet} feet = {room_width} feet.",
+      "The room's perimeter is 2({room_width}+{room_length_feet}) = {room_perimeter}"
+    ],
+    "factual_assignment": {
+      "room_area": 360,
+      "room_length_yards": 3,
+      "room_length_feet": 9,
+      "room_width": 40,
+      "room_perimeter": 98
+    }
+  },
+  "merged_assignment": {
+    "room_area": 33.45,
+    "room_length_yards": 2.74,
+    "room_length_feet": 2.74,
+    "room_width": 12.19,
+    "room_perimeter": 29.87
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    room_area = 33.45\n    room_length_yards = 2.74\n\n    # Recompute room_length_feet\n    room_length_feet = room_length_yards * 3\n\n    # Recompute room_width\n    room_width = room_area / room_length_feet\n\n    # Recompute room_perimeter\n    room_perimeter = 2 * (room_width + room_length_feet)\n\n    # Round to 2 decimal places where appropriate\n    room_length_feet = round(room_length_feet, 2)\n    room_width = round(room_width, 2)\n    room_perimeter = round(room_perimeter, 2)\n\n    return {\n        \"room_area\": room_area,\n        \"room_length_yards\": room_length_yards,\n        \"room_length_feet\": room_length_feet,\n        \"room_width\": room_width,\n        \"room_perimeter\": room_perimeter\n    }\n\nprint(recompute())\n",
+    "results": {
+      "room_area": 33.45,
+      "room_length_yards": 2.74,
+      "room_length_feet": 8.22,
+      "room_width": 4.07,
+      "room_perimeter": 24.58
+    }
+  },
+  "final": {
+    "question": "The area of Billie's rectangular bedroom is 33.45 square meters. If the length of his room is 2.74 meters, what is the perimeter of the room in meters?",
+    "answer_lines": [
+      "The length of the room is 2.74 meters.",
+      "The width of the room is 33.45 square meters / 2.74 meters = 12.19 meters.",
+      "The room's perimeter is 2(12.19+2.74) = 29.86",
+      "#### 29.86"
+    ],
+    "final_scalar": 29.86,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The area of Bilal's rectangular bedroom is 33.45 square meters. If the length of his room is 2.74 meters, what is the perimeter of the room in meters?",
+    "adapted_answer": [
+      "The length of the room is 2.74 meters.",
+      "The width of the room is 33.45 square meters / 2.74 meters = 12.19 meters.",
+      "The room's perimeter is 2(12.19+2.74) = 29.86",
+      "#### 29.86"
+    ],
+    "adaptation_notes": "Replaced 'Billie' with 'Bilal' to give the name a Pakistani context."
+  }
+}

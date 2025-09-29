@@ -1,0 +1,109 @@
+{
+  "index": 544,
+  "split": "test",
+  "original": {
+    "question": "Jeff and Brad are trying to divide 100 dollars between them. Jeff gets 4 times as much as Brad. How much does Jeff get in dollars?",
+    "answer": "Brad gets 100/5=<<100/5=20>>20 dollars.\nJeff gets 20*4=<<20*4=80>>80 dollars.\n#### 80"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jeff",
+      "Brad",
+      "dollars"
+    ],
+    "notes": "Contains Western names and a US-specific currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "brad_share",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "jeff_share",
+      "value": 80,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"total_money\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"brad_share\",\n    \"value\": 20,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"jeff_share\",\n    \"value\": 80,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "brad_share",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "jeff_share",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jeff and Brad are trying to divide {total_money} dollars between them. Jeff gets 4 times as much as Brad. How much does Jeff get in dollars?",
+    "templatized_answer": [
+      "Brad gets {total_money}/5={total_money}/5 dollars.",
+      "Jeff gets {total_money}/5*4={total_money}/5*4 dollars.",
+      "#### {jeff_share}"
+    ],
+    "factual_assignment": {
+      "total_money": 100,
+      "jeff_share": 80
+    }
+  },
+  "merged_assignment": {
+    "total_money": 713.0,
+    "jeff_share": 570.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_money = 713.0\n    brad_share = total_money / 5\n    jeff_share = brad_share * 4\n    return {\n        \"total_money\": total_money,\n        \"brad_share\": round(brad_share, 2),\n        \"jeff_share\": round(jeff_share, 2)\n    }\n",
+    "results": {
+      "total_money": 713.0,
+      "brad_share": 142.6,
+      "jeff_share": 570.4
+    }
+  },
+  "final": {
+    "question": "Jeff and Brad are trying to divide 713.0 renminbi between them. Jeff gets 4 times as much as Brad. How much does Jeff get in renminbi?",
+    "answer_lines": [
+      "Brad gets 713.0/5=142.6 renminbi.",
+      "Jeff gets 142.6*4=570.4 renminbi.",
+      "#### 570.4"
+    ],
+    "final_scalar": 570.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang and Li are trying to divide 713.0 renminbi between them. Wang gets 4 times as much as Li. How much does Wang get in renminbi?",
+    "adapted_answer": [
+      "Li gets 713.0/5=142.6 renminbi.",
+      "Wang gets 142.6*4=570.4 renminbi.",
+      "#### 570.4"
+    ],
+    "adaptation_notes": "Replaced 'Jeff' with 'Wang' and 'Brad' with 'Li' to give the names a Chinese context."
+  }
+}

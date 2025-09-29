@@ -1,0 +1,125 @@
+{
+  "index": 819,
+  "split": "test",
+  "original": {
+    "question": "Twenty students are working together to raise money for a charity. Each earns the same amount. The charity raises a total of $175,000. $50,000 comes from organizations and the rest from the students. How much did each student raise?",
+    "answer": "Amount raised by all students was 175,000-50,000 = <<175000-50000=125000>>125,000 dollars.\nAmount raised by each student was 125,000/20 = <<125000/20=6250>>6,250 dollars.\n#### 6,250"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_raised",
+      "value": 175000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "organization_donation",
+      "value": 50000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "student_raised",
+      "value": 125000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "student_raised_each",
+      "value": 6250.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][list(conversions[unit].keys())[0]], 2)\n            converted_unit = list(conversions[unit].keys())[0]\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"total_raised\",\n    \"value\": 175000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"organization_donation\",\n    \"value\": 50000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"student_raised\",\n    \"value\": 125000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"student_raised_each\",\n    \"value\": 6250.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_raised",
+        "original_value": 175000.0,
+        "original_unit": "dollar",
+        "converted_value": 1247750.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "organization_donation",
+        "original_value": 50000.0,
+        "original_unit": "dollar",
+        "converted_value": 356500.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "student_raised",
+        "original_value": 125000.0,
+        "original_unit": "dollar",
+        "converted_value": 891250.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "student_raised_each",
+        "original_value": 6250.0,
+        "original_unit": "dollar",
+        "converted_value": 44562.5,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Twenty students are working together to raise money for a charity. Each earns the same amount. The charity raises a total of ${total_raised}. ${organization_donation} comes from organizations and the rest from the students. How much did each student raise?",
+    "templatized_answer": [
+      "Amount raised by all students was {total_raised}-{organization_donation} = {student_raised} dollars.",
+      "Amount raised by each student was {student_raised}/20 = {student_raised_each} dollars.",
+      "#### {student_raised_each}"
+    ],
+    "factual_assignment": {
+      "total_raised": 175000.0,
+      "organization_donation": 50000.0,
+      "student_raised": 125000.0,
+      "student_raised_each": 6250.0
+    }
+  },
+  "merged_assignment": {
+    "total_raised": 1247750.0,
+    "organization_donation": 356500.0,
+    "student_raised": 891250.0,
+    "student_raised_each": 44562.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_raised = 1247750.0\n    organization_donation = 356500.0\n\n    student_raised = total_raised - organization_donation\n    student_raised_each = student_raised / 20\n\n    return {\n        \"total_raised\": round(total_raised, 2),\n        \"organization_donation\": round(organization_donation, 2),\n        \"student_raised\": round(student_raised, 2),\n        \"student_raised_each\": round(student_raised_each, 2)\n    }\n",
+    "results": {
+      "total_raised": 1247750.0,
+      "organization_donation": 356500.0,
+      "student_raised": 891250.0,
+      "student_raised_each": 44562.5
+    }
+  },
+  "final": {
+    "question": "Twenty students are working together to raise money for a charity. Each earns the same amount. The charity raises a total of 1247750 renminbi. 356500 renminbi comes from organizations and the rest from the students. How much did each student raise?",
+    "answer_lines": [
+      "Amount raised by all students was 1247750-356500 = 891250 renminbi.",
+      "Amount raised by each student was 891250/20 = 44562.5 renminbi.",
+      "#### 44562.5"
+    ],
+    "final_scalar": 44562.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Twenty students are working together to raise money for a charity in Shanghai. Each earns the same amount. The charity raises a total of 1247750 renminbi. 356500 renminbi comes from organizations and the rest from the students. How much did each student raise?",
+    "adapted_answer": [
+      "Amount raised by all students was 1247750-356500 = 891250 renminbi.",
+      "Amount raised by each student was 891250/20 = 44562.5 renminbi.",
+      "#### 44562.5"
+    ],
+    "adaptation_notes": "Added 'in Shanghai' to give the question a Chinese context, as the original question was already using renminbi."
+  }
+}

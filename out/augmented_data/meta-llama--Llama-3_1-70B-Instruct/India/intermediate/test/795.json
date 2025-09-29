@@ -1,0 +1,152 @@
+{
+  "index": 795,
+  "split": "test",
+  "original": {
+    "question": "Mike needed a new pair of jeans.  When he got to the mall he saw that his favorite jeans were advertised 25% off.  The original price of the jeans was $40.  How much money will Mike have left over if he pays with a $50.00 bill?",
+    "answer": "The jeans cost $40 and are sale for 25% off so 40 * .25 = $<<40*.25=10.00>>10.00 discount\nTake the original cost of the jeans and subtract the discount so 40-10 = $<<40-10=30.00>>30.00\nMike pays with a $50 bill and the final cost of the jeans is $30 so 50-30 = $<<50-30=20.00>>20.00 left\n#### 20"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mike",
+      "mall",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name and a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "jeans_original_price",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "jeans_sale_price",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "payment_amount",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "money_left_over",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"jeans_original_price\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discount\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"jeans_sale_price\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"payment_amount\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"money_left_over\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "jeans_original_price",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 3480.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "discount",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 870.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "jeans_sale_price",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 2610.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "payment_amount",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 4350.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "money_left_over",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 1740.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mike needed a new pair of jeans.  When he got to the mall he saw that his favorite jeans were advertised {discount_percentage}% off.  The original price of the jeans was ${jeans_original_price}.  How much money will Mike have left over if he pays with a ${payment_amount} bill?",
+    "templatized_answer": [
+      "The jeans cost ${jeans_original_price} and are sale for {discount_percentage}% off so {jeans_original_price} * {discount_percentage_as_decimal} = ${discount} discount",
+      "Take the original cost of the jeans and subtract the discount so {jeans_original_price}-{discount} = ${jeans_sale_price}",
+      "Mike pays with a ${payment_amount} bill and the final cost of the jeans is ${jeans_sale_price} so {payment_amount}-{jeans_sale_price} = ${money_left_over} left",
+      "#### {money_left_over}"
+    ],
+    "factual_assignment": {
+      "discount_percentage": 25,
+      "discount_percentage_as_decimal": 0.25,
+      "jeans_original_price": 40.0,
+      "discount": 10.0,
+      "jeans_sale_price": 30.0,
+      "payment_amount": 50.0,
+      "money_left_over": 20.0
+    }
+  },
+  "merged_assignment": {
+    "discount_percentage": 25,
+    "discount_percentage_as_decimal": 0.25,
+    "jeans_original_price": 3480.0,
+    "discount": 870.0,
+    "jeans_sale_price": 2610.0,
+    "payment_amount": 4350.0,
+    "money_left_over": 1740.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    discount_percentage = 25\n    discount_percentage_as_decimal = discount_percentage / 100\n    jeans_original_price = 3480.0\n    discount = jeans_original_price * discount_percentage_as_decimal\n    jeans_sale_price = jeans_original_price - discount\n    payment_amount = 4350.0\n    money_left_over = payment_amount - jeans_sale_price\n\n    return {\n        \"discount_percentage\": discount_percentage,\n        \"discount_percentage_as_decimal\": round(discount_percentage_as_decimal, 2),\n        \"jeans_original_price\": round(jeans_original_price, 2),\n        \"discount\": round(discount, 2),\n        \"jeans_sale_price\": round(jeans_sale_price, 2),\n        \"payment_amount\": round(payment_amount, 2),\n        \"money_left_over\": round(money_left_over, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "discount_percentage": 25,
+      "discount_percentage_as_decimal": 0.25,
+      "jeans_original_price": 3480.0,
+      "discount": 870.0,
+      "jeans_sale_price": 2610.0,
+      "payment_amount": 4350.0,
+      "money_left_over": 1740.0
+    }
+  },
+  "final": {
+    "question": "Mike needed a new pair of jeans.  When he got to the mall he saw that his favorite jeans were advertised 25% off.  The original price of the jeans was 3480.  How much money will Mike have left over if he pays with a 4350 bill?",
+    "answer_lines": [
+      "The jeans cost 3480 and are sale for 25% off so 3480 * 0.25 = 870 discount",
+      "Take the original cost of the jeans and subtract the discount so 3480-870 = 2610",
+      "Mike pays with a 4350 bill and the final cost of the jeans is 2610 so 4350-2610 = 1740 left",
+      "#### 1740"
+    ],
+    "final_scalar": 1740.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan needed a new pair of jeans.  When he got to the market he saw that his favorite jeans were advertised 25% off.  The original price of the jeans was 3480.  How much money will Rohan have left over if he pays with a 4350 bill?",
+    "adapted_answer": [
+      "The jeans cost 3480 and are sale for 25% off so 3480 * 0.25 = 870 discount",
+      "Take the original cost of the jeans and subtract the discount so 3480-870 = 2610",
+      "Rohan pays with a 4350 bill and the final cost of the jeans is 2610 so 4350-2610 = 1740 left",
+      "#### 1740"
+    ],
+    "adaptation_notes": "Replaced 'Mike' with 'Rohan' and 'mall' with 'market' to provide an Indian context."
+  }
+}

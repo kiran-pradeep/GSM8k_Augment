@@ -1,0 +1,156 @@
+{
+  "index": 1241,
+  "split": "test",
+  "original": {
+    "question": "Rose bought five dozens of eggs for $2.40 a dozen. She will sell it for $1 for 3 eggs. How much will be Rose's profit?",
+    "answer": "Rose bought five dozens of eggs for $2.40 x 5 = $<<2.40*5=12>>12.\nFive dozens of eggs is equal to 12 x 5 = <<12*5=60>>60 eggs.\nSo there are 60/3 = <<60/3=20>>20 sets of 3 eggs that Rose will sell.\nThus, the total earnings of Rose for selling the eggs are $1 x 20 = $<<20=20>>20.\nTherefore, her profit will be $20 - $12 = $<<20-12=8>>8.\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cost_per_dozen_eggs",
+      "value": 2.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost_eggs",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "selling_price_eggs",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings_eggs",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "rose_profit",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"cost_per_dozen_eggs\",\n    \"value\": 2.4,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_cost_eggs\",\n    \"value\": 12.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"selling_price_eggs\",\n    \"value\": 1.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_earnings_eggs\",\n    \"value\": 20.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"rose_profit\",\n    \"value\": 8.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cost_per_dozen_eggs",
+        "original_value": 2.4,
+        "original_unit": "dollar",
+        "converted_value": 17.11,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost_eggs",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 85.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "selling_price_eggs",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_earnings_eggs",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "rose_profit",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Rose bought five dozens of eggs for ${cost_per_dozen_eggs} a dozen. She will sell it for ${selling_price_eggs} for 3 eggs. How much will be Rose's profit?",
+    "templatized_answer": [
+      "Rose bought five dozens of eggs for ${cost_per_dozen_eggs} x 5 = ${total_cost_eggs}.",
+      "Five dozens of eggs is equal to 12 x 5 = {number_of_eggs} eggs.",
+      "So there are {number_of_eggs}/3 = {number_of_sets_eggs} sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are ${selling_price_eggs} x {number_of_sets_eggs} = ${total_earnings_eggs}.",
+      "Therefore, her profit will be ${total_earnings_eggs} - ${total_cost_eggs} = ${rose_profit}.",
+      "#### {rose_profit}"
+    ],
+    "factual_assignment": {
+      "cost_per_dozen_eggs": 2.4,
+      "total_cost_eggs": 12.0,
+      "selling_price_eggs": 1.0,
+      "total_earnings_eggs": 20.0,
+      "rose_profit": 8.0,
+      "number_of_eggs": 60,
+      "number_of_sets_eggs": 20
+    }
+  },
+  "merged_assignment": {
+    "cost_per_dozen_eggs": 17.11,
+    "total_cost_eggs": 85.56,
+    "selling_price_eggs": 7.13,
+    "total_earnings_eggs": 142.6,
+    "rose_profit": 57.04,
+    "number_of_eggs": 60,
+    "number_of_sets_eggs": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cost_per_dozen_eggs = 17.11\n    selling_price_eggs = 7.13\n\n    total_cost_eggs = cost_per_dozen_eggs * 5\n    number_of_eggs = 12 * 5\n    number_of_sets_eggs = number_of_eggs / 3\n    total_earnings_eggs = selling_price_eggs * number_of_sets_eggs\n    rose_profit = total_earnings_eggs - total_cost_eggs\n\n    return {\n        \"cost_per_dozen_eggs\": round(cost_per_dozen_eggs, 2),\n        \"total_cost_eggs\": round(total_cost_eggs, 2),\n        \"selling_price_eggs\": round(selling_price_eggs, 2),\n        \"total_earnings_eggs\": round(total_earnings_eggs, 2),\n        \"rose_profit\": round(rose_profit, 2),\n        \"number_of_eggs\": int(number_of_eggs),\n        \"number_of_sets_eggs\": int(number_of_sets_eggs)\n    }\n",
+    "results": {
+      "cost_per_dozen_eggs": 17.11,
+      "total_cost_eggs": 85.55,
+      "selling_price_eggs": 7.13,
+      "total_earnings_eggs": 142.6,
+      "rose_profit": 57.05,
+      "number_of_eggs": 60,
+      "number_of_sets_eggs": 20
+    }
+  },
+  "final": {
+    "question": "Rose bought five dozens of eggs for 17.11 renminbi a dozen. She will sell it for 7.13 renminbi for 3 eggs. How much will be Rose's profit?",
+    "answer_lines": [
+      "Rose bought five dozens of eggs for 17.11 renminbi x 5 = 85.55 renminbi.",
+      "Five dozens of eggs is equal to 12 x 5 = 60 eggs.",
+      "So there are 60/3 = 20 sets of 3 eggs that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the eggs are 7.13 renminbi x 20 = 142.6 renminbi.",
+      "Therefore, her profit will be 142.6 renminbi - 85.55 renminbi = 57.05 renminbi.",
+      "#### 57.05"
+    ],
+    "final_scalar": 57.05,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rose bought five dozens of danhuang (egg) for 17.11 renminbi a dozen. She will sell it for 7.13 renminbi for 3 danhuang. How much will be Rose's profit?",
+    "adapted_answer": [
+      "Rose bought five dozens of danhuang for 17.11 renminbi x 5 = 85.55 renminbi.",
+      "Five dozens of danhuang is equal to 12 x 5 = 60 danhuang.",
+      "So there are 60/3 = 20 sets of 3 danhuang that Rose will sell.",
+      "Thus, the total earnings of Rose for selling the danhuang are 7.13 renminbi x 20 = 142.6 renminbi.",
+      "Therefore, her profit will be 142.6 renminbi - 85.55 renminbi = 57.05 renminbi.",
+      "#### 57.05"
+    ],
+    "adaptation_notes": "Replaced 'eggs' with 'danhuang' to provide a Chinese context."
+  }
+}

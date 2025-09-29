@@ -1,0 +1,158 @@
+{
+  "index": 12,
+  "split": "test",
+  "original": {
+    "question": "Carlos is planting a lemon tree. The tree will cost $90 to plant. Each year it will grow 7 lemons, which he can sell for $1.5 each. It costs $3 a year to water and feed the tree. How many years will it take before he starts earning money on the lemon tree?",
+    "answer": "He makes $10.5 selling lemons each year because 7 x 1.5 = <<7*1.5=10.5>>10.5\nHe earns $7.5 each year from the lemon tree because 10.5 - 3 = <<10.5-3=7.5>>7.5\nIt will take 12 years to earn enough to pay off the tree because 90 / 7.5 = <<90/7.5=12>>12\nHe will make money in year 13 because 12 + 1 = <<12+1=13>>13\n#### 13"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Carlos",
+      "dollars",
+      "lemon tree"
+    ],
+    "notes": "The name 'Carlos' is culturally specific to regions other than India, and 'dollars' is a unit of currency primarily used in the United States. Lemon trees are not exclusive to any region, but in the context of this problem, it is associated with a non-Indian name and currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tree_cost",
+      "value": 90,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lemon_price",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "annual_watering_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "annual_earnings",
+      "value": 10.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "annual_profit",
+      "value": 7.5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tree_cost\", \"value\": 90, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lemon_price\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"annual_watering_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"annual_earnings\", \"value\": 10.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"annual_profit\", \"value\": 7.5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tree_cost",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 7830,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "lemon_price",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 130.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "annual_watering_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 261,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "annual_earnings",
+        "original_value": 10.5,
+        "original_unit": "dollar",
+        "converted_value": 913.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "annual_profit",
+        "original_value": 7.5,
+        "original_unit": "dollar",
+        "converted_value": 652.5,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carlos is planting a lemon tree. The tree will cost ${tree_cost} to plant. Each year it will grow {lemon_number} lemons, which he can sell for ${lemon_price} each. It costs ${annual_watering_cost} a year to water and feed the tree. How many years will it take before he starts earning money on the lemon tree?",
+    "templatized_answer": [
+      "He makes ${annual_earnings} selling lemons each year because {lemon_number} x {lemon_price} = {annual_earnings}",
+      "He earns ${annual_profit} each year from the lemon tree because {annual_earnings} - {annual_watering_cost} = {annual_profit}",
+      "It will take {payoff_years} years to earn enough to pay off the tree because {tree_cost} / {annual_profit} = {payoff_years}",
+      "He will make money in year {payoff_years} + 1 because {payoff_years} + 1 = {break_even_year}",
+      "#### {break_even_year}"
+    ],
+    "factual_assignment": {
+      "tree_cost": 90,
+      "lemon_price": 1.5,
+      "annual_watering_cost": 3,
+      "annual_earnings": 10.5,
+      "annual_profit": 7.5,
+      "lemon_number": 7,
+      "payoff_years": 12,
+      "break_even_year": 13
+    }
+  },
+  "merged_assignment": {
+    "tree_cost": 7830,
+    "lemon_price": 130.5,
+    "annual_watering_cost": 261,
+    "annual_earnings": 913.5,
+    "annual_profit": 652.5,
+    "lemon_number": 7,
+    "payoff_years": 12,
+    "break_even_year": 13
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tree_cost = 7830\n    lemon_number = 7\n    lemon_price = 130.5\n    annual_watering_cost = 261\n\n    annual_earnings = lemon_number * lemon_price\n    annual_profit = annual_earnings - annual_watering_cost\n    payoff_years = tree_cost / annual_profit\n    break_even_year = int(payoff_years) + 1\n\n    return {\n        \"tree_cost\": tree_cost,\n        \"lemon_number\": lemon_number,\n        \"lemon_price\": lemon_price,\n        \"annual_watering_cost\": annual_watering_cost,\n        \"annual_earnings\": round(annual_earnings, 2),\n        \"annual_profit\": round(annual_profit, 2),\n        \"payoff_years\": round(payoff_years, 2),\n        \"break_even_year\": break_even_year\n    }\n\nprint(recompute())\n",
+    "results": {
+      "tree_cost": 7830,
+      "lemon_number": 7,
+      "lemon_price": 130.5,
+      "annual_watering_cost": 261,
+      "annual_earnings": 913.5,
+      "annual_profit": 652.5,
+      "payoff_years": 12.0,
+      "break_even_year": 13
+    }
+  },
+  "final": {
+    "question": "Carlos is planting a lemon tree. The tree will cost 7830 to plant. Each year it will grow 7 lemons, which he can sell for 130.5 each. It costs 261 a year to water and feed the tree. How many years will it take before he starts earning money on the lemon tree?",
+    "answer_lines": [
+      "He makes 913.5 selling lemons each year because 7 x 130.5 = 913.5",
+      "He earns 652.5 each year from the lemon tree because 913.5 - 261 = 652.5",
+      "It will take 12 years to earn enough to pay off the tree because 7830 / 652.5 = 12",
+      "He will make money in year 13 because 12 + 1 = 13",
+      "#### 13"
+    ],
+    "final_scalar": 13,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan is planting a nimbu tree. The tree will cost 7830 to plant. Each year it will grow 7 nimbus, which he can sell for 130.5 each. It costs 261 a year to water and feed the tree. How many years will it take before he starts earning money on the nimbu tree?",
+    "adapted_answer": [
+      "He makes 913.5 selling nimbus each year because 7 x 130.5 = 913.5",
+      "He earns 652.5 each year from the nimbu tree because 913.5 - 261 = 652.5",
+      "It will take 12 years to earn enough to pay off the tree because 7830 / 652.5 = 12",
+      "He will make money in year 13 because 12 + 1 = 13",
+      "#### 13"
+    ],
+    "adaptation_notes": "Replaced 'Carlos' with 'Rohan' and 'lemon tree' with 'nimbu tree' to provide an Indian context."
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "index": 452,
+  "split": "test",
+  "original": {
+    "question": "A car is on a road trip and drives 60 mph for 2 hours, and then 30 mph for 1 hour. What is the car's average speed in mph during this trip?",
+    "answer": "The car drives 60*2=<<60*2=120>>120 miles for 2 hours.\nThe car drives 30*1=<<30*1=30>>30 miles for 1 hour.\nIt drives a total of 120+30=<<120+30=150>>150 miles.\nLet S be the average speed, M be the number of miles, and H the number of hours spent driving.\nThen we have, S=M/H, so, S=150 miles/3 hours = <<150/3=50>>50 mph\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "mph",
+      "miles"
+    ],
+    "notes": "The units 'mph' (miles per hour) and 'miles' are commonly used in the US and other countries, but not in India where km/h and kilometers are more commonly used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "speed_1",
+      "value": 60.0,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "speed_2",
+      "value": 30.0,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "distance_1",
+      "value": 120.0,
+      "unit": "miles",
+      "context": "answer"
+    },
+    {
+      "variable": "distance_2",
+      "value": 30.0,
+      "unit": "miles",
+      "context": "answer"
+    },
+    {
+      "variable": "total_distance",
+      "value": 150.0,
+      "unit": "miles",
+      "context": "answer"
+    },
+    {
+      "variable": "average_speed",
+      "value": 50.0,
+      "unit": "mph",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mph\": {\"unit\": \"km/h\", \"factor\": 1.60934},\n        \"miles\": {\"unit\": \"km\", \"factor\": 1.60934},\n        \"pounds\": {\"unit\": \"kg\", \"factor\": 0.453592},\n        \"ounces\": {\"unit\": \"g\", \"factor\": 28.3495},\n        \"gallons\": {\"unit\": \"L\", \"factor\": 3.78541},\n        \"cups\": {\"unit\": \"mL\", \"factor\": 236.588},\n        \"dollars\": {\"unit\": \"INR\", \"factor\": 87}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"speed_1\", \"value\": 60.0, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"speed_2\", \"value\": 30.0, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"distance_1\", \"value\": 120.0, \"unit\": \"miles\", \"context\": \"answer\"},\n    {\"variable\": \"distance_2\", \"value\": 30.0, \"unit\": \"miles\", \"context\": \"answer\"},\n    {\"variable\": \"total_distance\", \"value\": 150.0, \"unit\": \"miles\", \"context\": \"answer\"},\n    {\"variable\": \"average_speed\", \"value\": 50.0, \"unit\": \"mph\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "speed_1",
+        "original_value": 60.0,
+        "original_unit": "mph",
+        "converted_value": 96.56,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "speed_2",
+        "original_value": 30.0,
+        "original_unit": "mph",
+        "converted_value": 48.28,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "distance_1",
+        "original_value": 120.0,
+        "original_unit": "miles",
+        "converted_value": 193.12,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "distance_2",
+        "original_value": 30.0,
+        "original_unit": "miles",
+        "converted_value": 48.28,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "total_distance",
+        "original_value": 150.0,
+        "original_unit": "miles",
+        "converted_value": 241.4,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "average_speed",
+        "original_value": 50.0,
+        "original_unit": "mph",
+        "converted_value": 80.47,
+        "converted_unit": "km/h"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A car is on a road trip and drives {speed_1} mph for {time_1} hours, and then {speed_2} mph for {time_2} hours. What is the car's average speed in mph during this trip?",
+    "templatized_answer": [
+      "The car drives {speed_1}*{time_1}={distance_1} miles for {time_1} hours.",
+      "The car drives {speed_2}*{time_2}={distance_2} miles for {time_2} hours.",
+      "It drives a total of {distance_1}+{distance_2}={total_distance} miles.",
+      "Let S be the average speed, M be the number of miles, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S={total_distance} miles/{total_time} hours = {average_speed} mph",
+      "#### {average_speed}"
+    ],
+    "factual_assignment": {
+      "speed_1": 60.0,
+      "speed_2": 30.0,
+      "distance_1": 120.0,
+      "distance_2": 30.0,
+      "total_distance": 150.0,
+      "average_speed": 50.0,
+      "time_1": 2.0,
+      "time_2": 1.0,
+      "total_time": 3.0
+    }
+  },
+  "merged_assignment": {
+    "speed_1": 96.56,
+    "speed_2": 48.28,
+    "distance_1": 193.12,
+    "distance_2": 48.28,
+    "total_distance": 241.4,
+    "average_speed": 80.47,
+    "time_1": 2.0,
+    "time_2": 1.0,
+    "total_time": 3.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    speed_1 = 96.56\n    speed_2 = 48.28\n    time_1 = 2.0\n    time_2 = 1.0\n\n    distance_1 = speed_1 * time_1\n    distance_2 = speed_2 * time_2\n    total_distance = distance_1 + distance_2\n    total_time = time_1 + time_2\n    average_speed = total_distance / total_time\n\n    return {\n        \"speed_1\": round(speed_1, 2),\n        \"speed_2\": round(speed_2, 2),\n        \"distance_1\": round(distance_1, 2),\n        \"distance_2\": round(distance_2, 2),\n        \"total_distance\": round(total_distance, 2),\n        \"average_speed\": round(average_speed, 2),\n        \"time_1\": round(time_1, 2),\n        \"time_2\": round(time_2, 2),\n        \"total_time\": round(total_time, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "speed_1": 96.56,
+      "speed_2": 48.28,
+      "distance_1": 193.12,
+      "distance_2": 48.28,
+      "total_distance": 241.4,
+      "average_speed": 80.47,
+      "time_1": 2.0,
+      "time_2": 1.0,
+      "total_time": 3.0
+    }
+  },
+  "final": {
+    "question": "A car is on a road trip and drives 96.56 km/h for 2 hours, and then 48.28 km/h for 1 hour. What is the car's average speed in km/h during this trip?",
+    "answer_lines": [
+      "The car drives 96.56*2=193.12 kilometers for 2 hours.",
+      "The car drives 48.28*1=48.28 kilometers for 1 hour.",
+      "It drives a total of 193.12+48.28=241.4 kilometers.",
+      "Let S be the average speed, M be the number of kilometers, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S=241.4 kilometers/3 hours = 80.47 km/h",
+      "#### 80.47"
+    ],
+    "final_scalar": 80.47,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A car is on a road trip from Delhi to Agra and drives 96.56 km/h for 2 hours, and then 48.28 km/h for 1 hour. What is the car's average speed in km/h during this trip?",
+    "adapted_answer": [
+      "The car drives 96.56*2=193.12 kilometers for 2 hours.",
+      "The car drives 48.28*1=48.28 kilometers for 1 hour.",
+      "It drives a total of 193.12+48.28=241.4 kilometers.",
+      "Let S be the average speed, M be the number of kilometers, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S=241.4 kilometers/3 hours = 80.47 km/h",
+      "#### 80.47"
+    ],
+    "adaptation_notes": "Replaced 'a road trip' with 'a road trip from Delhi to Agra' to provide an Indian context."
+  }
+}

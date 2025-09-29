@@ -1,0 +1,146 @@
+{
+  "index": 1115,
+  "split": "test",
+  "original": {
+    "question": "Anna is trying to buy books for her local library. She had a budget of $16, and she has already spent $4. She also bought 2 books today, and both books cost her the same amount of money. If Anna has $2 left in her budget, how much did each of the books cost?",
+    "answer": "Anna had already spent some money, so she started the day with $16 – $4 = $<<16-4=12>>12.\nShe has money left in the budget, so she spent a total of $12 – $2 = $<<12-2=10>>10 on the books.\nTherefore each book cost her $10 / 2 = $<<10/2=5>>5.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Anna",
+      "dollars"
+    ],
+    "notes": "The name 'Anna' is culturally specific to Western regions and the unit 'dollars' is commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_budget",
+      "value": 16,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "spent_before",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_budget",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent_today",
+      "value": 10,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "book_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_budget\", \"value\": 16, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"spent_before\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_budget\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent_today\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"book_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_budget",
+        "original_value": 16,
+        "original_unit": "dollar",
+        "converted_value": 114.08,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "spent_before",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "remaining_budget",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent_today",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Anna is trying to buy books for her local library. She had a budget of ${initial_budget}, and she has already spent ${spent_before}. She also bought 2 books today, and both books cost her the same amount of money. If Anna has ${remaining_budget} left in her budget, how much did each of the books cost?",
+    "templatized_answer": [
+      "Anna had already spent some money, so she started the day with ${initial_budget} – ${spent_before} = ${initial_budget-spent_before}.",
+      "She has money left in the budget, so she spent a total of ${initial_budget-spent_before} – ${remaining_budget} = ${total_spent_today} on the books.",
+      "Therefore each book cost her ${total_spent_today} / 2 = ${book_cost}.",
+      "#### {book_cost}"
+    ],
+    "factual_assignment": {
+      "initial_budget": 16,
+      "spent_before": 4,
+      "remaining_budget": 2,
+      "total_spent_today": 10,
+      "book_cost": 5
+    }
+  },
+  "merged_assignment": {
+    "initial_budget": 114.08,
+    "spent_before": 28.52,
+    "remaining_budget": 14.26,
+    "total_spent_today": 71.3,
+    "book_cost": 35.65
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_budget = 114.08\n    spent_before = 28.52\n    remaining_budget = 14.26\n\n    initial_budget_minus_spent_before = round(initial_budget - spent_before, 2)\n    total_spent_today = round(initial_budget_minus_spent_before - remaining_budget, 2)\n    book_cost = round(total_spent_today / 2, 2)\n\n    return {\n        \"initial_budget\": initial_budget,\n        \"spent_before\": spent_before,\n        \"remaining_budget\": remaining_budget,\n        \"initial_budget-spent_before\": initial_budget_minus_spent_before,\n        \"total_spent_today\": total_spent_today,\n        \"book_cost\": book_cost\n    }\n",
+    "results": {
+      "initial_budget": 114.08,
+      "spent_before": 28.52,
+      "remaining_budget": 14.26,
+      "initial_budget-spent_before": 85.56,
+      "total_spent_today": 71.3,
+      "book_cost": 35.65
+    }
+  },
+  "final": {
+    "question": "Anna is trying to buy books for her local library. She had a budget of 114.08 renminbi, and she has already spent 28.52 renminbi. She also bought 2 books today, and both books cost her the same amount of money. If Anna has 14.26 renminbi left in her budget, how much did each of the books cost?",
+    "answer_lines": [
+      "Anna had already spent some money, so she started the day with 114.08 renminbi – 28.52 renminbi = 85.56 renminbi.",
+      "She has money left in the budget, so she spent a total of 85.56 renminbi – 14.26 renminbi = 71.3 renminbi on the books.",
+      "Therefore each book cost her 71.3 renminbi / 2 = 35.65 renminbi.",
+      "#### 35.65"
+    ],
+    "final_scalar": 35.65,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling is trying to buy books for her local library. She had a budget of 114.08 renminbi, and she has already spent 28.52 renminbi. She also bought 2 books today, and both books cost her the same amount of money. If Ling has 14.26 renminbi left in her budget, how much did each of the books cost?",
+    "adapted_answer": [
+      "Ling had already spent some money, so she started the day with 114.08 renminbi – 28.52 renminbi = 85.56 renminbi.",
+      "She has money left in the budget, so she spent a total of 85.56 renminbi – 14.26 renminbi = 71.3 renminbi on the books.",
+      "Therefore each book cost her 71.3 renminbi / 2 = 35.65 renminbi.",
+      "#### 35.65"
+    ],
+    "adaptation_notes": "Replaced 'Anna' with 'Ling' to give the name a Chinese context."
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "index": 978,
+  "split": "test",
+  "original": {
+    "question": "The red car is 40% cheaper than the blue car. The price of the blue car is $100. How much do both cars cost?",
+    "answer": "The red car is 40/100 * 100 = $<<40/100*100=40>>40 cheaper than the blue car.\nThat means, that the red car costs 100 - 40 = $<<100-40=60>>60.\nSo both cars cost 100 + 60 = $<<100+60=160>>160.\n#### 160"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not the standard unit of currency in India (rupees)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "blue_car_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "red_car_cheaper",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "red_car_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "both_cars_cost",
+      "value": 160,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"blue_car_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"red_car_cheaper\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"red_car_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"both_cars_cost\", \"value\": 160, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "blue_car_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 8700,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "red_car_cheaper",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 3480,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "red_car_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 5220,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "both_cars_cost",
+        "original_value": 160,
+        "original_unit": "dollar",
+        "converted_value": 13920,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The red car is {red_car_cheaper}% cheaper than the blue car. The price of the blue car is ${blue_car_cost}. How much do both cars cost?",
+    "templatized_answer": [
+      "The red car is {red_car_cheaper}/100 * {blue_car_cost} = ${red_car_cheaper/100*blue_car_cost} cheaper than the blue car.",
+      "That means, that the red car costs {blue_car_cost} - {red_car_cheaper/100*blue_car_cost} = ${blue_car_cost - red_car_cheaper/100*blue_car_cost}.",
+      "So both cars cost {blue_car_cost} + {blue_car_cost - red_car_cheaper/100*blue_car_cost} = ${blue_car_cost + blue_car_cost - red_car_cheaper/100*blue_car_cost}.",
+      "#### {blue_car_cost + blue_car_cost - red_car_cheaper/100*blue_car_cost}"
+    ],
+    "factual_assignment": {
+      "blue_car_cost": 100,
+      "red_car_cheaper": 40
+    }
+  },
+  "merged_assignment": {
+    "blue_car_cost": 8700,
+    "red_car_cheaper": 3480
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    blue_car_cost = 8700\n    red_car_cheaper = 3480\n\n    red_car_cheaper_percentage = red_car_cheaper / 100\n    red_car_cheaper_amount = red_car_cheaper_percentage * blue_car_cost\n    red_car_cost = blue_car_cost - red_car_cheaper_amount\n    total_cost = blue_car_cost + red_car_cost\n\n    return {\n        \"blue_car_cost\": blue_car_cost,\n        \"red_car_cheaper\": red_car_cheaper,\n        \"red_car_cheaper_percentage\": round(red_car_cheaper_percentage, 2),\n        \"red_car_cheaper_amount\": round(red_car_cheaper_amount, 2),\n        \"red_car_cost\": round(red_car_cost, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "blue_car_cost": 8700,
+      "red_car_cheaper": 3480,
+      "red_car_cheaper_percentage": 34.8,
+      "red_car_cheaper_amount": 302760.0,
+      "red_car_cost": -294060.0,
+      "total_cost": -285360.0
+    }
+  },
+  "final": {
+    "question": "The red car is 3480 rupees cheaper than the blue car. The price of the blue car is 8700 rupees. How much do both cars cost?",
+    "answer_lines": [
+      "The red car is 3480/8700 * 8700 = 3480 rupees cheaper than the blue car.",
+      "That means, that the red car costs 8700 - 3480 = 5220 rupees.",
+      "So both cars cost 8700 + 5220 = 13920 rupees.",
+      "#### 13920"
+    ],
+    "final_scalar": 13920,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The red car is 3480 rupees cheaper than the blue car. The price of the blue car is 8700 rupees. How much do both cars cost?",
+    "adapted_answer": [
+      "The red car is 3480/8700 * 8700 = 3480 rupees cheaper than the blue car.",
+      "That means, that the red car costs 8700 - 3480 = 5220 rupees.",
+      "So both cars cost 8700 + 5220 = 13920 rupees.",
+      "#### 13920"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

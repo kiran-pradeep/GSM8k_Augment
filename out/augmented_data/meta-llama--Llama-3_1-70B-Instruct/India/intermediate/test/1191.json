@@ -1,0 +1,138 @@
+{
+  "index": 1191,
+  "split": "test",
+  "original": {
+    "question": "May is getting her hair cut and colored. It costs $40 for the color and $30 per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "answer": "She had 2 inches cut because 10-8=<<10-8=2>>2\nIt cost $60 for the cut because 2 x 30 =<<2*30=60>>60\nIt cost $100 total because 40+60=<<40+60=100>>100\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "May",
+      "dollars"
+    ],
+    "notes": "Name 'May' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hair_color_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hair_cut_cost_per_inch",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hair_cut_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hair_color_cost\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hair_cut_cost_per_inch\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hair_cut_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hair_color_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 3480,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "hair_cut_cost_per_inch",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 2610,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "hair_cut_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 5220,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 8700,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "May is getting her hair cut and colored. It costs ${hair_color_cost} for the color and ${hair_cut_cost_per_inch} per inch of haircut. If her hair started at {initial_hair_length} inches and ended at {final_hair_length}, how much did her cut and color cost?",
+    "templatized_answer": [
+      "She had {hair_length_cut} inches cut because {initial_hair_length}-{final_hair_length}={hair_length_cut}",
+      "It cost ${hair_cut_cost} for the cut because {hair_length_cut} x {hair_cut_cost_per_inch}={hair_cut_cost}",
+      "It cost ${total_cost} total because {hair_color_cost}+{hair_cut_cost}={total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "hair_color_cost": 40,
+      "hair_cut_cost_per_inch": 30,
+      "hair_cut_cost": 60,
+      "total_cost": 100,
+      "initial_hair_length": 10,
+      "final_hair_length": 8,
+      "hair_length_cut": 2
+    }
+  },
+  "merged_assignment": {
+    "hair_color_cost": 3480,
+    "hair_cut_cost_per_inch": 2610,
+    "hair_cut_cost": 5220,
+    "total_cost": 8700,
+    "initial_hair_length": 10,
+    "final_hair_length": 8,
+    "hair_length_cut": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hair_color_cost = 3480\n    hair_cut_cost_per_inch = 2610\n    initial_hair_length = 10\n    final_hair_length = 8\n\n    hair_length_cut = initial_hair_length - final_hair_length\n    hair_cut_cost = hair_length_cut * hair_cut_cost_per_inch\n    total_cost = hair_color_cost + hair_cut_cost\n\n    return {\n        \"hair_color_cost\": hair_color_cost,\n        \"hair_cut_cost_per_inch\": hair_cut_cost_per_inch,\n        \"hair_cut_cost\": round(hair_cut_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"initial_hair_length\": initial_hair_length,\n        \"final_hair_length\": final_hair_length,\n        \"hair_length_cut\": hair_length_cut\n    }\n",
+    "results": {
+      "hair_color_cost": 3480,
+      "hair_cut_cost_per_inch": 2610,
+      "hair_cut_cost": 5220,
+      "total_cost": 8700,
+      "initial_hair_length": 10,
+      "final_hair_length": 8,
+      "hair_length_cut": 2
+    }
+  },
+  "final": {
+    "question": "May is getting her hair cut and colored. It costs 3480 for the color and 2610 per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "answer_lines": [
+      "She had 2 inches cut because 10-8=2",
+      "It cost 5220 for the cut because 2 x 2610=5220",
+      "It cost 8700 total because 3480+5220=8700",
+      "#### 8700"
+    ],
+    "final_scalar": 8700,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Riya is getting her hair cut and colored. It costs 3480 for the color and 2610 per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "adapted_answer": [
+      "She had 2 inches cut because 10-8=2",
+      "It cost 5220 for the cut because 2 x 2610=5220",
+      "It cost 8700 total because 3480+5220=8700",
+      "#### 8700"
+    ],
+    "adaptation_notes": "Replaced 'May' with 'Riya' to give the name an Indian context."
+  }
+}

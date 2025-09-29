@@ -1,0 +1,122 @@
+{
+  "index": 1258,
+  "split": "test",
+  "original": {
+    "question": "There are five phones on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs $20, how much does the whole phone plan cost?",
+    "answer": "Each additional phone costs 20 / 2 = $<<20/2=10>>10.\nThus, the four additional phones cost 4 * 10 = $<<4*10=40>>40 in all.\nThus, the whole phone plan cost $40 + $20 = $<<40+20=60>>60.\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "main_phone_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_phone_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "additional_phones_total_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "whole_phone_plan_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context != \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"main_phone_cost\",\n        \"value\": 20,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"additional_phone_cost\",\n        \"value\": 10,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    },\n    {\n        \"variable\": \"additional_phones_total_cost\",\n        \"value\": 40,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    },\n    {\n        \"variable\": \"whole_phone_plan_cost\",\n        \"value\": 60,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "main_phone_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 20,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "additional_phone_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "additional_phones_total_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "whole_phone_plan_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "There are five phones on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs ${main_phone_cost}, how much does the whole phone plan cost?",
+    "templatized_answer": [
+      "Each additional phone costs {main_phone_cost} / 2 = ${main_phone_cost / 2}.",
+      "Thus, the four additional phones cost 4 * {main_phone_cost / 2} = ${4 * (main_phone_cost / 2)} in all.",
+      "Thus, the whole phone plan cost ${4 * (main_phone_cost / 2)} + ${main_phone_cost} = ${4 * (main_phone_cost / 2) + main_phone_cost}.",
+      "#### {4 * (main_phone_cost / 2) + main_phone_cost}"
+    ],
+    "factual_assignment": {
+      "main_phone_cost": 20
+    }
+  },
+  "merged_assignment": {
+    "main_phone_cost": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    main_phone_cost = 20\n    additional_phone_cost = main_phone_cost / 2\n    additional_phones_cost = 4 * additional_phone_cost\n    whole_phone_plan_cost = additional_phones_cost + main_phone_cost\n\n    return {\n        \"main_phone_cost\": main_phone_cost,\n        \"main_phone_cost / 2\": round(additional_phone_cost, 2),\n        \"4 * (main_phone_cost / 2)\": round(additional_phones_cost, 2),\n        \"4 * (main_phone_cost / 2) + main_phone_cost\": round(whole_phone_plan_cost, 2)\n    }\n",
+    "results": {
+      "main_phone_cost": 20,
+      "main_phone_cost / 2": 10.0,
+      "4 * (main_phone_cost / 2)": 40.0,
+      "4 * (main_phone_cost / 2) + main_phone_cost": 60.0
+    }
+  },
+  "final": {
+    "question": "There are five phones on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs 20 renminbi, how much does the whole phone plan cost?",
+    "answer_lines": [
+      "Each additional phone costs 20 / 2 = 10 renminbi.",
+      "Thus, the four additional phones cost 4 * 10 = 40 renminbi in all.",
+      "Thus, the whole phone plan cost 40 renminbi + 20 renminbi = 60 renminbi.",
+      "#### 427.8"
+    ],
+    "final_scalar": 427.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "There are five phones on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs 20 renminbi, how much does the whole phone plan cost?",
+    "adapted_answer": [
+      "Each additional phone costs 20 / 2 = 10 renminbi.",
+      "Thus, the four additional phones cost 4 * 10 = 40 renminbi in all.",
+      "Thus, the whole phone plan cost 40 renminbi + 20 renminbi = 60 renminbi.",
+      "#### 60"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

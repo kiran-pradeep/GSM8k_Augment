@@ -1,0 +1,116 @@
+{
+  "index": 874,
+  "split": "test",
+  "original": {
+    "question": "Ella earned $33 for 3 hours of dog walking. If she continues to walk dogs at the same rate, how much would she earn after 12 hours?",
+    "answer": "Ella earned $33 / 3 hours of dog walking = $<<33/3=11>>11 per hour.\nSo for 12 hours of dog walking, Ella would earn $11 x 12 = $<<12*11=132>>132.\n#### 132"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ella",
+      "dollars"
+    ],
+    "notes": "Name 'Ella' and unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_earnings",
+      "value": 33,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_rate",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 132,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(metric):\n        if metric[\"unit\"] in conversions:\n            converted_unit = list(conversions[metric[\"unit\"]].keys())[0]\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][converted_unit], 2)\n            return {\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            }\n        else:\n            return {\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            }\n\n    return [convert(metric) for metric in metrics]\n\nmetrics = [\n    {\"variable\": \"initial_earnings\", \"value\": 33, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_rate\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 132, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_earnings",
+        "original_value": 33,
+        "original_unit": "dollar",
+        "converted_value": 235.29,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hourly_rate",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 78.43,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 132,
+        "original_unit": "dollar",
+        "converted_value": 941.16,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ella earned ${initial_earnings} for {initial_hours} hours of dog walking. If she continues to walk dogs at the same rate, how much would she earn after {total_hours} hours?",
+    "templatized_answer": [
+      "Ella earned ${initial_earnings} / {initial_hours} hours of dog walking = ${hourly_rate} per hour.",
+      "So for {total_hours} hours of dog walking, Ella would earn ${hourly_rate} x {total_hours} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "initial_earnings": 33,
+      "initial_hours": 3,
+      "hourly_rate": 11,
+      "total_hours": 12,
+      "total_earnings": 132
+    }
+  },
+  "merged_assignment": {
+    "initial_earnings": 235.29,
+    "initial_hours": 3,
+    "hourly_rate": 78.43,
+    "total_hours": 12,
+    "total_earnings": 941.16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_earnings = 235.29\n    initial_hours = 3\n    total_hours = 12\n\n    hourly_rate = round(initial_earnings / initial_hours, 2)\n    total_earnings = round(hourly_rate * total_hours, 2)\n\n    return {\n        \"initial_earnings\": initial_earnings,\n        \"initial_hours\": initial_hours,\n        \"hourly_rate\": hourly_rate,\n        \"total_hours\": total_hours,\n        \"total_earnings\": total_earnings\n    }\n",
+    "results": {
+      "initial_earnings": 235.29,
+      "initial_hours": 3,
+      "hourly_rate": 78.43,
+      "total_hours": 12,
+      "total_earnings": 941.16
+    }
+  },
+  "final": {
+    "question": "Ella earned 235.29 renminbi for 3 hours of dog walking. If she continues to walk dogs at the same rate, how much would she earn after 12 hours?",
+    "answer_lines": [
+      "Ella earned 235.29 renminbi / 3 hours of dog walking = 78.43 renminbi per hour.",
+      "So for 12 hours of dog walking, Ella would earn 78.43 renminbi x 12 = 941.16 renminbi.",
+      "#### 941.16"
+    ],
+    "final_scalar": 941.16,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling earned 235.29 renminbi for 3 hours of dog walking. If she continues to walk dogs at the same rate, how much would she earn after 12 hours?",
+    "adapted_answer": [
+      "Ling earned 235.29 renminbi / 3 hours of dog walking = 78.43 renminbi per hour.",
+      "So for 12 hours of dog walking, Ling would earn 78.43 renminbi x 12 = 941.16 renminbi.",
+      "#### 941.16"
+    ],
+    "adaptation_notes": "Replaced 'Ella' with 'Ling' to give the name a Chinese context."
+  }
+}

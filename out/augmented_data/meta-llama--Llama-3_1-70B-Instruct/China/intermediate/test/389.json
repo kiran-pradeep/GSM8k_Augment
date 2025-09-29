@@ -1,0 +1,139 @@
+{
+  "index": 389,
+  "split": "test",
+  "original": {
+    "question": "David and Dasha went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at $2 per ticket.  You can also buy a ride bracelet for $30 which gives you 9 rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all 9 rides, how much money does David save?",
+    "answer": "Each ride cost 2 x $2 = $<<2*2=4>>4.\nAll 9 rides cost $4 x 9 = $<<4*9=36>>36.\nBy bathing the ride bracelet, David saves $36 - $30 = $<<36-30=6>>6.\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "David",
+      "Dasha",
+      "dollars"
+    ],
+    "notes": "The names David and Dasha, and the unit of currency 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ride_ticket_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_bracelet_cost",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_ride_cost",
+      "value": 36,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "david_savings",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"ride_ticket_cost\",\n    \"value\": 2,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"ride_bracelet_cost\",\n    \"value\": 30,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_ride_cost\",\n    \"value\": 36,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"david_savings\",\n    \"value\": 6,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ride_ticket_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "ride_bracelet_cost",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_ride_cost",
+        "original_value": 36,
+        "original_unit": "dollar",
+        "converted_value": 36,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "david_savings",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 6,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "David and Dasha went to the carnival, where there are {number_of_rides} rides.  Each ride costs {number_of_tickets_per_ride} ride tickets at ${ride_ticket_cost} per ticket.  You can also buy a ride bracelet for ${ride_bracelet_cost} which gives you {number_of_rides} rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all {number_of_rides} rides, how much money does David save?",
+    "templatized_answer": [
+      "Each ride cost {number_of_tickets_per_ride} x ${ride_ticket_cost} = ${cost_per_ride}.",
+      "All {number_of_rides} rides cost ${cost_per_ride} x {number_of_rides} = ${total_ride_cost}.",
+      "By bathing the ride bracelet, David saves ${total_ride_cost} - ${ride_bracelet_cost} = ${david_savings}.",
+      "#### {david_savings}"
+    ],
+    "factual_assignment": {
+      "number_of_rides": 9,
+      "number_of_tickets_per_ride": 2,
+      "ride_ticket_cost": 2,
+      "ride_bracelet_cost": 30,
+      "cost_per_ride": 4,
+      "total_ride_cost": 36,
+      "david_savings": 6
+    }
+  },
+  "merged_assignment": {
+    "number_of_rides": 9,
+    "number_of_tickets_per_ride": 2,
+    "ride_ticket_cost": 14.26,
+    "ride_bracelet_cost": 213.9,
+    "cost_per_ride": 4,
+    "total_ride_cost": 36,
+    "david_savings": 6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_rides = 9\n    number_of_tickets_per_ride = 2\n    ride_ticket_cost = 14.26\n    ride_bracelet_cost = 213.9\n\n    cost_per_ride = round(number_of_tickets_per_ride * ride_ticket_cost, 2)\n    total_ride_cost = round(cost_per_ride * number_of_rides, 2)\n    david_savings = round(total_ride_cost - ride_bracelet_cost, 2)\n\n    return {\n        \"number_of_rides\": number_of_rides,\n        \"number_of_tickets_per_ride\": number_of_tickets_per_ride,\n        \"ride_ticket_cost\": ride_ticket_cost,\n        \"ride_bracelet_cost\": ride_bracelet_cost,\n        \"cost_per_ride\": cost_per_ride,\n        \"total_ride_cost\": total_ride_cost,\n        \"david_savings\": david_savings\n    }\n",
+    "results": {
+      "number_of_rides": 9,
+      "number_of_tickets_per_ride": 2,
+      "ride_ticket_cost": 14.26,
+      "ride_bracelet_cost": 213.9,
+      "cost_per_ride": 28.52,
+      "total_ride_cost": 256.68,
+      "david_savings": 42.78
+    }
+  },
+  "final": {
+    "question": "David and Dasha went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at 14.26 renminbi per ticket.  You can also buy a ride bracelet for 213.9 renminbi which gives you 9 rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all 9 rides, how much money does David save?",
+    "answer_lines": [
+      "Each ride cost 2 x 14.26 renminbi = 28.52 renminbi.",
+      "All 9 rides cost 28.52 renminbi x 9 = 256.68 renminbi.",
+      "By bathing the ride bracelet, David saves 256.68 renminbi - 213.9 renminbi = 42.78 renminbi.",
+      "#### 42.78"
+    ],
+    "final_scalar": 42.78,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang and Li went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at 14.26 renminbi per ticket.  You can also buy a ride bracelet for 213.9 renminbi which gives you 9 rides.  If Wang buys a ride bracelet and Li buys tickets, and they ride all 9 rides, how much money does Wang save?",
+    "adapted_answer": [
+      "Each ride cost 2 x 14.26 renminbi = 28.52 renminbi.",
+      "All 9 rides cost 28.52 renminbi x 9 = 256.68 renminbi.",
+      "By buying the ride bracelet, Wang saves 256.68 renminbi - 213.9 renminbi = 42.78 renminbi.",
+      "#### 42.78"
+    ],
+    "adaptation_notes": "Replaced 'David' with 'Wang' and 'Dasha' with 'Li' to give the names a Chinese context."
+  }
+}

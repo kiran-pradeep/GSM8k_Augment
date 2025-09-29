@@ -1,0 +1,154 @@
+{
+  "index": 1265,
+  "split": "test",
+  "original": {
+    "question": "Tim wanted to make lemonade for a pool party.  For a gallon of lemonade, his recipe called for 1 cup of fresh lemon juice.  He found that 6 lemons would yield 1 cup of juice.  He figured he would need to make 4 gallons of lemonade for the party.  His best friend Allen asked if Tim could make an extra gallon for him that was twice as tart as the other gallons.  How many lemons will Tim need?",
+    "answer": "Tim is going to make one gallon twice as tart as the others and each gallon needs 1 cup of juice. So he needs 2*1 = <<2*1=2>>2 cups for the tart batch\nIn addition, he will make 4 regular gallons of lemonade, which each need 1 cup juice so 4*1 = <<4*1=4>>4 cups total\nAll total he will need 2 + 4 = <<2+4=6>>6 cups of juice\nEach cup requires 6 lemons each and he needs 6 cups of juice so 6 * 6 = <<6*6=36>>36 lemons needed\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "gallons",
+      "lemonade",
+      "Tim",
+      "Allen"
+    ],
+    "notes": "The question contains non-Somali cultural entities, including units (gallons), food items (lemonade), and names (Tim, Allen)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lemonade_volume",
+      "value": 4,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "lemonade_volume_extra",
+      "value": 1,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "lemon_juice_volume",
+      "value": 1,
+      "unit": "cup",
+      "context": "question"
+    },
+    {
+      "variable": "lemon_juice_volume_tart",
+      "value": 2,
+      "unit": "cup",
+      "context": "answer"
+    },
+    {
+      "variable": "lemon_juice_volume_total",
+      "value": 6,
+      "unit": "cup",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"dollar\": {\"unit\": \"shilling\", \"factor\": 569.38}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"lemonade_volume\",\n    \"value\": 4,\n    \"unit\": \"gallon\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lemonade_volume_extra\",\n    \"value\": 1,\n    \"unit\": \"gallon\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lemon_juice_volume\",\n    \"value\": 1,\n    \"unit\": \"cup\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lemon_juice_volume_tart\",\n    \"value\": 2,\n    \"unit\": \"cup\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"lemon_juice_volume_total\",\n    \"value\": 6,\n    \"unit\": \"cup\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lemonade_volume",
+        "original_value": 4,
+        "original_unit": "gallon",
+        "converted_value": 15.14,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "lemonade_volume_extra",
+        "original_value": 1,
+        "original_unit": "gallon",
+        "converted_value": 3.79,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "lemon_juice_volume",
+        "original_value": 1,
+        "original_unit": "cup",
+        "converted_value": 236.59,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "lemon_juice_volume_tart",
+        "original_value": 2,
+        "original_unit": "cup",
+        "converted_value": 473.18,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "lemon_juice_volume_total",
+        "original_value": 6,
+        "original_unit": "cup",
+        "converted_value": 1419.53,
+        "converted_unit": "milliliter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tim wanted to make lemonade for a pool party.  For a gallon of lemonade, his recipe called for {lemon_juice_volume} cup of fresh lemon juice.  He found that {lemon_yield} lemons would yield {lemon_juice_volume} cup of juice.  He figured he would need to make {lemonade_volume} gallons of lemonade for the party.  His best friend Allen asked if Tim could make an extra {lemonade_volume_extra} gallon for him that was twice as tart as the other gallons.  How many lemons will Tim need?",
+    "templatized_answer": [
+      "Tim is going to make one gallon twice as tart as the others and each gallon needs {lemon_juice_volume} cup of juice. So he needs {lemon_juice_volume_tart} * {lemon_juice_volume} = {lemon_juice_volume_tart} cups for the tart batch",
+      "In addition, he will make {lemonade_volume} regular gallons of lemonade, which each need {lemon_juice_volume} cup juice so {lemonade_volume} * {lemon_juice_volume} = {lemon_juice_volume_total} - {lemon_juice_volume_tart} cups total",
+      "All total he will need {lemon_juice_volume_tart} + {lemon_juice_volume_total} - {lemon_juice_volume_tart} = {lemon_juice_volume_total} cups of juice",
+      "Each cup requires {lemon_yield} lemons each and he needs {lemon_juice_volume_total} cups of juice so {lemon_yield} * {lemon_juice_volume_total} = {lemon_yield} * {lemon_juice_volume_total} lemons needed",
+      "#### {lemon_yield} * {lemon_juice_volume_total}"
+    ],
+    "factual_assignment": {
+      "lemon_juice_volume": 1,
+      "lemon_yield": 6,
+      "lemonade_volume": 4,
+      "lemonade_volume_extra": 1,
+      "lemon_juice_volume_tart": 2,
+      "lemon_juice_volume_total": 6
+    }
+  },
+  "merged_assignment": {
+    "lemon_juice_volume": 236.59,
+    "lemon_yield": 6,
+    "lemonade_volume": 15.14,
+    "lemonade_volume_extra": 3.79,
+    "lemon_juice_volume_tart": 473.18,
+    "lemon_juice_volume_total": 1419.53
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    lemon_juice_volume = 236.59\n    lemon_yield = 6\n    lemonade_volume = 15.14\n    lemonade_volume_extra = 3.79\n\n    lemon_juice_volume_tart = lemon_juice_volume * 2\n    lemon_juice_volume_tart_batch = lemon_juice_volume_tart\n    lemon_juice_volume_regular = lemon_juice_volume * lemonade_volume\n    lemon_juice_volume_total = lemon_juice_volume_tart_batch + lemon_juice_volume_regular\n\n    lemons_needed = lemon_yield * lemon_juice_volume_total\n\n    return {\n        \"lemon_juice_volume\": round(lemon_juice_volume, 2),\n        \"lemon_yield\": lemon_yield,\n        \"lemonade_volume\": round(lemonade_volume, 2),\n        \"lemonade_volume_extra\": round(lemonade_volume_extra, 2),\n        \"lemon_juice_volume_tart\": round(lemon_juice_volume_tart, 2),\n        \"lemon_juice_volume_tart_batch\": round(lemon_juice_volume_tart_batch, 2),\n        \"lemon_juice_volume_total\": round(lemon_juice_volume_total, 2),\n        \"lemon_yield\": lemon_yield,\n        \"lemon_yield\": lemon_yield * lemon_juice_volume_total\n    }\n",
+    "results": {
+      "lemon_juice_volume": 236.59,
+      "lemon_yield": 24330.9156,
+      "lemonade_volume": 15.14,
+      "lemonade_volume_extra": 3.79,
+      "lemon_juice_volume_tart": 473.18,
+      "lemon_juice_volume_tart_batch": 473.18,
+      "lemon_juice_volume_total": 4055.15
+    }
+  },
+  "final": {
+    "question": "Tim wanted to make lemonade for a pool party.  For a liter of lemonade, his recipe called for 236.59 milliliters of fresh lemon juice.  He found that 24330.9156 lemons would yield 236.59 milliliters of juice.  He figured he would need to make 15.14 liters of lemonade for the party.  His best friend Allen asked if Tim could make an extra 3.79 liters for him that was twice as tart as the other liters.  How many lemons will Tim need?",
+    "answer_lines": [
+      "Tim is going to make one liter twice as tart as the others and each liter needs 236.59 milliliters of juice. So he needs 2 * 236.59 = 473.18 milliliters for the tart batch",
+      "In addition, he will make 15.14 regular liters of lemonade, which each need 236.59 milliliters juice so 15.14 * 236.59 = 3581.97 milliliters total",
+      "All total he will need 473.18 + 3581.97 = 4055.15 milliliters of juice",
+      "Each milliliter requires 24330.9156 / 236.59 lemons each and he needs 4055.15 milliliters of juice so 24330.9156 * 4055.15 / 236.59 = 98391.03 lemons needed",
+      "#### 98391.03"
+    ],
+    "final_scalar": 98391.03,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cismaan wanted to make shaah for a party. For a liter of shaah, his recipe called for 236.59 milliliters of fresh camel milk. He found that 24330.9156 camels would yield 236.59 milliliters of milk. He figured he would need to make 15.14 liters of shaah for the party. His best friend Aadan asked if Cismaan could make an extra 3.79 liters for him that was twice as creamy as the other liters. How many camels will Cismaan need?",
+    "adapted_answer": [
+      "Cismaan is going to make one liter twice as creamy as the others and each liter needs 236.59 milliliters of milk. So he needs 2 * 236.59 = 473.18 milliliters for the creamy batch",
+      "In addition, he will make 15.14 regular liters of shaah, which each need 236.59 milliliters milk so 15.14 * 236.59 = 3581.97 milliliters total",
+      "All total he will need 473.18 + 3581.97 = 4055.15 milliliters of milk",
+      "Each milliliter requires 24330.9156 / 236.59 camels each and he needs 4055.15 milliliters of milk so 24330.9156 * 4055.15 / 236.59 = 98391.03 camels needed",
+      "#### 98391.03"
+    ],
+    "adaptation_notes": "Replaced 'lemonade' with 'shaah', 'lemon juice' with 'camel milk', 'Tim' with 'Cismaan', 'Allen' with 'Aadan', and 'lemons' with 'camels'."
+  }
+}

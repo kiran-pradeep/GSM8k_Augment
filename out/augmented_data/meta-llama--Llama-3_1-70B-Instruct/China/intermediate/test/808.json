@@ -1,0 +1,172 @@
+{
+  "index": 808,
+  "split": "test",
+  "original": {
+    "question": "There are 10 quarts of tea left from the party. Four students each drank 1.5 quarts of tea and 16 students each drank 2 quarts of tea. How many gallons of tea were at the beginning of the party?",
+    "answer": "4 students drank 1.5 quarts = 4 * 1.5 = <<4*1.5=6>>6 quarts\n16 students drank 2 quarts = 16 * 2 = <<16*2=32>>32 quarts\nStudents drank 6 + 32 quarts = <<6+32=38>>38 quarts\nStudents + tea left = 38 + 10 quarts = <<38+10=48>>48 quarts\n48 quarts = 12 gallons\nThe party started with 12 gallons of tea.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "gallons",
+      "quarts",
+      "tea"
+    ],
+    "notes": "The units 'gallons' and 'quarts' are commonly used in the US, and 'tea' is a beverage consumed globally, but the context suggests a Western-style party."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tea_left",
+      "value": 10,
+      "unit": "quart",
+      "context": "question"
+    },
+    {
+      "variable": "tea_drank_1",
+      "value": 1.5,
+      "unit": "quart",
+      "context": "question"
+    },
+    {
+      "variable": "tea_drank_2",
+      "value": 2,
+      "unit": "quart",
+      "context": "question"
+    },
+    {
+      "variable": "tea_drank_total",
+      "value": 38,
+      "unit": "quart",
+      "context": "answer"
+    },
+    {
+      "variable": "tea_total",
+      "value": 48,
+      "unit": "quart",
+      "context": "answer"
+    },
+    {
+      "variable": "tea_initial",
+      "value": 12,
+      "unit": "gallon",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollar': {'unit': 'renminbi', 'factor': 7.13},\n        'pound': {'unit': 'kilogram', 'factor': 0.453592},\n        'ounce': {'unit': 'gram', 'factor': 28.3495},\n        'mile': {'unit': 'kilometer', 'factor': 1.60934},\n        'foot': {'unit': 'meter', 'factor': 0.3048},\n        'gallon': {'unit': 'liter', 'factor': 3.78541},\n        'cup': {'unit': 'milliliter', 'factor': 236.588},\n        'quart': {'unit': 'liter', 'factor': 0.946353}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n        context = metric['context']\n\n        if unit in conversions:\n            converted_unit = conversions[unit]['unit']\n            converted_value = round(value * conversions[unit]['factor'], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tea_left\", \"value\": 10, \"unit\": \"quart\", \"context\": \"question\"},\n    {\"variable\": \"tea_drank_1\", \"value\": 1.5, \"unit\": \"quart\", \"context\": \"question\"},\n    {\"variable\": \"tea_drank_2\", \"value\": 2, \"unit\": \"quart\", \"context\": \"question\"},\n    {\"variable\": \"tea_drank_total\", \"value\": 38, \"unit\": \"quart\", \"context\": \"answer\"},\n    {\"variable\": \"tea_total\", \"value\": 48, \"unit\": \"quart\", \"context\": \"answer\"},\n    {\"variable\": \"tea_initial\", \"value\": 12, \"unit\": \"gallon\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tea_left",
+        "original_value": 10,
+        "original_unit": "quart",
+        "converted_value": 9.46,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "tea_drank_1",
+        "original_value": 1.5,
+        "original_unit": "quart",
+        "converted_value": 1.42,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "tea_drank_2",
+        "original_value": 2,
+        "original_unit": "quart",
+        "converted_value": 1.89,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "tea_drank_total",
+        "original_value": 38,
+        "original_unit": "quart",
+        "converted_value": 35.96,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "tea_total",
+        "original_value": 48,
+        "original_unit": "quart",
+        "converted_value": 45.42,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "tea_initial",
+        "original_value": 12,
+        "original_unit": "gallon",
+        "converted_value": 45.42,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "There are {tea_left} quarts of tea left from the party. Four students each drank {tea_drank_1} quarts of tea and 16 students each drank {tea_drank_2} quarts of tea. How many gallons of tea were at the beginning of the party?",
+    "templatized_answer": [
+      "4 students drank {tea_drank_1} quarts = 4 * {tea_drank_1} = {4 * tea_drank_1} quarts",
+      "16 students drank {tea_drank_2} quarts = 16 * {tea_drank_2} = {16 * tea_drank_2} quarts",
+      "Students drank {4 * tea_drank_1} + {16 * tea_drank_2} quarts = {tea_drank_total} quarts",
+      "Students + tea left = {tea_drank_total} + {tea_left} quarts = {tea_total} quarts",
+      "{tea_total} quarts = {tea_total / 4} gallons",
+      "The party started with {tea_total / 4} gallons of tea.",
+      "#### {tea_initial}"
+    ],
+    "factual_assignment": {
+      "tea_left": 10,
+      "tea_drank_1": 1.5,
+      "tea_drank_2": 2,
+      "tea_drank_total": 38,
+      "tea_total": 48,
+      "tea_initial": 12
+    }
+  },
+  "merged_assignment": {
+    "tea_left": 9.46,
+    "tea_drank_1": 1.42,
+    "tea_drank_2": 1.89,
+    "tea_drank_total": 35.96,
+    "tea_total": 45.42,
+    "tea_initial": 45.42
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tea_left = 9.46\n    tea_drank_1 = 1.42\n    tea_drank_2 = 1.89\n\n    tea_drank_total = round(4 * tea_drank_1 + 16 * tea_drank_2, 2)\n    tea_total = round(tea_drank_total + tea_left, 2)\n    tea_initial = tea_total\n\n    return {\n        \"tea_left\": tea_left,\n        \"tea_drank_1\": tea_drank_1,\n        \"tea_drank_2\": tea_drank_2,\n        \"tea_drank_total\": tea_drank_total,\n        \"tea_total\": tea_total,\n        \"tea_initial\": tea_initial,\n        \"4 * tea_drank_1\": round(4 * tea_drank_1, 2),\n        \"16 * tea_drank_2\": round(16 * tea_drank_2, 2),\n        \"tea_total / 4\": round(tea_total / 4, 2)\n    }\n",
+    "results": {
+      "tea_left": 9.46,
+      "tea_drank_1": 1.42,
+      "tea_drank_2": 1.89,
+      "tea_drank_total": 35.92,
+      "tea_total": 45.38,
+      "tea_initial": 45.38,
+      "4 * tea_drank_1": 5.68,
+      "16 * tea_drank_2": 30.24,
+      "tea_total / 4": 11.35
+    }
+  },
+  "final": {
+    "question": "There are 9.46 liters of tea left from the party. Four students each drank 1.42 liters of tea and 16 students each drank 1.89 liters of tea. How many liters of tea were at the beginning of the party?",
+    "answer_lines": [
+      "4 students drank 1.42 liters = 4 * 1.42 = 5.68 liters",
+      "16 students drank 1.89 liters = 16 * 1.89 = 30.24 liters",
+      "Students drank 5.68 + 30.24 liters = 35.92 liters",
+      "Students + tea left = 35.92 + 9.46 liters = 45.38 liters",
+      "The party started with 45.38 liters of tea.",
+      "#### 45.38"
+    ],
+    "final_scalar": 45.38,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "There are 9.46 liters of chrysanthemum tea left from the party. Four students each drank 1.42 liters of chrysanthemum tea and 16 students each drank 1.89 liters of chrysanthemum tea. How many liters of chrysanthemum tea were at the beginning of the party?",
+    "adapted_answer": [
+      "4 students drank 1.42 liters = 4 * 1.42 = 5.68 liters",
+      "16 students drank 1.89 liters = 16 * 1.89 = 30.24 liters",
+      "Students drank 5.68 + 30.24 liters = 35.92 liters",
+      "Students + tea left = 35.92 + 9.46 liters = 45.38 liters",
+      "The party started with 45.38 liters of chrysanthemum tea.",
+      "#### 45.38"
+    ],
+    "adaptation_notes": "Replaced 'tea' with 'chrysanthemum tea' to give it a Chinese context."
+  }
+}

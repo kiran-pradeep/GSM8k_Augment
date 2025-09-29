@@ -1,0 +1,112 @@
+{
+  "index": 914,
+  "split": "test",
+  "original": {
+    "question": "Jon's car needs a tune-up every 1000 miles.  He drives 100 miles a day for a 30 day month.  How many tune-ups does he need in that time?",
+    "answer": "He drives 100*30=<<100*30=3000>>3000 miles\nSo he needs 3000/1000=<<3000/1000=3>>3 tune-ups\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jon",
+      "miles"
+    ],
+    "notes": "Name 'Jon' and unit 'miles' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tune_up_interval",
+      "value": 1000.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "daily_driving_distance",
+      "value": 100.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "total_driving_distance",
+      "value": 3000.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tune_up_interval\", \"value\": 1000.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"daily_driving_distance\", \"value\": 100.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"total_driving_distance\", \"value\": 3000.0, \"unit\": \"mile\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tune_up_interval",
+        "original_value": 1000.0,
+        "original_unit": "mile",
+        "converted_value": 1609.34,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "daily_driving_distance",
+        "original_value": 100.0,
+        "original_unit": "mile",
+        "converted_value": 160.93,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "total_driving_distance",
+        "original_value": 3000.0,
+        "original_unit": "mile",
+        "converted_value": 4828.02,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jon's car needs a tune-up every {tune_up_interval} miles.  He drives {daily_driving_distance} miles a day for a {number_of_days} day month.  How many tune-ups does he need in that time?",
+    "templatized_answer": [
+      "He drives {daily_driving_distance}*{number_of_days}={daily_driving_distance}*{number_of_days} miles",
+      "So he needs {daily_driving_distance}*{number_of_days}/{tune_up_interval}={daily_driving_distance}*{number_of_days}/{tune_up_interval} tune-ups",
+      "#### {daily_driving_distance}*{number_of_days}/{tune_up_interval}"
+    ],
+    "factual_assignment": {
+      "tune_up_interval": 1000.0,
+      "daily_driving_distance": 100.0,
+      "number_of_days": 30
+    }
+  },
+  "merged_assignment": {
+    "tune_up_interval": 1609.34,
+    "daily_driving_distance": 160.93,
+    "number_of_days": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tune_up_interval = 1609.34\n    daily_driving_distance = 160.93\n    number_of_days = 30\n\n    total_driving_distance = daily_driving_distance * number_of_days\n    total_tune_ups = total_driving_distance / tune_up_interval\n\n    return {\n        \"tune_up_interval\": tune_up_interval,\n        \"daily_driving_distance\": daily_driving_distance,\n        \"number_of_days\": number_of_days,\n        \"daily_driving_distance*number_of_days\": round(total_driving_distance, 2),\n        \"daily_driving_distance*number_of_days/tune_up_interval\": round(total_tune_ups, 2)\n    }\n",
+    "results": {
+      "tune_up_interval": 1609.34,
+      "daily_driving_distance": 160.93,
+      "number_of_days": 30,
+      "daily_driving_distance*number_of_days": 4827.9,
+      "daily_driving_distance*number_of_days/tune_up_interval": 3.0
+    }
+  },
+  "final": {
+    "question": "Jon's car needs a tune-up every 1609.34 kilometers.  He drives 160.93 kilometers a day for a 30 day month.  How many tune-ups does he need in that time?",
+    "answer_lines": [
+      "He drives 160.93*30=4827.9 kilometers",
+      "So he needs 4827.9/1609.34=3.0 tune-ups",
+      "#### 3.0"
+    ],
+    "final_scalar": 3.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "王子的车需要此一次置化所边并达一千百度。 三千的日并一天通过达一千百度。 三千一月一个月中需要多少此一次置化？",
+    "adapted_answer": [
+      "三千通过达一千*30=4827.9千百度",
+      "所以三千需要达一千百度/1609.34=3.0此东置化",
+      "#### 3.0"
+    ],
+    "adaptation_notes": "Replaced “Jon” with 王子, a common Chinese name."
+  }
+}

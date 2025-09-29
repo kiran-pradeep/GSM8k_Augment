@@ -1,0 +1,160 @@
+{
+  "index": 78,
+  "split": "test",
+  "original": {
+    "question": "Vincent can buy flowers in packages of 3 for $2.50 or in packages of 2 for $1. How much money does he save by buying 18 flowers at the better price?",
+    "answer": "Find how many packages of 3 would be needed which is 18 ÷ 3 = <<18/3=6>>6.\nThe cost of using packages of 3 is 6 × $2.50 = $<<6*2.5=15>>15.\nFind how many packages of 2 would be needed which is 18 ÷ 2 = <<18/2=9>>9.\nThe cost of using packages of 2 is 9 × $1 = $<<9*1=9>>9.\nVincent would save $15 - $9 = $<<15-9=6>>6.\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Vincent"
+    ],
+    "notes": "The use of 'dollars' as a unit of currency and the name 'Vincent' are culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "package_of_3_cost",
+      "value": 2.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "package_of_2_cost",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost_packages_of_3",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost_packages_of_2",
+      "value": 9.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "savings",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"package_of_3_cost\",\n    \"value\": 2.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"package_of_2_cost\",\n    \"value\": 1.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_cost_packages_of_3\",\n    \"value\": 15.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cost_packages_of_2\",\n    \"value\": 9.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"savings\",\n    \"value\": 6.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "package_of_3_cost",
+        "original_value": 2.5,
+        "original_unit": "dollar",
+        "converted_value": 327.02,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "package_of_2_cost",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 130.81,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost_packages_of_3",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 1962.15,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost_packages_of_2",
+        "original_value": 9.0,
+        "original_unit": "dollar",
+        "converted_value": 1177.29,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "savings",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 784.86,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Vincent can buy flowers in packages of 3 for ${package_of_3_cost} or in packages of 2 for ${package_of_2_cost}. How much money does he save by buying 18 flowers at the better price?",
+    "templatized_answer": [
+      "Find how many packages of 3 would be needed which is {total_flowers} ÷ 3 = {packages_of_3}.",
+      "The cost of using packages of 3 is {packages_of_3} × ${package_of_3_cost} = ${total_cost_packages_of_3}.",
+      "Find how many packages of 2 would be needed which is {total_flowers} ÷ 2 = {packages_of_2}.",
+      "The cost of using packages of 2 is {packages_of_2} × ${package_of_2_cost} = ${total_cost_packages_of_2}.",
+      "Vincent would save ${total_cost_packages_of_3} - ${total_cost_packages_of_2} = ${savings}.",
+      "#### {savings}"
+    ],
+    "factual_assignment": {
+      "package_of_3_cost": 2.5,
+      "package_of_2_cost": 1.0,
+      "total_cost_packages_of_3": 15.0,
+      "total_cost_packages_of_2": 9.0,
+      "savings": 6.0,
+      "total_flowers": 18,
+      "packages_of_3": 6,
+      "packages_of_2": 9
+    }
+  },
+  "merged_assignment": {
+    "package_of_3_cost": 327.02,
+    "package_of_2_cost": 130.81,
+    "total_cost_packages_of_3": 1962.15,
+    "total_cost_packages_of_2": 1177.29,
+    "savings": 784.86,
+    "total_flowers": 18,
+    "packages_of_3": 6,
+    "packages_of_2": 9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    package_of_3_cost = 327.02\n    package_of_2_cost = 130.81\n    total_flowers = 18\n\n    packages_of_3 = total_flowers // 3\n    total_cost_packages_of_3 = packages_of_3 * package_of_3_cost\n\n    packages_of_2 = -(-total_flowers // 2)  # Ceiling division\n    total_cost_packages_of_2 = packages_of_2 * package_of_2_cost\n\n    savings = round(total_cost_packages_of_3 - total_cost_packages_of_2, 2)\n\n    return {\n        \"package_of_3_cost\": package_of_3_cost,\n        \"package_of_2_cost\": package_of_2_cost,\n        \"total_cost_packages_of_3\": round(total_cost_packages_of_3, 2),\n        \"total_cost_packages_of_2\": round(total_cost_packages_of_2, 2),\n        \"savings\": savings,\n        \"total_flowers\": total_flowers,\n        \"packages_of_3\": packages_of_3,\n        \"packages_of_2\": packages_of_2\n    }\n",
+    "results": {
+      "package_of_3_cost": 327.02,
+      "package_of_2_cost": 130.81,
+      "total_cost_packages_of_3": 1962.12,
+      "total_cost_packages_of_2": 1177.29,
+      "savings": 784.83,
+      "total_flowers": 18,
+      "packages_of_3": 6,
+      "packages_of_2": 9
+    }
+  },
+  "final": {
+    "question": "Vincent can buy flowers in packages of 3 for 327.02 gourde or in packages of 2 for 130.81 gourde. How much money does he save by buying 18 flowers at the better price?",
+    "answer_lines": [
+      "Find how many packages of 3 would be needed which is 18 ÷ 3 = 6.",
+      "The cost of using packages of 3 is 6 × 327.02 gourde = 1962.12 gourde.",
+      "Find how many packages of 2 would be needed which is 18 ÷ 2 = 9.",
+      "The cost of using packages of 2 is 9 × 130.81 gourde = 1177.29 gourde.",
+      "Vincent would save 1962.12 gourde - 1177.29 gourde = 784.83 gourde.",
+      "#### 784.83"
+    ],
+    "final_scalar": 784.83,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Widnel can buy flowers in packages of 3 for 327.02 gourde or in packages of 2 for 130.81 gourde. How much money does he save by buying 18 flowers at the better price?",
+    "adapted_answer": [
+      "Find how many packages of 3 would be needed which is 18 ÷ 3 = 6.",
+      "The cost of using packages of 3 is 6 × 327.02 gourde = 1962.12 gourde.",
+      "Find how many packages of 2 would be needed which is 18 ÷ 2 = 9.",
+      "The cost of using packages of 2 is 9 × 130.81 gourde = 1177.29 gourde.",
+      "Widnel would save 1962.12 gourde - 1177.29 gourde = 784.83 gourde.",
+      "#### 784.83"
+    ],
+    "adaptation_notes": "Replaced 'Vincent' with 'Widnel', a common Haitian name."
+  }
+}

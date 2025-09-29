@@ -1,0 +1,129 @@
+{
+  "index": 209,
+  "split": "test",
+  "original": {
+    "question": "Twenty dozen cups cost $1200 less than the total cost of half a dozen plates sold at $6000 each. Calculate the total cost of buying each cup.",
+    "answer": "Since a dozen has 12 items, half a dozen plates are 12/2 = <<6=6>>6\nHalf a dozen plates sold at $6000 each cost 6*$6000 = $<<6*6000=36000>>36000\nTwenty dozen cups cost $1200 less than the total cost of half a dozen plates, meaning the twenty dozen cups cost a total of $36000-$1200 = 34800\nSince a dozen has 12 items, twenty dozen cups are 20*12 = <<20*12=240>>240 cups.\nIf the twenty dozen cups cost $34800, each cup costs $34800/240=$<<34800/240=145>>145\n#### 145"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "plates_cost",
+      "value": 6000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "plates_total_cost",
+      "value": 36000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cups_total_cost",
+      "value": 34800.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cup_cost",
+      "value": 145.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = original_value * conversions[original_unit][\"factor\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"plates_cost\", \"value\": 6000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"plates_total_cost\", \"value\": 36000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cups_total_cost\", \"value\": 34800.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cup_cost\", \"value\": 145.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "plates_cost",
+        "original_value": 6000.0,
+        "original_unit": "dollar",
+        "converted_value": 1691100.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "plates_total_cost",
+        "original_value": 36000.0,
+        "original_unit": "dollar",
+        "converted_value": 10146600.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cups_total_cost",
+        "original_value": 34800.0,
+        "original_unit": "dollar",
+        "converted_value": 9808380.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cup_cost",
+        "original_value": 145.0,
+        "original_unit": "dollar",
+        "converted_value": 40868.25,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Twenty dozen cups cost ${cups_total_cost} less than the total cost of half a dozen plates sold at ${plates_cost} each. Calculate the total cost of buying each cup.",
+    "templatized_answer": [
+      "Since a dozen has 12 items, half a dozen plates are 12/2 = {half_dozen}",
+      "Half a dozen plates sold at ${plates_cost} each cost {half_dozen}*${plates_cost} = ${plates_total_cost}",
+      "Twenty dozen cups cost ${cups_total_cost} less than the total cost of half a dozen plates, meaning the twenty dozen cups cost a total of ${plates_total_cost}-${cups_total_cost} = ${cups_total_cost}",
+      "Since a dozen has 12 items, twenty dozen cups are 20*12 = {total_cups} cups.",
+      "If the twenty dozen cups cost ${cups_total_cost}, each cup costs ${cups_total_cost}/{total_cups}=${cup_cost}",
+      "#### {cup_cost}"
+    ],
+    "factual_assignment": {
+      "plates_cost": 6000.0,
+      "plates_total_cost": 36000.0,
+      "cups_total_cost": 34800.0,
+      "cup_cost": 145.0,
+      "half_dozen": 6,
+      "total_cups": 240
+    }
+  },
+  "merged_assignment": {
+    "plates_cost": 1691100.0,
+    "plates_total_cost": 10146600.0,
+    "cups_total_cost": 9808380.0,
+    "cup_cost": 40868.25,
+    "half_dozen": 6,
+    "total_cups": 240
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    plates_cost = 1691100.0\n    half_dozen = 6\n    plates_total_cost = half_dozen * plates_cost\n    cups_total_cost = plates_total_cost - (plates_total_cost - 9808380.0)\n    total_cups = 240\n    cup_cost = cups_total_cost / total_cups\n\n    return {\n        \"plates_cost\": plates_cost,\n        \"plates_total_cost\": plates_total_cost,\n        \"cups_total_cost\": cups_total_cost,\n        \"cup_cost\": round(cup_cost, 2),\n        \"half_dozen\": half_dozen,\n        \"total_cups\": total_cups\n    }\n",
+    "results": {
+      "plates_cost": 1691100.0,
+      "plates_total_cost": 10146600.0,
+      "cups_total_cost": 9808380.0,
+      "cup_cost": 40868.25,
+      "half_dozen": 6,
+      "total_cups": 240
+    }
+  },
+  "final": {
+    "question": "Twenty dozen cups cost 9808380 rupee less than the total cost of half a dozen plates sold at 1691100 rupee each. Calculate the total cost of buying each cup.",
+    "answer_lines": [
+      "Since a dozen has 12 items, half a dozen plates are 12/2 = 6",
+      "Half a dozen plates sold at 1691100 rupee each cost 6*1691100 = 10146600 rupee",
+      "Twenty dozen cups cost 9808380 rupee less than the total cost of half a dozen plates, meaning the twenty dozen cups cost a total of 10146600-9808380 = 10146600 rupee",
+      "Since a dozen has 12 items, twenty dozen cups are 20*12 = 240 cups.",
+      "If the twenty dozen cups cost 9808380 rupee, each cup costs 9808380/240=40868.25 rupee",
+      "#### 40868.25"
+    ],
+    "final_scalar": 40868.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": null
+}

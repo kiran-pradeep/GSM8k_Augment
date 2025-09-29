@@ -1,0 +1,137 @@
+{
+  "index": 661,
+  "split": "test",
+  "original": {
+    "question": "Roger goes to the store to buy some coffee.  The normal brand of coffee he buys cost $5 per pound.  He had to buy a more expensive brand that cost 20% more since his favorite brand was sold out.  He decides to buy a week's worth of coffee and he uses 1 pound of coffee per day.  He also decided to buy himself a donut for $2.  How much did everything cost?",
+    "answer": "The coffee he bought was 5*.2=$<<5*.2=1>>1 more expensive per pound than what he normally buys\nSo it cost 5+1=$<<5+1=6>>6 per pound\nHe goes through 1*7=<<1*7=7>>7 pounds of coffee a week\nSo he paid 6*7=$<<6*7=42>>42 on coffee\nThat means his total bill was 42+2=$<<42+2=44>>44\n#### 44"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Roger",
+      "pounds",
+      "dollars",
+      "donut"
+    ],
+    "notes": "The text contains a Western name, US units of measurement and currency, and a food item not commonly associated with Indian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "coffee_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "coffee_cost_expensive",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "donut_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_bill",
+      "value": 44,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"coffee_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"coffee_cost_expensive\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"donut_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_bill\", \"value\": 44, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "coffee_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "coffee_cost_expensive",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 522,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "donut_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 174,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_bill",
+        "original_value": 44,
+        "original_unit": "dollar",
+        "converted_value": 3828,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Roger goes to the store to buy some coffee.  The normal brand of coffee he buys cost ${coffee_cost} per pound.  He had to buy a more expensive brand that cost 20% more since his favorite brand was sold out.  He decides to buy a week's worth of coffee and he uses 1 pound of coffee per day.  He also decided to buy himself a donut for ${donut_cost}.  How much did everything cost?",
+    "templatized_answer": [
+      "The coffee he bought was {coffee_cost}*.2=${{coffee_cost}*.2} more expensive per pound than what he normally buys",
+      "So it cost {coffee_cost}+{coffee_cost}*.2=${{coffee_cost}+{coffee_cost}*.2} per pound",
+      "He goes through 1*7={1*7} pounds of coffee a week",
+      "So he paid ({coffee_cost}+{coffee_cost}*.2)*{1*7}=${({coffee_cost}+{coffee_cost}*.2)*{1*7}} on coffee",
+      "That means his total bill was ({coffee_cost}+{coffee_cost}*.2)*{1*7}+{donut_cost}=${({coffee_cost}+{coffee_cost}*.2)*{1*7}+{donut_cost}}",
+      "#### {({coffee_cost}+{coffee_cost}*.2)*{1*7}+{donut_cost}}"
+    ],
+    "factual_assignment": {
+      "coffee_cost": 5,
+      "donut_cost": 2
+    }
+  },
+  "merged_assignment": {
+    "coffee_cost": 435,
+    "donut_cost": 174
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    coffee_cost = 435\n    donut_cost = 174\n\n    coffee_cost_increase = coffee_cost * 0.2\n    coffee_cost_increase = round(coffee_cost_increase, 2)\n\n    expensive_coffee_cost = coffee_cost + coffee_cost_increase\n    expensive_coffee_cost = round(expensive_coffee_cost, 2)\n\n    weekly_coffee_consumption = 1 * 7\n\n    weekly_coffee_cost = expensive_coffee_cost * weekly_coffee_consumption\n    weekly_coffee_cost = round(weekly_coffee_cost, 2)\n\n    total_bill = weekly_coffee_cost + donut_cost\n    total_bill = round(total_bill, 2)\n\n    return {\n        \"{coffee_cost}\": coffee_cost,\n        \"{coffee_cost}*.2\": coffee_cost_increase,\n        \"{coffee_cost}+{coffee_cost}*.2\": expensive_coffee_cost,\n        \"1*7\": weekly_coffee_consumption,\n        \"({coffee_cost}+{coffee_cost}*.2)*{1*7}\": weekly_coffee_cost,\n        \"({coffee_cost}+{coffee_cost}*.2)*{1*7}+{donut_cost}\": total_bill,\n        \"{donut_cost}\": donut_cost,\n        \"{({coffee_cost}+{coffee_cost}*.2)*{1*7}+{donut_cost}}\": total_bill\n    }\n",
+    "results": {
+      "{coffee_cost}": 435,
+      "{coffee_cost}*.2": 87.0,
+      "{coffee_cost}+{coffee_cost}*.2": 522.0,
+      "1*7": 7,
+      "({coffee_cost}+{coffee_cost}*.2)*{1*7}": 3654.0,
+      "({coffee_cost}+{coffee_cost}*.2)*{1*7}+{donut_cost}": 3828.0,
+      "{donut_cost}": 174,
+      "{({coffee_cost}+{coffee_cost}*.2)*{1*7}+{donut_cost}}": 3828.0
+    }
+  },
+  "final": {
+    "question": "Roger goes to the store to buy some coffee.  The normal brand of coffee he buys cost 435 rupees per kilogram.  He had to buy a more expensive brand that cost 20% more since his favorite brand was sold out.  He decides to buy a week's worth of coffee and he uses 1 kilogram of coffee per day.  He also decided to buy himself a donut for 174 rupees.  How much did everything cost?",
+    "answer_lines": [
+      "The coffee he bought was 435*.2=87 more expensive per kilogram than what he normally buys",
+      "So it cost 435+87=522 rupees per kilogram",
+      "He goes through 1*7=7 kilograms of coffee a week",
+      "So he paid (435+87)*7=3654 rupees on coffee",
+      "That means his total bill was (435+87)*7+174=3828 rupees",
+      "#### 3828"
+    ],
+    "final_scalar": 3828,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan goes to the store to buy some coffee.  The normal brand of coffee he buys cost 435 rupees per kilogram.  He had to buy a more expensive brand that cost 20% more since his favorite brand was sold out.  He decides to buy a week's worth of coffee and he uses 1 kilogram of coffee per day.  He also decided to buy himself a vada for 174 rupees.  How much did everything cost?",
+    "adapted_answer": [
+      "The coffee he bought was 435*.2=87 more expensive per kilogram than what he normally buys",
+      "So it cost 435+87=522 rupees per kilogram",
+      "He goes through 1*7=7 kilograms of coffee a week",
+      "So he paid (435+87)*7=3654 rupees on coffee",
+      "That means his total bill was (435+87)*7+174=3828 rupees",
+      "#### 3828"
+    ],
+    "adaptation_notes": "Replaced 'Roger' with 'Rohan' (Indian name) and 'donut' with 'vada' (Indian food)."
+  }
+}

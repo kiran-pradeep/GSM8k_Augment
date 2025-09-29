@@ -1,0 +1,111 @@
+{
+  "index": 870,
+  "split": "test",
+  "original": {
+    "question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about $400 per month. In a four-week month, how many dollars does Keenan spend per week if Madeline pays 60% of the cost?",
+    "answer": "They spend $400/4=$<<400/4=100>>100 per week.\nKeenan pays for 100-60=<<100-60=40>>40% of the groceries.\nThus, she spends $100*(40/100)=$<<100*40/100=40>>40 per week.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Madeline",
+      "Keenan",
+      "dollars"
+    ],
+    "notes": "Names and currency unit are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_grocery_cost",
+      "value": 400,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_grocery_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "keenan_weekly_grocery_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] not in [\"renminbi\", \"kilogram\", \"gram\", \"kilometer\", \"meter\", \"liter\", \"milliliter\", \"minute\", \"hour\"]:\n            converted_value, converted_unit = convert(metric[\"value\"], metric[\"unit\"])\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"monthly_grocery_cost\",\n    \"value\": 400,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"weekly_grocery_cost\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"keenan_weekly_grocery_cost\",\n    \"value\": 40,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_grocery_cost",
+        "original_value": 400,
+        "original_unit": "dollar",
+        "converted_value": 2852.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_grocery_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "keenan_weekly_grocery_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about ${monthly_grocery_cost} per month. In a four-week month, how many dollars does Keenan spend per week if Madeline pays 60% of the cost?",
+    "templatized_answer": [
+      "They spend ${monthly_grocery_cost}/4=${monthly_grocery_cost}/4 per week.",
+      "Keenan pays for {monthly_grocery_cost}/4-60={monthly_grocery_cost}/4-60% of the groceries.",
+      "Thus, she spends ${monthly_grocery_cost}/4*(40/100)=${monthly_grocery_cost}/4*(40/100) per week.",
+      "#### ${monthly_grocery_cost}/4*(40/100)"
+    ],
+    "factual_assignment": {
+      "monthly_grocery_cost": 400
+    }
+  },
+  "merged_assignment": {
+    "monthly_grocery_cost": 2852.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_grocery_cost = 2852.0\n\n    monthly_grocery_cost_per_week = monthly_grocery_cost / 4\n    keenan_monthly_grocery_cost_percentage = 40 / 100\n    keenan_weekly_grocery_cost = monthly_grocery_cost_per_week * keenan_monthly_grocery_cost_percentage\n\n    return {\n        \"monthly_grocery_cost\": monthly_grocery_cost,\n        \"monthly_grocery_cost/4\": round(monthly_grocery_cost_per_week, 2),\n        \"monthly_grocery_cost/4-60\": round(monthly_grocery_cost_per_week * (1 - 0.6), 2),\n        \"monthly_grocery_cost/4*(40/100)\": round(keenan_weekly_grocery_cost, 2)\n    }\n",
+    "results": {
+      "monthly_grocery_cost": 2852.0,
+      "monthly_grocery_cost/4": 713.0,
+      "monthly_grocery_cost/4-60": 285.2,
+      "monthly_grocery_cost/4*(40/100)": 285.2
+    }
+  },
+  "final": {
+    "question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about 2852.0 renminbi per month. In a four-week month, how many renminbi does Keenan spend per week if Madeline pays 60% of the cost?",
+    "answer_lines": [
+      "They spend 2852.0/4=713.0 renminbi per week.",
+      "Keenan pays for 713.0-60=40% of the groceries.",
+      "Thus, she spends 713.0*(40/100)=285.2 renminbi per week.",
+      "#### 285.2"
+    ],
+    "final_scalar": 285.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mengmeng and her roommate, Jingjing, share the cost of groceries. In total, they spend about 2852.0 renminbi per month. In a four-week month, how many renminbi does Jingjing spend per week if Mengmeng pays 60% of the cost?",
+    "adapted_answer": [
+      "They spend 2852.0/4=713.0 renminbi per week.",
+      "Jingjing pays for 713.0-60=40% of the groceries.",
+      "Thus, she spends 713.0*(40/100)=285.2 renminbi per week.",
+      "#### 285.2"
+    ],
+    "adaptation_notes": "Replaced 'Madeline' with 'Mengmeng' and 'Keenan' with 'Jingjing' to give the names a Chinese context."
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "index": 430,
+  "split": "test",
+  "original": {
+    "question": "Charlotte went into the kitchen supply store knowing she wanted a set of pot and pans for $120.00, a set of mixing bowls for $20.00 and 5 separate utensils at $5.00 each.  At check out, the clerk told her everything was 20% off.  How much was her order?",
+    "answer": "She wants 5 utensils at $5.00 each so they cost 5*5 = $<<5*5=25.00>>25.00\nThe utensils are $25, the pots and pans are $120 and the mixing bowls are $20 for a total of 25+120+20 = $<<25+120+20=165>>165\nEverything is 20% off, and her total is $165 so 165*.20= $<<165*.20=33.00>>33.00\nThe total was $165 and she gets a $33.00 discount so 165-33 = $<<165-33=132.00>>132.00 is her total price\n#### 132"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not exclusively in Haiti, where the Haitian gourde is the local currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pot_pans_cost",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mixing_bowls_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "utensil_cost",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost_before_discount",
+      "value": 165.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount_amount",
+      "value": 33.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost_after_discount",
+      "value": 132.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pot_pans_cost\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"mixing_bowls_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"utensil_cost\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost_before_discount\", \"value\": 165.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount_amount\", \"value\": 33.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost_after_discount\", \"value\": 132.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pot_pans_cost",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 15697.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "mixing_bowls_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 2616.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "utensil_cost",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 654.05,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost_before_discount",
+        "original_value": 165.0,
+        "original_unit": "dollar",
+        "converted_value": 21583.65,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "discount_amount",
+        "original_value": 33.0,
+        "original_unit": "dollar",
+        "converted_value": 4316.73,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost_after_discount",
+        "original_value": 132.0,
+        "original_unit": "dollar",
+        "converted_value": 17266.92,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Charlotte went into the kitchen supply store knowing she wanted a set of pot and pans for ${pot_pans_cost}, a set of mixing bowls for ${mixing_bowls_cost} and {number_of_utensils} separate utensils at ${utensil_cost} each.  At check out, the clerk told her everything was {discount_percentage}% off.  How much was her order?",
+    "templatized_answer": [
+      "She wants {number_of_utensils} utensils at ${utensil_cost} each so they cost {number_of_utensils}*{utensil_cost} = ${number_of_utensils}*{utensil_cost}",
+      "The utensils are ${number_of_utensils}*{utensil_cost}, the pots and pans are ${pot_pans_cost} and the mixing bowls are ${mixing_bowls_cost} for a total of {number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost} = ${number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost}",
+      "Everything is {discount_percentage}% off, and her total is ${number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost} so ({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100 = $(({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100)",
+      "The total was ${number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost} and she gets a $(({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100) discount so {number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost}-(({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100) = ${number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost}-(({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100)",
+      "#### ${number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost}-(({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100)"
+    ],
+    "factual_assignment": {
+      "pot_pans_cost": 120.0,
+      "mixing_bowls_cost": 20.0,
+      "utensil_cost": 5.0,
+      "number_of_utensils": 5,
+      "discount_percentage": 20
+    }
+  },
+  "merged_assignment": {
+    "pot_pans_cost": 15697.2,
+    "mixing_bowls_cost": 2616.2,
+    "utensil_cost": 654.05,
+    "number_of_utensils": 5,
+    "discount_percentage": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pot_pans_cost = 15697.2\n    mixing_bowls_cost = 2616.2\n    utensil_cost = 654.05\n    number_of_utensils = 5\n    discount_percentage = 20\n\n    utensils_cost = number_of_utensils * utensil_cost\n    total_cost = utensils_cost + pot_pans_cost + mixing_bowls_cost\n    discount = (total_cost * discount_percentage) / 100\n    final_cost = total_cost - discount\n\n    return {\n        \"pot_pans_cost\": round(pot_pans_cost, 2),\n        \"mixing_bowls_cost\": round(mixing_bowls_cost, 2),\n        \"utensil_cost\": round(utensil_cost, 2),\n        \"number_of_utensils\": number_of_utensils,\n        \"discount_percentage\": discount_percentage,\n        \"number_of_utensils*utensil_cost\": round(utensils_cost, 2),\n        \"number_of_utensils*utensil_cost+pot_pans_cost+mixing_bowls_cost\": round(total_cost, 2),\n        \"({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100\": round(discount, 2),\n        \"number_of_utensils*utensil_cost+pot_pans_cost+mixing_bowls_cost-(({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100)\": round(final_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "pot_pans_cost": 15697.2,
+      "mixing_bowls_cost": 2616.2,
+      "utensil_cost": 654.05,
+      "number_of_utensils": 5,
+      "discount_percentage": 20,
+      "number_of_utensils*utensil_cost": 3270.25,
+      "number_of_utensils*utensil_cost+pot_pans_cost+mixing_bowls_cost": 21583.65,
+      "({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100": 4316.73,
+      "number_of_utensils*utensil_cost+pot_pans_cost+mixing_bowls_cost-(({number_of_utensils}*{utensil_cost}+{pot_pans_cost}+{mixing_bowls_cost})*{discount_percentage}/100)": 17266.92
+    }
+  },
+  "final": {
+    "question": "Charlotte went into the kitchen supply store knowing she wanted a set of pot and pans for 15697.2 gourde, a set of mixing bowls for 2616.2 gourde and 5 separate utensils at 654.05 gourde each.  At check out, the clerk told her everything was 20% off.  How much was her order?",
+    "answer_lines": [
+      "She wants 5 utensils at 654.05 gourde each so they cost 5*654.05 = 3270.25 gourde",
+      "The utensils are 3270.25 gourde, the pots and pans are 15697.2 gourde and the mixing bowls are 2616.2 gourde for a total of 3270.25+15697.2+2616.2 = 21583.65 gourde",
+      "Everything is 20% off, and her total is 21583.65 gourde so (21583.65*20)/100 = 4316.73 gourde",
+      "The total was 21583.65 gourde and she gets a 4316.73 gourde discount so 21583.65-4316.73 = 17266.92 gourde",
+      "#### 17266.92"
+    ],
+    "final_scalar": 17266.92,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Charlotte went into the kitchen supply store knowing she wanted a set of pot and pans for 15697.2 gourde, a set of mixing bowls for 2616.2 gourde and 5 separate utensils at 654.05 gourde each.  At check out, the clerk told her everything was 20% off.  How much was her order?",
+    "adapted_answer": [
+      "She wants 5 utensils at 654.05 gourde each so they cost 5*654.05 = 3270.25 gourde",
+      "The utensils are 3270.25 gourde, the pots and pans are 15697.2 gourde and the mixing bowls are 2616.2 gourde for a total of 3270.25+15697.2+2616.2 = 21583.65 gourde",
+      "Everything is 20% off, and her total is 21583.65 gourde so (21583.65*20)/100 = 4316.73 gourde",
+      "The total was 21583.65 gourde and she gets a 4316.73 gourde discount so 21583.65-4316.73 = 17266.92 gourde",
+      "#### 17266.92"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

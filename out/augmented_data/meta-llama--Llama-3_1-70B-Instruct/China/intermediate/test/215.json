@@ -1,0 +1,125 @@
+{
+  "index": 215,
+  "split": "test",
+  "original": {
+    "question": "Lori wants to buy a $320.00 pair of shoes and a matching belt that is $32.00.  Her part-time job pays her $8.00 an hour.  How many hours will she have to work before she can make her purchase?",
+    "answer": "She wants to buy a pair of shoes for $320.00 and a belt for $32.00 for a total of 320+32 = $<<320+32=352.00>>352.00\nHer purchase will total $352.00 and she makes $8.00 at her part-time job so she'll have to work 352/8 = <<352/8=44>>44 hours\n#### 44"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shoes_cost",
+      "value": 320.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "belt_cost",
+      "value": 32.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_wage",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 352.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shoes_cost\", \"value\": 320.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"belt_cost\", \"value\": 32.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_wage\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 352.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shoes_cost",
+        "original_value": 320.0,
+        "original_unit": "dollar",
+        "converted_value": 2281.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "belt_cost",
+        "original_value": 32.0,
+        "original_unit": "dollar",
+        "converted_value": 228.16,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hourly_wage",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 352.0,
+        "original_unit": "dollar",
+        "converted_value": 2509.76,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Lori wants to buy a ${shoes_cost} pair of shoes and a matching belt that is ${belt_cost}.  Her part-time job pays her ${hourly_wage} an hour.  How many hours will she have to work before she can make her purchase?",
+    "templatized_answer": [
+      "She wants to buy a pair of shoes for ${shoes_cost} and a belt for ${belt_cost} for a total of ${shoes_cost}+${belt_cost} = ${total_cost}",
+      "Her purchase will total ${total_cost} and she makes ${hourly_wage} at her part-time job so she'll have to work ${total_cost}/${hourly_wage} = {total_cost/hourly_wage}",
+      "#### {total_cost/hourly_wage}"
+    ],
+    "factual_assignment": {
+      "shoes_cost": 320.0,
+      "belt_cost": 32.0,
+      "hourly_wage": 8.0,
+      "total_cost": 352.0
+    }
+  },
+  "merged_assignment": {
+    "shoes_cost": 2281.6,
+    "belt_cost": 228.16,
+    "hourly_wage": 57.04,
+    "total_cost": 2509.76
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    shoes_cost = 2281.6\n    belt_cost = 228.16\n    hourly_wage = 57.04\n\n    # Recompute total cost\n    total_cost = shoes_cost + belt_cost\n\n    # Recompute hours to work\n    hours_to_work = total_cost / hourly_wage\n\n    # Round to 2 decimal places where appropriate\n    shoes_cost = round(shoes_cost, 2)\n    belt_cost = round(belt_cost, 2)\n    hourly_wage = round(hourly_wage, 2)\n    total_cost = round(total_cost, 2)\n    hours_to_work = round(hours_to_work, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"shoes_cost\": shoes_cost,\n        \"belt_cost\": belt_cost,\n        \"hourly_wage\": hourly_wage,\n        \"total_cost\": total_cost,\n        \"total_cost/hourly_wage\": hours_to_work\n    }\n",
+    "results": {
+      "shoes_cost": 2281.6,
+      "belt_cost": 228.16,
+      "hourly_wage": 57.04,
+      "total_cost": 2509.76,
+      "total_cost/hourly_wage": 44.0
+    }
+  },
+  "final": {
+    "question": "Lori wants to buy a 2281.6 renminbi pair of shoes and a matching belt that is 228.16 renminbi.  Her part-time job pays her 57.04 renminbi an hour.  How many hours will she have to work before she can make her purchase?",
+    "answer_lines": [
+      "She wants to buy a pair of shoes for 2281.6 renminbi and a belt for 228.16 renminbi for a total of 2281.6+228.16 = 2509.76 renminbi",
+      "Her purchase will total 2509.76 renminbi and she makes 57.04 renminbi at her part-time job so she'll have to work 2509.76/57.04 = 44.0 hours",
+      "#### 44.0"
+    ],
+    "final_scalar": 44.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Lori wants to buy a 2281.6 renminbi pair of shoes and a matching belt that is 228.16 renminbi.  Her part-time job pays her 57.04 renminbi an hour.  How many hours will she have to work before she can make her purchase?",
+    "adapted_answer": [
+      "She wants to buy a pair of shoes for 2281.6 renminbi and a belt for 228.16 renminbi for a total of 2281.6+228.16 = 2509.76 renminbi",
+      "Her purchase will total 2509.76 renminbi and she makes 57.04 renminbi at her part-time job so she'll have to work 2509.76/57.04 = 44.0 hours"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

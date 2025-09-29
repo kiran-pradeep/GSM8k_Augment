@@ -1,0 +1,145 @@
+{
+  "index": 717,
+  "split": "test",
+  "original": {
+    "question": "A pencil cost $0.50, and an eraser cost $0.25. If you bought 6 pencils and 8 erasers and paid $10, how much change would you get?",
+    "answer": "6 pencils cost 6 x $0.50 = $<<6*0.5=3>>3.\n8 erasers cost 8 x $0.25 = $<<8*0.25=2>>2.\nThus, you spent $3 + $2 = $<<3+2=5>>5.\nTherefore, you would get $10 - $5 = $<<10-5=5>>5 change.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pencil_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eraser_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "payment",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pencil_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"eraser_cost\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"payment\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pencil_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 284.69,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "eraser_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 142.34,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "payment",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 5693.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "change",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A pencil cost ${pencil_cost}, and an eraser cost ${eraser_cost}. If you bought 6 pencils and 8 erasers and paid ${payment}, how much change would you get?",
+    "templatized_answer": [
+      "6 pencils cost 6 x ${pencil_cost} = ${6*pencil_cost}.",
+      "8 erasers cost 8 x ${eraser_cost} = ${8*eraser_cost}.",
+      "Thus, you spent ${6*pencil_cost} + ${8*eraser_cost} = ${6*pencil_cost+8*eraser_cost}.",
+      "Therefore, you would get ${payment} - ${6*pencil_cost+8*eraser_cost} = ${payment-(6*pencil_cost+8*eraser_cost)} change.",
+      "#### ${payment-(6*pencil_cost+8*eraser_cost)}"
+    ],
+    "factual_assignment": {
+      "pencil_cost": 0.5,
+      "eraser_cost": 0.25,
+      "payment": 10
+    }
+  },
+  "merged_assignment": {
+    "pencil_cost": 284.69,
+    "eraser_cost": 142.34,
+    "payment": 5693.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pencil_cost = 284.69\n    eraser_cost = 142.34\n    payment = 5693.8\n\n    six_pencil_cost = round(6 * pencil_cost, 2)\n    eight_eraser_cost = round(8 * eraser_cost, 2)\n    total_spent = round(six_pencil_cost + eight_eraser_cost, 2)\n    change = round(payment - total_spent, 2)\n\n    return {\n        \"pencil_cost\": pencil_cost,\n        \"eraser_cost\": eraser_cost,\n        \"payment\": payment,\n        \"6*pencil_cost\": six_pencil_cost,\n        \"8*eraser_cost\": eight_eraser_cost,\n        \"6*pencil_cost+8*eraser_cost\": total_spent,\n        \"payment-(6*pencil_cost+8*eraser_cost)\": change\n    }\n",
+    "results": {
+      "pencil_cost": 284.69,
+      "eraser_cost": 142.34,
+      "payment": 5693.8,
+      "6*pencil_cost": 1708.14,
+      "8*eraser_cost": 1138.72,
+      "6*pencil_cost+8*eraser_cost": 2846.86,
+      "payment-(6*pencil_cost+8*eraser_cost)": 2846.94
+    }
+  },
+  "final": {
+    "question": "A pencil cost 284.69 shilling, and an eraser cost 142.34 shilling. If you bought 6 pencils and 8 erasers and paid 5693.8 shilling, how much change would you get?",
+    "answer_lines": [
+      "6 pencils cost 6 x 284.69 shilling = 1708.14 shilling.",
+      "8 erasers cost 8 x 142.34 shilling = 1138.72 shilling.",
+      "Thus, you spent 1708.14 shilling + 1138.72 shilling = 2846.86 shilling.",
+      "Therefore, you would get 5693.8 shilling - 2846.86 shilling = 2846.94 shilling change.",
+      "#### 2846.94"
+    ],
+    "final_scalar": 2846.94,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A qalin (pen) cost 284.69 shilling, and a dhuubin (eraser) cost 142.34 shilling. If you bought 6 qalins and 8 dhuubins and paid 5693.8 shilling, how much change would you get?",
+    "adapted_answer": [
+      "6 qalins cost 6 x 284.69 shilling = 1708.14 shilling.",
+      "8 dhuubins cost 8 x 142.34 shilling = 1138.72 shilling.",
+      "Thus, you spent 1708.14 shilling + 1138.72 shilling = 2846.86 shilling.",
+      "Therefore, you would get 5693.8 shilling - 2846.86 shilling = 2846.94 shilling change.",
+      "#### 2846.94"
+    ],
+    "adaptation_notes": "Replaced 'pencil' with 'qalin' (pen) and 'eraser' with 'dhuubin' to provide Somali context."
+  }
+}

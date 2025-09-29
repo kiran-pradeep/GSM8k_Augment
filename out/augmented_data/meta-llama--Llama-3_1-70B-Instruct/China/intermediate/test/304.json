@@ -1,0 +1,179 @@
+{
+  "index": 304,
+  "split": "test",
+  "original": {
+    "question": "Watson works a 10-hour shift each day, five days a week. He earns $10 per hour and gets a $300 bonus each week if the company performs well. How much money did Watson make in April if the company performed very well for the whole month?",
+    "answer": "In a day, Watson makes 10 * 10 = $<<10*10=100>>100\nIf he works five days a week, the total number of days for the whole month is 5 * 4= <<5*4=20>>20 days.\nSince he makes $100 per day, the total amount for the whole month is 20 * 100= $<<20*100=2000>>2000.\nHe also got a 300 * 4 = $<<300*4=1200>>1200 bonus because the company performed well in all the weeks of April.\nAt the end of April, he earned 2000 +1200 = $<<2000+1200=3200>>3200.\n#### 3200"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Watson",
+      "dollars"
+    ],
+    "notes": "The name Watson and the unit of currency dollars are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_bonus",
+      "value": 300,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 2000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_bonus",
+      "value": 1200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 3200,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"hourly_wage\",\n    \"value\": 10,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"weekly_bonus\",\n    \"value\": 300,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"daily_earnings\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"monthly_earnings\",\n    \"value\": 2000,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_bonus\",\n    \"value\": 1200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_earnings\",\n    \"value\": 3200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_bonus",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 2000,
+        "original_unit": "dollar",
+        "converted_value": 14260.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_bonus",
+        "original_value": 1200,
+        "original_unit": "dollar",
+        "converted_value": 8556.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 3200,
+        "original_unit": "dollar",
+        "converted_value": 22816.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Watson works a {shift_hours}-hour shift each day, {days_per_week} days a week. He earns ${hourly_wage} per hour and gets a ${weekly_bonus} bonus each week if the company performs well. How much money did Watson make in April if the company performed very well for the whole month?",
+    "templatized_answer": [
+      "In a day, Watson makes {shift_hours} * {hourly_wage} = ${daily_earnings}",
+      "If he works {days_per_week} days a week, the total number of days for the whole month is {days_per_week} * {weeks_per_month}= {total_days} days.",
+      "Since he makes ${hourly_wage} * {shift_hours} per day, the total amount for the whole month is {total_days} * {hourly_wage} * {shift_hours}= ${monthly_earnings}.",
+      "He also got a {weekly_bonus} * {weeks_per_month} = ${total_bonus} bonus because the company performed well in all the weeks of April.",
+      "At the end of April, he earned {monthly_earnings} + {total_bonus} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "shift_hours": 10,
+      "days_per_week": 5,
+      "hourly_wage": 10,
+      "weekly_bonus": 300,
+      "daily_earnings": 100,
+      "monthly_earnings": 2000,
+      "total_bonus": 1200,
+      "total_earnings": 3200,
+      "weeks_per_month": 4,
+      "total_days": 20
+    }
+  },
+  "merged_assignment": {
+    "shift_hours": 10,
+    "days_per_week": 5,
+    "hourly_wage": 71.3,
+    "weekly_bonus": 2139.0,
+    "daily_earnings": 713.0,
+    "monthly_earnings": 14260.0,
+    "total_bonus": 8556.0,
+    "total_earnings": 22816.0,
+    "weeks_per_month": 4,
+    "total_days": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    shift_hours = 10\n    days_per_week = 5\n    hourly_wage = 71.3\n    weekly_bonus = 2139.0\n    weeks_per_month = 4\n\n    daily_earnings = round(shift_hours * hourly_wage, 2)\n    total_days = days_per_week * weeks_per_month\n    monthly_earnings = round(total_days * hourly_wage * shift_hours, 2)\n    total_bonus = round(weekly_bonus * weeks_per_month, 2)\n    total_earnings = round(monthly_earnings + total_bonus, 2)\n\n    return {\n        \"shift_hours\": shift_hours,\n        \"days_per_week\": days_per_week,\n        \"hourly_wage\": hourly_wage,\n        \"weekly_bonus\": weekly_bonus,\n        \"daily_earnings\": daily_earnings,\n        \"monthly_earnings\": monthly_earnings,\n        \"total_bonus\": total_bonus,\n        \"total_earnings\": total_earnings,\n        \"weeks_per_month\": weeks_per_month,\n        \"total_days\": total_days\n    }\n\nprint(recompute())\n",
+    "results": {
+      "shift_hours": 10,
+      "days_per_week": 5,
+      "hourly_wage": 71.3,
+      "weekly_bonus": 2139.0,
+      "daily_earnings": 713.0,
+      "monthly_earnings": 14260.0,
+      "total_bonus": 8556.0,
+      "total_earnings": 22816.0,
+      "weeks_per_month": 4,
+      "total_days": 20
+    }
+  },
+  "final": {
+    "question": "Watson works a 10-hour shift each day, 5 days a week. He earns 71.3 renminbi per hour and gets a 2139.0 renminbi bonus each week if the company performs well. How much money did Watson make in April if the company performed very well for the whole month?",
+    "answer_lines": [
+      "In a day, Watson makes 10 * 71.3 = 713.0 renminbi",
+      "If he works 5 days a week, the total number of days for the whole month is 5 * 4 = 20 days.",
+      "Since he makes 71.3 renminbi * 10 per day, the total amount for the whole month is 20 * 71.3 * 10 = 14260.0 renminbi.",
+      "He also got a 2139.0 * 4 = 8556.0 renminbi bonus because the company performed well in all the weeks of April.",
+      "At the end of April, he earned 14260.0 + 8556.0 = 22816.0 renminbi.",
+      "#### 22816.0"
+    ],
+    "final_scalar": 22816.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wei works a 10-hour shift each day, 5 days a week. He earns 71.3 renminbi per hour and gets a 2139.0 renminbi bonus each week if the company performs well. How much money did Wei make in April if the company performed very well for the whole month?",
+    "adapted_answer": [
+      "In a day, Wei makes 10 * 71.3 = 713.0 renminbi",
+      "If he works 5 days a week, the total number of days for the whole month is 5 * 4 = 20 days.",
+      "Since he makes 71.3 renminbi * 10 per day, the total amount for the whole month is 20 * 71.3 * 10 = 14260.0 renminbi.",
+      "He also got a 2139.0 * 4 = 8556.0 renminbi bonus because the company performed well in all the weeks of April.",
+      "At the end of April, he earned 14260.0 + 8556.0 = 22816.0 renminbi.",
+      "#### 22816.0"
+    ],
+    "adaptation_notes": "Replaced 'Watson' with 'Wei' to give the name a Chinese context."
+  }
+}

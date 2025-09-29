@@ -1,0 +1,142 @@
+{
+  "index": 653,
+  "split": "test",
+  "original": {
+    "question": "Sally has realized she did not receive a full wage this week. Her bank account, which held $200 at the start of the week, now holds $420. She has received no other money into her bank account this week. If her weekly wage should be $300, how many dollars were withheld from Sally’s wage?",
+    "answer": "The wage she received was $420 – $200 = $<<420-200=220>>220\nThis means her wage was $300 – $220 = $<<300-220=80>>80 short\n#### 80"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sally",
+      "dollars"
+    ],
+    "notes": "The name 'Sally' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_balance",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "current_balance",
+      "value": 420.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_wage",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "received_wage",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "withheld_wage",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(metric):\n        if metric[\"unit\"] in conversions:\n            converted_unit = list(conversions[metric[\"unit\"]].keys())[0]\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][converted_unit], 2)\n            return {\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            }\n        else:\n            return {\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            }\n\n    return [convert(metric) for metric in metrics]\n\nmetrics = [\n    {\"variable\": \"initial_balance\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"current_balance\", \"value\": 420.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_wage\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"received_wage\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"withheld_wage\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_balance",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 1426.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "current_balance",
+        "original_value": 420.0,
+        "original_unit": "dollar",
+        "converted_value": 2994.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_wage",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "received_wage",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 1568.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "withheld_wage",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sally has realized she did not receive a full wage this week. Her bank account, which held ${initial_balance} at the start of the week, now holds ${current_balance}. She has received no other money into her bank account this week. If her weekly wage should be ${weekly_wage}, how many dollars were withheld from Sally’s wage?",
+    "templatized_answer": [
+      "The wage she received was ${current_balance} – ${initial_balance} = ${received_wage}",
+      "This means her wage was ${weekly_wage} – ${received_wage} = ${withheld_wage}",
+      "#### {withheld_wage}"
+    ],
+    "factual_assignment": {
+      "initial_balance": 200.0,
+      "current_balance": 420.0,
+      "weekly_wage": 300.0,
+      "received_wage": 220.0,
+      "withheld_wage": 80.0
+    }
+  },
+  "merged_assignment": {
+    "initial_balance": 1426.0,
+    "current_balance": 2994.6,
+    "weekly_wage": 2139.0,
+    "received_wage": 1568.6,
+    "withheld_wage": 570.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_balance = 1426.0\n    weekly_wage = 2139.0\n    current_balance = 2994.6\n\n    received_wage = current_balance - initial_balance\n    withheld_wage = weekly_wage - received_wage\n\n    return {\n        \"initial_balance\": initial_balance,\n        \"current_balance\": current_balance,\n        \"weekly_wage\": weekly_wage,\n        \"received_wage\": round(received_wage, 2),\n        \"withheld_wage\": round(withheld_wage, 2)\n    }\n",
+    "results": {
+      "initial_balance": 1426.0,
+      "current_balance": 2994.6,
+      "weekly_wage": 2139.0,
+      "received_wage": 1568.6,
+      "withheld_wage": 570.4
+    }
+  },
+  "final": {
+    "question": "Sally has realized she did not receive a full wage this week. Her bank account, which held 1426 renminbi at the start of the week, now holds 2994.6 renminbi. She has received no other money into her bank account this week. If her weekly wage should be 2139 renminbi, how many renminbi were withheld from Sally’s wage?",
+    "answer_lines": [
+      "The wage she received was 2994.6 – 1426 = 1568.6",
+      "This means her wage was 2139 – 1568.6 = 570.4",
+      "#### 570.4"
+    ],
+    "final_scalar": 570.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Xiaoying has realized she did not receive a full wage this week. Her bank account, which held 1426 renminbi at the start of the week, now holds 2994.6 renminbi. She has received no other money into her bank account this week. If her weekly wage should be 2139 renminbi, how many renminbi were withheld from Xiaoying’s wage?",
+    "adapted_answer": [
+      "The wage she received was 2994.6 – 1426 = 1568.6",
+      "This means her wage was 2139 – 1568.6 = 570.4",
+      "#### 570.4"
+    ],
+    "adaptation_notes": "Replaced 'Sally' with 'Xiaoying', a common Chinese name."
+  }
+}

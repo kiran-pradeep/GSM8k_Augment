@@ -1,0 +1,152 @@
+{
+  "index": 771,
+  "split": "test",
+  "original": {
+    "question": "Bennet is a farmer. He sells 20 of his eggplants for $3 each. He has 25 ears of corn that he can sell as well. If Bennet wants to make a total of $135, how much should he sell each ear of corn for?",
+    "answer": "From his eggplants, Bennet makes 20 * $3 = $<<20*3=60>>60\nBennet needs to make $135 - $60 = $<<135-60=75>>75 from the sale of his corn\nBennet should sell each ear of corn for $75 / 25 = $<<75/25=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bennet",
+      "dollars",
+      "eggplants"
+    ],
+    "notes": "The name Bennet and the use of dollars are culturally specific to regions other than China. Eggplants are a common food item globally, but in this context, they are associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "eggplant_revenue",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eggplant_revenue_total",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "target_revenue",
+      "value": 135.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "corn_revenue_needed",
+      "value": 75.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "corn_price",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"eggplant_revenue\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"eggplant_revenue_total\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"target_revenue\", \"value\": 135.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"corn_revenue_needed\", \"value\": 75.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"corn_price\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "eggplant_revenue",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eggplant_revenue_total",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "target_revenue",
+        "original_value": 135.0,
+        "original_unit": "dollar",
+        "converted_value": 962.55,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "corn_revenue_needed",
+        "original_value": 75.0,
+        "original_unit": "dollar",
+        "converted_value": 534.75,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "corn_price",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bennet is a farmer. He sells {eggplant_quantity} of his eggplants for ${eggplant_revenue} each. He has {corn_quantity} ears of corn that he can sell as well. If Bennet wants to make a total of ${target_revenue}, how much should he sell each ear of corn for?",
+    "templatized_answer": [
+      "From his eggplants, Bennet makes {eggplant_quantity} * ${eggplant_revenue} = ${eggplant_revenue_total}",
+      "Bennet needs to make ${target_revenue} - ${eggplant_revenue_total} = ${corn_revenue_needed} from the sale of his corn",
+      "Bennet should sell each ear of corn for ${corn_revenue_needed} / {corn_quantity} = ${corn_price}",
+      "#### {corn_price}"
+    ],
+    "factual_assignment": {
+      "eggplant_quantity": 20,
+      "eggplant_revenue": 3.0,
+      "eggplant_revenue_total": 60.0,
+      "target_revenue": 135.0,
+      "corn_revenue_needed": 75.0,
+      "corn_quantity": 25,
+      "corn_price": 3.0
+    }
+  },
+  "merged_assignment": {
+    "eggplant_quantity": 20,
+    "eggplant_revenue": 21.39,
+    "eggplant_revenue_total": 427.8,
+    "target_revenue": 962.55,
+    "corn_revenue_needed": 534.75,
+    "corn_quantity": 25,
+    "corn_price": 21.39
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    eggplant_quantity = 20\n    eggplant_revenue = 21.39\n    target_revenue = 962.55\n    corn_quantity = 25\n\n    eggplant_revenue_total = eggplant_quantity * eggplant_revenue\n    corn_revenue_needed = target_revenue - eggplant_revenue_total\n    corn_price = corn_revenue_needed / corn_quantity\n\n    return {\n        \"eggplant_quantity\": eggplant_quantity,\n        \"eggplant_revenue\": round(eggplant_revenue, 2),\n        \"eggplant_revenue_total\": round(eggplant_revenue_total, 2),\n        \"target_revenue\": round(target_revenue, 2),\n        \"corn_revenue_needed\": round(corn_revenue_needed, 2),\n        \"corn_quantity\": corn_quantity,\n        \"corn_price\": round(corn_price, 2)\n    }\n",
+    "results": {
+      "eggplant_quantity": 20,
+      "eggplant_revenue": 21.39,
+      "eggplant_revenue_total": 427.8,
+      "target_revenue": 962.55,
+      "corn_revenue_needed": 534.75,
+      "corn_quantity": 25,
+      "corn_price": 21.39
+    }
+  },
+  "final": {
+    "question": "Bennet is a farmer. He sells 20 of his eggplants for 21.39 renminbi each. He has 25 ears of corn that he can sell as well. If Bennet wants to make a total of 962.55 renminbi, how much should he sell each ear of corn for?",
+    "answer_lines": [
+      "From his eggplants, Bennet makes 20 * 21.39 renminbi = 427.8 renminbi",
+      "Bennet needs to make 962.55 renminbi - 427.8 renminbi = 534.75 renminbi from the sale of his corn",
+      "Bennet should sell each ear of corn for 534.75 renminbi / 25 = 21.39 renminbi",
+      "#### 21.39"
+    ],
+    "final_scalar": 21.39,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang is a farmer. He sells 20 of his eggplants for 21.39 renminbi each. He has 25 ears of corn that he can sell as well. If Wang wants to make a total of 962.55 renminbi, how much should he sell each ear of corn for?",
+    "adapted_answer": [
+      "From his eggplants, Wang makes 20 * 21.39 renminbi = 427.8 renminbi",
+      "Wang needs to make 962.55 renminbi - 427.8 renminbi = 534.75 renminbi from the sale of his corn",
+      "Wang should sell each ear of corn for 534.75 renminbi / 25 = 21.39 renminbi",
+      "#### 21.39"
+    ],
+    "adaptation_notes": "Replaced 'Bennet' with 'Wang' and kept 'eggplants' as it is a neutral term, but could be replaced with a more Chinese-specific vegetable like ' if needed."
+  }
+}

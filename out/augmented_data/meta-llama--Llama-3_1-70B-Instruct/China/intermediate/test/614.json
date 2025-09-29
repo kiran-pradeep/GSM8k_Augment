@@ -1,0 +1,133 @@
+{
+  "index": 614,
+  "split": "test",
+  "original": {
+    "question": "Gary does laundry twice a week. Each load of laundry uses 20 gallons of water, and a gallon of water costs $0.15. How much does Gary spend on water for laundry in a year?",
+    "answer": "First multiply the number of times Gary does laundry per week by the number of weeks per year to find how many times he does it in a year: 2 loads/week * 52 weeks/year = <<2*52=104>>104 loads/year\nThen find how much each load of laundry costs: 20 gallons/load * $0.15/gallon = $<<20*0.15=3.00>>3.00/load\nThen multiply the cost of each load by the number of loads to find the total cost: $3.00/load * 104 loads = $<<3*104=312>>312\n#### 312"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gary",
+      "gallons",
+      "dollars"
+    ],
+    "notes": "The name 'Gary' is Western, and the units 'gallons' and 'dollars' are commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "laundry_water_cost",
+      "value": 0.15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "laundry_water_usage",
+      "value": 20,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "laundry_load_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_laundry_cost",
+      "value": 312,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"laundry_water_cost\", \"value\": 0.15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"laundry_water_usage\", \"value\": 20, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"laundry_load_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_laundry_cost\", \"value\": 312, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "laundry_water_cost",
+        "original_value": 0.15,
+        "original_unit": "dollar",
+        "converted_value": 1.07,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "laundry_water_usage",
+        "original_value": 20,
+        "original_unit": "gallon",
+        "converted_value": 75.71,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "laundry_load_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_laundry_cost",
+        "original_value": 312,
+        "original_unit": "dollar",
+        "converted_value": 2224.56,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gary does laundry {laundry_frequency} times a week. Each load of laundry uses {laundry_water_usage} gallons of water, and a gallon of water costs ${laundry_water_cost}. How much does Gary spend on water for laundry in a year?",
+    "templatized_answer": [
+      "First multiply the number of times Gary does laundry per week by the number of weeks per year to find how many times he does it in a year: {laundry_frequency} loads/week * {weeks_per_year} weeks/year = {laundry_frequency} * {weeks_per_year} loads/year",
+      "Then find how much each load of laundry costs: {laundry_water_usage} gallons/load * ${laundry_water_cost}/gallon = ${laundry_water_usage} * {laundry_water_cost}/load",
+      "Then multiply the cost of each load by the number of loads to find the total cost: ${laundry_water_usage} * {laundry_water_cost}/load * {laundry_frequency} * {weeks_per_year} loads = ${laundry_water_usage} * {laundry_water_cost} * {laundry_frequency} * {weeks_per_year}",
+      "#### {laundry_water_usage} * {laundry_water_cost} * {laundry_frequency} * {weeks_per_year}"
+    ],
+    "factual_assignment": {
+      "laundry_frequency": 2,
+      "weeks_per_year": 52,
+      "laundry_water_usage": 20,
+      "laundry_water_cost": 0.15
+    }
+  },
+  "merged_assignment": {
+    "laundry_frequency": 2,
+    "weeks_per_year": 52,
+    "laundry_water_usage": 75.71,
+    "laundry_water_cost": 1.07
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    laundry_frequency = 2\n    weeks_per_year = 52\n    laundry_water_usage = 75.71\n    laundry_water_cost = 1.07\n\n    loads_per_year = laundry_frequency * weeks_per_year\n    cost_per_load = laundry_water_usage * laundry_water_cost\n    total_cost = cost_per_load * loads_per_year\n\n    return {\n        \"laundry_frequency\": laundry_frequency,\n        \"weeks_per_year\": weeks_per_year,\n        \"laundry_water_usage\": laundry_water_usage,\n        \"laundry_water_cost\": round(laundry_water_cost, 2),\n        \"loads_per_year\": loads_per_year,\n        \"cost_per_load\": round(cost_per_load, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "laundry_frequency": 2,
+      "weeks_per_year": 52,
+      "laundry_water_usage": 75.71,
+      "laundry_water_cost": 1.07,
+      "loads_per_year": 104,
+      "cost_per_load": 81.01,
+      "total_cost": 8425.01
+    }
+  },
+  "final": {
+    "question": "Gary does laundry 2 times a week. Each load of laundry uses 75.71 liters of water, and a liter of water costs 1.07 renminbi. How much does Gary spend on water for laundry in a year?",
+    "answer_lines": [
+      "First multiply the number of times Gary does laundry per week by the number of weeks per year to find how many times he does it in a year: 2 loads/week * 52 weeks/year = 104 loads/year",
+      "Then find how much each load of laundry costs: 75.71 liters/load * 1.07 renminbi/liter = 81.01 renminbi/load",
+      "Then multiply the cost of each load by the number of loads to find the total cost: 81.01 renminbi/load * 104 loads = 8425.01 renminbi",
+      "#### 8425.01"
+    ],
+    "final_scalar": 8425.01,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wei does laundry 2 times a week. Each load of laundry uses 75.71 liters of water, and a liter of water costs 1.07 renminbi. How much does Wei spend on water for laundry in a year?",
+    "adapted_answer": [
+      "First multiply the number of times Wei does laundry per week by the number of weeks per year to find how many times he does it in a year: 2 loads/week * 52 weeks/year = 104 loads/year",
+      "Then find how much each load of laundry costs: 75.71 liters/load * 1.07 renminbi/liter = 81.01 renminbi/load",
+      "Then multiply the cost of each load by the number of loads to find the total cost: 81.01 renminbi/load * 104 loads = 8425.01 renminbi",
+      "#### 8425.01"
+    ],
+    "adaptation_notes": "Replaced 'Gary' with 'Wei' to give the name a Chinese context."
+  }
+}

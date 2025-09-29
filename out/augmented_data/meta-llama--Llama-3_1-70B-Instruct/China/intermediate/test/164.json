@@ -1,0 +1,126 @@
+{
+  "index": 164,
+  "split": "test",
+  "original": {
+    "question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing $35/hour in missed income. The accountant charges $90. How much more money will she have if she hires the accountant?",
+    "answer": "First find the total lost revenue if Jackie does her taxes herself: $35/hour * 3 hours = $<<35*3=105>>105\nThen subtract the accountant's charge to find how much money Janet saves: $105 - $90 = $<<105-90=15>>15\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusive to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_income",
+      "value": 35.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "accountant_charge",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lost_revenue",
+      "value": 105.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "savings",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * conversions[unit][converted_unit], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"hourly_income\",\n    \"value\": 35.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"accountant_charge\",\n    \"value\": 90.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lost_revenue\",\n    \"value\": 105.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"savings\",\n    \"value\": 15.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_income",
+        "original_value": 35.0,
+        "original_unit": "dollar",
+        "converted_value": 249.55,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "accountant_charge",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 641.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lost_revenue",
+        "original_value": 105.0,
+        "original_unit": "dollar",
+        "converted_value": 748.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "savings",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do {hours_lost} fewer hours of freelance work, losing ${hourly_income}/hour in missed income. The accountant charges ${accountant_charge}. How much more money will she have if she hires the accountant?",
+    "templatized_answer": [
+      "First find the total lost revenue if Jackie does her taxes herself: ${hourly_income}/hour * {hours_lost} hours = ${hourly_income} * {hours_lost}",
+      "Then subtract the accountant's charge to find how much money Janet saves: ${hourly_income} * {hours_lost} - ${accountant_charge} = ${savings}",
+      "#### {savings}"
+    ],
+    "factual_assignment": {
+      "hourly_income": 35.0,
+      "accountant_charge": 90.0,
+      "hours_lost": 3,
+      "savings": 15.0
+    }
+  },
+  "merged_assignment": {
+    "hourly_income": 249.55,
+    "accountant_charge": 641.7,
+    "hours_lost": 3,
+    "savings": 106.95
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_income = 249.55\n    accountant_charge = 641.7\n    hours_lost = 3\n\n    lost_revenue = hourly_income * hours_lost\n    savings = lost_revenue - accountant_charge\n\n    return {\n        \"hourly_income\": round(hourly_income, 2),\n        \"accountant_charge\": round(accountant_charge, 2),\n        \"hours_lost\": hours_lost,\n        \"lost_revenue\": round(lost_revenue, 2),\n        \"savings\": round(savings, 2)\n    }\n",
+    "results": {
+      "hourly_income": 249.55,
+      "accountant_charge": 641.7,
+      "hours_lost": 3,
+      "lost_revenue": 748.65,
+      "savings": 106.95
+    }
+  },
+  "final": {
+    "question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing 249.55 renminbi/hour in missed income. The accountant charges 641.7 renminbi. How much more money will she have if she hires the accountant?",
+    "answer_lines": [
+      "First find the total lost revenue if Jackie does her taxes herself: 249.55 renminbi/hour * 3 hours = 748.65 renminbi",
+      "Then subtract the accountant's charge to find how much money Janet saves: 748.65 renminbi - 641.7 renminbi = 106.95 renminbi",
+      "#### 106.95"
+    ],
+    "final_scalar": 106.95,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jiang is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing 249.55 renminbi/hour in missed income. The accountant charges 641.7 renminbi. How much more money will she have if she hires the accountant?",
+    "adapted_answer": [
+      "First find the total lost revenue if Jiang does her taxes herself: 249.55 renminbi/hour * 3 hours = 748.65 renminbi",
+      "Then subtract the accountant's charge to find how much money Jiang saves: 748.65 renminbi - 641.7 renminbi = 106.95 renminbi",
+      "#### 106.95"
+    ],
+    "adaptation_notes": "Replaced 'Jackie' with 'Jiang' to use a Chinese name."
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "index": 15,
+  "split": "test",
+  "original": {
+    "question": "A merchant wants to make a choice of purchase between 2 purchase plans: jewelry worth $5,000 or electronic gadgets worth $8,000. His financial advisor speculates that the jewelry market will go up 2.5% while the electronic gadgets market will rise 1.2% within the same month. If the merchant is looking to maximize profit at the end of this month by making a choice, how much profit would this be?",
+    "answer": "If he purchases jewelry, he will make a profit of 2.5% which is $5000*(2.5/100) = $<<5000*(2.5/100)=125>>125\nIf he purchases electronic gadgets, he will make a profit of 1.2% which is $8000*(1.2/100) = $<<8000*(1.2/100)=96>>96\nIf he wants to maximize profit, since $125 > $96, he will choose to purchase jewelry, thereby making a profit of $<<125=125>>125\n#### 125"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "jewelry_cost",
+      "value": 5000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jewelry_profit",
+      "value": 125.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "electronics_cost",
+      "value": 8000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "electronics_profit",
+      "value": 96.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"jewelry_cost\", \"value\": 5000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jewelry_profit\", \"value\": 125.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"electronics_cost\", \"value\": 8000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"electronics_profit\", \"value\": 96.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "jewelry_cost",
+        "original_value": 5000.0,
+        "original_unit": "dollar",
+        "converted_value": 35650.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "jewelry_profit",
+        "original_value": 125.0,
+        "original_unit": "dollar",
+        "converted_value": 891.25,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "electronics_cost",
+        "original_value": 8000.0,
+        "original_unit": "dollar",
+        "converted_value": 57040.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "electronics_profit",
+        "original_value": 96.0,
+        "original_unit": "dollar",
+        "converted_value": 684.48,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A merchant wants to make a choice of purchase between 2 purchase plans: jewelry worth ${jewelry_cost} or electronic gadgets worth ${electronics_cost}. His financial advisor speculates that the jewelry market will go up {jewelry_increase_percentage}% while the electronic gadgets market will rise {electronics_increase_percentage}% within the same month. If the merchant is looking to maximize profit at the end of this month by making a choice, how much profit would this be?",
+    "templatized_answer": [
+      "If he purchases jewelry, he will make a profit of {jewelry_increase_percentage}% which is ${jewelry_cost}*({jewelry_increase_percentage}/100) = ${jewelry_profit}",
+      "If he purchases electronic gadgets, he will make a profit of {electronics_increase_percentage}% which is ${electronics_cost}*({electronics_increase_percentage}/100) = ${electronics_profit}",
+      "If he wants to maximize profit, since ${jewelry_profit} > ${electronics_profit}, he will choose to purchase jewelry, thereby making a profit of ${jewelry_profit}",
+      "#### {jewelry_profit}"
+    ],
+    "factual_assignment": {
+      "jewelry_cost": 5000.0,
+      "electronics_cost": 8000.0,
+      "jewelry_profit": 125.0,
+      "electronics_profit": 96.0,
+      "jewelry_increase_percentage": 2.5,
+      "electronics_increase_percentage": 1.2
+    }
+  },
+  "merged_assignment": {
+    "jewelry_cost": 35650.0,
+    "electronics_cost": 57040.0,
+    "jewelry_profit": 891.25,
+    "electronics_profit": 684.48,
+    "jewelry_increase_percentage": 2.5,
+    "electronics_increase_percentage": 1.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    jewelry_cost = 35650.0\n    electronics_cost = 57040.0\n    jewelry_increase_percentage = 2.5\n    electronics_increase_percentage = 1.2\n\n    jewelry_profit = round(jewelry_cost * (jewelry_increase_percentage / 100), 2)\n    electronics_profit = round(electronics_cost * (electronics_increase_percentage / 100), 2)\n\n    return {\n        \"jewelry_cost\": jewelry_cost,\n        \"electronics_cost\": electronics_cost,\n        \"jewelry_profit\": jewelry_profit,\n        \"electronics_profit\": electronics_profit,\n        \"jewelry_increase_percentage\": jewelry_increase_percentage,\n        \"electronics_increase_percentage\": electronics_increase_percentage\n    }\n",
+    "results": {
+      "jewelry_cost": 35650.0,
+      "electronics_cost": 57040.0,
+      "jewelry_profit": 891.25,
+      "electronics_profit": 684.48,
+      "jewelry_increase_percentage": 2.5,
+      "electronics_increase_percentage": 1.2
+    }
+  },
+  "final": {
+    "question": "A merchant wants to make a choice of purchase between 2 purchase plans: jewelry worth 35650 renminbi or electronic gadgets worth 57040 renminbi. His financial advisor speculates that the jewelry market will go up 2.5% while the electronic gadgets market will rise 1.2% within the same month. If the merchant is looking to maximize profit at the end of this month by making a choice, how much profit would this be?",
+    "answer_lines": [
+      "If he purchases jewelry, he will make a profit of 2.5% which is 35650*(2.5/100) = 891.25",
+      "If he purchases electronic gadgets, he will make a profit of 1.2% which is 57040*(1.2/100) = 684.48",
+      "If he wants to maximize profit, since 891.25 > 684.48, he will choose to purchase jewelry, thereby making a profit of 891.25",
+      "#### 891.25"
+    ],
+    "final_scalar": 891.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A merchant wants to make a choice of purchase between 2 purchase plans: jade worth 35650 renminbi or electronic gadgets worth 57040 renminbi. His financial advisor speculates that the jade market will go up 2.5% while the electronic gadgets market will rise 1.2% within the same month. If the merchant is looking to maximize profit at the end of this month by making a choice, how much profit would this be?",
+    "adapted_answer": [
+      "If he purchases jade, he will make a profit of 2.5% which is 35650*(2.5/100) = 891.25",
+      "If he purchases electronic gadgets, he will make a profit of 1.2% which is 57040*(1.2/100) = 684.48",
+      "If he wants to maximize profit, since 891.25 > 684.48, he will choose to purchase jade, thereby making a profit of 891.25",
+      "#### 891.25"
+    ],
+    "adaptation_notes": "Replaced 'jewelry' with 'jade' to provide a Chinese context."
+  }
+}

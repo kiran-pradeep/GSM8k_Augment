@@ -1,0 +1,98 @@
+{
+  "index": 134,
+  "split": "test",
+  "original": {
+    "question": "Tom gets 4 car washes a month.  If each car wash costs $15 how much does he pay in a year?",
+    "answer": "He gets 4*12=<<4*12=48>>48 car washes a year\nThat means it cost 48*15=$<<48*15=720>>720\n#### 720"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tom",
+      "dollars"
+    ],
+    "notes": "The name 'Tom' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "car_wash_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "car_wash_yearly_cost",
+      "value": 720.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"car_wash_cost\",\n    \"value\": 15.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"car_wash_yearly_cost\",\n    \"value\": 720.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "car_wash_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "car_wash_yearly_cost",
+        "original_value": 720.0,
+        "original_unit": "dollar",
+        "converted_value": 5133.6,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tom gets {monthly_car_washes} car washes a month.  If each car wash costs ${car_wash_cost} how much does he pay in a year?",
+    "templatized_answer": [
+      "He gets {monthly_car_washes}*12={monthly_car_washes}*12 car washes a year",
+      "That means it cost {monthly_car_washes}*12*{car_wash_cost}=${monthly_car_washes}*12*{car_wash_cost}",
+      "#### {car_wash_yearly_cost}"
+    ],
+    "factual_assignment": {
+      "monthly_car_washes": 4,
+      "car_wash_cost": 15.0,
+      "car_wash_yearly_cost": 720.0
+    }
+  },
+  "merged_assignment": {
+    "monthly_car_washes": 4,
+    "car_wash_cost": 106.95,
+    "car_wash_yearly_cost": 5133.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_car_washes = 4\n    car_wash_cost = 106.95\n\n    car_washes_per_year = monthly_car_washes * 12\n    car_wash_yearly_cost = car_washes_per_year * car_wash_cost\n\n    return {\n        \"monthly_car_washes\": monthly_car_washes,\n        \"car_wash_cost\": round(car_wash_cost, 2),\n        \"car_washes_per_year\": car_washes_per_year,\n        \"car_wash_yearly_cost\": round(car_wash_yearly_cost, 2)\n    }\n",
+    "results": {
+      "monthly_car_washes": 4,
+      "car_wash_cost": 106.95,
+      "car_washes_per_year": 48,
+      "car_wash_yearly_cost": 5133.6
+    }
+  },
+  "final": {
+    "question": "Tom gets 4 car washes a month.  If each car wash costs 106.95 renminbi how much does he pay in a year?",
+    "answer_lines": [
+      "He gets 4*12=48 car washes a year",
+      "That means it cost 48*106.95 renminbi=5133.6 renminbi",
+      "#### 5133.6"
+    ],
+    "final_scalar": 5133.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang gets 4 car washes a month.  If each car wash costs 106.95 renminbi how much does he pay in a year?",
+    "adapted_answer": [
+      "He gets 4*12=48 car washes a year",
+      "That means it cost 48*106.95 renminbi=5133.6 renminbi",
+      "#### 5133.6"
+    ],
+    "adaptation_notes": "Replaced 'Tom' with 'Wang' to give the name a Chinese context."
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "index": 1013,
+  "split": "test",
+  "original": {
+    "question": "Janet gets a job as a waitress.  She makes $10 an hour from wages and another $15 an hour from tips.  She wants to save up 20% of the cost of a $10000 car for a downpayment.  If she works 40 hours a week how many weeks will she need to work to save the down payment?",
+    "answer": "She makes 10+15=$<<10+15=25>>25 an hour from working\nThat means each week she makes 25*40=$<<25*40=1000>>1000\nShe wants to make 10000*.2=$<<10000*.2=2000>>2000\nSo she needs to work 2000/1000=<<2000/1000=2>>2 weeks\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Janet"
+    ],
+    "notes": "The text contains the name 'Janet' and the unit 'dollars', which are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_tips",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "car_cost",
+      "value": 10000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "downpayment",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_tips\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"car_cost\", \"value\": 10000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"downpayment\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hourly_tips",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "car_cost",
+        "original_value": 10000.0,
+        "original_unit": "dollar",
+        "converted_value": 71300.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 7130.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "downpayment",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 14260.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Janet gets a job as a waitress.  She makes ${hourly_wage} an hour from wages and another ${hourly_tips} an hour from tips.  She wants to save up 20% of the cost of a ${car_cost} car for a downpayment.  If she works 40 hours a week how many weeks will she need to work to save the down payment?",
+    "templatized_answer": [
+      "She makes {hourly_wage}+{hourly_tips}=${hourly_wage}+{hourly_tips} an hour from working",
+      "That means each week she makes ({hourly_wage}+{hourly_tips})*40=${weekly_hours}*({hourly_wage}+{hourly_tips})",
+      "She wants to make {car_cost}*.2=${car_cost}*.2",
+      "So she needs to work ({car_cost}*.2)/({weekly_hours}*({hourly_wage}+{hourly_tips}))=({car_cost}*.2)/({weekly_hours}*({hourly_wage}+{hourly_tips}))",
+      "#### ({car_cost}*.2)/({weekly_hours}*({hourly_wage}+{hourly_tips}))"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 10.0,
+      "hourly_tips": 15.0,
+      "car_cost": 10000.0,
+      "weekly_hours": 40,
+      "weekly_earnings": 1000.0,
+      "downpayment": 2000.0
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 71.3,
+    "hourly_tips": 106.95,
+    "car_cost": 71300.0,
+    "weekly_hours": 40,
+    "weekly_earnings": 7130.0,
+    "downpayment": 14260.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 71.3\n    hourly_tips = 106.95\n    car_cost = 71300.0\n    weekly_hours = 40\n\n    hourly_earnings = round(hourly_wage + hourly_tips, 2)\n    weekly_earnings = round(hourly_earnings * weekly_hours, 2)\n    downpayment = round(car_cost * 0.2, 2)\n    weeks_to_work = round(downpayment / weekly_earnings, 2)\n\n    return {\n        \"{hourly_wage}+{hourly_tips}\": hourly_earnings,\n        \"({hourly_wage}+{hourly_tips})*40\": weekly_earnings,\n        \"{car_cost}*.2\": downpayment,\n        \"({car_cost}*.2)/({weekly_hours}*({hourly_wage}+{hourly_tips}))\": weeks_to_work,\n        \"{car_cost}\": car_cost,\n        \"{hourly_wage}\": hourly_wage,\n        \"{hourly_tips}\": hourly_tips,\n        \"{weekly_hours}\": weekly_hours,\n        \"{car_cost}*.2\": downpayment,\n        \"({weekly_hours}*({hourly_wage}+{hourly_tips}))\": weekly_earnings\n    }\n",
+    "results": {
+      "{hourly_wage}+{hourly_tips}": 178.25,
+      "({hourly_wage}+{hourly_tips})*40": 7130.0,
+      "{car_cost}*.2": 14260.0,
+      "({car_cost}*.2)/({weekly_hours}*({hourly_wage}+{hourly_tips}))": 2.0,
+      "{car_cost}": 71300.0,
+      "{hourly_wage}": 71.3,
+      "{hourly_tips}": 106.95,
+      "{weekly_hours}": 40,
+      "({weekly_hours}*({hourly_wage}+{hourly_tips}))": 7130.0
+    }
+  },
+  "final": {
+    "question": "Janet gets a job as a waitress.  She makes 71.3 renminbi an hour from wages and another 106.95 renminbi an hour from tips.  She wants to save up 20% of the cost of a 71300 renminbi car for a downpayment.  If she works 40 hours a week how many weeks will she need to work to save the down payment?",
+    "answer_lines": [
+      "She makes 71.3+106.95=178.25 renminbi an hour from working",
+      "That means each week she makes (71.3+106.95)*40=7130 renminbi",
+      "She wants to make 71300*.2=14260 renminbi",
+      "So she needs to work 14260/7130=2 weeks",
+      "#### 2"
+    ],
+    "final_scalar": 2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jiang Jing gets a job as a waitress.  She makes 71.3 renminbi an hour from wages and another 106.95 renminbi an hour from tips.  She wants to save up 20% of the cost of a 71300 renminbi car for a downpayment.  If she works 40 hours a week how many weeks will she need to work to save the down payment?",
+    "adapted_answer": [
+      "She makes 71.3+106.95=178.25 renminbi an hour from working",
+      "That means each week she makes (71.3+106.95)*40=7130 renminbi",
+      "She wants to make 71300*.2=14260 renminbi",
+      "So she needs to work 14260/7130=2 weeks",
+      "#### 2"
+    ],
+    "adaptation_notes": "Replaced 'Janet' with 'Jiang Jing' to give the name a Chinese context."
+  }
+}

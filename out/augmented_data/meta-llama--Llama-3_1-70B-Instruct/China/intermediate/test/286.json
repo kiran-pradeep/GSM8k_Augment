@@ -1,0 +1,181 @@
+{
+  "index": 286,
+  "split": "test",
+  "original": {
+    "question": "Kelly has 5 quarters and 2 dimes. If she buys a can of pop for 55 cents, how many cents will she have left?",
+    "answer": "Her quarters are worth 5 * 25 = <<5*25=125>>125 cents.\nThe dimes are worth 2 * 10 = <<2*10=20>>20 cents\nKelly has a total of 125 + 20 = <<125+20=145>>145 cents\nAfter buying the can of pop, Kelly will have 145 - 55 = <<145-55=90>>90 cents left.\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "quarters",
+      "dimes",
+      "can of pop"
+    ],
+    "notes": "The question contains US-specific currency units (quarters, dimes) and a Western-style food item (can of pop)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 25.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "dime_value",
+      "value": 10.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "pop_cost",
+      "value": 55.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "initial_cents",
+      "value": 125.0,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "dimes_total",
+      "value": 20.0,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cents",
+      "value": 145.0,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_cents",
+      "value": 90.0,
+      "unit": "cent",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'cent': {'unit': 'renminbi', 'factor': 7.13 / 100},\n        'pound': {'unit': 'kilogram', 'factor': 0.453592},\n        'ounce': {'unit': 'gram', 'factor': 28.3495},\n        'mile': {'unit': 'kilometer', 'factor': 1.60934},\n        'foot': {'unit': 'meter', 'factor': 0.3048},\n        'gallon': {'unit': 'liter', 'factor': 3.78541},\n        'cup': {'unit': 'milliliter', 'factor': 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric['value']\n        original_unit = metric['unit']\n        variable = metric['variable']\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit]['unit']\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"quarter_value\",\n    \"value\": 25.0,\n    \"unit\": \"cent\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"dime_value\",\n    \"value\": 10.0,\n    \"unit\": \"cent\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"pop_cost\",\n    \"value\": 55.0,\n    \"unit\": \"cent\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"initial_cents\",\n    \"value\": 125.0,\n    \"unit\": \"cent\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"dimes_total\",\n    \"value\": 20.0,\n    \"unit\": \"cent\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cents\",\n    \"value\": 145.0,\n    \"unit\": \"cent\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"remaining_cents\",\n    \"value\": 90.0,\n    \"unit\": \"cent\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 25.0,
+        "original_unit": "cent",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "dime_value",
+        "original_value": 10.0,
+        "original_unit": "cent",
+        "converted_value": 0.71,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "pop_cost",
+        "original_value": 55.0,
+        "original_unit": "cent",
+        "converted_value": 3.92,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "initial_cents",
+        "original_value": 125.0,
+        "original_unit": "cent",
+        "converted_value": 8.91,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "dimes_total",
+        "original_value": 20.0,
+        "original_unit": "cent",
+        "converted_value": 1.43,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cents",
+        "original_value": 145.0,
+        "original_unit": "cent",
+        "converted_value": 10.34,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "remaining_cents",
+        "original_value": 90.0,
+        "original_unit": "cent",
+        "converted_value": 6.42,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kelly has 5 quarters and 2 dimes. If she buys a can of pop for {pop_cost} cents, how many cents will she have left?",
+    "templatized_answer": [
+      "Her quarters are worth 5 * {quarter_value} = {initial_cents} cents.",
+      "The dimes are worth 2 * {dime_value} = {dimes_total} cents",
+      "Kelly has a total of {initial_cents} + {dimes_total} = {total_cents} cents",
+      "After buying the can of pop, Kelly will have {total_cents} - {pop_cost} = {remaining_cents} cents left.",
+      "#### {remaining_cents}"
+    ],
+    "factual_assignment": {
+      "quarter_value": 25.0,
+      "dime_value": 10.0,
+      "pop_cost": 55.0,
+      "initial_cents": 125.0,
+      "dimes_total": 20.0,
+      "total_cents": 145.0,
+      "remaining_cents": 90.0
+    }
+  },
+  "merged_assignment": {
+    "quarter_value": 1.78,
+    "dime_value": 0.71,
+    "pop_cost": 3.92,
+    "initial_cents": 8.91,
+    "dimes_total": 1.43,
+    "total_cents": 10.34,
+    "remaining_cents": 6.42
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    quarter_value = 25  # cents\n    dime_value = 10  # cents\n    pop_cost = 392  # cents\n\n    initial_cents = 5 * quarter_value\n    dimes_total = 2 * dime_value\n    total_cents = initial_cents + dimes_total\n    remaining_cents = total_cents - pop_cost\n\n    return {\n        \"quarter_value\": quarter_value,\n        \"dime_value\": dime_value,\n        \"pop_cost\": pop_cost,\n        \"initial_cents\": initial_cents,\n        \"dimes_total\": dimes_total,\n        \"total_cents\": total_cents,\n        \"remaining_cents\": remaining_cents\n    }\n",
+    "results": {
+      "quarter_value": 25,
+      "dime_value": 10,
+      "pop_cost": 392,
+      "initial_cents": 125,
+      "dimes_total": 20,
+      "total_cents": 145,
+      "remaining_cents": -247
+    }
+  },
+  "final": {
+    "question": "Kelly has 5 quarters and 2 dimes. If she buys a can of pop for 392 cents, how many cents will she have left?",
+    "answer_lines": [
+      "Her quarters are worth 5 * 25 = 125 cents.",
+      "The dimes are worth 2 * 10 = 20 cents",
+      "Kelly has a total of 125 + 20 = 145 cents",
+      "After buying the can of pop, Kelly will have 145 - 392 = -247 cents left.",
+      "#### -247"
+    ],
+    "final_scalar": -247,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kelly has 5 (yī kuài líng wǔ) 1-yuan coins and 2 (liǎng) 1-jiao coins. If she buys a can of (zhēnzhū nǎi) pearl milk tea for 392 cents, how many cents will she have left?",
+    "adapted_answer": [
+      "Her 1-yuan coins are worth 5 * 25 = 125 cents.",
+      "The 1-jiao coins are worth 2 * 10 = 20 cents",
+      "Kelly has a total of 125 + 20 = 145 cents",
+      "After buying the can of pearl milk tea, Kelly will have 145 - 392 = -247 cents left.",
+      "#### -247"
+    ],
+    "adaptation_notes": "Replaced 'quarters' with '1-yuan coins', 'dimes' with '1-jiao coins', and 'can of pop' with 'can of pearl milk tea'."
+  }
+}

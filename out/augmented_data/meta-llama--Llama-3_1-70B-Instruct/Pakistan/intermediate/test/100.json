@@ -1,0 +1,101 @@
+{
+  "index": 100,
+  "split": "test",
+  "original": {
+    "question": "Jerome had 4 friends who came to visit him on a certain day. The first friend pressed on the doorbell 20 times before Jerome opened, the second friend pressed on the doorbell 1/4 times more than Jerome's first friend. The third friend pressed on the doorbell 10 times more than the fourth friend. If the fourth friend pressed on the doorbell 60 times, how many doorbell rings did the doorbell make?",
+    "answer": "The second friend pressed on the doorbell 1/4 times more than Jerome's first friend, a total of 1/4*20=<<1/4*20=5>>5 times.\nJerome's second friend pressed on the doorbell 20+5=<<20+5=25>>25\nThe first two friends pressed on the doorbell 25+20=<<25+20=45>>45 times altogether before Jerome could open the door.\nJerome's third friend pressed on the doorbell 60+10=<<60+10=70>>70 times before Jerome could open the door.\nAltogether, Jerome's third and fourth friends pressed on the doorbell 70+60=<<70+60=130>>130 times before Jerome could open.\nThe number of doorbell rings that Jerome's friend made before Jerome could open the door is 130+45=<<130+45=175>>175 times.\n#### 175"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jerome"
+    ],
+    "notes": "The name Jerome is culturally specific to Western regions."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 281.85, 'unit': 'rupee'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Jerome had {number_of_friends} friends who came to visit him on a certain day. The first friend pressed on the doorbell {first_friend_rings} times before Jerome opened, the second friend pressed on the doorbell 1/4 times more than Jerome's first friend. The third friend pressed on the doorbell {third_friend_additional_rings} times more than the fourth friend. If the fourth friend pressed on the doorbell {fourth_friend_rings} times, how many doorbell rings did the doorbell make?",
+    "templatized_answer": [
+      "The second friend pressed on the doorbell 1/4 times more than Jerome's first friend, a total of 1/4*{first_friend_rings}={second_friend_additional_rings} times.",
+      "Jerome's second friend pressed on the doorbell {first_friend_rings}+{second_friend_additional_rings}={second_friend_total_rings}",
+      "The first two friends pressed on the doorbell {second_friend_total_rings}+{first_friend_rings}={first_two_friends_total_rings} times altogether before Jerome could open the door.",
+      "Jerome's third friend pressed on the doorbell {fourth_friend_rings}+{third_friend_additional_rings}={third_friend_total_rings} times before Jerome could open the door.",
+      "Altogether, Jerome's third and fourth friends pressed on the doorbell {third_friend_total_rings}+{fourth_friend_rings}={third_and_fourth_friends_total_rings} times before Jerome could open.",
+      "The number of doorbell rings that Jerome's friend made before Jerome could open the door is {third_and_fourth_friends_total_rings}+{first_two_friends_total_rings}={total_rings}.",
+      "#### {total_rings}"
+    ],
+    "factual_assignment": {
+      "number_of_friends": 4,
+      "first_friend_rings": 20,
+      "second_friend_additional_rings": 5,
+      "third_friend_additional_rings": 10,
+      "fourth_friend_rings": 60,
+      "second_friend_total_rings": 25,
+      "first_two_friends_total_rings": 45,
+      "third_friend_total_rings": 70,
+      "third_and_fourth_friends_total_rings": 130,
+      "total_rings": 175
+    }
+  },
+  "merged_assignment": {
+    "number_of_friends": 4,
+    "first_friend_rings": 20,
+    "second_friend_additional_rings": 5,
+    "third_friend_additional_rings": 10,
+    "fourth_friend_rings": 60,
+    "second_friend_total_rings": 25,
+    "first_two_friends_total_rings": 45,
+    "third_friend_total_rings": 70,
+    "third_and_fourth_friends_total_rings": 130,
+    "total_rings": 175
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_friends = 4\n    first_friend_rings = 20\n    fourth_friend_rings = 60\n    third_friend_additional_rings = 10\n\n    second_friend_additional_rings = (1/4) * first_friend_rings\n    second_friend_total_rings = first_friend_rings + second_friend_additional_rings\n    first_two_friends_total_rings = second_friend_total_rings + first_friend_rings\n    third_friend_total_rings = fourth_friend_rings + third_friend_additional_rings\n    third_and_fourth_friends_total_rings = third_friend_total_rings + fourth_friend_rings\n    total_rings = third_and_fourth_friends_total_rings + first_two_friends_total_rings\n\n    return {\n        \"number_of_friends\": number_of_friends,\n        \"first_friend_rings\": first_friend_rings,\n        \"second_friend_additional_rings\": round(second_friend_additional_rings, 2),\n        \"third_friend_additional_rings\": third_friend_additional_rings,\n        \"fourth_friend_rings\": fourth_friend_rings,\n        \"second_friend_total_rings\": round(second_friend_total_rings, 2),\n        \"first_two_friends_total_rings\": round(first_two_friends_total_rings, 2),\n        \"third_friend_total_rings\": round(third_friend_total_rings, 2),\n        \"third_and_fourth_friends_total_rings\": round(third_and_fourth_friends_total_rings, 2),\n        \"total_rings\": round(total_rings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_friends": 4,
+      "first_friend_rings": 20,
+      "second_friend_additional_rings": 5.0,
+      "third_friend_additional_rings": 10,
+      "fourth_friend_rings": 60,
+      "second_friend_total_rings": 25.0,
+      "first_two_friends_total_rings": 45.0,
+      "third_friend_total_rings": 70,
+      "third_and_fourth_friends_total_rings": 130,
+      "total_rings": 175.0
+    }
+  },
+  "final": {
+    "question": "Jerome had 4 friends who came to visit him on a certain day. The first friend pressed on the doorbell 20 times before Jerome opened, the second friend pressed on the doorbell 1/4 times more than Jerome's first friend. The third friend pressed on the doorbell 10 times more than the fourth friend. If the fourth friend pressed on the doorbell 60 times, how many doorbell rings did the doorbell make?",
+    "answer_lines": [
+      "The second friend pressed on the doorbell 1/4 times more than Jerome's first friend, a total of 1/4*20=5.0 times.",
+      "Jerome's second friend pressed on the doorbell 20+5.0=25.0",
+      "The first two friends pressed on the doorbell 25.0+20=45.0 times altogether before Jerome could open the door.",
+      "Jerome's third friend pressed on the doorbell 60+10=70 times before Jerome could open the door.",
+      "Altogether, Jerome's third and fourth friends pressed on the doorbell 70+60=130 times before Jerome could open.",
+      "The number of doorbell rings that Jerome's friend made before Jerome could open the door is 130+45.0=175.0 times.",
+      "#### 175.0"
+    ],
+    "final_scalar": 175.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran had 4 friends who came to visit him on a certain day. The first friend pressed on the doorbell 20 times before Kamran opened, the second friend pressed on the doorbell 1/4 times more than Kamran's first friend. The third friend pressed on the doorbell 10 times more than the fourth friend. If the fourth friend pressed on the doorbell 60 times, how many doorbell rings did the doorbell make?",
+    "adapted_answer": [
+      "The second friend pressed on the doorbell 1/4 times more than Kamran's first friend, a total of 1/4*20=5.0 times.",
+      "Kamran's second friend pressed on the doorbell 20+5.0=25.0",
+      "The first two friends pressed on the doorbell 25.0+20=45.0 times altogether before Kamran could open the door.",
+      "Kamran's third friend pressed on the doorbell 60+10=70 times before Kamran could open the door.",
+      "Altogether, Kamran's third and fourth friends pressed on the doorbell 70+60=130 times before Kamran could open.",
+      "The number of doorbell rings that Kamran's friend made before Kamran could open the door is 130+45.0=175.0 times.",
+      "#### 175.0"
+    ],
+    "adaptation_notes": "Replaced 'Jerome' with 'Kamran' to give the name a Pakistani context."
+  }
+}

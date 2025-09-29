@@ -1,0 +1,113 @@
+{
+  "index": 79,
+  "split": "test",
+  "original": {
+    "question": "John adopts a dog.  He takes the dog to the groomer, which costs $100.  The groomer offers him a 30% discount for being a new customer.  How much does the grooming cost?",
+    "answer": "The groomer gave a 100*.3=$<<100*.3=30>>30 discount\nSo the grooming cost 100-30=$<<100-30=70>>70\n#### 70"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "grooming_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "grooming_cost_after_discount",
+      "value": 70,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"grooming_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discount\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"grooming_cost_after_discount\", \"value\": 70, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "grooming_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "discount",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "grooming_cost_after_discount",
+        "original_value": 70,
+        "original_unit": "dollar",
+        "converted_value": 499.1,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John adopts a dog.  He takes the dog to the groomer, which costs ${grooming_cost}.  The groomer offers him a {discount_percentage}% discount for being a new customer.  How much does the grooming cost?",
+    "templatized_answer": [
+      "The groomer gave a {grooming_cost}*{discount_percentage}/100=${discount} discount",
+      "So the grooming cost {grooming_cost}-{discount}=${grooming_cost_after_discount}",
+      "#### {grooming_cost_after_discount}"
+    ],
+    "factual_assignment": {
+      "grooming_cost": 100,
+      "discount": 30,
+      "grooming_cost_after_discount": 70,
+      "discount_percentage": 30
+    }
+  },
+  "merged_assignment": {
+    "grooming_cost": 713.0,
+    "discount": 213.9,
+    "grooming_cost_after_discount": 499.1,
+    "discount_percentage": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    grooming_cost = 713.0\n    discount_percentage = 30\n    discount = round(grooming_cost * discount_percentage / 100, 2)\n    grooming_cost_after_discount = round(grooming_cost - discount, 2)\n    \n    return {\n        \"grooming_cost\": grooming_cost,\n        \"discount_percentage\": discount_percentage,\n        \"discount\": discount,\n        \"grooming_cost_after_discount\": grooming_cost_after_discount\n    }\n",
+    "results": {
+      "grooming_cost": 713.0,
+      "discount_percentage": 30,
+      "discount": 213.9,
+      "grooming_cost_after_discount": 499.1
+    }
+  },
+  "final": {
+    "question": "John adopts a dog.  He takes the dog to the groomer, which costs 713.0 renminbi.  The groomer offers him a 30% discount for being a new customer.  How much does the grooming cost?",
+    "answer_lines": [
+      "The groomer gave a 713.0*30/100=213.9 renminbi discount",
+      "So the grooming cost 713.0-213.9=499.1 renminbi",
+      "#### 499.1"
+    ],
+    "final_scalar": 499.1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang adopts a dog.  He takes the dog to the groomer, which costs 713.0 renminbi.  The groomer offers him a 30% discount for being a new customer.  How much does the grooming cost?",
+    "adapted_answer": [
+      "The groomer gave a 713.0*30/100=213.9 renminbi discount",
+      "So the grooming cost 713.0-213.9=499.1 renminbi",
+      "#### 499.1"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang' to give the name a Chinese context."
+  }
+}

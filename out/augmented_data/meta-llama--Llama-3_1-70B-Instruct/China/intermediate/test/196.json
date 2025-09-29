@@ -1,0 +1,129 @@
+{
+  "index": 196,
+  "split": "test",
+  "original": {
+    "question": "200 pounds of carrots are to be distributed to 40 restaurants in a certain city. Each restaurant is to receive 2 pounds of carrots. How many pounds of carrots will not be used?",
+    "answer": "The restaurants need 40 * 2 = <<40*2=80>>80 lbs. of carrots.\nSo 200 - 80 = <<200-80=120>>120 lbs. of carrots will not be used.\n#### 120"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "pounds",
+      "carrots"
+    ],
+    "notes": "The unit 'pounds' is not commonly used in China, and carrots are not typically associated with Chinese cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_carrots",
+      "value": 200.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "carrots_per_restaurant",
+      "value": 2.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "carrots_needed",
+      "value": 80.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "unused_carrots",
+      "value": 120.0,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"renminbi\", 7.13),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_carrots\", \"value\": 200.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"carrots_per_restaurant\", \"value\": 2.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"carrots_needed\", \"value\": 80.0, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"unused_carrots\", \"value\": 120.0, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_carrots",
+        "original_value": 200.0,
+        "original_unit": "pound",
+        "converted_value": 90.72,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "carrots_per_restaurant",
+        "original_value": 2.0,
+        "original_unit": "pound",
+        "converted_value": 0.91,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "carrots_needed",
+        "original_value": 80.0,
+        "original_unit": "pound",
+        "converted_value": 36.29,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "unused_carrots",
+        "original_value": 120.0,
+        "original_unit": "pound",
+        "converted_value": 54.43,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "{total_carrots} pounds of carrots are to be distributed to {number_of_restaurants} restaurants in a certain city. Each restaurant is to receive {carrots_per_restaurant} pounds of carrots. How many pounds of carrots will not be used?",
+    "templatized_answer": [
+      "The restaurants need {number_of_restaurants} * {carrots_per_restaurant} = {carrots_needed} lbs. of carrots.",
+      "So {total_carrots} - {carrots_needed} = {unused_carrots} lbs. of carrots will not be used.",
+      "#### {unused_carrots}"
+    ],
+    "factual_assignment": {
+      "total_carrots": 200.0,
+      "carrots_per_restaurant": 2.0,
+      "carrots_needed": 80.0,
+      "unused_carrots": 120.0,
+      "number_of_restaurants": 40
+    }
+  },
+  "merged_assignment": {
+    "total_carrots": 90.72,
+    "carrots_per_restaurant": 0.91,
+    "carrots_needed": 36.29,
+    "unused_carrots": 54.43,
+    "number_of_restaurants": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_carrots = 90.72\n    carrots_per_restaurant = 0.91\n    number_of_restaurants = 40\n\n    carrots_needed = round(number_of_restaurants * carrots_per_restaurant, 2)\n    unused_carrots = round(total_carrots - carrots_needed, 2)\n\n    return {\n        \"total_carrots\": total_carrots,\n        \"carrots_per_restaurant\": carrots_per_restaurant,\n        \"carrots_needed\": carrots_needed,\n        \"unused_carrots\": unused_carrots,\n        \"number_of_restaurants\": number_of_restaurants\n    }\n",
+    "results": {
+      "total_carrots": 90.72,
+      "carrots_per_restaurant": 0.91,
+      "carrots_needed": 36.4,
+      "unused_carrots": 54.32,
+      "number_of_restaurants": 40
+    }
+  },
+  "final": {
+    "question": "90.72 kilograms of carrots are to be distributed to 40 restaurants in a certain city. Each restaurant is to receive 0.91 kilograms of carrots. How many kilograms of carrots will not be used?",
+    "answer_lines": [
+      "The restaurants need 40 * 0.91 = 36.4 kilograms of carrots.",
+      "So 90.72 - 36.4 = 54.32 kilograms of carrots will not be used.",
+      "#### 54.32"
+    ],
+    "final_scalar": 54.32,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "90.72 kilograms of are to be distributed to 40 restaurants in a certain city. Each restaurant is to receive 0.91 kilograms of . How many kilograms of will not be used?",
+    "adapted_answer": [
+      "The restaurants need 40 * 0.91 = 36.4 kilograms of .",
+      "So 90.72 - 36.4 = 54.32 kilograms of will not be used.",
+      "#### 54.32"
+    ],
+    "adaptation_notes": "Replaced 'carrots' with , a common Chinese term for carrots."
+  }
+}

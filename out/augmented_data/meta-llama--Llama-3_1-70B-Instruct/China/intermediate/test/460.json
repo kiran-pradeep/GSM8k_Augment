@@ -1,0 +1,148 @@
+{
+  "index": 460,
+  "split": "test",
+  "original": {
+    "question": "Grayson recycles cans and bottles for money each week. An aluminum can is worth two cents and a plastic bottle is worth three cents. She drinks three aluminum cans of soda and five plastic bottles of water a week. How many cents does Grayson earn from recycling in a four-week month?",
+    "answer": "Grayson earns 2 * 3 = <<2*3=6>>6 cents from soda cans a week.\nShe earns 3 * 5 = <<3*5=15>>15 cents from water bottles a week.\nThus, she earns 6 + 15 = <<6+15=21>>21 cents from recycling each week.\nIn a four week month, she earns 21 * 4 = <<21*4=84>>84 cents from recycling.\n#### 84"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Grayson",
+      "soda",
+      "cents"
+    ],
+    "notes": "Name 'Grayson' and units 'cents' are culturally specific to regions other than China, and 'soda' is a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "can_value",
+      "value": 0.02,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bottle_value",
+      "value": 0.03,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 0.21,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 0.84,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * list(conversions[original_unit].values())[0], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"can_value\",\n    \"value\": 0.02,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"bottle_value\",\n    \"value\": 0.03,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"weekly_earnings\",\n    \"value\": 0.21,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"monthly_earnings\",\n    \"value\": 0.84,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "can_value",
+        "original_value": 0.02,
+        "original_unit": "dollar",
+        "converted_value": 0.14,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bottle_value",
+        "original_value": 0.03,
+        "original_unit": "dollar",
+        "converted_value": 0.21,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 0.21,
+        "original_unit": "dollar",
+        "converted_value": 1.5,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 0.84,
+        "original_unit": "dollar",
+        "converted_value": 5.99,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Grayson recycles cans and bottles for money each week. An aluminum can is worth {can_value_cents} cents and a plastic bottle is worth {bottle_value_cents} cents. She drinks {cans_consumed} aluminum cans of soda and {bottles_consumed} plastic bottles of water a week. How many cents does Grayson earn from recycling in a {weeks_in_month}-week month?",
+    "templatized_answer": [
+      "Grayson earns {can_value_cents} * {cans_consumed} = {can_earnings} cents from soda cans a week.",
+      "She earns {bottle_value_cents} * {bottles_consumed} = {bottle_earnings} cents from water bottles a week.",
+      "Thus, she earns {can_earnings} + {bottle_earnings} = {weekly_earnings_cents} cents from recycling each week.",
+      "In a {weeks_in_month} week month, she earns {weekly_earnings_cents} * {weeks_in_month} = {monthly_earnings_cents} cents from recycling.",
+      "#### {monthly_earnings_cents}"
+    ],
+    "factual_assignment": {
+      "can_value_cents": 2,
+      "bottle_value_cents": 3,
+      "cans_consumed": 3,
+      "bottles_consumed": 5,
+      "can_earnings": 6,
+      "bottle_earnings": 15,
+      "weekly_earnings_cents": 21,
+      "weeks_in_month": 4,
+      "monthly_earnings_cents": 84
+    }
+  },
+  "merged_assignment": {
+    "can_value_cents": 2,
+    "bottle_value_cents": 3,
+    "cans_consumed": 3,
+    "bottles_consumed": 5,
+    "can_earnings": 6,
+    "bottle_earnings": 15,
+    "weekly_earnings_cents": 21,
+    "weeks_in_month": 4,
+    "monthly_earnings_cents": 84
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    can_value_cents = 2\n    bottle_value_cents = 3\n    cans_consumed = 3\n    bottles_consumed = 5\n    weeks_in_month = 4\n\n    can_earnings = can_value_cents * cans_consumed\n    bottle_earnings = bottle_value_cents * bottles_consumed\n    weekly_earnings_cents = can_earnings + bottle_earnings\n    monthly_earnings_cents = weekly_earnings_cents * weeks_in_month\n\n    return {\n        \"can_value_cents\": can_value_cents,\n        \"bottle_value_cents\": bottle_value_cents,\n        \"cans_consumed\": cans_consumed,\n        \"bottles_consumed\": bottles_consumed,\n        \"can_earnings\": can_earnings,\n        \"bottle_earnings\": bottle_earnings,\n        \"weekly_earnings_cents\": weekly_earnings_cents,\n        \"weeks_in_month\": weeks_in_month,\n        \"monthly_earnings_cents\": monthly_earnings_cents\n    }\n\nprint(recompute())\n",
+    "results": {
+      "can_value_cents": 2,
+      "bottle_value_cents": 3,
+      "cans_consumed": 3,
+      "bottles_consumed": 5,
+      "can_earnings": 6,
+      "bottle_earnings": 15,
+      "weekly_earnings_cents": 21,
+      "weeks_in_month": 4,
+      "monthly_earnings_cents": 84
+    }
+  },
+  "final": {
+    "question": "Grayson recycles cans and bottles for money each week. An aluminum can is worth 2 cents and a plastic bottle is worth 3 cents. She drinks 3 aluminum cans of soda and 5 plastic bottles of water a week. How many cents does Grayson earn from recycling in a 4-week month?",
+    "answer_lines": [
+      "Grayson earns 2 * 3 = 6 cents from soda cans a week.",
+      "She earns 3 * 5 = 15 cents from water bottles a week.",
+      "Thus, she earns 6 + 15 = 21 cents from recycling each week.",
+      "In a 4 week month, she earns 21 * 4 = 84 cents from recycling.",
+      "#### 84"
+    ],
+    "final_scalar": 84,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang Xiaoming recycles cans and bottles for money each week. An aluminum can is worth 2 cents and a plastic bottle is worth 3 cents. She drinks 3 aluminum cans of jasmine tea and 5 plastic bottles of water a week. How many cents does Wang Xiaoming earn from recycling in a 4-week month?",
+    "adapted_answer": [
+      "Wang Xiaoming earns 2 * 3 = 6 cents from jasmine tea cans a week.",
+      "She earns 3 * 5 = 15 cents from water bottles a week.",
+      "Thus, she earns 6 + 15 = 21 cents from recycling each week.",
+      "In a 4 week month, she earns 21 * 4 = 84 cents from recycling.",
+      "#### 84"
+    ],
+    "adaptation_notes": "Replaced 'Grayson' with 'Wang Xiaoming', 'soda' with 'jasmine tea'."
+  }
+}

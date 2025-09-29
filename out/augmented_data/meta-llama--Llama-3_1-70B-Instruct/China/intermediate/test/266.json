@@ -1,0 +1,164 @@
+{
+  "index": 266,
+  "split": "test",
+  "original": {
+    "question": "Mr. Tan sold his house for $400 000. He paid the transfer fees that amount to 3% of the selling price and also paid a brokerage fee that is 5% of the selling price. If he also paid $250 000 for the remaining loan amount of the house, how much is Mr. Tan's net proceeds from selling the house?",
+    "answer": "Mr. Tan paid $400 000 x 3/100 = $12 000 for the transfer fees.\nHe paid $400 000 x 5/100 = $20 000 for the brokerage fee.\nSo, Mr. Tan paid a total of $12 000 + $20 000 + $250 000 = $282 000 for the transfer, brokerage, and loan fees.\nHence, Mr. Tan's net proceeds is $400 000 - $282 000 = $118 000.\n#### 118000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mr. Tan",
+      "dollars"
+    ],
+    "notes": "Name 'Mr. Tan' is culturally specific to regions other than China, and 'dollars' is a unit commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "selling_price",
+      "value": 400000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "transfer_fees",
+      "value": 12000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "brokerage_fee",
+      "value": 20000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "loan_amount",
+      "value": 250000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_fees",
+      "value": 282000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "net_proceeds",
+      "value": 118000,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n    {\"variable\": \"selling_price\", \"value\": 400000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"transfer_fees\", \"value\": 12000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"brokerage_fee\", \"value\": 20000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"loan_amount\", \"value\": 250000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_fees\", \"value\": 282000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"net_proceeds\", \"value\": 118000, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "selling_price",
+        "original_value": 400000,
+        "original_unit": "dollar",
+        "converted_value": 2852000.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "transfer_fees",
+        "original_value": 12000,
+        "original_unit": "dollar",
+        "converted_value": 85560.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "brokerage_fee",
+        "original_value": 20000,
+        "original_unit": "dollar",
+        "converted_value": 142600.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "loan_amount",
+        "original_value": 250000,
+        "original_unit": "dollar",
+        "converted_value": 1782500.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_fees",
+        "original_value": 282000,
+        "original_unit": "dollar",
+        "converted_value": 2010660.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "net_proceeds",
+        "original_value": 118000,
+        "original_unit": "dollar",
+        "converted_value": 841340.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mr. Tan sold his house for ${selling_price}. He paid the transfer fees that amount to 3% of the selling price and also paid a brokerage fee that is 5% of the selling price. If he also paid ${loan_amount} for the remaining loan amount of the house, how much is Mr. Tan's net proceeds from selling the house?",
+    "templatized_answer": [
+      "Mr. Tan paid ${selling_price} x 3/100 = ${transfer_fees} for the transfer fees.",
+      "He paid ${selling_price} x 5/100 = ${brokerage_fee} for the brokerage fee.",
+      "So, Mr. Tan paid a total of ${transfer_fees} + ${brokerage_fee} + ${loan_amount} = ${total_fees} for the transfer, brokerage, and loan fees.",
+      "Hence, Mr. Tan's net proceeds is ${selling_price} - ${total_fees} = ${net_proceeds}.",
+      "#### {net_proceeds}"
+    ],
+    "factual_assignment": {
+      "selling_price": 400000,
+      "transfer_fees": 12000,
+      "brokerage_fee": 20000,
+      "loan_amount": 250000,
+      "total_fees": 282000,
+      "net_proceeds": 118000
+    }
+  },
+  "merged_assignment": {
+    "selling_price": 2852000.0,
+    "transfer_fees": 85560.0,
+    "brokerage_fee": 142600.0,
+    "loan_amount": 1782500.0,
+    "total_fees": 2010660.0,
+    "net_proceeds": 841340.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    selling_price = 2852000.0\n    transfer_fees = selling_price * 0.03\n    brokerage_fee = selling_price * 0.05\n    loan_amount = 1782500.0\n    total_fees = transfer_fees + brokerage_fee + loan_amount\n    net_proceeds = selling_price - total_fees\n\n    return {\n        \"selling_price\": selling_price,\n        \"transfer_fees\": round(transfer_fees, 2),\n        \"brokerage_fee\": round(brokerage_fee, 2),\n        \"loan_amount\": loan_amount,\n        \"total_fees\": round(total_fees, 2),\n        \"net_proceeds\": round(net_proceeds, 2)\n    }\n",
+    "results": {
+      "selling_price": 2852000.0,
+      "transfer_fees": 85560.0,
+      "brokerage_fee": 142600.0,
+      "loan_amount": 1782500.0,
+      "total_fees": 2010660.0,
+      "net_proceeds": 841340.0
+    }
+  },
+  "final": {
+    "question": "Mr. Tan sold his house for 2852000 renminbi. He paid the transfer fees that amount to 3% of the selling price and also paid a brokerage fee that is 5% of the selling price. If he also paid 1782500 renminbi for the remaining loan amount of the house, how much is Mr. Tan's net proceeds from selling the house?",
+    "answer_lines": [
+      "Mr. Tan paid 2852000 renminbi x 3/100 = 85560 renminbi for the transfer fees.",
+      "He paid 2852000 renminbi x 5/100 = 142600 renminbi for the brokerage fee.",
+      "So, Mr. Tan paid a total of 85560 renminbi + 142600 renminbi + 1782500 renminbi = 2010660 renminbi for the transfer, brokerage, and loan fees.",
+      "Hence, Mr. Tan's net proceeds is 2852000 renminbi - 2010660 renminbi = 841340 renminbi.",
+      "#### 841340"
+    ],
+    "final_scalar": 841340,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "王子三己买市了家房，买值是2852000人民币元。买值之后，子三己给买户收気费，费用买值的3%；买值之后，子三己给买市收気费，费用买值的5%；买值之后，子三己给买户收気费，费用买值的5%；买值之后，子三己给买户收気费，费用买值的5%；买值之后，子三己收気费为1782500人民币元。子三己买房的给币值是什么？",
+    "adapted_answer": [
+      "子三己收気费为2852000人民币元的3%，给买户收気费为85560人民币元。",
+      "子三己收気费为2852000人民币元的5%，给买市收気费为142600人民币元。",
+      "此歡，子三己收気费为85560人民币元+买市收気费142600人民币元+买户收気费1782500人民币元，总收気费为2010660人民币元。",
+      "此歡，子三己的给币值是2852000人民币元-2010660人民币元，给币值映841340人民币元。",
+      "#### 841340"
+    ],
+    "adaptation_notes": "Replaced “Mr. Tan” with 王子三"
+  }
+}

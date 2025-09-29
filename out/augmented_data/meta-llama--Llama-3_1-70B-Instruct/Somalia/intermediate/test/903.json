@@ -1,0 +1,168 @@
+{
+  "index": 903,
+  "split": "test",
+  "original": {
+    "question": "Jo has been making face masks. She can make 4 small masks with 2 yards of material and 3 large masks with 2.25 yards of material. How much material would she need to make 20 small and 8 large masks for her class?",
+    "answer": "It takes 2 yards of material / 4 small masks = <<2/4=0.5>>0.5 yards of material per mask.\nIt takes 2.25 yards of material / 3 large masks = <<2.25/3=0.75>>0.75 yards of material per mask.\nFor the small masks, it will take 20 masks x 0.5 yards = <<20*0.5=10>>10 yards of material.\nFor the large masks, it will take 8 masks x 0.75 yards = <<8*0.75=6>>6 yards of material.\nIn all, it will take 10 yards + 6 yards = <<10+6=16>>16 yards of material.\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "yards"
+    ],
+    "notes": "The unit 'yards' is commonly used in Western countries and is not Somalia-specific."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "material_per_small_mask",
+      "value": 0.5,
+      "unit": "yard",
+      "context": "question"
+    },
+    {
+      "variable": "material_per_large_mask",
+      "value": 0.75,
+      "unit": "yard",
+      "context": "question"
+    },
+    {
+      "variable": "material_for_small_masks",
+      "value": 10,
+      "unit": "yard",
+      "context": "answer"
+    },
+    {
+      "variable": "material_for_large_masks",
+      "value": 6,
+      "unit": "yard",
+      "context": "answer"
+    },
+    {
+      "variable": "total_material_needed",
+      "value": 16,
+      "unit": "yard",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"yard\": {\"to\": \"meter\", \"rate\": 0.9144}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"material_per_small_mask\", \"value\": 0.5, \"unit\": \"yard\", \"context\": \"question\"},\n    {\"variable\": \"material_per_large_mask\", \"value\": 0.75, \"unit\": \"yard\", \"context\": \"question\"},\n    {\"variable\": \"material_for_small_masks\", \"value\": 10, \"unit\": \"yard\", \"context\": \"answer\"},\n    {\"variable\": \"material_for_large_masks\", \"value\": 6, \"unit\": \"yard\", \"context\": \"answer\"},\n    {\"variable\": \"total_material_needed\", \"value\": 16, \"unit\": \"yard\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "material_per_small_mask",
+        "original_value": 0.5,
+        "original_unit": "yard",
+        "converted_value": 0.46,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "material_per_large_mask",
+        "original_value": 0.75,
+        "original_unit": "yard",
+        "converted_value": 0.69,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "material_for_small_masks",
+        "original_value": 10,
+        "original_unit": "yard",
+        "converted_value": 9.14,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "material_for_large_masks",
+        "original_value": 6,
+        "original_unit": "yard",
+        "converted_value": 5.49,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "total_material_needed",
+        "original_value": 16,
+        "original_unit": "yard",
+        "converted_value": 14.63,
+        "converted_unit": "meter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jo has been making face masks. She can make {small_masks_per_yard} small masks with {yards_for_small_masks} yards of material and {large_masks_per_yard} large masks with {yards_for_large_masks} yards of material. How much material would she need to make {small_masks_needed} small and {large_masks_needed} large masks for her class?",
+    "templatized_answer": [
+      "It takes {yards_for_small_masks} yards of material / {small_masks_per_yard} small masks = {material_per_small_mask} yards of material per mask.",
+      "It takes {yards_for_large_masks} yards of material / {large_masks_per_yard} large masks = {material_per_large_mask} yards of material per mask.",
+      "For the small masks, it will take {small_masks_needed} masks x {material_per_small_mask} yards = {material_for_small_masks} yards of material.",
+      "For the large masks, it will take {large_masks_needed} masks x {material_per_large_mask} yards = {material_for_large_masks} yards of material.",
+      "In all, it will take {material_for_small_masks} yards + {material_for_large_masks} yards = {total_material_needed} yards of material.",
+      "#### {total_material_needed}"
+    ],
+    "factual_assignment": {
+      "small_masks_per_yard": 4,
+      "yards_for_small_masks": 2,
+      "large_masks_per_yard": 3,
+      "yards_for_large_masks": 2.25,
+      "small_masks_needed": 20,
+      "large_masks_needed": 8,
+      "material_per_small_mask": 0.5,
+      "material_per_large_mask": 0.75,
+      "material_for_small_masks": 10,
+      "material_for_large_masks": 6,
+      "total_material_needed": 16
+    }
+  },
+  "merged_assignment": {
+    "small_masks_per_yard": 4,
+    "yards_for_small_masks": 2,
+    "large_masks_per_yard": 3,
+    "yards_for_large_masks": 2.25,
+    "small_masks_needed": 20,
+    "large_masks_needed": 8,
+    "material_per_small_mask": 0.46,
+    "material_per_large_mask": 0.69,
+    "material_for_small_masks": 9.14,
+    "material_for_large_masks": 5.49,
+    "total_material_needed": 14.63
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    small_masks_per_yard = 4\n    yards_for_small_masks = 2\n    large_masks_per_yard = 3\n    yards_for_large_masks = 2.25\n    small_masks_needed = 20\n    large_masks_needed = 8\n\n    material_per_small_mask = round(yards_for_small_masks / small_masks_per_yard, 2)\n    material_per_large_mask = round(yards_for_large_masks / large_masks_per_yard, 2)\n\n    material_for_small_masks = round(small_masks_needed * material_per_small_mask, 2)\n    material_for_large_masks = round(large_masks_needed * material_per_large_mask, 2)\n\n    total_material_needed = round(material_for_small_masks + material_for_large_masks, 2)\n\n    return {\n        \"small_masks_per_yard\": small_masks_per_yard,\n        \"yards_for_small_masks\": yards_for_small_masks,\n        \"large_masks_per_yard\": large_masks_per_yard,\n        \"yards_for_large_masks\": yards_for_large_masks,\n        \"small_masks_needed\": small_masks_needed,\n        \"large_masks_needed\": large_masks_needed,\n        \"material_per_small_mask\": material_per_small_mask,\n        \"material_per_large_mask\": material_per_large_mask,\n        \"material_for_small_masks\": material_for_small_masks,\n        \"material_for_large_masks\": material_for_large_masks,\n        \"total_material_needed\": total_material_needed\n    }\n\nprint(recompute())\n",
+    "results": {
+      "small_masks_per_yard": 4,
+      "yards_for_small_masks": 2,
+      "large_masks_per_yard": 3,
+      "yards_for_large_masks": 2.25,
+      "small_masks_needed": 20,
+      "large_masks_needed": 8,
+      "material_per_small_mask": 0.5,
+      "material_per_large_mask": 0.75,
+      "material_for_small_masks": 10.0,
+      "material_for_large_masks": 6.0,
+      "total_material_needed": 16.0
+    }
+  },
+  "final": {
+    "question": "Jo has been making face masks. She can make 4 small masks with 2 yards of material and 3 large masks with 2.25 yards of material. How much material would she need to make 20 small and 8 large masks for her class?",
+    "answer_lines": [
+      "It takes 2 yards of material / 4 small masks = 0.5 yards of material per mask.",
+      "It takes 2.25 yards of material / 3 large masks = 0.75 yards of material per mask.",
+      "For the small masks, it will take 20 masks x 0.5 yards = 10 yards of material.",
+      "For the large masks, it will take 8 masks x 0.75 yards = 6 yards of material.",
+      "In all, it will take 10 yards + 6 yards = 16 yards of material.",
+      "#### 16"
+    ],
+    "final_scalar": 16.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jo ayaa sameysay maskooyin. Waxay sameysan kartaa 4 maskooyin yar oo maskooyin 2 mitir oo madoow ah, iyo 3 maskooyin weyn oo 2.25 mitir oo madoow ah. Waxay u baahan tahay madoowda ay u sameysan karto 20 maskooyin yar iyo 8 maskooyin weyn ugaarsiga ay ku barayaan?",
+    "adapted_answer": [
+      "Waxay u baahan tahay 2 mitir oo madoow ah / 4 maskooyin yar = 0.5 mitir oo madoow ah maskooyin kasta.",
+      "Waxay u baahan tahay 2.25 mitir oo madoow ah / 3 maskooyin weyn = 0.75 mitir oo madoow ah maskooyin kasta.",
+      "Maskooyinka yar waxay u baahan tahay 20 maskooyin x 0.5 mitir = 10 mitir oo madoow ah.",
+      "Maskooyinka weyn waxay u baahan tahay 8 maskooyin x 0.75 mitir = 6 mitir oo madoow ah.",
+      "Waxay u baahan tahay guud ahaan 10 mitir + 6 mitir = 16 mitir oo madoow ah.",
+      "#### 16"
+    ],
+    "adaptation_notes": "Replaced 'yards' with 'mitir' (Somali for 'meters') and 'face masks' with 'maskooyin' (Somali for 'masks')."
+  }
+}

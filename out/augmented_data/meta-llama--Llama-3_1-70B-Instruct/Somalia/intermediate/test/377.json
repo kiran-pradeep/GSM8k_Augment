@@ -1,0 +1,116 @@
+{
+  "index": 377,
+  "split": "test",
+  "original": {
+    "question": "Lucy sells apples from her orchard at $4 per piece. On Monday, she sold all the apples picked. On Tuesday, she picked 12 apples. Come Wednesday, Lucy picked double the number of apples she did the previous day. If Lucy got $56 from selling the apples picked on Monday, how many apples did she pick over the three days?",
+    "answer": "Since each apple costs $4, it means that on Monday, Lucy picked 56/4 = <<56/4=14>>14 apples\nCombining Monday and Tuesday, Lucy picked 14 + 12 = <<14+12=26>>26 apples\nOn Wednesday, she picked 2 * 12 = <<2*12=24>>24 apples\nAll together, Lucy picked 26 + 24 = <<26+24=50>>50 apples.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Lucy",
+      "dollars",
+      "apples"
+    ],
+    "notes": "The name 'Lucy' is Western, 'dollars' is a unit of currency commonly used in Western countries, and 'apples' are not typically associated with Somali cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apple_price",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monday_earnings",
+      "value": 56,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apple_price\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monday_earnings\", \"value\": 56, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apple_price",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 2277.52,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "monday_earnings",
+        "original_value": 56,
+        "original_unit": "dollar",
+        "converted_value": 31885.28,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Lucy sells apples from her orchard at ${apple_price} per piece. On Monday, she sold all the apples picked. On Tuesday, she picked {tuesday_apples} apples. Come Wednesday, Lucy picked double the number of apples she did the previous day. If Lucy got ${monday_earnings} from selling the apples picked on Monday, how many apples did she pick over the three days?",
+    "templatized_answer": [
+      "Since each apple costs ${apple_price}, it means that on Monday, Lucy picked ${monday_earnings}/${apple_price} = <<${monday_earnings}/${apple_price}={monday_apples}>>{monday_apples} apples",
+      "Combining Monday and Tuesday, Lucy picked {monday_apples} + {tuesday_apples} = <<{monday_apples}+{tuesday_apples}={monday_and_tuesday_apples}>>{monday_and_tuesday_apples} apples",
+      "On Wednesday, she picked 2 * {tuesday_apples} = <<2*{tuesday_apples}={wednesday_apples}>>{wednesday_apples} apples",
+      "All together, Lucy picked {monday_and_tuesday_apples} + {wednesday_apples} = <<{monday_and_tuesday_apples}+{wednesday_apples}={total_apples}>>{total_apples} apples.",
+      "#### {total_apples}"
+    ],
+    "factual_assignment": {
+      "apple_price": 4,
+      "monday_earnings": 56,
+      "tuesday_apples": 12,
+      "monday_apples": 14,
+      "monday_and_tuesday_apples": 26,
+      "wednesday_apples": 24,
+      "total_apples": 50
+    }
+  },
+  "merged_assignment": {
+    "apple_price": 2277.52,
+    "monday_earnings": 31885.28,
+    "tuesday_apples": 12,
+    "monday_apples": 14,
+    "monday_and_tuesday_apples": 26,
+    "wednesday_apples": 24,
+    "total_apples": 50
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apple_price = 2277.52\n    monday_earnings = 31885.28\n    tuesday_apples = 12\n\n    monday_apples = monday_earnings / apple_price\n    monday_apples = round(monday_apples, 2)\n\n    monday_and_tuesday_apples = monday_apples + tuesday_apples\n\n    wednesday_apples = 2 * tuesday_apples\n\n    total_apples = monday_and_tuesday_apples + wednesday_apples\n\n    return {\n        \"apple_price\": apple_price,\n        \"monday_earnings\": monday_earnings,\n        \"tuesday_apples\": tuesday_apples,\n        \"monday_apples\": monday_apples,\n        \"monday_and_tuesday_apples\": monday_and_tuesday_apples,\n        \"wednesday_apples\": wednesday_apples,\n        \"total_apples\": total_apples\n    }\n\nprint(recompute())\n",
+    "results": {
+      "apple_price": 2277.52,
+      "monday_earnings": 31885.28,
+      "tuesday_apples": 12,
+      "monday_apples": 14.0,
+      "monday_and_tuesday_apples": 26.0,
+      "wednesday_apples": 24,
+      "total_apples": 50.0
+    }
+  },
+  "final": {
+    "question": "Lucy sells apples from her orchard at 2277.52 shilling per piece. On Monday, she sold all the apples picked. On Tuesday, she picked 12 apples. Come Wednesday, Lucy picked double the number of apples she did the previous day. If Lucy got 31885.28 shilling from selling the apples picked on Monday, how many apples did she pick over the three days?",
+    "answer_lines": [
+      "Since each apple costs 2277.52 shilling, it means that on Monday, Lucy picked 31885.28/2277.52 = 14.0 apples",
+      "Combining Monday and Tuesday, Lucy picked 14.0 + 12 = 26.0 apples",
+      "On Wednesday, she picked 2 * 12 = 24 apples",
+      "All together, Lucy picked 26.0 + 24 = 50.0 apples.",
+      "#### 50.0"
+    ],
+    "final_scalar": 50.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aamina waxay iibisa muuska ka bixida horteeda 2277.52 shilling per piece. Maandhow, waxay iibisay muuska dhan oo la soo bixiyay. Salasa, waxay soo bixisay 12 muus. Khamiista, Aamina waxay soo bixisay mar labaad muuska ay soo bixisay maalintii hore. Haddii Aamina heshay 31885.28 shilling ka ganacsi muuska la soo bixiyay Maandhow, muuska ugu badnaa waxay soo bixisay muddada saddex maalmood?",
+    "adapted_answer": [
+      "Waxa jira muuska kasta 2277.52 shilling, waxaas oo macneheedu Maandhow Aamina waxay soo bixisay 31885.28/2277.52 = 14.0 muus",
+      "Isku daraya Maandhow iyo Salasa, Aamina waxay soo bixisay 14.0 + 12 = 26.0 muus",
+      "Khamiista, waxay soo bixisay 2 * 12 = 24 muus",
+      "Waxay soo bixisay guud ahaan, Aamina waxay soo bixisay 26.0 + 24 = 50.0 muus",
+      "#### 50.0"
+    ],
+    "adaptation_notes": "Replaced 'Lucy' with 'Aamina' (a Somali name), 'apples' with 'muuska' (a Somali word for 'apples'), and 'orchard' with 'horteeda' (a Somali word for 'orchard')."
+  }
+}

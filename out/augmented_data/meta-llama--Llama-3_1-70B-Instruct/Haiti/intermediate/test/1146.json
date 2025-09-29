@@ -1,0 +1,146 @@
+{
+  "index": 1146,
+  "split": "test",
+  "original": {
+    "question": "Adam has $100 and wants to spend it to open a rock stand. He can buy rocks for $5 each and sell them for $7 each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "answer": "He can buy 20 rocks because 100 / 5 = <<100/5=20>>20\nHe sells 12 of these rocks because 20 x .6 = <<20*.6=12>>12\nHe makes $84 selling these because 12 x 7 = <<12*7=84>>84\nHe lost $16 on his business because 100 - 84 = <<100-84=16>>16\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Adam",
+      "dollars"
+    ],
+    "notes": "The name 'Adam' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_investment",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rock_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rock_selling_price",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 84,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "loss",
+      "value": 16,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_investment\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rock_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rock_selling_price\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_revenue\", \"value\": 84, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"loss\", \"value\": 16, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_investment",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 13081.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "rock_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 654.05,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "rock_selling_price",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 915.67,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 84,
+        "original_unit": "dollar",
+        "converted_value": 10988.04,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "loss",
+        "original_value": 16,
+        "original_unit": "dollar",
+        "converted_value": 2092.96,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Adam has ${initial_investment} and wants to spend it to open a rock stand. He can buy rocks for ${rock_cost} each and sell them for ${rock_selling_price} each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "templatized_answer": [
+      "He can buy {initial_investment}/{rock_cost} rocks because {initial_investment} / {rock_cost} = {initial_investment}/{rock_cost}",
+      "He sells {initial_investment}/{rock_cost} * 0.6 rocks because {initial_investment}/{rock_cost} * 0.6 = {initial_investment}/{rock_cost} * 0.6",
+      "He makes {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} selling these because {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} = {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}",
+      "He lost {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} on his business because {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} = {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}",
+      "#### {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}"
+    ],
+    "factual_assignment": {
+      "initial_investment": 100,
+      "rock_cost": 5,
+      "rock_selling_price": 7
+    }
+  },
+  "merged_assignment": {
+    "initial_investment": 13081.0,
+    "rock_cost": 654.05,
+    "rock_selling_price": 915.67
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_investment = 13081.0\n    rock_cost = 654.05\n    rock_selling_price = 915.67\n\n    num_rocks = initial_investment / rock_cost\n    num_rocks_sold = num_rocks * 0.6\n    revenue = num_rocks_sold * rock_selling_price\n    loss = initial_investment - revenue\n\n    return {\n        \"initial_investment\": initial_investment,\n        \"rock_cost\": rock_cost,\n        \"rock_selling_price\": rock_selling_price,\n        \"initial_investment/{rock_cost}\": round(num_rocks, 2),\n        \"initial_investment/{rock_cost} * 0.6\": round(num_rocks_sold, 2),\n        \"initial_investment/{rock_cost} * 0.6 * {rock_selling_price}\": round(revenue, 2),\n        \"initial_investment - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}\": round(loss, 2)\n    }\n",
+    "results": {
+      "initial_investment": 13081.0,
+      "rock_cost": 654.05,
+      "rock_selling_price": 915.67,
+      "initial_investment/{rock_cost}": 20.0,
+      "initial_investment/{rock_cost} * 0.6": 12.0,
+      "initial_investment/{rock_cost} * 0.6 * {rock_selling_price}": 10988.04,
+      "initial_investment - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}": 2092.96
+    }
+  },
+  "final": {
+    "question": "Adam has 13081.0 gourde and wants to spend it to open a rock stand. He can buy rocks for 654.05 gourde each and sell them for 915.67 gourde each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "answer_lines": [
+      "He can buy 20.0 rocks because 13081.0 / 654.05 = 20.0",
+      "He sells 12.0 rocks because 20.0 * 0.6 = 12.0",
+      "He makes 10988.04 gourde selling these because 12.0 * 915.67 = 10988.04",
+      "He lost 2092.96 gourde on his business because 13081.0 - 10988.04 = 2092.96",
+      "#### 2092.96"
+    ],
+    "final_scalar": 2092.96,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ricot has 13081.0 gourde and wants to spend it to open a rock stand. He can buy rocks for 654.05 gourde each and sell them for 915.67 gourde each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "adapted_answer": [
+      "He can buy 20.0 rocks because 13081.0 / 654.05 = 20.0",
+      "He sells 12.0 rocks because 20.0 * 0.6 = 12.0",
+      "He makes 10988.04 gourde selling these because 12.0 * 915.67 = 10988.04",
+      "He lost 2092.96 gourde on his business because 13081.0 - 10988.04 = 2092.96",
+      "#### 2092.96"
+    ],
+    "adaptation_notes": "Replaced 'Adam' with 'Ricot', a common Haitian name."
+  }
+}

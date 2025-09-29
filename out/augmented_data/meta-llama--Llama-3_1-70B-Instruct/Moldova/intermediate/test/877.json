@@ -1,0 +1,135 @@
+{
+  "index": 877,
+  "split": "test",
+  "original": {
+    "question": "To make a profit of $2000, Isaias has to sell the chickens he planned to take to the market from his farm at $50 per chicken. If Isaias has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "answer": "Isaias plans to sell 3/5*300 = <<3/5*300=180>>180 chickens from his farm.\nTo make his profit, Isaias sells all the chicken he took to the market for $50*180 = $<<50*180=9000>>9000\nThe price at which Isaias bought the chicken is $9000-$2000 = $<<9000-2000=7000>>7000.\n#### 7000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Isaias",
+      "dollars"
+    ],
+    "notes": "The name 'Isaias' is not typically Moldovan and 'dollars' is a unit of currency not native to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "profit",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "chicken_price",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_sales",
+      "value": 9000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "purchase_price",
+      "value": 7000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"profit\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"chicken_price\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_sales\", \"value\": 9000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"purchase_price\", \"value\": 7000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "profit",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 33240.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "chicken_price",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 831.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_sales",
+        "original_value": 9000.0,
+        "original_unit": "dollar",
+        "converted_value": 149580.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "purchase_price",
+        "original_value": 7000.0,
+        "original_unit": "dollar",
+        "converted_value": 116340.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To make a profit of ${profit}, Isaias has to sell the chickens he planned to take to the market from his farm at ${chicken_price} per chicken. If Isaias has {number_of_chickens} chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "templatized_answer": [
+      "Isaias plans to sell 3/5*{number_of_chickens} = {number_of_chickens_to_sell} chickens from his farm.",
+      "To make his profit, Isaias sells all the chicken he took to the market for ${chicken_price}*{number_of_chickens_to_sell} = ${total_sales}",
+      "The price at which Isaias bought the chicken is ${total_sales}-${profit} = ${purchase_price}.",
+      "#### {purchase_price}"
+    ],
+    "factual_assignment": {
+      "profit": 2000.0,
+      "chicken_price": 50.0,
+      "total_sales": 9000.0,
+      "purchase_price": 7000.0,
+      "number_of_chickens": 300,
+      "number_of_chickens_to_sell": 180
+    }
+  },
+  "merged_assignment": {
+    "profit": 33240.0,
+    "chicken_price": 831.0,
+    "total_sales": 149580.0,
+    "purchase_price": 116340.0,
+    "number_of_chickens": 300,
+    "number_of_chickens_to_sell": 180
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"profit\": 33240.0,\n        \"chicken_price\": 831.0,\n        \"total_sales\": 149580.0,\n        \"purchase_price\": 116340.0,\n        \"number_of_chickens\": 300,\n        \"number_of_chickens_to_sell\": 180\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"number_of_chickens_to_sell\"] = factual_assignment[\"number_of_chickens\"] * 3 / 5\n    recomputed_values[\"total_sales\"] = factual_assignment[\"chicken_price\"] * recomputed_values[\"number_of_chickens_to_sell\"]\n    recomputed_values[\"total_sales\"] = round(recomputed_values[\"total_sales\"], 2)\n    recomputed_values[\"purchase_price\"] = recomputed_values[\"total_sales\"] - factual_assignment[\"profit\"]\n    recomputed_values[\"purchase_price\"] = round(recomputed_values[\"purchase_price\"], 2)\n\n    recomputed_values[\"profit\"] = factual_assignment[\"profit\"]\n    recomputed_values[\"chicken_price\"] = factual_assignment[\"chicken_price\"]\n    recomputed_values[\"number_of_chickens\"] = factual_assignment[\"number_of_chickens\"]\n\n    return recomputed_values\n",
+    "results": {
+      "number_of_chickens_to_sell": 180.0,
+      "total_sales": 149580.0,
+      "purchase_price": 116340.0,
+      "profit": 33240.0,
+      "chicken_price": 831.0,
+      "number_of_chickens": 300
+    }
+  },
+  "final": {
+    "question": "To make a profit of 33240 leu, Isaias has to sell the chickens he planned to take to the market from his farm at 831 leu per chicken. If Isaias has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "answer_lines": [
+      "Isaias plans to sell 3/5*300 = 180 chickens from his farm.",
+      "To make his profit, Isaias sells all the chicken he took to the market for 831*180 = 149580 leu",
+      "The price at which Isaias bought the chicken is 149580-33240 = 116340 leu.",
+      "#### 116340"
+    ],
+    "final_scalar": 116340,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To make a profit of 33240 lei, Ion has to sell the chickens he planned to take to the market from his farm at 831 lei per chicken. If Ion has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Ion buy the chickens he took to the market for sale?",
+    "adapted_answer": [
+      "Ion plans to sell 3/5*300 = 180 chickens from his farm.",
+      "To make his profit, Ion sells all the chickens he took to the market for 831*180 = 149580 lei",
+      "The price at which Ion bought the chickens is 149580-33240 = 116340 lei.",
+      "#### 116340"
+    ],
+    "adaptation_notes": "Replaced 'Isaias' with 'Ion', a common Moldovan name, and 'leu' with 'lei', the correct plural form of the Moldovan currency."
+  }
+}

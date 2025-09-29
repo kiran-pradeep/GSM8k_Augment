@@ -1,0 +1,155 @@
+{
+  "index": 158,
+  "split": "test",
+  "original": {
+    "question": "Raphael went to buy some school supplies. He bought 4 pens which cost $1.5 each, 2 notebooks which cost $4 each, and a rim of bond paper which cost $20. How much did Raphael spend on everything?",
+    "answer": "Raphael spent 4 x $1.5 = $<<4*1.5=6>>6 for the pens.\nHe also spent 2 x $4 = $<<2*4=8>>8 for the notebooks.\nTherefore, Raphael spent a total of $6 + $8 + $20 = $<<6+8+20=34>>34 for the school supplies.\n#### 34"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Raphael",
+      "dollars"
+    ],
+    "notes": "Name 'Raphael' and unit 'dollars' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pen_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "notebook_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bond_paper_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent_notebooks",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent_all",
+      "value": 34,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pen_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"notebook_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bond_paper_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent_notebooks\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent_all\", \"value\": 34, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pen_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 422.78,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "notebook_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "bond_paper_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 5637.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 1691.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spent_notebooks",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 2254.8,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spent_all",
+        "original_value": 34,
+        "original_unit": "dollar",
+        "converted_value": 9582.9,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Raphael went to buy some school supplies. He bought 4 pens which cost ${pen_cost} each, 2 notebooks which cost ${notebook_cost} each, and a rim of bond paper which cost ${bond_paper_cost}. How much did Raphael spend on everything?",
+    "templatized_answer": [
+      "Raphael spent 4 x ${pen_cost} = ${4*pen_cost} for the pens.",
+      "He also spent 2 x ${notebook_cost} = ${2*notebook_cost} for the notebooks.",
+      "Therefore, Raphael spent a total of ${4*pen_cost} + ${2*notebook_cost} + ${bond_paper_cost} = ${4*pen_cost + 2*notebook_cost + bond_paper_cost} for the school supplies.",
+      "#### {4*pen_cost + 2*notebook_cost + bond_paper_cost}"
+    ],
+    "factual_assignment": {
+      "pen_cost": 1.5,
+      "notebook_cost": 4,
+      "bond_paper_cost": 20
+    }
+  },
+  "merged_assignment": {
+    "pen_cost": 422.78,
+    "notebook_cost": 1127.4,
+    "bond_paper_cost": 5637.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pen_cost = 422.78\n    notebook_cost = 1127.4\n    bond_paper_cost = 5637.0\n\n    total_pen_cost = round(4 * pen_cost, 2)\n    total_notebook_cost = round(2 * notebook_cost, 2)\n    total_cost = round(total_pen_cost + total_notebook_cost + bond_paper_cost, 2)\n\n    return {\n        \"pen_cost\": pen_cost,\n        \"notebook_cost\": notebook_cost,\n        \"bond_paper_cost\": bond_paper_cost,\n        \"4*pen_cost\": total_pen_cost,\n        \"2*notebook_cost\": total_notebook_cost,\n        \"4*pen_cost + 2*notebook_cost + bond_paper_cost\": total_cost\n    }\n",
+    "results": {
+      "pen_cost": 422.78,
+      "notebook_cost": 1127.4,
+      "bond_paper_cost": 5637.0,
+      "4*pen_cost": 1691.12,
+      "2*notebook_cost": 2254.8,
+      "4*pen_cost + 2*notebook_cost + bond_paper_cost": 9582.92
+    }
+  },
+  "final": {
+    "question": "Raphael went to buy some school supplies. He bought 4 pens which cost 422.78 each, 2 notebooks which cost 1127.4 each, and a rim of bond paper which cost 5637.0. How much did Raphael spend on everything?",
+    "answer_lines": [
+      "Raphael spent 4 x 422.78 = 1691.12 for the pens.",
+      "He also spent 2 x 1127.4 = 2254.8 for the notebooks.",
+      "Therefore, Raphael spent a total of 1691.12 + 2254.8 + 5637.0 = 9582.92 for the school supplies.",
+      "#### 9582.92"
+    ],
+    "final_scalar": 9582.92,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rashid went to buy some school supplies. He bought 4 pens which cost 422.78 each, 2 notebooks which cost 1127.4 each, and a rim of bond paper which cost 5637.0. How much did Rashid spend on everything?",
+    "adapted_answer": [
+      "Rashid spent 4 x 422.78 = 1691.12 for the pens.",
+      "He also spent 2 x 1127.4 = 2254.8 for the notebooks.",
+      "Therefore, Rashid spent a total of 1691.12 + 2254.8 + 5637.0 = 9582.92 for the school supplies.",
+      "#### 9582.92"
+    ],
+    "adaptation_notes": "Replaced 'Raphael' with 'Rashid' to give the name a Pakistani context."
+  }
+}

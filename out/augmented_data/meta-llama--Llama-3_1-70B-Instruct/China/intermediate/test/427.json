@@ -1,0 +1,135 @@
+{
+  "index": 427,
+  "split": "test",
+  "original": {
+    "question": "Kenny is selling his Pokemon cards to buy a ticket to an amusement park, which costs $100. He has a collection of cards and plans to sell them for $1.5 each. He keeps 1/3 of them and gets to go to the amusement park with $50 in spending cash. How many cards did he start with?",
+    "answer": "He made $150 selling the cards because 100 + 50 = <<100+50=150>>150\nHe sold 100 cards because 150 / 1.5 = <<150/1.5=100>>100\nThe cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3\nHe started with 150 cards because 100 / (2/3) = <<100/(2/3)=150>>150\n#### 150"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Kenny",
+      "Pokemon",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name, a Japanese media franchise, and a US currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "amusement_park_ticket",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "card_price",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "spending_cash",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earned",
+      "value": 150,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"amusement_park_ticket\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"card_price\",\n    \"value\": 1.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"spending_cash\",\n    \"value\": 50,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_earned\",\n    \"value\": 150,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "amusement_park_ticket",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "card_price",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 10.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "spending_cash",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 356.5,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_earned",
+        "original_value": 150,
+        "original_unit": "dollar",
+        "converted_value": 150,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kenny is selling his Pokemon cards to buy a ticket to an amusement park, which costs ${amusement_park_ticket}. He has a collection of cards and plans to sell them for ${card_price} each. He keeps 1/3 of them and gets to go to the amusement park with ${spending_cash} in spending cash. How many cards did he start with?",
+    "templatized_answer": [
+      "He made ${total_earned} selling the cards because {amusement_park_ticket} + {spending_cash} = {amusement_park_ticket} + {spending_cash}",
+      "He sold {total_earned} / {card_price} cards because {total_earned} / {card_price} = {total_earned} / {card_price}",
+      "The cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3",
+      "He started with ({total_earned} / {card_price}) / (2/3) cards because ({total_earned} / {card_price}) / (2/3) = ({total_earned} / {card_price}) / (2/3)",
+      "#### ({total_earned} / {card_price}) / (2/3)"
+    ],
+    "factual_assignment": {
+      "amusement_park_ticket": 100,
+      "card_price": 1.5,
+      "spending_cash": 50,
+      "total_earned": 150
+    }
+  },
+  "merged_assignment": {
+    "amusement_park_ticket": 713.0,
+    "card_price": 10.7,
+    "spending_cash": 356.5,
+    "total_earned": 150
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"amusement_park_ticket\": 713.0,\n        \"card_price\": 10.7,\n        \"spending_cash\": 356.5,\n    }\n\n    total_earned = factual_assignment[\"amusement_park_ticket\"] + factual_assignment[\"spending_cash\"]\n    cards_sold = total_earned / factual_assignment[\"card_price\"]\n    initial_cards = cards_sold / (2/3)\n\n    return {\n        \"amusement_park_ticket\": factual_assignment[\"amusement_park_ticket\"],\n        \"card_price\": factual_assignment[\"card_price\"],\n        \"spending_cash\": factual_assignment[\"spending_cash\"],\n        \"total_earned\": round(total_earned, 2),\n        \"total_earned / card_price\": round(cards_sold, 2),\n        \"({total_earned} / {card_price}) / (2/3)\": round(initial_cards, 2),\n    }\n",
+    "results": {
+      "amusement_park_ticket": 713.0,
+      "card_price": 10.7,
+      "spending_cash": 356.5,
+      "total_earned": 1069.5,
+      "total_earned / card_price": 99.95,
+      "({total_earned} / {card_price}) / (2/3)": 149.93
+    }
+  },
+  "final": {
+    "question": "Kenny is selling his Pokemon cards to buy a ticket to an amusement park, which costs 713.0 renminbi. He has a collection of cards and plans to sell them for 10.7 renminbi each. He keeps 1/3 of them and gets to go to the amusement park with 356.5 renminbi in spending cash. How many cards did he start with?",
+    "answer_lines": [
+      "He made 1069.5 renminbi selling the cards because 713.0 + 356.5 = 1069.5",
+      "He sold 99.95 cards because 1069.5 / 10.7 = 99.95",
+      "The cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3",
+      "He started with 149.93 cards because 99.95 / (2/3) = 149.93",
+      "#### 149.93"
+    ],
+    "final_scalar": 149.93,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kangkang is selling his Wangpai cards to buy a ticket to an amusement park, which costs 713.0 renminbi. He has a collection of cards and plans to sell them for 10.7 renminbi each. He keeps 1/3 of them and gets to go to the amusement park with 356.5 renminbi in spending cash. How many cards did he start with?",
+    "adapted_answer": [
+      "He made 1069.5 renminbi selling the cards because 713.0 + 356.5 = 1069.5",
+      "He sold 99.95 cards because 1069.5 / 10.7 = 99.95",
+      "The cards he sold were 2/3 of his collection because 1 - (1/3) = 2/3",
+      "He started with 149.93 cards because 99.95 / (2/3) = 149.93",
+      "#### 149.93"
+    ],
+    "adaptation_notes": "Replaced 'Kenny' with 'Kangkang' (a common Chinese name) and 'Pokemon' with 'Wangpai' (a popular Chinese card game)."
+  }
+}

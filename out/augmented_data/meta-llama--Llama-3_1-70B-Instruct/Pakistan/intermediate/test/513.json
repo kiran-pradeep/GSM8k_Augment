@@ -1,0 +1,148 @@
+{
+  "index": 513,
+  "split": "test",
+  "original": {
+    "question": "Julie had $500. She spent 20% of it on clothes and then 25% of the remaining money on CDs. How much money did Julie have left?",
+    "answer": "Julie spend $500 * 0.2 = $<<500*0.2=100>>100 for clothes.\nJulie then had $500 - $100 = $<<500-100=400>>400 left.\nShe spend $400 * 0.25 = $<<400*0.25=100>>100 on CDs.\nJulie had $400 - $100 = $<<400-100=300>>300 left.\n#### 300"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Julie",
+      "dollars"
+    ],
+    "notes": "The name 'Julie' is culturally specific to Western regions and 'dollars' is a unit of currency primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "clothes_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cds_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_money",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"clothes_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cds_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_money\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 140925.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "clothes_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 28185.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 112740.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cds_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 28185.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "final_money",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 84555.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Julie had ${initial_money}. She spent 20% of it on clothes and then 25% of the remaining money on CDs. How much money did Julie have left?",
+    "templatized_answer": [
+      "Julie spent ${initial_money} * 0.2 = ${clothes_cost} for clothes.",
+      "Julie then had ${initial_money} - ${clothes_cost} = ${remaining_money} left.",
+      "She spent ${remaining_money} * 0.25 = ${cds_cost} on CDs.",
+      "Julie had ${remaining_money} - ${cds_cost} = ${final_money} left.",
+      "#### {final_money}"
+    ],
+    "factual_assignment": {
+      "initial_money": 500.0,
+      "clothes_cost": 100.0,
+      "remaining_money": 400.0,
+      "cds_cost": 100.0,
+      "final_money": 300.0
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 140925.0,
+    "clothes_cost": 28185.0,
+    "remaining_money": 112740.0,
+    "cds_cost": 28185.0,
+    "final_money": 84555.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 140925.0\n    clothes_cost = round(initial_money * 0.2, 2)\n    remaining_money = round(initial_money - clothes_cost, 2)\n    cds_cost = round(remaining_money * 0.25, 2)\n    final_money = round(remaining_money - cds_cost, 2)\n\n    return {\n        \"initial_money\": initial_money,\n        \"clothes_cost\": clothes_cost,\n        \"remaining_money\": remaining_money,\n        \"cds_cost\": cds_cost,\n        \"final_money\": final_money\n    }\n",
+    "results": {
+      "initial_money": 140925.0,
+      "clothes_cost": 28185.0,
+      "remaining_money": 112740.0,
+      "cds_cost": 28185.0,
+      "final_money": 84555.0
+    }
+  },
+  "final": {
+    "question": "Julie had 140925. She spent 20% of it on clothes and then 25% of the remaining money on CDs. How much money did Julie have left?",
+    "answer_lines": [
+      "Julie spent 140925 * 0.2 = 28185 for clothes.",
+      "Julie then had 140925 - 28185 = 112740 left.",
+      "She spent 112740 * 0.25 = 28185 on CDs.",
+      "Julie had 112740 - 28185 = 84555 left.",
+      "#### 84555"
+    ],
+    "final_scalar": 84555.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha had 140925 rupees. She spent 20% of it on clothes and then 25% of the remaining money on CDs. How much money did Ayesha have left?",
+    "adapted_answer": [
+      "Ayesha spent 140925 * 0.2 = 28185 rupees for clothes.",
+      "Ayesha then had 140925 - 28185 = 112740 rupees left.",
+      "She spent 112740 * 0.25 = 28185 rupees on CDs.",
+      "Ayesha had 112740 - 28185 = 84555 rupees left.",
+      "#### 84555"
+    ],
+    "adaptation_notes": "Replaced 'Julie' with 'Ayesha' and added 'rupees' for Pakistani context."
+  }
+}

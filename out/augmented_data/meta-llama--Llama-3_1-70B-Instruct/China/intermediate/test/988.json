@@ -1,0 +1,130 @@
+{
+  "index": 988,
+  "split": "test",
+  "original": {
+    "question": "Jessica makes $2,000.00 a month.  She sets 25% of her paycheck aside to put towards fancy shoes.  Each pair of shoes she buys costs $1,000.00.  How many shoes can she buy in a year?",
+    "answer": "She is paid $2,000.00 a month and she saves 25% for shoes so she saves 2000*.25 = $<<2000*.25=500.00>>500.00\nShe saves $500.00 a month for 12 months so she saves 500*12 = $<<500*12=6000.00>>6,000.00\nEach pair of shoes costs $1,000.00 and she has saved $6,000.00 so she can buy 6000/1000 = 6 pair of shoes per year\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jessica",
+      "dollars"
+    ],
+    "notes": "The name 'Jessica' is a Western name and the unit 'dollars' is commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_income",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_savings",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_savings",
+      "value": 6000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "shoe_cost",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * conversions[original_unit][converted_unit], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"monthly_income\",\n    \"value\": 2000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"monthly_savings\",\n    \"value\": 500.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"yearly_savings\",\n    \"value\": 6000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"shoe_cost\",\n    \"value\": 1000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_income",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 14260.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_savings",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 3565.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "yearly_savings",
+        "original_value": 6000.0,
+        "original_unit": "dollar",
+        "converted_value": 42780.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "shoe_cost",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 7130.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jessica makes ${monthly_income} a month.  She sets 25% of her paycheck aside to put towards fancy shoes.  Each pair of shoes she buys costs ${shoe_cost}.  How many shoes can she buy in a year?",
+    "templatized_answer": [
+      "She is paid ${monthly_income} a month and she saves 25% for shoes so she saves {monthly_income}*.25 = ${monthly_savings}",
+      "She saves ${monthly_savings} a month for 12 months so she saves {monthly_savings}*12 = ${yearly_savings}",
+      "Each pair of shoes costs ${shoe_cost} and she has saved ${yearly_savings} so she can buy {yearly_savings}/{shoe_cost} = {yearly_savings}/{shoe_cost} pair of shoes per year",
+      "#### {yearly_savings}/{shoe_cost}"
+    ],
+    "factual_assignment": {
+      "monthly_income": 2000.0,
+      "monthly_savings": 500.0,
+      "yearly_savings": 6000.0,
+      "shoe_cost": 1000.0
+    }
+  },
+  "merged_assignment": {
+    "monthly_income": 14260.0,
+    "monthly_savings": 3565.0,
+    "yearly_savings": 42780.0,
+    "shoe_cost": 7130.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_income = 14260.0\n    monthly_savings = round(monthly_income * 0.25, 2)\n    yearly_savings = round(monthly_savings * 12, 2)\n    shoe_cost = 7130.0\n    yearly_shoes = round(yearly_savings / shoe_cost, 2)\n\n    return {\n        \"monthly_income\": monthly_income,\n        \"monthly_savings\": monthly_savings,\n        \"yearly_savings\": yearly_savings,\n        \"shoe_cost\": shoe_cost,\n        \"yearly_shoes\": yearly_shoes\n    }\n\nprint(recompute())\n",
+    "results": {
+      "monthly_income": 14260.0,
+      "monthly_savings": 3565.0,
+      "yearly_savings": 42780.0,
+      "shoe_cost": 7130.0,
+      "yearly_shoes": 6.0
+    }
+  },
+  "final": {
+    "question": "Jessica makes 14260.0 renminbi a month.  She sets 25% of her paycheck aside to put towards fancy shoes.  Each pair of shoes she buys costs 7130.0 renminbi.  How many shoes can she buy in a year?",
+    "answer_lines": [
+      "She is paid 14260.0 renminbi a month and she saves 25% for shoes so she saves 14260.0*.25 = 3565.0 renminbi",
+      "She saves 3565.0 renminbi a month for 12 months so she saves 3565.0*12 = 42780.0 renminbi",
+      "Each pair of shoes costs 7130.0 renminbi and she has saved 42780.0 renminbi so she can buy 42780.0/7130.0 = 6.0 pair of shoes per year",
+      "#### 6.0"
+    ],
+    "final_scalar": 6.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mei makes 14260.0 renminbi a month.  She sets 25% of her paycheck aside to put towards fancy shoes.  Each pair of shoes she buys costs 7130.0 renminbi.  How many shoes can she buy in a year?",
+    "adapted_answer": [
+      "She is paid 14260.0 renminbi a month and she saves 25% for shoes so she saves 14260.0*.25 = 3565.0 renminbi",
+      "She saves 3565.0 renminbi a month for 12 months so she saves 3565.0*12 = 42780.0 renminbi",
+      "Each pair of shoes costs 7130.0 renminbi and she has saved 42780.0 renminbi so she can buy 42780.0/7130.0 = 6.0 pair of shoes per year",
+      "#### 6.0"
+    ],
+    "adaptation_notes": "Replaced 'Jessica' with 'Mei', a common Chinese name."
+  }
+}

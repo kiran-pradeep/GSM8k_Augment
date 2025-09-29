@@ -1,0 +1,147 @@
+{
+  "index": 503,
+  "split": "test",
+  "original": {
+    "question": "The rug is 5 feet wider than the chair. The couch is 2 feet longer than twice the width of the rug. If the chair is 3 feet wide. How many feet long is the couch?",
+    "answer": "Chair = <<3=3>>3 feet\nRug = 3 + 5 = <<3+5=8>>8 feet\nCouch = 2 * 8 + 2 = <<2*8+2=18>>18 feet\nThe couch is <<18=18>>18 feet long.\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "feet"
+    ],
+    "notes": "The unit 'feet' is commonly used in the United States and other countries, but in Haiti, the metric system is officially used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "chair_width",
+      "value": 3,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "rug_width",
+      "value": 5,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "rug_width_total",
+      "value": 8,
+      "unit": "feet",
+      "context": "answer"
+    },
+    {
+      "variable": "couch_length",
+      "value": 2,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "couch_length_total",
+      "value": 18,
+      "unit": "feet",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"factor\": 130.81, \"unit\": \"gourde\"},\n        \"pounds\": {\"factor\": 0.453592, \"unit\": \"kilograms\"},\n        \"ounces\": {\"factor\": 28.3495, \"unit\": \"grams\"},\n        \"miles\": {\"factor\": 1.60934, \"unit\": \"kilometers\"},\n        \"feet\": {\"factor\": 0.3048, \"unit\": \"meters\"},\n        \"gallons\": {\"factor\": 3.78541, \"unit\": \"liters\"},\n        \"cups\": {\"factor\": 236.588, \"unit\": \"milliliters\"}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            converted_unit = conversions[metric[\"unit\"]][\"unit\"]\n        else:\n            converted_value = metric[\"value\"]\n            converted_unit = metric[\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": metric[\"value\"],\n            \"original_unit\": metric[\"unit\"],\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"chair_width\", \"value\": 3, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"rug_width\", \"value\": 5, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"rug_width_total\", \"value\": 8, \"unit\": \"feet\", \"context\": \"answer\"},\n    {\"variable\": \"couch_length\", \"value\": 2, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"couch_length_total\", \"value\": 18, \"unit\": \"feet\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "chair_width",
+        "original_value": 3,
+        "original_unit": "feet",
+        "converted_value": 0.91,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "rug_width",
+        "original_value": 5,
+        "original_unit": "feet",
+        "converted_value": 1.52,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "rug_width_total",
+        "original_value": 8,
+        "original_unit": "feet",
+        "converted_value": 2.44,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "couch_length",
+        "original_value": 2,
+        "original_unit": "feet",
+        "converted_value": 0.61,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "couch_length_total",
+        "original_value": 18,
+        "original_unit": "feet",
+        "converted_value": 5.49,
+        "converted_unit": "meters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The rug is {rug_width} feet wider than the chair. The couch is {couch_length} feet longer than twice the width of the rug. If the chair is {chair_width} feet wide. How many feet long is the couch?",
+    "templatized_answer": [
+      "Chair = {chair_width} feet",
+      "Rug = {chair_width} + {rug_width} = {rug_width_total} feet",
+      "Couch = 2 * {rug_width_total} + {couch_length} = {couch_length_total} feet",
+      "The couch is {couch_length_total} feet long.",
+      "#### {couch_length_total}"
+    ],
+    "factual_assignment": {
+      "chair_width": 3,
+      "rug_width": 5,
+      "rug_width_total": 8,
+      "couch_length": 2,
+      "couch_length_total": 18
+    }
+  },
+  "merged_assignment": {
+    "chair_width": 0.91,
+    "rug_width": 1.52,
+    "rug_width_total": 2.44,
+    "couch_length": 0.61,
+    "couch_length_total": 5.49
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    chair_width = 0.91\n    rug_width = 1.52\n    rug_width_total = round(chair_width + rug_width, 2)\n    couch_length = 0.61\n    couch_length_total = round(2 * rug_width_total + couch_length, 2)\n\n    return {\n        \"chair_width\": chair_width,\n        \"rug_width\": rug_width,\n        \"rug_width_total\": rug_width_total,\n        \"couch_length\": couch_length,\n        \"couch_length_total\": couch_length_total\n    }\n",
+    "results": {
+      "chair_width": 0.91,
+      "rug_width": 1.52,
+      "rug_width_total": 2.43,
+      "couch_length": 0.61,
+      "couch_length_total": 5.47
+    }
+  },
+  "final": {
+    "question": "The rug is 1.52 meters wider than the chair. The couch is 0.61 meters longer than twice the width of the rug. If the chair is 0.91 meters wide. How many meters long is the couch?",
+    "answer_lines": [
+      "Chair = 0.91 meters",
+      "Rug = 0.91 + 1.52 = 2.43 meters",
+      "Couch = 2 * 2.43 + 0.61 = 5.47 meters",
+      "The couch is 5.47 meters long.",
+      "#### 5.47"
+    ],
+    "final_scalar": 5.47,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The mat is 1.52 meters wider than the chèz. The kanap is 0.61 meters longer than twice the width of the mat. If the chèz is 0.91 meters wide. How many meters long is the kanap?",
+    "adapted_answer": [
+      "Chèz = 0.91 meters",
+      "Mat = 0.91 + 1.52 = 2.43 meters",
+      "Kanap = 2 * 2.43 + 0.61 = 5.47 meters",
+      "The kanap is 5.47 meters long.",
+      "#### 5.47"
+    ],
+    "adaptation_notes": "Replaced 'rug' with 'mat', 'chair' with 'chèz', and 'couch' with 'kanap' to provide Haitian equivalents."
+  }
+}

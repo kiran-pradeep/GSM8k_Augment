@@ -1,0 +1,137 @@
+{
+  "index": 162,
+  "split": "test",
+  "original": {
+    "question": "If a bag of marbles costs $20 and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "answer": "When the price of the bag of marble increase by 20%, the price increases by 20/100*20 = $<<20/100*20=4>>4\nIf the price increases after every two months, in 36 months, it will increase 36/2 = <<36/2=18>>18 times.\nIf each increase is $4, the total amount the price of the bag of marbles will have increased by after 36 months is 18*$4 = $<<18*4=72>>72\nAfter the total increase of the price of the bag of marbles after 36 months, the total cost will be $20+$72 = $<<20+72=92>>92\n#### 92"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusively in Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_marble_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "price_increase",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_price_increase",
+      "value": 72,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_marble_cost",
+      "value": 92,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_marble_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"price_increase\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_price_increase\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_marble_cost\", \"value\": 92, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_marble_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 11387.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "price_increase",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 2277.52,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_price_increase",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 40995.36,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "final_marble_cost",
+        "original_value": 92,
+        "original_unit": "dollar",
+        "converted_value": 52382.96,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "If a bag of marbles costs ${initial_marble_cost} and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after {months} months?",
+    "templatized_answer": [
+      "When the price of the bag of marble increase by 20%, the price increases by 20/100*{initial_marble_cost} = ${price_increase}.",
+      "If the price increases after every two months, in {months} months, it will increase {months}/2 = {increase_times} times.",
+      "If each increase is ${price_increase}, the total amount the price of the bag of marbles will have increased by after {months} months is {increase_times}*${price_increase} = ${total_price_increase}.",
+      "After the total increase of the price of the bag of marbles after {months} months, the total cost will be ${initial_marble_cost}+${total_price_increase} = ${final_marble_cost}.",
+      "#### {final_marble_cost}"
+    ],
+    "factual_assignment": {
+      "initial_marble_cost": 20,
+      "price_increase": 4,
+      "total_price_increase": 72,
+      "final_marble_cost": 92,
+      "months": 36,
+      "increase_times": 18
+    }
+  },
+  "merged_assignment": {
+    "initial_marble_cost": 11387.6,
+    "price_increase": 2277.52,
+    "total_price_increase": 40995.36,
+    "final_marble_cost": 52382.96,
+    "months": 36,
+    "increase_times": 18
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_marble_cost = 11387.6\n    months = 36\n\n    price_increase = round(0.2 * initial_marble_cost, 2)\n    increase_times = months // 2\n    total_price_increase = round(increase_times * price_increase, 2)\n    final_marble_cost = round(initial_marble_cost + total_price_increase, 2)\n\n    return {\n        \"initial_marble_cost\": initial_marble_cost,\n        \"price_increase\": price_increase,\n        \"total_price_increase\": total_price_increase,\n        \"final_marble_cost\": final_marble_cost,\n        \"months\": months,\n        \"increase_times\": increase_times\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_marble_cost": 11387.6,
+      "price_increase": 2277.52,
+      "total_price_increase": 40995.36,
+      "final_marble_cost": 52382.96,
+      "months": 36,
+      "increase_times": 18
+    }
+  },
+  "final": {
+    "question": "If a bag of marbles costs 11387.6 shilling and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "answer_lines": [
+      "When the price of the bag of marble increase by 20%, the price increases by 20/100*11387.6 = 2277.52 shilling.",
+      "If the price increases after every two months, in 36 months, it will increase 36/2 = 18 times.",
+      "If each increase is 2277.52 shilling, the total amount the price of the bag of marbles will have increased by after 36 months is 18*2277.52 = 40995.36 shilling.",
+      "After the total increase of the price of the bag of marbles after 36 months, the total cost will be 11387.6+40995.36 = 52382.96 shilling.",
+      "#### 52382.96"
+    ],
+    "final_scalar": 52382.96,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "If a bag of marbles costs 11387.6 shilling and the price increases by 20% of the original price every two months, how much would a bag of marbles cost after 36 months?",
+    "adapted_answer": [
+      "When the price of the bag of marbles increases by 20%, the price increases by 20/100*11387.6 = 2277.52 shilling.",
+      "If the price increases after every two months, in 36 months, it will increase 36/2 = 18 times.",
+      "If each increase is 2277.52 shilling, the total amount the price of the bag of marbles will have increased by after 36 months is 18*2277.52 = 40995.36 shilling.",
+      "After the total increase of the price of the bag of marbles after 36 months, the total cost will be 11387.6+40995.36 = 52382.96 shilling.",
+      "#### 52382.96"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

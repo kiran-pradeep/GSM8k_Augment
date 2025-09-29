@@ -1,0 +1,116 @@
+{
+  "index": 911,
+  "split": "test",
+  "original": {
+    "question": "Colby works for a manufacturing company in the packaging division.  He gets paid $0.20 for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in dollars, does he earn in a typical eight-hour workday?",
+    "answer": "Ten less than fifty is 50-10=<<50-10=40>>40 packages per hour.\nAt $0.20 per completed package. if he completes 40 packages per hour he earns 40*$0.20=$<<40*0.20=8>>8 per hour.\nThus, in a typical eight-hour day, he earns 8*$8=$<<8*8=64>>64.\n#### 64"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Colby",
+      "dollars"
+    ],
+    "notes": "Name 'Colby' and unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "package_payment",
+      "value": 0.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_earnings",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 64,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * conversions[original_unit][converted_unit], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"package_payment\",\n    \"value\": 0.2,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"hourly_earnings\",\n    \"value\": 8,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"daily_earnings\",\n    \"value\": 64,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "package_payment",
+        "original_value": 0.2,
+        "original_unit": "dollar",
+        "converted_value": 1.43,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hourly_earnings",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 64,
+        "original_unit": "dollar",
+        "converted_value": 456.32,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Colby works for a manufacturing company in the packaging division.  He gets paid ${package_payment} for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in dollars, does he earn in a typical eight-hour workday?",
+    "templatized_answer": [
+      "Ten less than fifty is 50-10={fifty_minus_ten} packages per hour.",
+      "At ${package_payment} per completed package. if he completes {fifty_minus_ten} packages per hour he earns {fifty_minus_ten}*${package_payment}=${hourly_earnings} per hour.",
+      "Thus, in a typical eight-hour day, he earns ${hourly_earnings}*8=${daily_earnings}.",
+      "#### {daily_earnings}"
+    ],
+    "factual_assignment": {
+      "package_payment": 0.2,
+      "hourly_earnings": 8,
+      "daily_earnings": 64,
+      "fifty_minus_ten": 40
+    }
+  },
+  "merged_assignment": {
+    "package_payment": 1.43,
+    "hourly_earnings": 57.04,
+    "daily_earnings": 456.32,
+    "fifty_minus_ten": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    package_payment = 1.43\n    fifty_minus_ten = 40\n    hourly_earnings = fifty_minus_ten * package_payment\n    daily_earnings = hourly_earnings * 8\n\n    return {\n        \"package_payment\": package_payment,\n        \"fifty_minus_ten\": fifty_minus_ten,\n        \"hourly_earnings\": round(hourly_earnings, 2),\n        \"daily_earnings\": round(daily_earnings, 2)\n    }\n",
+    "results": {
+      "package_payment": 1.43,
+      "fifty_minus_ten": 40,
+      "hourly_earnings": 57.2,
+      "daily_earnings": 457.6
+    }
+  },
+  "final": {
+    "question": "Colby works for a manufacturing company in the packaging division.  He gets paid 1.43 renminbi for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in renminbi, does he earn in a typical eight-hour workday?",
+    "answer_lines": [
+      "Ten less than fifty is 50-10=40 packages per hour.",
+      "At 1.43 renminbi per completed package. if he completes 40 packages per hour he earns 40*1.43=57.2 renminbi per hour.",
+      "Thus, in a typical eight-hour day, he earns 57.2*8=457.6 renminbi.",
+      "#### 457.6"
+    ],
+    "final_scalar": 457.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wei works for a manufacturing company in the packaging division.  He gets paid 1.43 renminbi for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in renminbi, does he earn in a typical eight-hour workday?",
+    "adapted_answer": [
+      "Ten less than fifty is 50-10=40 packages per hour.",
+      "At 1.43 renminbi per completed package. if he completes 40 packages per hour he earns 40*1.43=57.2 renminbi per hour.",
+      "Thus, in a typical eight-hour day, he earns 57.2*8=457.6 renminbi.",
+      "#### 457.6"
+    ],
+    "adaptation_notes": "Replaced 'Colby' with 'Wei' to give the name a Chinese context."
+  }
+}

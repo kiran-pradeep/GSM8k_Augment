@@ -1,0 +1,129 @@
+{
+  "index": 307,
+  "split": "test",
+  "original": {
+    "question": "Sandy wants to lose as much weight as Joey does but needs 4 weeks to lose the same amount of weight that Joey loses in a single week. If Joey loses 8 pounds in 4 weeks, how many weeks will it take Sandy to lose the same amount of weight?",
+    "answer": "Joey loses 8 pounds / 4 weeks = <<8/4=2>>2 pounds per week.\nIn order to match Joey, Sandy should lose 2 pounds / 4 = <<2/4=0.5>>0.5 of a pound per week.\nTo find the number of weeks it will take, divide the number of pounds by the rate of weight loss: 8 pounds / 0.5 pounds/week = <<8/0.5=16>>16 weeks\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sandy",
+      "Joey",
+      "pounds"
+    ],
+    "notes": "The names 'Sandy' and 'Joey' are Western names, and 'pounds' is a unit of weight commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "joey_weight_loss",
+      "value": 8.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "joey_weekly_weight_loss",
+      "value": 2.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "sandy_weekly_weight_loss",
+      "value": 0.5,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "sandy_time_to_match_joey",
+      "value": 16.0,
+      "unit": "week",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495),\n        \"dollar\": (\"renminbi\", 7.13)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"joey_weight_loss\",\n    \"value\": 8.0,\n    \"unit\": \"pound\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"joey_weekly_weight_loss\",\n    \"value\": 2.0,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"sandy_weekly_weight_loss\",\n    \"value\": 0.5,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"sandy_time_to_match_joey\",\n    \"value\": 16.0,\n    \"unit\": \"week\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "joey_weight_loss",
+        "original_value": 8.0,
+        "original_unit": "pound",
+        "converted_value": 3.63,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "joey_weekly_weight_loss",
+        "original_value": 2.0,
+        "original_unit": "pound",
+        "converted_value": 0.91,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "sandy_weekly_weight_loss",
+        "original_value": 0.5,
+        "original_unit": "pound",
+        "converted_value": 0.23,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "sandy_time_to_match_joey",
+        "original_value": 16.0,
+        "original_unit": "week",
+        "converted_value": 16.0,
+        "converted_unit": "week"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sandy wants to lose as much weight as Joey does but needs 4 weeks to lose the same amount of weight that Joey loses in a single week. If Joey loses {joey_weight_loss} pounds in 4 weeks, how many weeks will it take Sandy to lose the same amount of weight?",
+    "templatized_answer": [
+      "Joey loses {joey_weight_loss} pounds / 4 weeks = {joey_weekly_weight_loss} pounds per week.",
+      "In order to match Joey, Sandy should lose {joey_weekly_weight_loss} pounds / 4 = {sandy_weekly_weight_loss} of a pound per week.",
+      "To find the number of weeks it will take, divide the number of pounds by the rate of weight loss: {joey_weight_loss} pounds / {sandy_weekly_weight_loss} pounds/week = {sandy_time_to_match_joey} weeks"
+    ],
+    "factual_assignment": {
+      "joey_weight_loss": 8.0,
+      "joey_weekly_weight_loss": 2.0,
+      "sandy_weekly_weight_loss": 0.5,
+      "sandy_time_to_match_joey": 16.0
+    }
+  },
+  "merged_assignment": {
+    "joey_weight_loss": 3.63,
+    "joey_weekly_weight_loss": 0.91,
+    "sandy_weekly_weight_loss": 0.23,
+    "sandy_time_to_match_joey": 16.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    joey_weight_loss = 3.63\n    joey_weekly_weight_loss = joey_weight_loss / 4\n    sandy_weekly_weight_loss = joey_weekly_weight_loss / 4\n    sandy_time_to_match_joey = joey_weight_loss / sandy_weekly_weight_loss\n\n    return {\n        \"joey_weight_loss\": round(joey_weight_loss, 2),\n        \"joey_weekly_weight_loss\": round(joey_weekly_weight_loss, 2),\n        \"sandy_weekly_weight_loss\": round(sandy_weekly_weight_loss, 2),\n        \"sandy_time_to_match_joey\": round(sandy_time_to_match_joey, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "joey_weight_loss": 3.63,
+      "joey_weekly_weight_loss": 0.91,
+      "sandy_weekly_weight_loss": 0.23,
+      "sandy_time_to_match_joey": 16.0
+    }
+  },
+  "final": {
+    "question": "Sandy wants to lose as much weight as Joey does but needs 4 weeks to lose the same amount of weight that Joey loses in a single week. If Joey loses 3.63 kilograms in 4 weeks, how many weeks will it take Sandy to lose the same amount of weight?",
+    "answer_lines": [
+      "Joey loses 3.63 kilograms / 4 weeks = 0.91 kilograms per week.",
+      "In order to match Joey, Sandy should lose 0.91 kilograms / 4 = 0.23 kilograms of a kilogram per week.",
+      "To find the number of weeks it will take, divide the number of kilograms by the rate of weight loss: 3.63 kilograms / 0.23 kilograms/week = 16 weeks",
+      "#### 16"
+    ],
+    "final_scalar": 16.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Xiaoming wants to lose as much weight as Xiaohong does but needs 4 weeks to lose the same amount of weight that Xiaohong loses in a single week. If Xiaohong loses 3.63 kilograms in 4 weeks, how many weeks will it take Xiaoming to lose the same amount of weight?",
+    "adapted_answer": [
+      "Xiaohong loses 3.63 kilograms / 4 weeks = 0.91 kilograms per week.",
+      "In order to match Xiaohong, Xiaoming should lose 0.91 kilograms / 4 = 0.23 kilograms of a kilogram per week.",
+      "To find the number of weeks it will take, divide the number of kilograms by the rate of weight loss: 3.63 kilograms / 0.23 kilograms/week = 16 weeks",
+      "#### 16"
+    ],
+    "adaptation_notes": "Replaced 'Sandy' with 'Xiaoming' and 'Joey' with 'Xiaohong'."
+  }
+}

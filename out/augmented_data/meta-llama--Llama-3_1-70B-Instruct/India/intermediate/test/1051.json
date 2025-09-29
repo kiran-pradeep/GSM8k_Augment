@@ -1,0 +1,116 @@
+{
+  "index": 1051,
+  "split": "test",
+  "original": {
+    "question": "Ingrid drinks 8 cups of water every day.  If there are 16 cups in a gallon, how many gallons of water does she drink in 30 days?",
+    "answer": "She drinks 8 cups of water a day so after 30 days she drinks 8*30 = <<8*30=240>>240 cups of water\nThere are 16 cups in 1 gallon so she drinks 240/16 = <<240/16=15>>15 gallons of water in 30 days\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ingrid",
+      "gallons"
+    ],
+    "notes": "Name 'Ingrid' and unit 'gallons' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cups_per_gallon",
+      "value": 16,
+      "unit": "cup",
+      "context": "question"
+    },
+    {
+      "variable": "total_cups",
+      "value": 240,
+      "unit": "cup",
+      "context": "answer"
+    },
+    {
+      "variable": "total_gallons",
+      "value": 15,
+      "unit": "gallon",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"},\n        \"gallon\": {\"factor\": 3.785, \"unit\": \"liter\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"dollar\": {\"factor\": 87, \"unit\": \"rupee\"},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cups_per_gallon\", \"value\": 16, \"unit\": \"cup\", \"context\": \"question\"},\n    {\"variable\": \"total_cups\", \"value\": 240, \"unit\": \"cup\", \"context\": \"answer\"},\n    {\"variable\": \"total_gallons\", \"value\": 15, \"unit\": \"gallon\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cups_per_gallon",
+        "original_value": 16,
+        "original_unit": "cup",
+        "converted_value": 3785.41,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "total_cups",
+        "original_value": 240,
+        "original_unit": "cup",
+        "converted_value": 56781.12,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "total_gallons",
+        "original_value": 15,
+        "original_unit": "gallon",
+        "converted_value": 56.78,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ingrid drinks {cups_per_day} cups of water every day.  If there are {cups_per_gallon} cups in a gallon, how many gallons of water does she drink in {days} days?",
+    "templatized_answer": [
+      "She drinks {cups_per_day} cups of water a day so after {days} days she drinks {cups_per_day}*{days} = {total_cups} cups of water",
+      "There are {cups_per_gallon} cups in 1 gallon so she drinks {total_cups}/{cups_per_gallon} = {total_gallons} gallons of water in {days} days",
+      "#### {total_gallons}"
+    ],
+    "factual_assignment": {
+      "cups_per_day": 8,
+      "cups_per_gallon": 16,
+      "total_cups": 240,
+      "total_gallons": 15,
+      "days": 30
+    }
+  },
+  "merged_assignment": {
+    "cups_per_day": 8,
+    "cups_per_gallon": 3785.41,
+    "total_cups": 56781.12,
+    "total_gallons": 56.78,
+    "days": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cups_per_day = 8\n    cups_per_gallon = 3785.41\n    days = 30\n\n    total_cups = cups_per_day * days\n    total_gallons = round(total_cups / cups_per_gallon, 2)\n\n    return {\n        \"cups_per_day\": cups_per_day,\n        \"cups_per_gallon\": cups_per_gallon,\n        \"total_cups\": round(total_cups, 2),\n        \"total_gallons\": total_gallons,\n        \"days\": days\n    }\n",
+    "results": {
+      "cups_per_day": 8,
+      "cups_per_gallon": 3785.41,
+      "total_cups": 240,
+      "total_gallons": 0.06,
+      "days": 30
+    }
+  },
+  "final": {
+    "question": "Ingrid drinks 8 milliliters of water every day.  If there are 3785.41 milliliters in a liter, how many liters of water does she drink in 30 days?",
+    "answer_lines": [
+      "She drinks 8 milliliters of water a day so after 30 days she drinks 8*30 = 240 milliliters of water",
+      "There are 3785.41 milliliters in 1 liter so she drinks 240/3785.41 = 0.06 liters of water in 30 days",
+      "#### 0.06"
+    ],
+    "final_scalar": 0.06,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nalini drinks 8 milliliters of water every day.  If there are 3785.41 milliliters in a liter, how many liters of water does she drink in 30 days?",
+    "adapted_answer": [
+      "She drinks 8 milliliters of water a day so after 30 days she drinks 8*30 = 240 milliliters of water",
+      "There are 3785.41 milliliters in 1 liter so she drinks 240/3785.41 = 0.06 liters of water in 30 days",
+      "#### 0.06"
+    ],
+    "adaptation_notes": "Replaced 'Ingrid' with 'Nalini' to provide an Indian context."
+  }
+}

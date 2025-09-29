@@ -1,0 +1,142 @@
+{
+  "index": 482,
+  "split": "test",
+  "original": {
+    "question": "Keegan was running a car wash with his friend Tashay to raise money for a baseball camp. They needed to raise $200 for the two of them. By 3 pm, Keegan had earned $83 and Tasha had earned $91. How much more did they need to earn to reach their goal?",
+    "answer": "They have raised $174 because 83 plus 91 equals <<83+91=174>>174.\nThey need to raise $26 more because 200 minus 174 equals 26.\n#### 26"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "baseball camp"
+    ],
+    "notes": "The use of dollars as currency and the reference to a baseball camp are culturally specific to regions outside Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "fundraising_goal",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "keegan_earnings",
+      "value": 83.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tashay_earnings",
+      "value": 91.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 174.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_amount",
+      "value": 26.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"fundraising_goal\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"keegan_earnings\", \"value\": 83.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tashay_earnings\", \"value\": 91.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 174.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_amount\", \"value\": 26.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "fundraising_goal",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 3324.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "keegan_earnings",
+        "original_value": 83.0,
+        "original_unit": "dollar",
+        "converted_value": 1379.46,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "tashay_earnings",
+        "original_value": 91.0,
+        "original_unit": "dollar",
+        "converted_value": 1512.42,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 174.0,
+        "original_unit": "dollar",
+        "converted_value": 2891.88,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "remaining_amount",
+        "original_value": 26.0,
+        "original_unit": "dollar",
+        "converted_value": 432.12,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Keegan was running a car wash with his friend Tashay to raise money for a baseball camp. They needed to raise ${fundraising_goal} for the two of them. By 3 pm, Keegan had earned ${keegan_earnings} and Tasha had earned ${tashay_earnings}. How much more did they need to earn to reach their goal?",
+    "templatized_answer": [
+      "They have raised ${total_earnings} because {keegan_earnings} plus {tashay_earnings} equals {total_earnings}.",
+      "They need to raise ${remaining_amount} more because {fundraising_goal} minus {total_earnings} equals {remaining_amount}.",
+      "#### {remaining_amount}"
+    ],
+    "factual_assignment": {
+      "fundraising_goal": 200.0,
+      "keegan_earnings": 83.0,
+      "tashay_earnings": 91.0,
+      "total_earnings": 174.0,
+      "remaining_amount": 26.0
+    }
+  },
+  "merged_assignment": {
+    "fundraising_goal": 3324.0,
+    "keegan_earnings": 1379.46,
+    "tashay_earnings": 1512.42,
+    "total_earnings": 2891.88,
+    "remaining_amount": 432.12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    fundraising_goal = 3324.0\n    keegan_earnings = 1379.46\n    tashay_earnings = 1512.42\n\n    # Recompute total earnings\n    total_earnings = round(keegan_earnings + tashay_earnings, 2)\n\n    # Recompute remaining amount\n    remaining_amount = round(fundraising_goal - total_earnings, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"fundraising_goal\": fundraising_goal,\n        \"keegan_earnings\": keegan_earnings,\n        \"tashay_earnings\": tashay_earnings,\n        \"total_earnings\": total_earnings,\n        \"remaining_amount\": remaining_amount\n    }\n",
+    "results": {
+      "fundraising_goal": 3324.0,
+      "keegan_earnings": 1379.46,
+      "tashay_earnings": 1512.42,
+      "total_earnings": 2891.88,
+      "remaining_amount": 432.12
+    }
+  },
+  "final": {
+    "question": "Keegan was running a car wash with his friend Tashay to raise money for a baseball camp. They needed to raise 3324 leu for the two of them. By 3 pm, Keegan had earned 1379.46 leu and Tasha had earned 1512.42 leu. How much more did they need to earn to reach their goal?",
+    "answer_lines": [
+      "They have raised 2891.88 leu because 1379.46 plus 1512.42 equals 2891.88.",
+      "They need to raise 432.12 leu more because 3324 minus 2891.88 equals 432.12.",
+      "#### 432.12"
+    ],
+    "final_scalar": 432.12,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Keegan was running a car wash with his friend Tashay to raise money for a rugby camp. They needed to raise 3324 leu for the two of them. By 3 pm, Keegan had earned 1379.46 leu and Tasha had earned 1512.42 leu. How much more did they need to earn to reach their goal?",
+    "adapted_answer": [
+      "They have raised 2891.88 leu because 1379.46 plus 1512.42 equals 2891.88.",
+      "They need to raise 432.12 leu more because 3324 minus 2891.88 equals 432.12.",
+      "#### 432.12"
+    ],
+    "adaptation_notes": "Replaced 'baseball camp' with 'rugby camp' to better fit the Moldovan context."
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "index": 608,
+  "split": "test",
+  "original": {
+    "question": "Joe has $50 to buy an outfit for his new field trip. There is a 30% off sale at the clothing store. The shirt he picks out has a price of $25. He also picks out a pair of shorts for $35. Assuming that sales tax is included, how much money will Joe have left after the purchase?",
+    "answer": "The price of the two clothing items totals 35 + 25 = <<35+25=60>>60 dollars before discount.\nThe total sale discount comes to 60 * 0.3 = <<60*0.3=18>>18 dollars.\nThe final sale price comes to 60 - 18 = <<60-18=42>>42 dollars.\nJoe ends up with 50 - 42 = <<50-42=8>>8 dollars change.\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Joe"
+    ],
+    "notes": "The text contains a non-Somali unit of currency (dollars) and a Western name (Joe)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_budget",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "shirt_price",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "shorts_price",
+      "value": 35,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost_before_discount",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount_amount",
+      "value": 18,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_sale_price",
+      "value": 42,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_budget\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"shirt_price\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"shorts_price\", \"value\": 35, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost_before_discount\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount_amount\", \"value\": 18, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_sale_price\", \"value\": 42, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_budget",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 28469.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "shirt_price",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 14234.5,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "shorts_price",
+        "original_value": 35,
+        "original_unit": "dollar",
+        "converted_value": 19928.3,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost_before_discount",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 34162.8,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "discount_amount",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 10248.84,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "final_sale_price",
+        "original_value": 42,
+        "original_unit": "dollar",
+        "converted_value": 23913.96,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "change",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 4555.04,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Joe has ${initial_budget} to buy an outfit for his new field trip. There is a 30% off sale at the clothing store. The shirt he picks out has a price of ${shirt_price}. He also picks out a pair of shorts for ${shorts_price}. Assuming that sales tax is included, how much money will Joe have left after the purchase?",
+    "templatized_answer": [
+      "The price of the two clothing items totals {shorts_price} + {shirt_price} = {total_cost_before_discount} dollars before discount.",
+      "The total sale discount comes to {total_cost_before_discount} * 0.3 = {discount_amount} dollars.",
+      "The final sale price comes to {total_cost_before_discount} - {discount_amount} = {final_sale_price} dollars.",
+      "Joe ends up with {initial_budget} - {final_sale_price} = {change} dollars change.",
+      "#### {change}"
+    ],
+    "factual_assignment": {
+      "initial_budget": 50,
+      "shirt_price": 25,
+      "shorts_price": 35,
+      "total_cost_before_discount": 60,
+      "discount_amount": 18,
+      "final_sale_price": 42,
+      "change": 8
+    }
+  },
+  "merged_assignment": {
+    "initial_budget": 28469.0,
+    "shirt_price": 14234.5,
+    "shorts_price": 19928.3,
+    "total_cost_before_discount": 34162.8,
+    "discount_amount": 10248.84,
+    "final_sale_price": 23913.96,
+    "change": 4555.04
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_budget = 28469.0\n    shirt_price = 14234.5\n    shorts_price = 19928.3\n\n    total_cost_before_discount = shirt_price + shorts_price\n    discount_amount = total_cost_before_discount * 0.3\n    final_sale_price = total_cost_before_discount - discount_amount\n    change = initial_budget - final_sale_price\n\n    return {\n        \"initial_budget\": initial_budget,\n        \"shirt_price\": shirt_price,\n        \"shorts_price\": shorts_price,\n        \"total_cost_before_discount\": round(total_cost_before_discount, 2),\n        \"discount_amount\": round(discount_amount, 2),\n        \"final_sale_price\": round(final_sale_price, 2),\n        \"change\": round(change, 2)\n    }\n",
+    "results": {
+      "initial_budget": 28469.0,
+      "shirt_price": 14234.5,
+      "shorts_price": 19928.3,
+      "total_cost_before_discount": 34162.8,
+      "discount_amount": 10248.84,
+      "final_sale_price": 23913.96,
+      "change": 4555.04
+    }
+  },
+  "final": {
+    "question": "Joe has 28469 shilling to buy an outfit for his new field trip. There is a 30% off sale at the clothing store. The shirt he picks out has a price of 14234.5 shilling. He also picks out a pair of shorts for 19928.3 shilling. Assuming that sales tax is included, how much money will Joe have left after the purchase?",
+    "answer_lines": [
+      "The price of the two clothing items totals 19928.3 + 14234.5 = 34162.8 shilling before discount.",
+      "The total sale discount comes to 34162.8 * 0.3 = 10248.84 shilling.",
+      "The final sale price comes to 34162.8 - 10248.84 = 23913.96 shilling.",
+      "Joe ends up with 28469 - 23913.96 = 4555.04 shilling change.",
+      "#### 4555.04"
+    ],
+    "final_scalar": 4555.04,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Axmed wuxuu hayaa 28469 shilling si uu ugu iibsado kala eheeyn ujeedkiisa cusub. Waxaa jira 30% off sale dukaamada kala eheeyn. Shuubta uu doonayo waxaa la siinayaa qiymaha 14234.5 shilling. Waxaa kale oo uu doonayaa jikada 19928.3 shilling. Ha aannaga ahayn wax walba, Axmed wuxuu hayaa shilinka ugu dambeeyay kadib shirka?",
+    "adapted_answer": [
+      "Qiimaha labada kala eheeyn waxay ku dhaqanayaan 19928.3 + 14234.5 = 34162.8 shilling ugu horreysay ka dib.",
+      "Jumla buuxa waxay ku dhaqanayaan 34162.8 * 0.3 = 10248.84 shilling.",
+      "Qiimaha ugu dambeeyay waxay ku dhaqanayaan 34162.8 - 10248.84 = 23913.96 shilling.",
+      "Axmed wuxuu hayaa 28469 - 23913.96 = 4555.04 shilling badal.",
+      "#### 4555.04"
+    ],
+    "adaptation_notes": "Replaced 'Joe' with 'Axmed' to give the name a Somali context."
+  }
+}

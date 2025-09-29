@@ -1,0 +1,144 @@
+{
+  "index": 330,
+  "split": "test",
+  "original": {
+    "question": "A customer’s loyalty card at a store gives them rewards of $1 off their next purchase for every $20 they spend. Their last shopping trip, they spent $80. This shopping trip, they spent $43, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many dollars did the customer pay on this shopping trip?",
+    "answer": "The customer had 80 / 20 = $<<80/20=4>>4 in rewards.\nTheir coupon was worth 4 * 2 = $<<4*2=8>>8.\nThus, they paid 43 - 4 - 8 = $<<43-4-8=31>>31 on this shopping trip.\n#### 31"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "last_shopping_trip",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "this_shopping_trip",
+      "value": 43.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rewards_earned",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "coupon_value",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "amount_paid",
+      "value": 31.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 7.13, \"unit\": \"renminbi\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"unit\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"last_shopping_trip\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"this_shopping_trip\", \"value\": 43.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rewards_earned\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"coupon_value\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"amount_paid\", \"value\": 31.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "last_shopping_trip",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "this_shopping_trip",
+        "original_value": 43.0,
+        "original_unit": "dollar",
+        "converted_value": 306.59,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "rewards_earned",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "coupon_value",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "amount_paid",
+        "original_value": 31.0,
+        "original_unit": "dollar",
+        "converted_value": 221.03,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A customer’s loyalty card at a store gives them rewards of $1 off their next purchase for every $20 they spend. Their last shopping trip, they spent ${last_shopping_trip}. This shopping trip, they spent ${this_shopping_trip}, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many dollars did the customer pay on this shopping trip?",
+    "templatized_answer": [
+      "The customer had {last_shopping_trip} / 20 = ${rewards_earned} in rewards.",
+      "Their coupon was worth {rewards_earned} * 2 = ${coupon_value}.",
+      "Thus, they paid {this_shopping_trip} - {rewards_earned} - {coupon_value} = ${amount_paid} on this shopping trip.",
+      "#### {amount_paid}"
+    ],
+    "factual_assignment": {
+      "last_shopping_trip": 80.0,
+      "this_shopping_trip": 43.0,
+      "rewards_earned": 4.0,
+      "coupon_value": 8.0,
+      "amount_paid": 31.0
+    }
+  },
+  "merged_assignment": {
+    "last_shopping_trip": 570.4,
+    "this_shopping_trip": 306.59,
+    "rewards_earned": 28.52,
+    "coupon_value": 57.04,
+    "amount_paid": 221.03
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    last_shopping_trip = 570.4\n    this_shopping_trip = 306.59\n\n    rewards_earned = last_shopping_trip / 20\n    rewards_earned = round(rewards_earned, 2)\n\n    coupon_value = rewards_earned * 2\n    coupon_value = round(coupon_value, 2)\n\n    amount_paid = this_shopping_trip - rewards_earned - coupon_value\n    amount_paid = round(amount_paid, 2)\n\n    return {\n        \"last_shopping_trip\": last_shopping_trip,\n        \"this_shopping_trip\": this_shopping_trip,\n        \"rewards_earned\": rewards_earned,\n        \"coupon_value\": coupon_value,\n        \"amount_paid\": amount_paid\n    }\n",
+    "results": {
+      "last_shopping_trip": 570.4,
+      "this_shopping_trip": 306.59,
+      "rewards_earned": 28.52,
+      "coupon_value": 57.04,
+      "amount_paid": 221.03
+    }
+  },
+  "final": {
+    "question": "A customer’s loyalty card at a store gives them rewards of 1 renminbi off their next purchase for every 20 renminbi they spend. Their last shopping trip, they spent 570.4 renminbi. This shopping trip, they spent 306.59 renminbi, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many renminbi did the customer pay on this shopping trip?",
+    "answer_lines": [
+      "The customer had 570.4 / 20 = 28.52 renminbi in rewards.",
+      "Their coupon was worth 28.52 * 2 = 57.04 renminbi.",
+      "Thus, they paid 306.59 - 28.52 - 57.04 = 221.03 renminbi on this shopping trip.",
+      "#### 221.03"
+    ],
+    "final_scalar": 221.03,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A customer’s loyalty card at a store gives them rewards of 1 yuan off their next purchase for every 20 yuan they spend. Their last shopping trip, they spent 570.4 yuan. This shopping trip, they spent 306.59 yuan, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many yuan did the customer pay on this shopping trip?",
+    "adapted_answer": [
+      "The customer had 570.4 / 20 = 28.52 yuan in rewards.",
+      "Their coupon was worth 28.52 * 2 = 57.04 yuan.",
+      "Thus, they paid 306.59 - 28.52 - 57.04 = 221.03 yuan on this shopping trip.",
+      "#### 221.03"
+    ],
+    "adaptation_notes": "Replaced 'renminbi' with 'yuan', as both terms refer to the same Chinese currency unit."
+  }
+}

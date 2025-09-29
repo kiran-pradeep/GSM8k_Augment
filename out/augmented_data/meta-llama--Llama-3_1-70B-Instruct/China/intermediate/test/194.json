@@ -1,0 +1,129 @@
+{
+  "index": 194,
+  "split": "test",
+  "original": {
+    "question": "Violetta wants to buy new crayons. She needs them in 5 different colors and prepared $20 for this purchase. One crayon costs $2. How much change will she get?",
+    "answer": "Violetta is going to pay 5 * 2 = $<<5*2=10>>10 for the crayons she wants.\nIf she pays $20, she will get 20 - 10 = $<<20-10=10>>10 of change.\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Violetta",
+      "dollars"
+    ],
+    "notes": "The name 'Violetta' is of European origin and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "crayon_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "violetta_budget",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "crayon_total_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * list(conversions[original_unit].values())[0], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"crayon_cost\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"violetta_budget\",\n    \"value\": 20.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"crayon_total_cost\",\n    \"value\": 10.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"change\",\n    \"value\": 10.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "crayon_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "violetta_budget",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "crayon_total_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "change",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Violetta wants to buy new crayons. She needs them in {number_of_crayons} different colors and prepared ${violetta_budget} for this purchase. One crayon costs ${crayon_cost}. How much change will she get?",
+    "templatized_answer": [
+      "Violetta is going to pay {number_of_crayons} * {crayon_cost} = ${crayon_total_cost} for the crayons she wants.",
+      "If she pays ${violetta_budget}, she will get {violetta_budget} - {crayon_total_cost} = ${change} of change.",
+      "#### {change}"
+    ],
+    "factual_assignment": {
+      "number_of_crayons": 5,
+      "violetta_budget": 20.0,
+      "crayon_cost": 2.0,
+      "crayon_total_cost": 10.0,
+      "change": 10.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_crayons": 5,
+    "violetta_budget": 142.6,
+    "crayon_cost": 14.26,
+    "crayon_total_cost": 71.3,
+    "change": 71.3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_crayons = 5\n    violetta_budget = 142.6\n    crayon_cost = 14.26\n\n    crayon_total_cost = number_of_crayons * crayon_cost\n    change = violetta_budget - crayon_total_cost\n\n    return {\n        \"number_of_crayons\": number_of_crayons,\n        \"violetta_budget\": round(violetta_budget, 2),\n        \"crayon_cost\": round(crayon_cost, 2),\n        \"crayon_total_cost\": round(crayon_total_cost, 2),\n        \"change\": round(change, 2)\n    }\n",
+    "results": {
+      "number_of_crayons": 5,
+      "violetta_budget": 142.6,
+      "crayon_cost": 14.26,
+      "crayon_total_cost": 71.3,
+      "change": 71.3
+    }
+  },
+  "final": {
+    "question": "Violetta wants to buy new crayons. She needs them in 5 different colors and prepared 142.6 renminbi for this purchase. One crayon costs 14.26 renminbi. How much change will she get?",
+    "answer_lines": [
+      "Violetta is going to pay 5 * 14.26 = 71.3 renminbi for the crayons she wants.",
+      "If she pays 142.6 renminbi, she will get 142.6 - 71.3 = 71.3 renminbi of change.",
+      "#### 71.3"
+    ],
+    "final_scalar": 71.3,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling wants to buy new crayons. She needs them in 5 different colors and prepared 142.6 renminbi for this purchase. One crayon costs 14.26 renminbi. How much change will she get?",
+    "adapted_answer": [
+      "Ling is going to pay 5 * 14.26 = 71.3 renminbi for the crayons she wants.",
+      "If she pays 142.6 renminbi, she will get 142.6 - 71.3 = 71.3 renminbi of change.",
+      "#### 71.3"
+    ],
+    "adaptation_notes": "Replaced 'Violetta' with 'Ling' to give the name a Chinese context."
+  }
+}

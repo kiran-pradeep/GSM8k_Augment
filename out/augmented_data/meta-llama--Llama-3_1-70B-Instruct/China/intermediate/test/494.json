@@ -1,0 +1,160 @@
+{
+  "index": 494,
+  "split": "test",
+  "original": {
+    "question": "9 out of 10 cheerleaders are 64\" tall.  The 10th cheerleader is 60\" tall.  If they build a human pyramid, where 4 girls are on the bottom,  3 stand on top of the 4, 2 stand on top of the 3 and the shortest girl is at the top, how tall is the human pyramid in feet?",
+    "answer": "All but one cheerleader is 64\" tall and these cheerleaders make up the bottom 3 layers of the pyramid. So, when standing on top of each other, they are 64*3 = <<64*3=192>>192\" tall\nThe shortest cheerleader is at the top of the pyramid and is 60\" tall so the pyramid is 192+60 = <<252=252>>252\" tall\n12\" are in 1 foot and the pyramid is 252\" tall so it's 252/12 = <<252/12=21>>21 feet tall\n#### 21"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "inches",
+      "feet"
+    ],
+    "notes": "The units 'inches' and 'feet' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cheerleader_height_1",
+      "value": 64.0,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "cheerleader_height_2",
+      "value": 60.0,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "cheerleader_height_1_total",
+      "value": 192.0,
+      "unit": "inch",
+      "context": "answer"
+    },
+    {
+      "variable": "pyramid_height_inches",
+      "value": 252.0,
+      "unit": "inch",
+      "context": "answer"
+    },
+    {
+      "variable": "pyramid_height_feet",
+      "value": 21.0,
+      "unit": "foot",
+      "context": "answer"
+    },
+    {
+      "variable": "inches_per_foot",
+      "value": 12.0,
+      "unit": "inch",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'inch': {'unit': 'cm', 'factor': 2.54},\n        'foot': {'unit': 'm', 'factor': 0.3048},\n        'mile': {'unit': 'km', 'factor': 1.60934},\n        'pound': {'unit': 'kg', 'factor': 0.453592},\n        'ounce': {'unit': 'g', 'factor': 28.3495},\n        'gallon': {'unit': 'L', 'factor': 3.78541},\n        'cup': {'unit': 'mL', 'factor': 236.588},\n        'dollar': {'unit': 'renminbi', 'factor': 7.13}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric['value']\n        original_unit = metric['unit']\n        variable = metric['variable']\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit]['unit']\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cheerleader_height_1\", \"value\": 64.0, \"unit\": \"inch\", \"context\": \"question\"},\n    {\"variable\": \"cheerleader_height_2\", \"value\": 60.0, \"unit\": \"inch\", \"context\": \"question\"},\n    {\"variable\": \"cheerleader_height_1_total\", \"value\": 192.0, \"unit\": \"inch\", \"context\": \"answer\"},\n    {\"variable\": \"pyramid_height_inches\", \"value\": 252.0, \"unit\": \"inch\", \"context\": \"answer\"},\n    {\"variable\": \"pyramid_height_feet\", \"value\": 21.0, \"unit\": \"foot\", \"context\": \"answer\"},\n    {\"variable\": \"inches_per_foot\", \"value\": 12.0, \"unit\": \"inch\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cheerleader_height_1",
+        "original_value": 64.0,
+        "original_unit": "inch",
+        "converted_value": 162.56,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "cheerleader_height_2",
+        "original_value": 60.0,
+        "original_unit": "inch",
+        "converted_value": 152.4,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "cheerleader_height_1_total",
+        "original_value": 192.0,
+        "original_unit": "inch",
+        "converted_value": 487.68,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "pyramid_height_inches",
+        "original_value": 252.0,
+        "original_unit": "inch",
+        "converted_value": 640.08,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "pyramid_height_feet",
+        "original_value": 21.0,
+        "original_unit": "foot",
+        "converted_value": 6.4,
+        "converted_unit": "m"
+      },
+      {
+        "variable": "inches_per_foot",
+        "original_value": 12.0,
+        "original_unit": "inch",
+        "converted_value": 30.48,
+        "converted_unit": "cm"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "9 out of 10 cheerleaders are {cheerleader_height_1}\" tall.  The 10th cheerleader is {cheerleader_height_2}\" tall.  If they build a human pyramid, where 4 girls are on the bottom,  3 stand on top of the 4, 2 stand on top of the 3 and the shortest girl is at the top, how tall is the human pyramid in feet?",
+    "templatized_answer": [
+      "All but one cheerleader is {cheerleader_height_1}\" tall and these cheerleaders make up the bottom 3 layers of the pyramid. So, when standing on top of each other, they are {cheerleader_height_1}*3 = {cheerleader_height_1_total}\" tall",
+      "The shortest cheerleader is at the top of the pyramid and is {cheerleader_height_2}\" tall so the pyramid is {cheerleader_height_1_total}+{cheerleader_height_2} = {pyramid_height_inches}\" tall",
+      "{inches_per_foot}\" are in 1 foot and the pyramid is {pyramid_height_inches}\" tall so it's {pyramid_height_inches}/{inches_per_foot} = {pyramid_height_feet} feet tall",
+      "#### {pyramid_height_feet}"
+    ],
+    "factual_assignment": {
+      "cheerleader_height_1": 64.0,
+      "cheerleader_height_2": 60.0,
+      "cheerleader_height_1_total": 192.0,
+      "pyramid_height_inches": 252.0,
+      "pyramid_height_feet": 21.0,
+      "inches_per_foot": 12.0
+    }
+  },
+  "merged_assignment": {
+    "cheerleader_height_1": 162.56,
+    "cheerleader_height_2": 152.4,
+    "cheerleader_height_1_total": 487.68,
+    "pyramid_height_inches": 640.08,
+    "pyramid_height_feet": 6.4,
+    "inches_per_foot": 30.48
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    inches_per_foot = 30.48\n    cheerleader_height_1 = 162.56\n    cheerleader_height_2 = 152.4\n\n    cheerleader_height_1_total = cheerleader_height_1 * 3\n    pyramid_height_inches = cheerleader_height_1_total + cheerleader_height_2\n    pyramid_height_feet = round(pyramid_height_inches / inches_per_foot, 2)\n\n    return {\n        \"cheerleader_height_1\": cheerleader_height_1,\n        \"cheerleader_height_2\": cheerleader_height_2,\n        \"cheerleader_height_1_total\": cheerleader_height_1_total,\n        \"pyramid_height_inches\": pyramid_height_inches,\n        \"pyramid_height_feet\": pyramid_height_feet,\n        \"inches_per_foot\": inches_per_foot\n    }\n\nprint(recompute())\n",
+    "results": {
+      "cheerleader_height_1": 162.56,
+      "cheerleader_height_2": 152.4,
+      "cheerleader_height_1_total": 487.68,
+      "pyramid_height_inches": 640.08,
+      "pyramid_height_feet": 21.0,
+      "inches_per_foot": 30.48
+    }
+  },
+  "final": {
+    "question": "9 out of 10 cheerleaders are 162.56cm tall.  The 10th cheerleader is 152.4cm tall.  If they build a human pyramid, where 4 girls are on the bottom,  3 stand on top of the 4, 2 stand on top of the 3 and the shortest girl is at the top, how tall is the human pyramid in meters?",
+    "answer_lines": [
+      "All but one cheerleader is 162.56cm tall and these cheerleaders make up the bottom 3 layers of the pyramid. So, when standing on top of each other, they are 162.56*3 = 487.68cm tall",
+      "The shortest cheerleader is at the top of the pyramid and is 152.4cm tall so the pyramid is 487.68+152.4 = 640.08cm tall",
+      "30.48cm are in 1 meter and the pyramid is 640.08cm tall so it's 640.08/30.48 = 21.0 meters tall",
+      "#### 6.4"
+    ],
+    "final_scalar": 6.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "9 out of 10 dragon dancers are 162.56cm tall.  The 10th dragon dancer is 152.4cm tall.  If they build a human pyramid, where 4 girls are on the bottom,  3 stand on top of the 4, 2 stand on top of the 3 and the shortest girl is at the top, how tall is the human pyramid in meters?",
+    "adapted_answer": [
+      "All but one dragon dancer is 162.56cm tall and these dragon dancers make up the bottom 3 layers of the pyramid. So, when standing on top of each other, they are 162.56*3 = 487.68cm tall",
+      "The shortest dragon dancer is at the top of the pyramid and is 152.4cm tall so the pyramid is 487.68+152.4 = 640.08cm tall",
+      "30.48cm are in 1 meter and the pyramid is 640.08cm tall so it's 640.08/30.48 = 21.0 meters tall"
+    ],
+    "adaptation_notes": "Replaced 'cheerleaders' with 'dragon dancers' to give the question a Chinese context."
+  }
+}

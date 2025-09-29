@@ -1,0 +1,129 @@
+{
+  "index": 1206,
+  "split": "test",
+  "original": {
+    "question": "John decides to get a loan by mortgaging his home.  His house is worth $250,000.  He gets a loan worth 40% of that.  He uses 60% of that to pay off his debts.  How much money did he have leftover after paying debt?",
+    "answer": "His loan is worth 250,000*.4=$<<250000*.4=100000>>100,000\nThat means he uses 100,000*.6=$<<100000*.6=60000>>60,000 to pay off debts\nSo he has 100,000-60,000=$<<100000-60000=40000>>40,000 leftover\n#### 40,000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' and the unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "house_value",
+      "value": 250000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "loan_amount",
+      "value": 100000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "debt_payment",
+      "value": 60000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "leftover_money",
+      "value": 40000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"house_value\", \"value\": 250000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"loan_amount\", \"value\": 100000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"debt_payment\", \"value\": 60000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"leftover_money\", \"value\": 40000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "house_value",
+        "original_value": 250000.0,
+        "original_unit": "dollar",
+        "converted_value": 21750000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "loan_amount",
+        "original_value": 100000.0,
+        "original_unit": "dollar",
+        "converted_value": 8700000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "debt_payment",
+        "original_value": 60000.0,
+        "original_unit": "dollar",
+        "converted_value": 5220000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "leftover_money",
+        "original_value": 40000.0,
+        "original_unit": "dollar",
+        "converted_value": 3480000.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John decides to get a loan by mortgaging his home.  His house is worth ${house_value}.  He gets a loan worth 40% of that.  He uses 60% of that to pay off his debts.  How much money did he have leftover after paying debt?",
+    "templatized_answer": [
+      "His loan is worth {house_value}*.4=${loan_amount}",
+      "That means he uses {loan_amount}*.6=${debt_payment} to pay off debts",
+      "So he has {loan_amount}-{debt_payment}=${leftover_money} leftover",
+      "#### {leftover_money}"
+    ],
+    "factual_assignment": {
+      "house_value": 250000.0,
+      "loan_amount": 100000.0,
+      "debt_payment": 60000.0,
+      "leftover_money": 40000.0
+    }
+  },
+  "merged_assignment": {
+    "house_value": 21750000.0,
+    "loan_amount": 8700000.0,
+    "debt_payment": 5220000.0,
+    "leftover_money": 3480000.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    house_value = 21750000.0\n    loan_amount = house_value * 0.4\n    debt_payment = loan_amount * 0.6\n    leftover_money = loan_amount - debt_payment\n\n    return {\n        \"house_value\": house_value,\n        \"loan_amount\": round(loan_amount, 2),\n        \"debt_payment\": round(debt_payment, 2),\n        \"leftover_money\": round(leftover_money, 2)\n    }\n",
+    "results": {
+      "house_value": 21750000.0,
+      "loan_amount": 8700000.0,
+      "debt_payment": 5220000.0,
+      "leftover_money": 3480000.0
+    }
+  },
+  "final": {
+    "question": "John decides to get a loan by mortgaging his home.  His house is worth 21750000.  He gets a loan worth 40% of that.  He uses 60% of that to pay off his debts.  How much money did he have leftover after paying debt?",
+    "answer_lines": [
+      "His loan is worth 21750000*.4=8700000",
+      "That means he uses 8700000*.6=5220000 to pay off debts",
+      "So he has 8700000-5220000=3480000 leftover",
+      "#### 3480000"
+    ],
+    "final_scalar": 3480000.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan decides to get a loan by mortgaging his home.  His house is worth 21750000.  He gets a loan worth 40% of that.  He uses 60% of that to pay off his debts.  How much money did he have leftover after paying debt?",
+    "adapted_answer": [
+      "His loan is worth 21750000*.4=8700000",
+      "That means he uses 8700000*.6=5220000 to pay off debts",
+      "So he has 8700000-5220000=3480000 leftover",
+      "#### 3480000"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Rohan' to provide an Indian context."
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "index": 685,
+  "split": "test",
+  "original": {
+    "question": "Catherine goes to the grocery store. She buys 1 kilo of apples for $4, 2 kilos of bananas for $2 per kilo, and 2 kilos of oranges for $3 per kilo. How many dollars does she pay in total?",
+    "answer": "1 kilo of apples costs $<<1*4=4>>4.\n2 kilos of bananas costs 2 * 2 = $<<2*2=4>>4.\n2 kilos of oranges costs 2 * 3 = $<<2*3=6>>6.\nShe pays 4 + 4 + 6= $<<4+4+6=14>>14 in total.\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Catherine",
+      "dollars",
+      "apples",
+      "bananas",
+      "oranges"
+    ],
+    "notes": "The name Catherine and the use of dollars are culturally specific to Western regions. The fruits mentioned are widely available but not exclusive to Chinese cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apples_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bananas_cost_per_kilo",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "oranges_cost_per_kilo",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bananas_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "oranges_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 14,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apples_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bananas_cost_per_kilo\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"oranges_cost_per_kilo\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bananas_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"oranges_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 14, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apples_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bananas_cost_per_kilo",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "oranges_cost_per_kilo",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bananas_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "oranges_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 14,
+        "original_unit": "dollar",
+        "converted_value": 99.82,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Catherine goes to the grocery store. She buys 1 kilo of apples for ${apples_cost}, 2 kilos of bananas for ${bananas_cost_per_kilo} per kilo, and 2 kilos of oranges for ${oranges_cost_per_kilo} per kilo. How many dollars does she pay in total?",
+    "templatized_answer": [
+      "1 kilo of apples costs ${apples_cost}.",
+      "2 kilos of bananas costs 2 * ${bananas_cost_per_kilo} = ${bananas_cost}.",
+      "2 kilos of oranges costs 2 * ${oranges_cost_per_kilo} = ${oranges_cost}.",
+      "She pays ${apples_cost} + ${bananas_cost} + ${oranges_cost} = ${total_cost} in total.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "apples_cost": 4,
+      "bananas_cost_per_kilo": 2,
+      "oranges_cost_per_kilo": 3,
+      "bananas_cost": 4,
+      "oranges_cost": 6,
+      "total_cost": 14
+    }
+  },
+  "merged_assignment": {
+    "apples_cost": 28.52,
+    "bananas_cost_per_kilo": 14.26,
+    "oranges_cost_per_kilo": 21.39,
+    "bananas_cost": 28.52,
+    "oranges_cost": 42.78,
+    "total_cost": 99.82
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apples_cost = 28.52\n    bananas_cost_per_kilo = 14.26\n    oranges_cost_per_kilo = 21.39\n\n    bananas_cost = round(2 * bananas_cost_per_kilo, 2)\n    oranges_cost = round(2 * oranges_cost_per_kilo, 2)\n    total_cost = round(apples_cost + bananas_cost + oranges_cost, 2)\n\n    return {\n        \"apples_cost\": apples_cost,\n        \"bananas_cost_per_kilo\": bananas_cost_per_kilo,\n        \"oranges_cost_per_kilo\": oranges_cost_per_kilo,\n        \"bananas_cost\": bananas_cost,\n        \"oranges_cost\": oranges_cost,\n        \"total_cost\": total_cost\n    }\n",
+    "results": {
+      "apples_cost": 28.52,
+      "bananas_cost_per_kilo": 14.26,
+      "oranges_cost_per_kilo": 21.39,
+      "bananas_cost": 28.52,
+      "oranges_cost": 42.78,
+      "total_cost": 99.82
+    }
+  },
+  "final": {
+    "question": "Catherine goes to the grocery store. She buys 1 kilo of apples for 28.52 renminbi, 2 kilos of bananas for 14.26 renminbi per kilo, and 2 kilos of oranges for 21.39 renminbi per kilo. How many renminbi does she pay in total?",
+    "answer_lines": [
+      "1 kilo of apples costs 28.52 renminbi.",
+      "2 kilos of bananas costs 2 * 14.26 = 28.52 renminbi.",
+      "2 kilos of oranges costs 2 * 21.39 = 42.78 renminbi.",
+      "She pays 28.52 + 28.52 + 42.78 = 99.82 renminbi in total.",
+      "#### 99.82"
+    ],
+    "final_scalar": 99.82,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "王娇姐来到购物市。当不停一利果丿粉了一利果丿、三利果香蕉丿了二利果香蕉、三利果気果丿了二利果気果。丿了多少万人民环。",
+    "adapted_answer": [
+      "1利果丿粉了一利果丿、丿了 28.52 人民。",
+      "2利果香蕉丿了 2 * 14.26 = 28.52 人民。",
+      "2利果気果丿了 2 * 21.39 = 42.78 人民。",
+      "当不停丿了 28.52 + 28.52 + 42.78 = 99.82 人民。",
+      "#### 99.82"
+    ],
+    "adaptation_notes": "Replaced Catherine with 王娇姐, apples with 果丿, bananas with 香蕉, oranges with 気果, and renminbi with 人民."
+  }
+}

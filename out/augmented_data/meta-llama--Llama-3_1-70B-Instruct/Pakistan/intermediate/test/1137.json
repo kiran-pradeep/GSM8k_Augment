@@ -1,0 +1,121 @@
+{
+  "index": 1137,
+  "split": "test",
+  "original": {
+    "question": "Donny can only drink water if it's at least 40 degrees. He has two mugs of water. One mug is 33 degrees. The other is an unknown temperature. If he pours 4 ounces of water from the 33-degree mug into his water bottle and one ounce from the other bottle, he is now able to drink the water.  At least how many degrees is the second bottle?",
+    "answer": "There are 5 total ounces of water because 4 + 1 = <<4+1=5>>5\nThe total temperatures is >=200 because 200 / 5 =<<200/5=40>>40\nThe 33 degree water contributes 132 points towards this because 4 x 33 = <<4*33=132>>132\nThe unknown temperature is at least 68 because 200 - 132 = <<200-132=68>>68\n#### 68"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "ounces",
+      "degrees"
+    ],
+    "notes": "The units 'ounces' and 'degrees' are commonly used in Western cultures, but in Pakistan, metric units like milliliters and Celsius are more commonly used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_water_volume",
+      "value": 5,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "water_from_first_mug",
+      "value": 4,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "water_from_second_mug",
+      "value": 1,
+      "unit": "ounce",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"ounce\": {\"unit\": \"milliliter\", \"factor\": 29.5735},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_water_volume\", \"value\": 5, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"water_from_first_mug\", \"value\": 4, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"water_from_second_mug\", \"value\": 1, \"unit\": \"ounce\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_water_volume",
+        "original_value": 5,
+        "original_unit": "ounce",
+        "converted_value": 147.87,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "water_from_first_mug",
+        "original_value": 4,
+        "original_unit": "ounce",
+        "converted_value": 118.29,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "water_from_second_mug",
+        "original_value": 1,
+        "original_unit": "ounce",
+        "converted_value": 29.57,
+        "converted_unit": "milliliter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Donny can only drink water if it's at least 40 degrees. He has two mugs of water. One mug is 33 degrees. The other is an unknown temperature. If he pours {water_from_first_mug} ounces of water from the 33-degree mug into his water bottle and {water_from_second_mug} ounces from the other bottle, he is now able to drink the water.  At least how many degrees is the second bottle?",
+    "templatized_answer": [
+      "There are {total_water_volume} total ounces of water because {water_from_first_mug} + {water_from_second_mug} = {total_water_volume}",
+      "The total temperatures is >=200 because 200 / {total_water_volume} = 40",
+      "The 33 degree water contributes {water_from_first_mug} * 33 points towards this because {water_from_first_mug} * 33 = {water_from_first_mug} * 33",
+      "The unknown temperature is at least {min_second_mug_temperature} because 200 - ({water_from_first_mug} * 33) = {min_second_mug_temperature}",
+      "#### {min_second_mug_temperature}"
+    ],
+    "factual_assignment": {
+      "total_water_volume": 5,
+      "water_from_first_mug": 4,
+      "water_from_second_mug": 1,
+      "min_second_mug_temperature": 68
+    }
+  },
+  "merged_assignment": {
+    "total_water_volume": 147.87,
+    "water_from_first_mug": 118.29,
+    "water_from_second_mug": 29.57,
+    "min_second_mug_temperature": 68
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    water_from_first_mug = 118.29\n    water_from_second_mug = 29.57\n    total_water_volume = water_from_first_mug + water_from_second_mug\n    total_water_volume = round(total_water_volume, 2)\n    \n    min_total_temperature = 40 * total_water_volume\n    min_total_temperature = round(min_total_temperature, 2)\n    \n    temperature_from_first_mug = water_from_first_mug * 33\n    temperature_from_first_mug = round(temperature_from_first_mug, 2)\n    \n    min_second_mug_temperature = (min_total_temperature - temperature_from_first_mug) / water_from_second_mug\n    min_second_mug_temperature = round(min_second_mug_temperature, 2)\n    \n    return {\n        \"total_water_volume\": total_water_volume,\n        \"water_from_first_mug\": water_from_first_mug,\n        \"water_from_second_mug\": water_from_second_mug,\n        \"min_second_mug_temperature\": min_second_mug_temperature,\n        \"min_total_temperature\": min_total_temperature,\n        \"temperature_from_first_mug\": temperature_from_first_mug\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_water_volume": 147.86,
+      "water_from_first_mug": 118.29,
+      "water_from_second_mug": 29.57,
+      "min_second_mug_temperature": 68.0,
+      "min_total_temperature": 5914.4,
+      "temperature_from_first_mug": 3903.57
+    }
+  },
+  "final": {
+    "question": "Donny can only drink water if it's at least 40 degrees. He has two mugs of water. One mug is 33 degrees. The other is an unknown temperature. If he pours 118.29 milliliters of water from the 33-degree mug into his water bottle and 29.57 milliliters from the other bottle, he is now able to drink the water.  At least how many degrees is the second bottle?",
+    "answer_lines": [
+      "There are 147.86 milliliters of water in total because 118.29 + 29.57 = 147.86",
+      "The total temperature is >=5914.4 because 5914.4 / 147.86 = 40",
+      "The 33 degree water contributes 3903.57 points towards this because 118.29 * 33 = 3903.57",
+      "The unknown temperature is at least 68 because 5914.4 - 3903.57 = 2010.83, and 2010.83 / 29.57 = 68",
+      "#### 68"
+    ],
+    "final_scalar": 68,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Donny can only drink lassi if it's at least 40 degrees. He has two mugs of lassi. One mug is 33 degrees. The other is an unknown temperature. If he pours 118.29 milliliters of lassi from the 33-degree mug into his water bottle and 29.57 milliliters from the other bottle, he is now able to drink the lassi.  At least how many degrees is the second bottle?",
+    "adapted_answer": [
+      "There are 147.86 milliliters of lassi in total because 118.29 + 29.57 = 147.86",
+      "The total temperature is >=5914.4 because 5914.4 / 147.86 = 40",
+      "The 33 degree lassi contributes 3903.57 points towards this because 118.29 * 33 = 3903.57",
+      "The unknown temperature is at least 68 because 5914.4 - 3903.57 = 2010.83, and 2010.83 / 29.57 = 68",
+      "#### 68"
+    ],
+    "adaptation_notes": "Replaced 'water' with 'lassi' to give it a Pakistani context."
+  }
+}

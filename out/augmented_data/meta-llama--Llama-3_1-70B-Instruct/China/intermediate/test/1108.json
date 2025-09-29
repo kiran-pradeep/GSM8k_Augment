@@ -1,0 +1,124 @@
+{
+  "index": 1108,
+  "split": "test",
+  "original": {
+    "question": "My mom went to a gardening shop. She bought a set of pots for $19 and a sack of garden soil for $26. At checkout, she used a coupon for $7 off. How much money did my mom spend at the gardening shop?",
+    "answer": "The total cost of the pots and a sack of garden soil is $19 + $26 = $<<19+26=45>>45.\nSo, my mom spent $45 - $7 = $<<45-7=38>>38 at the gardening store.\n#### 38"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not in China where 'yuan' or 'renminbi' is used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pots_cost",
+      "value": 19,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "soil_cost",
+      "value": 26,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "coupon_discount",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 38,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pots_cost\", \"value\": 19, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"soil_cost\", \"value\": 26, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"coupon_discount\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 38, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pots_cost",
+        "original_value": 19,
+        "original_unit": "dollar",
+        "converted_value": 135.47,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "soil_cost",
+        "original_value": 26,
+        "original_unit": "dollar",
+        "converted_value": 185.38,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "coupon_discount",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 49.91,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 38,
+        "original_unit": "dollar",
+        "converted_value": 270.94,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "My mom went to a gardening shop. She bought a set of pots for ${pots_cost} and a sack of garden soil for ${soil_cost}. At checkout, she used a coupon for ${coupon_discount} off. How much money did my mom spend at the gardening shop?",
+    "templatized_answer": [
+      "The total cost of the pots and a sack of garden soil is ${pots_cost} + ${soil_cost} = ${pots_cost + soil_cost}.",
+      "So, my mom spent ${pots_cost + soil_cost} - ${coupon_discount} = ${pots_cost + soil_cost - coupon_discount} at the gardening store.",
+      "#### {pots_cost + soil_cost - coupon_discount}"
+    ],
+    "factual_assignment": {
+      "pots_cost": 19,
+      "soil_cost": 26,
+      "coupon_discount": 7
+    }
+  },
+  "merged_assignment": {
+    "pots_cost": 135.47,
+    "soil_cost": 185.38,
+    "coupon_discount": 49.91
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pots_cost = 135.47\n    soil_cost = 185.38\n    coupon_discount = 49.91\n\n    total_cost = round(pots_cost + soil_cost, 2)\n    total_spent = round(total_cost - coupon_discount, 2)\n\n    return {\n        \"pots_cost\": pots_cost,\n        \"soil_cost\": soil_cost,\n        \"coupon_discount\": coupon_discount,\n        \"pots_cost + soil_cost\": total_cost,\n        \"pots_cost + soil_cost - coupon_discount\": total_spent\n    }\n",
+    "results": {
+      "pots_cost": 135.47,
+      "soil_cost": 185.38,
+      "coupon_discount": 49.91,
+      "pots_cost + soil_cost": 320.85,
+      "pots_cost + soil_cost - coupon_discount": 270.94
+    }
+  },
+  "final": {
+    "question": "My mom went to a gardening shop. She bought a set of pots for 135.47 renminbi and a sack of garden soil for 185.38 renminbi. At checkout, she used a coupon for 49.91 renminbi off. How much money did my mom spend at the gardening shop?",
+    "answer_lines": [
+      "The total cost of the pots and a sack of garden soil is 135.47 + 185.38 = 320.85.",
+      "So, my mom spent 320.85 - 49.91 = 270.94 at the gardening store.",
+      "#### 270.94"
+    ],
+    "final_scalar": 270.94,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "My mom went to a gardening shop. She bought a set of pots for 135.47 renminbi and a sack of garden soil for 185.38 renminbi. At checkout, she used a coupon for 49.91 renminbi off. How much money did my mom spend at the gardening shop?",
+    "adapted_answer": [
+      "The total cost of the pots and a sack of garden soil is 135.47 + 185.38 = 320.85.",
+      "So, my mom spent 320.85 - 49.91 = 270.94 at the gardening store.",
+      "#### 270.94"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

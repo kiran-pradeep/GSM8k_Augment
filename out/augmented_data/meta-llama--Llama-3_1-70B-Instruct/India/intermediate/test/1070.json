@@ -1,0 +1,128 @@
+{
+  "index": 1070,
+  "split": "test",
+  "original": {
+    "question": "Dennis uses 1 pound of butter for every dozen croissants that he makes.  He needs to make 6 dozen croissants.  The grocery store currently has a promotion for buy one pound of butter get one half off.  If the butter costs $4.00 a pound, how much will it cost him to purchase 6 pounds of butter?",
+    "answer": "1 pound of butter makes 1 dozen croissants and he needs to make 6 dozen so he needs 1*6 = <<1*6=6>>6 pounds of butter\nThe butter is $4.00 a pound and currently on sale for buy one get one half off so every unit of 2 pounds of butter will cost 4*1.5 = $<<4*1.5=6.00>>6.00\nHe needs 6 pounds of butter and the current promotion is for a unit of 2 pounds of butter so he needs to buy 6/2 = <<6/2=3>>3 units worth of butter\nThe sale price is $6.00 per 2 pounds of butter and he needs to buy 3 units of butter so 6*3 = $<<6*3=18.00>>18.00 worth of butter\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Dennis",
+      "pounds",
+      "dollars",
+      "croissants"
+    ],
+    "notes": "The text contains a non-Indian name, units of measurement, and a type of pastry not commonly associated with Indian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "butter_price",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "butter_price_sale",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_butter_cost",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "butter_needed",
+      "value": 6.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "butter_promotion",
+      "value": 1.0,
+      "unit": "pound",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87.0},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"butter_price\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"butter_price_sale\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_butter_cost\", \"value\": 18.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"butter_needed\", \"value\": 6.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"butter_promotion\", \"value\": 1.0, \"unit\": \"pound\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "butter_price",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 348.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "butter_price_sale",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 522.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_butter_cost",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 1566.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "butter_needed",
+        "original_value": 6.0,
+        "original_unit": "pound",
+        "converted_value": 2.72,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "butter_promotion",
+        "original_value": 1.0,
+        "original_unit": "pound",
+        "converted_value": 0.45,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Dennis uses 1 pound of butter for every dozen croissants that he makes.  He needs to make 6 dozen croissants.  The grocery store currently has a promotion for buy one pound of butter get one half off.  If the butter costs ${butter_price} a pound, how much will it cost him to purchase {butter_needed} pounds of butter?",
+    "templatized_answer": [
+      "1 pound of butter makes 1 dozen croissants and he needs to make 6 dozen so he needs 1*6 = {butter_needed} pounds of butter",
+      "The butter is ${butter_price} a pound and currently on sale for buy one get one half off so every unit of 2 pounds of butter will cost {butter_price}*1.5 = ${butter_price_sale}",
+      "He needs {butter_needed} pounds of butter and the current promotion is for a unit of 2 pounds of butter so he needs to buy {butter_needed}/2 = {butter_needed/2} units worth of butter",
+      "The sale price is ${butter_price_sale} per 2 pounds of butter and he needs to buy {butter_needed/2} units of butter so {butter_price_sale}*{butter_needed/2} = ${total_butter_cost} worth of butter",
+      "#### {total_butter_cost}"
+    ],
+    "factual_assignment": {
+      "butter_price": 4.0,
+      "butter_price_sale": 6.0,
+      "total_butter_cost": 18.0,
+      "butter_needed": 6.0,
+      "butter_promotion": 1.0,
+      "butter_needed/2": 3.0
+    }
+  },
+  "merged_assignment": {
+    "butter_price": 348.0,
+    "butter_price_sale": 522.0,
+    "total_butter_cost": 1566.0,
+    "butter_needed": 2.72,
+    "butter_promotion": 0.45,
+    "butter_needed/2": 3.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    butter_price = 348.0\n\n    # Recompute butter_needed\n    butter_needed = 6  # 6 dozen croissants\n\n    # Recompute butter_price_sale\n    butter_price_sale = butter_price * 1.5\n\n    # Recompute butter_needed/2\n    butter_needed_div_2 = butter_needed / 2\n\n    # Recompute total_butter_cost\n    total_butter_cost = butter_price_sale * butter_needed_div_2\n\n    # Return the recomputed values\n    return {\n        \"butter_price\": round(butter_price, 2),\n        \"butter_price_sale\": round(butter_price_sale, 2),\n        \"total_butter_cost\": round(total_butter_cost, 2),\n        \"butter_needed\": butter_needed,\n        \"butter_needed/2\": butter_needed_div_2\n    }\n\nprint(recompute())\n",
+    "results": {
+      "butter_price": 348.0,
+      "butter_price_sale": 522.0,
+      "total_butter_cost": 1566.0,
+      "butter_needed": 6,
+      "butter_needed/2": 3.0
+    }
+  },
+  "final": null,
+  "cultural_adapted": null
+}

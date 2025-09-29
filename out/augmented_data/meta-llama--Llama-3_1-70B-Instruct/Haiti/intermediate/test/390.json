@@ -1,0 +1,104 @@
+{
+  "index": 390,
+  "split": "test",
+  "original": {
+    "question": "Monica is wrapping Christmas gifts. She has 6 gifts to wrap for her family, 4 gifts to wrap for her friends and 2 gifts to wrap for her teachers. She has 144 inches of ribbon and wants to make a bow for each gift with it. How many inches of ribbon can she use for each gift bow?",
+    "answer": "Monica is has 6 gifts for family + 4 gifts for friends + 2 gifts for teachers = <<6+4+2=12>>12 gifts to wrap.\nHer ribbon can be divided equally 144 inches of ribbon / 12 gifts = <<144/12=12>>12 inches of ribbon per gift.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Christmas",
+      "Monica"
+    ],
+    "notes": "Christmas is a holiday not exclusive to Haiti and Monica is a name commonly found in Western cultures."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ribbon_length",
+      "value": 144.0,
+      "unit": "inches",
+      "context": "question"
+    },
+    {
+      "variable": "ribbon_per_gift",
+      "value": 12.0,
+      "unit": "inches",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"factor\": 130.81, \"unit\": \"gourde\"},\n        \"pounds\": {\"factor\": 0.453592, \"unit\": \"kilograms\"},\n        \"ounces\": {\"factor\": 28.3495, \"unit\": \"grams\"},\n        \"miles\": {\"factor\": 1.60934, \"unit\": \"kilometers\"},\n        \"feet\": {\"factor\": 0.3048, \"unit\": \"meters\"},\n        \"inches\": {\"factor\": 0.0254, \"unit\": \"meters\"},\n        \"gallons\": {\"factor\": 3.78541, \"unit\": \"liters\"},\n        \"cups\": {\"factor\": 236.588, \"unit\": \"milliliters\"}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"ribbon_length\",\n    \"value\": 144.0,\n    \"unit\": \"inches\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"ribbon_per_gift\",\n    \"value\": 12.0,\n    \"unit\": \"inches\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ribbon_length",
+        "original_value": 144.0,
+        "original_unit": "inches",
+        "converted_value": 3.66,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "ribbon_per_gift",
+        "original_value": 12.0,
+        "original_unit": "inches",
+        "converted_value": 0.3,
+        "converted_unit": "meters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Monica is wrapping Christmas gifts. She has {family_gifts} gifts to wrap for her family, {friend_gifts} gifts to wrap for her friends and {teacher_gifts} gifts to wrap for her teachers. She has {ribbon_length} inches of ribbon and wants to make a bow for each gift with it. How many inches of ribbon can she use for each gift bow?",
+    "templatized_answer": [
+      "Monica is has {family_gifts} gifts for family + {friend_gifts} gifts for friends + {teacher_gifts} gifts for teachers = {family_gifts} + {friend_gifts} + {teacher_gifts} gifts to wrap.",
+      "Her ribbon can be divided equally {ribbon_length} inches of ribbon / {family_gifts} + {friend_gifts} + {teacher_gifts} gifts = {ribbon_length} / ({family_gifts} + {friend_gifts} + {teacher_gifts}) inches of ribbon per gift.",
+      "#### {ribbon_per_gift}"
+    ],
+    "factual_assignment": {
+      "family_gifts": 6,
+      "friend_gifts": 4,
+      "teacher_gifts": 2,
+      "ribbon_length": 144.0,
+      "ribbon_per_gift": 12.0
+    }
+  },
+  "merged_assignment": {
+    "family_gifts": 6,
+    "friend_gifts": 4,
+    "teacher_gifts": 2,
+    "ribbon_length": 3.66,
+    "ribbon_per_gift": 0.3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"family_gifts\": 6,\n        \"friend_gifts\": 4,\n        \"teacher_gifts\": 2,\n        \"ribbon_length\": 3.66,\n    }\n\n    total_gifts = factual_assignment[\"family_gifts\"] + factual_assignment[\"friend_gifts\"] + factual_assignment[\"teacher_gifts\"]\n    ribbon_per_gift = round(factual_assignment[\"ribbon_length\"] / total_gifts, 2)\n\n    return {\n        \"family_gifts\": factual_assignment[\"family_gifts\"],\n        \"friend_gifts\": factual_assignment[\"friend_gifts\"],\n        \"teacher_gifts\": factual_assignment[\"teacher_gifts\"],\n        \"ribbon_length\": factual_assignment[\"ribbon_length\"],\n        \"total_gifts\": total_gifts,\n        \"ribbon_per_gift\": ribbon_per_gift,\n    }\n\nprint(recompute())\n",
+    "results": {
+      "family_gifts": 6,
+      "friend_gifts": 4,
+      "teacher_gifts": 2,
+      "ribbon_length": 3.66,
+      "total_gifts": 12,
+      "ribbon_per_gift": 0.3
+    }
+  },
+  "final": {
+    "question": "Monica is wrapping Christmas gifts. She has 6 gifts to wrap for her family, 4 gifts to wrap for her friends and 2 gifts to wrap for her teachers. She has 3.66 meters of ribbon and wants to make a bow for each gift with it. How many meters of ribbon can she use for each gift bow?",
+    "answer_lines": [
+      "Monica is has 6 gifts for family + 4 gifts for friends + 2 gifts for teachers = 6 + 4 + 2 gifts to wrap.",
+      "Her ribbon can be divided equally 3.66 meters of ribbon / 12 gifts = 3.66 / 12 meters of ribbon per gift.",
+      "#### 0.3"
+    ],
+    "final_scalar": 0.3,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine is wrapping Fête Noël gifts. She has 6 gifts to wrap for her family, 4 gifts to wrap for her friends and 2 gifts to wrap for her teachers. She has 3.66 meters of ribbon and wants to make a bow for each gift with it. How many meters of ribbon can she use for each gift bow?",
+    "adapted_answer": [
+      "Nadine is has 6 gifts for family + 4 gifts for friends + 2 gifts for teachers = 6 + 4 + 2 gifts to wrap.",
+      "Her ribbon can be divided equally 3.66 meters of ribbon / 12 gifts = 3.66 / 12 meters of ribbon per gift.",
+      "#### 0.3"
+    ],
+    "adaptation_notes": "Replaced 'Monica' with 'Nadine' (a common Haitian name) and 'Christmas' with 'Fête Noël' (French for Christmas, commonly used in Haiti)."
+  }
+}

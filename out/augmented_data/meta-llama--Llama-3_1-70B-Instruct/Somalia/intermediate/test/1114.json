@@ -1,0 +1,177 @@
+{
+  "index": 1114,
+  "split": "test",
+  "original": {
+    "question": "Raymond had $21. Then he saved $11 from his allowance and spent $5 on a comic book and $19 on a puzzle. How much money does Raymond have left?",
+    "answer": "Raymond started with $21 + $11 = $<<21+11=32>>32.\nRaymond then spent $5 + $19 = $<<5+19=24>>24.\nRaymond now has $32 - $24 = $<<32-24=8>>8 left.\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Raymond"
+    ],
+    "notes": "The text contains a non-Somali unit of currency (dollars) and a Western name (Raymond)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_savings",
+      "value": 21.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "allowance_savings",
+      "value": 11.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "comic_book_cost",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "puzzle_cost",
+      "value": 19.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_savings",
+      "value": 32.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 24.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_savings\", \"value\": 21.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"allowance_savings\", \"value\": 11.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"comic_book_cost\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"puzzle_cost\", \"value\": 19.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_savings\", \"value\": 32.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 24.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_savings",
+        "original_value": 21.0,
+        "original_unit": "dollar",
+        "converted_value": 11956.98,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "allowance_savings",
+        "original_value": 11.0,
+        "original_unit": "dollar",
+        "converted_value": 6263.18,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "comic_book_cost",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "puzzle_cost",
+        "original_value": 19.0,
+        "original_unit": "dollar",
+        "converted_value": 10818.22,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_savings",
+        "original_value": 32.0,
+        "original_unit": "dollar",
+        "converted_value": 18220.16,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 24.0,
+        "original_unit": "dollar",
+        "converted_value": 13665.12,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 4555.04,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Raymond had ${initial_savings}. Then he saved ${allowance_savings} from his allowance and spent ${comic_book_cost} on a comic book and ${puzzle_cost} on a puzzle. How much money does Raymond have left?",
+    "templatized_answer": [
+      "Raymond started with ${initial_savings} + ${allowance_savings} = ${total_savings}.",
+      "Raymond then spent ${comic_book_cost} + ${puzzle_cost} = ${total_spent}.",
+      "Raymond now has ${total_savings} - ${total_spent} = ${remaining_money} left.",
+      "#### {remaining_money}"
+    ],
+    "factual_assignment": {
+      "initial_savings": 21.0,
+      "allowance_savings": 11.0,
+      "comic_book_cost": 5.0,
+      "puzzle_cost": 19.0,
+      "total_savings": 32.0,
+      "total_spent": 24.0,
+      "remaining_money": 8.0
+    }
+  },
+  "merged_assignment": {
+    "initial_savings": 11956.98,
+    "allowance_savings": 6263.18,
+    "comic_book_cost": 2846.9,
+    "puzzle_cost": 10818.22,
+    "total_savings": 18220.16,
+    "total_spent": 13665.12,
+    "remaining_money": 4555.04
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_savings = 11956.98\n    allowance_savings = 6263.18\n    comic_book_cost = 2846.9\n    puzzle_cost = 10818.22\n\n    total_savings = round(initial_savings + allowance_savings, 2)\n    total_spent = round(comic_book_cost + puzzle_cost, 2)\n    remaining_money = round(total_savings - total_spent, 2)\n\n    return {\n        \"initial_savings\": initial_savings,\n        \"allowance_savings\": allowance_savings,\n        \"comic_book_cost\": comic_book_cost,\n        \"puzzle_cost\": puzzle_cost,\n        \"total_savings\": total_savings,\n        \"total_spent\": total_spent,\n        \"remaining_money\": remaining_money\n    }\n",
+    "results": {
+      "initial_savings": 11956.98,
+      "allowance_savings": 6263.18,
+      "comic_book_cost": 2846.9,
+      "puzzle_cost": 10818.22,
+      "total_savings": 18220.16,
+      "total_spent": 13665.12,
+      "remaining_money": 4555.04
+    }
+  },
+  "final": {
+    "question": "Raymond had 11956.98 shilling. Then he saved 6263.18 shilling from his allowance and spent 2846.9 shilling on a comic book and 10818.22 shilling on a puzzle. How much money does Raymond have left?",
+    "answer_lines": [
+      "Raymond started with 11956.98 + 6263.18 = 18220.16.",
+      "Raymond then spent 2846.9 + 10818.22 = 13665.12.",
+      "Raymond now has 18220.16 - 13665.12 = 4555.04 left.",
+      "#### 4555.04"
+    ],
+    "final_scalar": 4555.04,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Axmed had 11956.98 shilling. Then he saved 6263.18 shilling from his allowance and spent 2846.9 shilling on a comic book and 10818.22 shilling on a puzzle. How much money does Axmed have left?",
+    "adapted_answer": [
+      "Axmed started with 11956.98 + 6263.18 = 18220.16.",
+      "Axmed then spent 2846.9 + 10818.22 = 13665.12.",
+      "Axmed now has 18220.16 - 13665.12 = 4555.04 left.",
+      "#### 4555.04"
+    ],
+    "adaptation_notes": "Replaced 'Raymond' with 'Axmed' to give the name a Somali context."
+  }
+}

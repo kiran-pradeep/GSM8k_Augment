@@ -1,0 +1,130 @@
+{
+  "index": 543,
+  "split": "test",
+  "original": {
+    "question": "For each small task accomplished, Jairus gets $0.8 while Jenny gets $0.5. If each of them finished 20 tasks, how much more will Jairus get than Jenny?",
+    "answer": "The difference of the amount received by Jairus and Jenny is $0.8/task - $0.5/task = $<<0.8-0.5=0.3>>0.3/task.\nSo, Jairus will get $0.3/task x 20 tasks = $<<0.3*20=6>>6 more than Jenny.\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jairus",
+      "Jenny",
+      "dollars"
+    ],
+    "notes": "Names and currency unit are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "jairus_task_payment",
+      "value": 0.8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jenny_task_payment",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jairus_jenny_task_payment_difference",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "jairus_jenny_total_payment_difference",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"jairus_task_payment\",\n    \"value\": 0.8,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"jenny_task_payment\",\n    \"value\": 0.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"jairus_jenny_task_payment_difference\",\n    \"value\": 0.3,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"jairus_jenny_total_payment_difference\",\n    \"value\": 6,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "jairus_task_payment",
+        "original_value": 0.8,
+        "original_unit": "dollar",
+        "converted_value": 5.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "jenny_task_payment",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "jairus_jenny_task_payment_difference",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 0.3,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "jairus_jenny_total_payment_difference",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 6,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "For each small task accomplished, Jairus gets ${jairus_task_payment} while Jenny gets ${jenny_task_payment}. If each of them finished {number_of_tasks} tasks, how much more will Jairus get than Jenny?",
+    "templatized_answer": [
+      "The difference of the amount received by Jairus and Jenny is ${jairus_task_payment}/task - ${jenny_task_payment}/task = ${jairus_jenny_task_payment_difference}/task.",
+      "So, Jairus will get ${jairus_jenny_task_payment_difference}/task x {number_of_tasks} tasks = ${jairus_jenny_total_payment_difference} more than Jenny.",
+      "#### {jairus_jenny_total_payment_difference}"
+    ],
+    "factual_assignment": {
+      "jairus_task_payment": 0.8,
+      "jenny_task_payment": 0.5,
+      "jairus_jenny_task_payment_difference": 0.3,
+      "jairus_jenny_total_payment_difference": 6,
+      "number_of_tasks": 20
+    }
+  },
+  "merged_assignment": {
+    "jairus_task_payment": 5.7,
+    "jenny_task_payment": 3.56,
+    "jairus_jenny_task_payment_difference": 0.3,
+    "jairus_jenny_total_payment_difference": 6,
+    "number_of_tasks": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    jairus_task_payment = 5.7\n    jenny_task_payment = 3.56\n    number_of_tasks = 20\n\n    jairus_jenny_task_payment_difference = round(jairus_task_payment - jenny_task_payment, 2)\n    jairus_jenny_total_payment_difference = round(jairus_jenny_task_payment_difference * number_of_tasks, 2)\n\n    return {\n        \"jairus_task_payment\": jairus_task_payment,\n        \"jenny_task_payment\": jenny_task_payment,\n        \"jairus_jenny_task_payment_difference\": jairus_jenny_task_payment_difference,\n        \"jairus_jenny_total_payment_difference\": jairus_jenny_total_payment_difference,\n        \"number_of_tasks\": number_of_tasks\n    }\n\nprint(recompute())\n",
+    "results": {
+      "jairus_task_payment": 5.7,
+      "jenny_task_payment": 3.56,
+      "jairus_jenny_task_payment_difference": 2.14,
+      "jairus_jenny_total_payment_difference": 42.8,
+      "number_of_tasks": 20
+    }
+  },
+  "final": {
+    "question": "For each small task accomplished, Jairus gets 5.7 renminbi while Jenny gets 3.56 renminbi. If each of them finished 20 tasks, how much more will Jairus get than Jenny?",
+    "answer_lines": [
+      "The difference of the amount received by Jairus and Jenny is 5.7 renminbi/task - 3.56 renminbi/task = 2.14 renminbi/task.",
+      "So, Jairus will get 2.14 renminbi/task x 20 tasks = 42.8 renminbi more than Jenny.",
+      "#### 42.8"
+    ],
+    "final_scalar": 42.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "For each small task accomplished, Jian gets 5.7 renminbi while Jing gets 3.56 renminbi. If each of them finished 20 tasks, how much more will Jian get than Jing?",
+    "adapted_answer": [
+      "The difference of the amount received by Jian and Jing is 5.7 renminbi/task - 3.56 renminbi/task = 2.14 renminbi/task.",
+      "So, Jian will get 2.14 renminbi/task x 20 tasks = 42.8 renminbi more than Jing.",
+      "#### 42.8"
+    ],
+    "adaptation_notes": "Replaced 'Jairus' with 'Jian' and 'Jenny' with 'Jing' to give the names a Chinese context."
+  }
+}

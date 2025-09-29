@@ -1,0 +1,124 @@
+{
+  "index": 510,
+  "split": "test",
+  "original": {
+    "question": "For a New Year's resolution, Andy wants to lose 30 lbs. by his birthday, which is July 19th. Today is December 31st. If Andy needs to burn 3500 calories to lose a pound, how much of a calorie deficit (net amount of calories burned vs. calories consumed) does he need each day to reach his goal?",
+    "answer": "January, March, and May have 31 days, February has 28, and April and June have 30, and Andy's birthday is on the 19th day of July. So there are 3 * 31 days + 28 + 2 * 30 days + 19 days = 93 days + 28 + 60 days + 19 days = <<3*31+28+2*30+19=200>>200 days until Andy's birthday.\nHe wants to lose 30 lbs. At 3500 calories per pound, this is 30 * 3500 = <<30*3500=105000>>105,000 calories total,\nTo reach his goal, he will have to burn 105,000 calories / 200 days = <<105000/200=525>>525 calories per day more than he consumes.\n#### 525"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "New Year's",
+      "lbs",
+      "July",
+      "December"
+    ],
+    "notes": "The text contains culturally specific entities such as New Year's resolution, units of measurement (lbs), and Western calendar months (July, December)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weight_loss",
+      "value": 30.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "calories_per_pound",
+      "value": 3500.0,
+      "unit": "calorie",
+      "context": "question"
+    },
+    {
+      "variable": "total_calories",
+      "value": 105000.0,
+      "unit": "calorie",
+      "context": "answer"
+    },
+    {
+      "variable": "daily_calorie_deficit",
+      "value": 525.0,
+      "unit": "calorie",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"calorie\": (\"joule\", 4.184),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495),\n        \"dollar\": (\"renminbi\", 7.13)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit, conversion_rate = conversions[original_unit]\n            converted_value = original_value * conversion_rate\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"weight_loss\",\n    \"value\": 30.0,\n    \"unit\": \"pound\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"calories_per_pound\",\n    \"value\": 3500.0,\n    \"unit\": \"calorie\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_calories\",\n    \"value\": 105000.0,\n    \"unit\": \"calorie\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"daily_calorie_deficit\",\n    \"value\": 525.0,\n    \"unit\": \"calorie\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weight_loss",
+        "original_value": 30.0,
+        "original_unit": "pound",
+        "converted_value": 13.61,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "calories_per_pound",
+        "original_value": 3500.0,
+        "original_unit": "calorie",
+        "converted_value": 14644.0,
+        "converted_unit": "joule"
+      },
+      {
+        "variable": "total_calories",
+        "original_value": 105000.0,
+        "original_unit": "calorie",
+        "converted_value": 439320.0,
+        "converted_unit": "joule"
+      },
+      {
+        "variable": "daily_calorie_deficit",
+        "original_value": 525.0,
+        "original_unit": "calorie",
+        "converted_value": 2196.6,
+        "converted_unit": "joule"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "For a New Year's resolution, Andy wants to lose {weight_loss} lbs. by his birthday, which is July 19th. Today is December 31st. If Andy needs to burn {calories_per_pound} calories to lose a pound, how much of a calorie deficit (net amount of calories burned vs. calories consumed) does he need each day to reach his goal?",
+    "templatized_answer": [
+      "January, March, and May have 31 days, February has 28, and April and June have 30, and Andy's birthday is on the 19th day of July. So there are 3 * 31 days + 28 + 2 * 30 days + 19 days = {days_until_birthday} days until Andy's birthday.",
+      "He wants to lose {weight_loss} lbs. At {calories_per_pound} calories per pound, this is {weight_loss} * {calories_per_pound} = {total_calories} calories total,",
+      "To reach his goal, he will have to burn {total_calories} calories / {days_until_birthday} days = {daily_calorie_deficit} calories per day more than he consumes."
+    ],
+    "factual_assignment": {
+      "weight_loss": 30.0,
+      "calories_per_pound": 3500.0,
+      "total_calories": 105000.0,
+      "daily_calorie_deficit": 525.0,
+      "days_until_birthday": 200
+    }
+  },
+  "merged_assignment": {
+    "weight_loss": 13.61,
+    "calories_per_pound": 14644.0,
+    "total_calories": 439320.0,
+    "daily_calorie_deficit": 2196.6,
+    "days_until_birthday": 200
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    weight_loss = 13.61  # kg\n    calories_per_pound = 14644.0  # J/kg\n\n    # Recompute days_until_birthday\n    january_days = 31\n    february_days = 28\n    march_days = 31\n    april_days = 30\n    may_days = 31\n    june_days = 30\n    july_days_until_birthday = 19\n    days_until_birthday = january_days + february_days + march_days + april_days + may_days + june_days + july_days_until_birthday\n\n    # Recompute total_calories\n    total_calories = weight_loss * calories_per_pound\n\n    # Recompute daily_calorie_deficit\n    daily_calorie_deficit = total_calories / days_until_birthday\n\n    return {\n        \"weight_loss\": weight_loss,\n        \"calories_per_pound\": calories_per_pound,\n        \"total_calories\": round(total_calories, 2),\n        \"daily_calorie_deficit\": round(daily_calorie_deficit, 2),\n        \"days_until_birthday\": days_until_birthday\n    }\n\nprint(recompute())\n",
+    "results": {
+      "weight_loss": 13.61,
+      "calories_per_pound": 14644.0,
+      "total_calories": 199304.84,
+      "daily_calorie_deficit": 996.52,
+      "days_until_birthday": 200
+    }
+  },
+  "final": {
+    "question": "For a New Year's resolution, Andy wants to lose 13.61 kilograms by his birthday, which is July 19th. Today is December 31st. If Andy needs to burn 14644 joules to lose a kilogram, how much of a calorie deficit (net amount of calories burned vs. calories consumed) does he need each day to reach his goal?",
+    "answer_lines": [
+      "January, March, and May have 31 days, February has 28, and April and June have 30, and Andy's birthday is on the 19th day of July. So there are 3 * 31 days + 28 + 2 * 30 days + 19 days = 200 days until Andy's birthday.",
+      "He wants to lose 13.61 kilograms. At 14644 joules per kilogram, this is 13.61 * 14644 = 199304.84 joules total,",
+      "To reach his goal, he will have to burn 199304.84 joules / 200 days = 996.52 joules per day more than he consumes.",
+      "#### 996.52"
+    ],
+    "final_scalar": 996.52,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": null
+}

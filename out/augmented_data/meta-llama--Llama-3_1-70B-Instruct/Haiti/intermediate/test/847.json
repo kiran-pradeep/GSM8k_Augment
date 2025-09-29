@@ -1,0 +1,128 @@
+{
+  "index": 847,
+  "split": "test",
+  "original": {
+    "question": "Brenda invested $300 into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "answer": "Three-quarters of $300 is (3/4)*$300 = $<<(3/4)*300=225>>225\nAfter 3 years, interest of $225*3 = $<<225*3=675>>675 has been accumulated\nShe now has a total of $300+$675 = $<<300+675=975>>975\n#### 975"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not exclusively in Haiti, where the Haitian gourde is the local currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_investment",
+      "value": 300,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "interest_per_year",
+      "value": 225,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_interest",
+      "value": 675,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_after_3_years",
+      "value": 975,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_investment\", \"value\": 300, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"interest_per_year\", \"value\": 225, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_interest\", \"value\": 675, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_after_3_years\", \"value\": 975, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_investment",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 39243.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "interest_per_year",
+        "original_value": 225,
+        "original_unit": "dollar",
+        "converted_value": 29432.25,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_interest",
+        "original_value": 675,
+        "original_unit": "dollar",
+        "converted_value": 88296.75,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_after_3_years",
+        "original_value": 975,
+        "original_unit": "dollar",
+        "converted_value": 127539.75,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Brenda invested ${initial_investment} into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "templatized_answer": [
+      "Three-quarters of ${initial_investment} is (3/4)*${initial_investment} = ${interest_per_year}",
+      "After 3 years, interest of ${interest_per_year}*3 = ${total_interest} has been accumulated",
+      "She now has a total of ${initial_investment}+${total_interest} = ${total_after_3_years}",
+      "#### {total_after_3_years}"
+    ],
+    "factual_assignment": {
+      "initial_investment": 300,
+      "interest_per_year": 225,
+      "total_interest": 675,
+      "total_after_3_years": 975
+    }
+  },
+  "merged_assignment": {
+    "initial_investment": 39243.0,
+    "interest_per_year": 29432.25,
+    "total_interest": 88296.75,
+    "total_after_3_years": 127539.75
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_investment = 39243.0\n    interest_per_year = (3/4) * initial_investment\n    total_interest = interest_per_year * 3\n    total_after_3_years = initial_investment + total_interest\n\n    return {\n        \"initial_investment\": initial_investment,\n        \"interest_per_year\": round(interest_per_year, 2),\n        \"total_interest\": round(total_interest, 2),\n        \"total_after_3_years\": round(total_after_3_years, 2)\n    }\n",
+    "results": {
+      "initial_investment": 39243.0,
+      "interest_per_year": 29432.25,
+      "total_interest": 88296.75,
+      "total_after_3_years": 127539.75
+    }
+  },
+  "final": {
+    "question": "Brenda invested 39243.0 gourde into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "answer_lines": [
+      "Three-quarters of 39243.0 gourde is (3/4)*39243.0 = 29432.25 gourde",
+      "After 3 years, interest of 29432.25 gourde*3 = 88296.75 gourde has been accumulated",
+      "She now has a total of 39243.0 gourde+88296.75 gourde = 127539.75 gourde",
+      "#### 127539.75"
+    ],
+    "final_scalar": 127539.75,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Brenda invested 39243.0 gourde into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "adapted_answer": [
+      "Three-quarters of 39243.0 gourde is (3/4)*39243.0 = 29432.25 gourde",
+      "After 3 years, interest of 29432.25 gourde*3 = 88296.75 gourde has been accumulated",
+      "She now has a total of 39243.0 gourde+88296.75 gourde = 127539.75 gourde",
+      "#### 127539.75"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

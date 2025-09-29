@@ -1,0 +1,120 @@
+{
+  "index": 452,
+  "split": "test",
+  "original": {
+    "question": "A car is on a road trip and drives 60 mph for 2 hours, and then 30 mph for 1 hour. What is the car's average speed in mph during this trip?",
+    "answer": "The car drives 60*2=<<60*2=120>>120 miles for 2 hours.\nThe car drives 30*1=<<30*1=30>>30 miles for 1 hour.\nIt drives a total of 120+30=<<120+30=150>>150 miles.\nLet S be the average speed, M be the number of miles, and H the number of hours spent driving.\nThen we have, S=M/H, so, S=150 miles/3 hours = <<150/3=50>>50 mph\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "mph",
+      "miles"
+    ],
+    "notes": "The units 'mph' (miles per hour) and 'miles' are commonly used in the United States, but not in Haiti, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "speed_1",
+      "value": 60,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "speed_2",
+      "value": 30,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "average_speed",
+      "value": 50,
+      "unit": "mph",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mph\": {\"unit\": \"km/h\", \"factor\": 1.60934},\n        \"dollars\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pounds\": {\"unit\": \"kilograms\", \"factor\": 0.453592},\n        \"ounces\": {\"unit\": \"grams\", \"factor\": 28.3495},\n        \"miles\": {\"unit\": \"kilometers\", \"factor\": 1.60934},\n        \"feet\": {\"unit\": \"meters\", \"factor\": 0.3048},\n        \"gallons\": {\"unit\": \"liters\", \"factor\": 3.78541},\n        \"cups\": {\"unit\": \"milliliters\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"speed_1\", \"value\": 60, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"speed_2\", \"value\": 30, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"average_speed\", \"value\": 50, \"unit\": \"mph\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "speed_1",
+        "original_value": 60,
+        "original_unit": "mph",
+        "converted_value": 96.56,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "speed_2",
+        "original_value": 30,
+        "original_unit": "mph",
+        "converted_value": 48.28,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "average_speed",
+        "original_value": 50,
+        "original_unit": "mph",
+        "converted_value": 80.47,
+        "converted_unit": "km/h"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A car is on a road trip and drives {speed_1} mph for 2 hours, and then {speed_2} mph for 1 hour. What is the car's average speed in mph during this trip?",
+    "templatized_answer": [
+      "The car drives {speed_1}*2={speed_1}*2 miles for 2 hours.",
+      "The car drives {speed_2}*1={speed_2}*1 miles for 1 hour.",
+      "It drives a total of {speed_1}*2+{speed_2}*1={speed_1}*2+{speed_2}*1 miles.",
+      "Let S be the average speed, M be the number of miles, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S=({speed_1}*2+{speed_2}*1)/3 = ({speed_1}*2+{speed_2}*1)/3 mph",
+      "#### ({speed_1}*2+{speed_2}*1)/3"
+    ],
+    "factual_assignment": {
+      "speed_1": 60,
+      "speed_2": 30
+    }
+  },
+  "merged_assignment": {
+    "speed_1": 96.56,
+    "speed_2": 48.28
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    speed_1 = 96.56\n    speed_2 = 48.28\n\n    speed_1_2 = speed_1 * 2\n    speed_2_1 = speed_2 * 1\n    total_miles = speed_1_2 + speed_2_1\n    total_hours = 3\n    average_speed = total_miles / total_hours\n\n    return {\n        \"speed_1\": speed_1,\n        \"speed_2\": speed_2,\n        \"speed_1*2\": round(speed_1_2, 2),\n        \"speed_2*1\": round(speed_2_1, 2),\n        \"speed_1*2+speed_2*1\": round(total_miles, 2),\n        \"({speed_1}*2+{speed_2}*1)/3\": round(average_speed, 2)\n    }\n",
+    "results": {
+      "speed_1": 96.56,
+      "speed_2": 48.28,
+      "speed_1*2": 193.12,
+      "speed_2*1": 48.28,
+      "speed_1*2+speed_2*1": 241.4,
+      "({speed_1}*2+{speed_2}*1)/3": 80.47
+    }
+  },
+  "final": {
+    "question": "A car is on a road trip and drives 96.56 km/h for 2 hours, and then 48.28 km/h for 1 hour. What is the car's average speed in km/h during this trip?",
+    "answer_lines": [
+      "The car drives 96.56*2=193.12 kilometers for 2 hours.",
+      "The car drives 48.28*1=48.28 kilometers for 1 hour.",
+      "It drives a total of 193.12+48.28=241.4 kilometers.",
+      "Let S be the average speed, M be the number of kilometers, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S=(193.12+48.28)/3 = 241.4/3 = 80.47 km/h",
+      "#### 80.47"
+    ],
+    "final_scalar": 80.47,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A kamyonèt is on a road trip and drives 96.56 km/h for 2 hours, and then 48.28 km/h for 1 hour. What is the kamyonèt's average speed in km/h during this trip?",
+    "adapted_answer": [
+      "The kamyonèt drives 96.56*2=193.12 kilometers for 2 hours.",
+      "The kamyonèt drives 48.28*1=48.28 kilometers for 1 hour.",
+      "It drives a total of 193.12+48.28=241.4 kilometers.",
+      "Let S be the average speed, M be the number of kilometers, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S=(193.12+48.28)/3 = 241.4/3 = 80.47 km/h",
+      "#### 80.47"
+    ],
+    "adaptation_notes": "Replaced 'car' with 'kamyonèt' (Haitian Creole for 'truck' or 'car'), no other changes needed."
+  }
+}

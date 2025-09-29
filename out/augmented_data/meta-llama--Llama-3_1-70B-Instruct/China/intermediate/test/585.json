@@ -1,0 +1,162 @@
+{
+  "index": 585,
+  "split": "test",
+  "original": {
+    "question": "Tabitha agreed to pay John and Jill $10 an hour to help clean out her attic and basement.  Jill worked 2 hours on Saturday and 1 hour on Sunday.  John worked twice as long as Jill on Saturday and three times as long as Jill on Sunday.  How much more money did John earn compared to Jill?",
+    "answer": "Jill worked 2 hours + 1 hour for a total of 3 hours.\nJill worked 3 hours at $10/hour so she made 3*$10 = $<<3*10=30>>30\nJohn worked twice as long as Jill on Saturday so 2*2 = <<2*2=4>>4 hours\nJohn worked three times as long as Jill on Sunday so 3*1 = <<3*1=3>>3 hours\nJohn worked 4 hours + 3 hours for 7 hours\nJohn worked 7 hours at $10/hour so he made 7*10 = $<<7*10=70>>70\nJohn made $70 while Jill made $30 so $70 - $30 = $<<70-30=40>>40 more dollars\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "Jill",
+      "dollars",
+      "Saturday",
+      "Sunday"
+    ],
+    "notes": "Names, units, and days of the week are culturally specific to Western regions."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jill_earnings",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "john_earnings",
+      "value": 70,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "john_extra_earnings",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if unit == \"dollar\":\n            converted_unit = \"renminbi\"\n            converted_value = value * 7.13\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"hourly_wage\",\n    \"value\": 10,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"jill_earnings\",\n    \"value\": 30,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"john_earnings\",\n    \"value\": 70,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"john_extra_earnings\",\n    \"value\": 40,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "jill_earnings",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "john_earnings",
+        "original_value": 70,
+        "original_unit": "dollar",
+        "converted_value": 499.1,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "john_extra_earnings",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tabitha agreed to pay John and Jill ${hourly_wage} an hour to help clean out her attic and basement.  Jill worked {saturday_hours} hours on Saturday and {sunday_hours} hours on Sunday.  John worked twice as long as Jill on Saturday and three times as long as Jill on Sunday.  How much more money did John earn compared to Jill?",
+    "templatized_answer": [
+      "Jill worked {saturday_hours} hours + {sunday_hours} hours for a total of {total_jill_hours} hours.",
+      "Jill worked {total_jill_hours} hours at ${hourly_wage}/hour so she made {total_jill_hours}*${hourly_wage} = ${jill_earnings}",
+      "John worked twice as long as Jill on Saturday so 2*{saturday_hours} = {saturday_john_hours} hours",
+      "John worked three times as long as Jill on Sunday so 3*{sunday_hours} = {sunday_john_hours} hours",
+      "John worked {saturday_john_hours} hours + {sunday_john_hours} hours for {total_john_hours} hours",
+      "John worked {total_john_hours} hours at ${hourly_wage}/hour so he made {total_john_hours}*${hourly_wage} = ${john_earnings}",
+      "John made ${john_earnings} while Jill made ${jill_earnings} so ${john_earnings} - ${jill_earnings} = ${john_extra_earnings} more dollars",
+      "#### ${john_extra_earnings}"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 10,
+      "jill_earnings": 30,
+      "john_earnings": 70,
+      "john_extra_earnings": 40,
+      "saturday_hours": 2,
+      "sunday_hours": 1,
+      "total_jill_hours": 3,
+      "saturday_john_hours": 4,
+      "sunday_john_hours": 3,
+      "total_john_hours": 7
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 71.3,
+    "jill_earnings": 213.9,
+    "john_earnings": 499.1,
+    "john_extra_earnings": 285.2,
+    "saturday_hours": 2,
+    "sunday_hours": 1,
+    "total_jill_hours": 3,
+    "saturday_john_hours": 4,
+    "sunday_john_hours": 3,
+    "total_john_hours": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 71.3\n    saturday_hours = 2\n    sunday_hours = 1\n\n    total_jill_hours = saturday_hours + sunday_hours\n    jill_earnings = round(total_jill_hours * hourly_wage, 2)\n\n    saturday_john_hours = 2 * saturday_hours\n    sunday_john_hours = 3 * sunday_hours\n    total_john_hours = saturday_john_hours + sunday_john_hours\n    john_earnings = round(total_john_hours * hourly_wage, 2)\n\n    john_extra_earnings = round(john_earnings - jill_earnings, 2)\n\n    return {\n        \"hourly_wage\": hourly_wage,\n        \"saturday_hours\": saturday_hours,\n        \"sunday_hours\": sunday_hours,\n        \"total_jill_hours\": total_jill_hours,\n        \"jill_earnings\": jill_earnings,\n        \"saturday_john_hours\": saturday_john_hours,\n        \"sunday_john_hours\": sunday_john_hours,\n        \"total_john_hours\": total_john_hours,\n        \"john_earnings\": john_earnings,\n        \"john_extra_earnings\": john_extra_earnings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hourly_wage": 71.3,
+      "saturday_hours": 2,
+      "sunday_hours": 1,
+      "total_jill_hours": 3,
+      "jill_earnings": 213.9,
+      "saturday_john_hours": 4,
+      "sunday_john_hours": 3,
+      "total_john_hours": 7,
+      "john_earnings": 499.1,
+      "john_extra_earnings": 285.2
+    }
+  },
+  "final": {
+    "question": "Tabitha agreed to pay John and Jill 71.3 renminbi an hour to help clean out her attic and basement.  Jill worked 2 hours on Saturday and 1 hour on Sunday.  John worked twice as long as Jill on Saturday and three times as long as Jill on Sunday.  How much more money did John earn compared to Jill?",
+    "answer_lines": [
+      "Jill worked 2 hours + 1 hour for a total of 3 hours.",
+      "Jill worked 3 hours at 71.3 renminbi/hour so she made 3*71.3 = 213.9 renminbi",
+      "John worked twice as long as Jill on Saturday so 2*2 = 4 hours",
+      "John worked three times as long as Jill on Sunday so 3*1 = 3 hours",
+      "John worked 4 hours + 3 hours for 7 hours",
+      "John worked 7 hours at 71.3 renminbi/hour so he made 7*71.3 = 499.1 renminbi",
+      "John made 499.1 renminbi while Jill made 213.9 renminbi so 499.1 - 213.9 = 285.2 renminbi more",
+      "#### 285.2"
+    ],
+    "final_scalar": 285.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang agreed to pay Li and Mei 71.3 renminbi an hour to help clean out her attic and basement.  Mei worked 2 hours on Saturday and 1 hour on Sunday.  Li worked twice as long as Mei on Saturday and three times as long as Mei on Sunday.  How much more money did Li earn compared to Mei?",
+    "adapted_answer": [
+      "Mei worked 2 hours + 1 hour for a total of 3 hours.",
+      "Mei worked 3 hours at 71.3 renminbi/hour so she made 3*71.3 = 213.9 renminbi",
+      "Li worked twice as long as Mei on Saturday so 2*2 = 4 hours",
+      "Li worked three times as long as Mei on Sunday so 3*1 = 3 hours",
+      "Li worked 4 hours + 3 hours for 7 hours",
+      "Li worked 7 hours at 71.3 renminbi/hour so he made 7*71.3 = 499.1 renminbi",
+      "Li made 499.1 renminbi while Mei made 213.9 renminbi so 499.1 - 213.9 = 285.2 renminbi more",
+      "#### 285.2"
+    ],
+    "adaptation_notes": "Replaced names: John -> Li, Jill -> Mei, Tabitha -> Wang. No other changes needed."
+  }
+}

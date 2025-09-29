@@ -1,0 +1,97 @@
+{
+  "index": 24,
+  "split": "test",
+  "original": {
+    "question": "Kyle bought last year's best-selling book for $19.50. This is with a 25% discount from the original price. What was the original price of the book?",
+    "answer": "Let X be the original price of the book. The discounted price is X - X*25% = $19.50.\nCombining like terms, we get .75X = $19.50\nDividing both sides by .75, we get X = $26.\n#### 26"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Kyle",
+      "dollars"
+    ],
+    "notes": "The name 'Kyle' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "book_discounted_price",
+      "value": 19.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_original_price",
+      "value": 26.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            conversion_rate = list(conversions[unit].values())[0]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"book_discounted_price\",\n    \"value\": 19.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"book_original_price\",\n    \"value\": 26.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "book_discounted_price",
+        "original_value": 19.5,
+        "original_unit": "dollar",
+        "converted_value": 139.03,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "book_original_price",
+        "original_value": 26.0,
+        "original_unit": "dollar",
+        "converted_value": 185.38,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kyle bought last year's best-selling book for ${book_discounted_price}. This is with a 25% discount from the original price. What was the original price of the book?",
+    "templatized_answer": [
+      "Let X be the original price of the book. The discounted price is X - X*25% = ${book_discounted_price}.",
+      "Combining like terms, we get .75X = ${book_discounted_price}",
+      "Dividing both sides by .75, we get X = ${book_original_price}",
+      "#### {book_original_price}"
+    ],
+    "factual_assignment": {
+      "book_discounted_price": 19.5,
+      "book_original_price": 26.0
+    }
+  },
+  "merged_assignment": {
+    "book_discounted_price": 139.03,
+    "book_original_price": 185.38
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    book_discounted_price = 139.03\n    book_original_price = book_discounted_price / 0.75\n    book_original_price = round(book_original_price, 2)\n    \n    return {\n        \"book_discounted_price\": book_discounted_price,\n        \"book_original_price\": book_original_price\n    }\n",
+    "results": {
+      "book_discounted_price": 139.03,
+      "book_original_price": 185.37
+    }
+  },
+  "final": {
+    "question": "Kyle bought last year's best-selling book for 139.03 renminbi. This is with a 25% discount from the original price. What was the original price of the book?",
+    "answer_lines": [
+      "Let X be the original price of the book. The discounted price is X - X*25% = 139.03 renminbi.",
+      "Combining like terms, we get .75X = 139.03 renminbi",
+      "Dividing both sides by .75, we get X = 185.37 renminbi",
+      "#### 185.37"
+    ],
+    "final_scalar": 185.37,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Liu bought last year's best-selling book for 139.03 renminbi. This is with a 25% discount from the original price. What was the original price of the book?",
+    "adapted_answer": [
+      "Let X be the original price of the book. The discounted price is X - X*25% = 139.03 renminbi.",
+      "Combining like terms, we get .75X = 139.03 renminbi",
+      "Dividing both sides by .75, we get X = 185.37 renminbi",
+      "#### 185.37"
+    ],
+    "adaptation_notes": "Replaced 'Kyle' with 'Liu' to give the name a Chinese context."
+  }
+}

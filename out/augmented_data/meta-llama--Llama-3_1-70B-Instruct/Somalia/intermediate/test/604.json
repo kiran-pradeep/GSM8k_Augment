@@ -1,0 +1,162 @@
+{
+  "index": 604,
+  "split": "test",
+  "original": {
+    "question": "Howard spends $8 dollars at the arcade on Monday. On Tuesday, he spends twice as much at the arcade as he did on Monday. On Wednesday, he spends 4 times as much at the arcade as he spent on Tuesday. If he originally had $100, how much money does he have left?",
+    "answer": "On Tuesday, he spends $8 * 2 = $<<8*2=16>>16.\nOn Wednesday, he spends $16 * 4 = $<<16*4=64>>64.\nIn total he spent $8 + $16 + $64 = $<<8+16+64=88>>88 at the arcade.\nHe has $100 - $88 = $<<100-88=12>>12 left.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monday_spend",
+      "value": 8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tuesday_spend",
+      "value": 16,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "wednesday_spend",
+      "value": 64,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spend",
+      "value": 88,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "initial_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "money_left",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monday_spend\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tuesday_spend\", \"value\": 16, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"wednesday_spend\", \"value\": 64, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spend\", \"value\": 88, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"initial_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"money_left\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monday_spend",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 4555.04,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "tuesday_spend",
+        "original_value": 16,
+        "original_unit": "dollar",
+        "converted_value": 9110.08,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "wednesday_spend",
+        "original_value": 64,
+        "original_unit": "dollar",
+        "converted_value": 36440.32,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_spend",
+        "original_value": 88,
+        "original_unit": "dollar",
+        "converted_value": 50105.44,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "initial_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 56938.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "money_left",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Howard spends ${monday_spend} dollars at the arcade on Monday. On Tuesday, he spends twice as much at the arcade as he did on Monday. On Wednesday, he spends 4 times as much at the arcade as he spent on Tuesday. If he originally had ${initial_money}, how much money does he have left?",
+    "templatized_answer": [
+      "On Tuesday, he spends ${monday_spend} * 2 = ${tuesday_spend}.",
+      "On Wednesday, he spends ${tuesday_spend} * 4 = ${wednesday_spend}.",
+      "In total he spent ${monday_spend} + ${tuesday_spend} + ${wednesday_spend} = ${total_spend} at the arcade.",
+      "He has ${initial_money} - ${total_spend} = ${money_left} left.",
+      "#### {money_left}"
+    ],
+    "factual_assignment": {
+      "monday_spend": 8,
+      "tuesday_spend": 16,
+      "wednesday_spend": 64,
+      "total_spend": 88,
+      "initial_money": 100,
+      "money_left": 12
+    }
+  },
+  "merged_assignment": {
+    "monday_spend": 4555.04,
+    "tuesday_spend": 9110.08,
+    "wednesday_spend": 36440.32,
+    "total_spend": 50105.44,
+    "initial_money": 56938.0,
+    "money_left": 6832.56
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monday_spend = 4555.04\n    tuesday_spend = monday_spend * 2\n    wednesday_spend = tuesday_spend * 4\n    total_spend = monday_spend + tuesday_spend + wednesday_spend\n    initial_money = 56938.0\n    money_left = initial_money - total_spend\n\n    return {\n        \"monday_spend\": round(monday_spend, 2),\n        \"tuesday_spend\": round(tuesday_spend, 2),\n        \"wednesday_spend\": round(wednesday_spend, 2),\n        \"total_spend\": round(total_spend, 2),\n        \"initial_money\": round(initial_money, 2),\n        \"money_left\": round(money_left, 2)\n    }\n",
+    "results": {
+      "monday_spend": 4555.04,
+      "tuesday_spend": 9110.08,
+      "wednesday_spend": 36440.32,
+      "total_spend": 50105.44,
+      "initial_money": 56938.0,
+      "money_left": 6832.56
+    }
+  },
+  "final": {
+    "question": "Howard spends 4555.04 shilling at the arcade on Monday. On Tuesday, he spends twice as much at the arcade as he did on Monday. On Wednesday, he spends 4 times as much at the arcade as he spent on Tuesday. If he originally had 56938.0 shilling, how much money does he have left?",
+    "answer_lines": [
+      "On Tuesday, he spends 4555.04 * 2 = 9110.08.",
+      "On Wednesday, he spends 9110.08 * 4 = 36440.32.",
+      "In total he spent 4555.04 + 9110.08 + 36440.32 = 50105.44 at the arcade.",
+      "He has 56938.0 - 50105.44 = 6832.56 left.",
+      "#### 6832.56"
+    ],
+    "final_scalar": 6832.56,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan waxa uu ku dhex dhafo 4555.04 shilling ee ciyaarta qarxayaasha Maandhow. Maalinta Salasa, waxa uu ku dhex dhafo mudo laba ciyaarta qarxayaasha ee uu ku dhex dhafo Maandhow. Maalinta Arbaca, waxa uu ku dhex dhafo afartan ciyaarta qarxayaasha ee uu ku dhex dhafo Salasa. Haddii uu hore u lahaa 56938.0 shilling, kuma dhaaftay Aadan?",
+    "adapted_answer": [
+      "Maalinta Salasa, waxa uu ku dhex dhafo 4555.04 * 2 = 9110.08.",
+      "Maalinta Arbaca, waxa uu ku dhex dhafo 9110.08 * 4 = 36440.32.",
+      "Waxa uu dhex dhafo guud ahaan 4555.04 + 9110.08 + 36440.32 = 50105.44 ciyaarta qarxayaasha.",
+      "Waxa uu lahaa 56938.0 - 50105.44 = 6832.56 dhaaftay."
+    ],
+    "adaptation_notes": "Replaced 'Howard' with 'Aadan' and 'arcade' with 'ciyaarta qarxayaasha' to give the text a Somali context."
+  }
+}

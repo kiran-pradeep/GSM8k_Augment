@@ -1,0 +1,133 @@
+{
+  "index": 704,
+  "split": "test",
+  "original": {
+    "question": "Gerald and Julia divided $100 in the ratio 3:2. If Gerald spent $10 on a book, how much money did he have left?",
+    "answer": "The $100 was divided into 3 + 2 = <<3+2=5>>5 parts.\nSo each part is $100/5 = $<<100/5=20>>20.\nSo Gerald received $20 x 3 = $<<20*3=60>>60.\nGerald bought a book at $<<10=10>>10.\nTherefore, Gerald was left with $60 - $10 = $<<60-10=50>>50.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gerald",
+      "Julia",
+      "dollars"
+    ],
+    "notes": "Names and currency unit are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "geralds_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "geralds_money_left",
+      "value": 50,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"geralds_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"geralds_money_left\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 166.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "geralds_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 997.2,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "geralds_money_left",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 831.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gerald and Julia divided ${initial_money} in the ratio 3:2. If Gerald spent ${book_cost} on a book, how much money did he have left?",
+    "templatized_answer": [
+      "The ${initial_money} was divided into 3 + 2 = 5 parts.",
+      "So each part is ${initial_money}/5 = ${initial_money/5}.",
+      "So Gerald received ${initial_money/5} x 3 = ${initial_money/5*3}.",
+      "Gerald bought a book at ${book_cost}.",
+      "Therefore, Gerald was left with ${initial_money/5*3} - ${book_cost} = ${initial_money/5*3-book_cost}.",
+      "#### {initial_money/5*3-book_cost}"
+    ],
+    "factual_assignment": {
+      "initial_money": 100,
+      "book_cost": 10
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 1662.0,
+    "book_cost": 166.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 1662.0\n    book_cost = 166.2\n\n    initial_money_div_5 = round(initial_money / 5, 2)\n    initial_money_div_5_times_3 = round(initial_money_div_5 * 3, 2)\n    initial_money_div_5_times_3_minus_book_cost = round(initial_money_div_5_times_3 - book_cost, 2)\n\n    return {\n        \"initial_money\": initial_money,\n        \"initial_money/5\": initial_money_div_5,\n        \"initial_money/5*3\": initial_money_div_5_times_3,\n        \"initial_money/5*3-book_cost\": initial_money_div_5_times_3_minus_book_cost,\n        \"book_cost\": book_cost\n    }\n",
+    "results": {
+      "initial_money": 1662.0,
+      "initial_money/5": 332.4,
+      "initial_money/5*3": 997.2,
+      "initial_money/5*3-book_cost": 831.0,
+      "book_cost": 166.2
+    }
+  },
+  "final": {
+    "question": "Gerald and Julia divided 1662.0 leu in the ratio 3:2. If Gerald spent 166.2 leu on a book, how much money did he have left?",
+    "answer_lines": [
+      "The 1662.0 leu was divided into 3 + 2 = 5 parts.",
+      "So each part is 1662.0 leu/5 = 332.4 leu.",
+      "So Gerald received 332.4 leu x 3 = 997.2 leu.",
+      "Gerald bought a book at 166.2 leu.",
+      "Therefore, Gerald was left with 997.2 leu - 166.2 leu = 831.0 leu.",
+      "#### 831.0"
+    ],
+    "final_scalar": 831.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Vasile and Natalia divided 1662.0 leu in the ratio 3:2. If Vasile spent 166.2 leu on a book, how much money did he have left?",
+    "adapted_answer": [
+      "The 1662.0 leu was divided into 3 + 2 = 5 parts.",
+      "So each part is 1662.0 leu/5 = 332.4 leu.",
+      "So Vasile received 332.4 leu x 3 = 997.2 leu.",
+      "Vasile bought a book at 166.2 leu.",
+      "Therefore, Vasile was left with 997.2 leu - 166.2 leu = 831.0 leu.",
+      "#### 831.0"
+    ],
+    "adaptation_notes": "Replaced 'Gerald' with 'Vasile' and 'Julia' with 'Natalia' to give the names a Moldovan context."
+  }
+}

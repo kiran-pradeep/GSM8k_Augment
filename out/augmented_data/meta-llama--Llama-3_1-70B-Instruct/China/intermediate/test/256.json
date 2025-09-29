@@ -1,0 +1,189 @@
+{
+  "index": 256,
+  "split": "test",
+  "original": {
+    "question": "Brady is counting the money in his piggy bank. He has 100 pennies, 40 nickels, 20 dimes, and 40 pieces of dollar bills. How much does Brady have in his piggy bank in dollars?",
+    "answer": "Since a penny is 1 cent, then 100 pennies is equal to 100 x 1 cent = <<100=100>>100 cents.\nSince nickel is 5 cents, then 40 nickels is equal to 40 x 5 = <<40*5=200>>200 cents.\nSince a dime is equal to 10 cents, then 20 dimes are equal to 20 x 10 = <<20*10=200>>200 cents.\nSo, Brady has a total of 100 + 200 + 200 = <<100+200+200=500>>500 cents.\nSince a dollar is equal to 100 cents, then 500 cents is equal to 500/100 = <<500/100=5>>5 dollars.\nThus, Brady has a total of $40 + $5 = $<<40+5=45>>45 in his piggy bank.\n#### 45"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Brady",
+      "pennies",
+      "nickels",
+      "dimes",
+      "dollar bills",
+      "dollars"
+    ],
+    "notes": "The text contains culturally specific entities such as names and US currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pennies_value",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "nickels_value",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dimes_value",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dollar_bills_value",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cents_value",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_dollars",
+      "value": 45.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = original_value * conversions[original_unit][converted_unit]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"pennies_value\",\n    \"value\": 1.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"nickels_value\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"dimes_value\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"dollar_bills_value\",\n    \"value\": 40.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_cents_value\",\n    \"value\": 5.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_dollars\",\n    \"value\": 45.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pennies_value",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "nickels_value",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "dimes_value",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "dollar_bills_value",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cents_value",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_dollars",
+        "original_value": 45.0,
+        "original_unit": "dollar",
+        "converted_value": 320.85,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Brady is counting the money in his piggy bank. He has {number_of_pennies} pennies, {number_of_nickels} nickels, {number_of_dimes} dimes, and {number_of_dollar_bills} pieces of dollar bills. How much does Brady have in his piggy bank in dollars?",
+    "templatized_answer": [
+      "Since a penny is {pennies_value} cents, then {number_of_pennies} pennies is equal to {number_of_pennies} x {pennies_value} cents = {number_of_pennies} cents.",
+      "Since a nickel is {nickels_value} cents, then {number_of_nickels} nickels is equal to {number_of_nickels} x {nickels_value} cents = {number_of_nickels} * {nickels_value} cents.",
+      "Since a dime is equal to {dimes_value} cents, then {number_of_dimes} dimes are equal to {number_of_dimes} x {dimes_value} cents = {number_of_dimes} * {dimes_value} cents.",
+      "So, Brady has a total of {number_of_pennies} + {number_of_nickels} * {nickels_value} + {number_of_dimes} * {dimes_value} = {total_cents} cents.",
+      "Since a dollar is equal to 100 cents, then {total_cents} cents is equal to {total_cents} / 100 = {total_dollars_from_cents} dollars.",
+      "Thus, Brady has a total of ${dollar_bills_value} + ${total_dollars_from_cents} = ${total_dollars} in his piggy bank.",
+      "#### {total_dollars}"
+    ],
+    "factual_assignment": {
+      "number_of_pennies": 100,
+      "number_of_nickels": 40,
+      "number_of_dimes": 20,
+      "number_of_dollar_bills": 40,
+      "pennies_value": 0.01,
+      "nickels_value": 0.05,
+      "dimes_value": 0.1,
+      "dollar_bills_value": 40,
+      "total_cents": 500,
+      "total_dollars_from_cents": 5,
+      "total_dollars": 45
+    }
+  },
+  "merged_assignment": {
+    "number_of_pennies": 100,
+    "number_of_nickels": 40,
+    "number_of_dimes": 20,
+    "number_of_dollar_bills": 40,
+    "pennies_value": 7.13,
+    "nickels_value": 14.26,
+    "dimes_value": 14.26,
+    "dollar_bills_value": 285.2,
+    "total_cents": 500,
+    "total_dollars_from_cents": 5,
+    "total_dollars": 320.85
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    number_of_pennies = 100\n    number_of_nickels = 40\n    number_of_dimes = 20\n    number_of_dollar_bills = 40\n    pennies_value = 7.13  # in cents\n    nickels_value = 14.26  # in cents\n    dimes_value = 14.26  # in cents\n    dollar_bills_value = 285.2  # in dollars\n\n    # Recompute values\n    pennies_cents = number_of_pennies * pennies_value\n    nickels_cents = number_of_nickels * nickels_value\n    dimes_cents = number_of_dimes * dimes_value\n    total_cents = pennies_cents + nickels_cents + dimes_cents\n    total_dollars_from_cents = round(total_cents / 100, 2)\n    total_dollars = round(dollar_bills_value + total_dollars_from_cents, 2)\n\n    # Return computed values\n    return {\n        \"number_of_pennies\": number_of_pennies,\n        \"number_of_nickels\": number_of_nickels,\n        \"number_of_dimes\": number_of_dimes,\n        \"number_of_dollar_bills\": number_of_dollar_bills,\n        \"pennies_value\": pennies_value,\n        \"nickels_value\": nickels_value,\n        \"dimes_value\": dimes_value,\n        \"dollar_bills_value\": dollar_bills_value,\n        \"total_cents\": round(total_cents, 2),\n        \"total_dollars_from_cents\": total_dollars_from_cents,\n        \"total_dollars\": total_dollars\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_pennies": 100,
+      "number_of_nickels": 40,
+      "number_of_dimes": 20,
+      "number_of_dollar_bills": 40,
+      "pennies_value": 7.13,
+      "nickels_value": 14.26,
+      "dimes_value": 14.26,
+      "dollar_bills_value": 285.2,
+      "total_cents": 1568.6,
+      "total_dollars_from_cents": 15.69,
+      "total_dollars": 300.89
+    }
+  },
+  "final": {
+    "question": "Brady is counting the money in his piggy bank. He has 100 pennies, 40 nickels, 20 dimes, and 40 pieces of dollar bills. How much does Brady have in his piggy bank in renminbi?",
+    "answer_lines": [
+      "Since a penny is 7.13 renminbi, then 100 pennies is equal to 100 x 7.13 renminbi = 713 renminbi.",
+      "Since a nickel is 14.26 renminbi, then 40 nickels is equal to 40 x 14.26 renminbi = 570.4 renminbi.",
+      "Since a dime is equal to 14.26 renminbi, then 20 dimes are equal to 20 x 14.26 renminbi = 285.2 renminbi.",
+      "So, Brady has a total of 713 + 570.4 + 285.2 = 1568.6 renminbi.",
+      "Since a dollar is equal to 100 cents, then 1568.6 cents is equal to 1568.6 / 100 = 15.69 renminbi.",
+      "Thus, Brady has a total of 285.2 renminbi + 15.69 renminbi = 300.89 renminbi in his piggy bank.",
+      "#### 300.89"
+    ],
+    "final_scalar": 300.89,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "李张在超超美宝中的金额。你有 100 万币幣、 40 万五幣、 20 万五十幣、和 40 万万幣给京。李张的美宝中有多少人気吗。",
+    "adapted_answer": [
+      "是有万币幣是 7.13 人気吗。来试计算万币幣的金额：100 万币幣 等于 100 x 7.13 人気吗 = 713 人気吗。",
+      "是有万五幣是 14.26 人気吗。来试计算万五幣的金额：40 万五幣 等于 40 x 14.26 人気吗 = 570.4 人気吗。",
+      "是有万五十幣是 14.26 人気吗。来试计算万五十幣的金额：20 万五十幣 等于 20 x 14.26 人気吗 = 285.2 人気吗。",
+      "李张有共三万币幣、万五幣和万五十幣，金额三个三个计算：713 + 570.4 + 285.2 = 1568.6 人気吗。",
+      "是有万万幣是 100 万币幣。来试计算万万幣的金额：1568.6 万币幣 等于 1568.6 / 100 = 15.69 人気吗。",
+      "李张有共万五十幣和万万幣，金额三个三个计算：285.2 人気吗 + 15.69 人気吗 = 300.89 人気吗。",
+      "#### 300.89"
+    ],
+    "adaptation_notes": "代替主人名为李张，代替万币幣为万币幣，代替万五幣为万五幣，代替万五十幣为万五十幣，代替万万幣为万万幣"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "index": 1033,
+  "split": "test",
+  "original": {
+    "question": "Melissa is summoned to jury duty. She spends 6 hours a day for 3 days listening to a court case. If Melissa is paid $15 per day but also has to pay $3 for parking each day, how much jury pay does she make per hour after expenses?",
+    "answer": "First find Melissa's net daily pay by subtracting the parking expense from her $15 gross pay: $15/day - $3/day = $<<15-3=12>>12/day\nThen divide this number by the number of hours Melissa spends in court each day to find her hourly pay: $12/day / 6 hours/day = $<<12/6=2>>2/hour\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States, but not exclusively in Haiti, where the Haitian gourde is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_pay",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "parking_expense",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "net_daily_pay",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "hourly_pay",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"daily_pay\",\n    \"value\": 15,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"parking_expense\",\n    \"value\": 3,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"net_daily_pay\",\n    \"value\": 12,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"hourly_pay\",\n    \"value\": 2,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_pay",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 1962.15,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "parking_expense",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 392.43,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "net_daily_pay",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1569.72,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "hourly_pay",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 261.62,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Melissa is summoned to jury duty. She spends {hours_per_day} hours a day for {days} days listening to a court case. If Melissa is paid ${daily_pay} per day but also has to pay ${parking_expense} for parking each day, how much jury pay does she make per hour after expenses?",
+    "templatized_answer": [
+      "First find Melissa's net daily pay by subtracting the parking expense from her ${daily_pay} gross pay: ${daily_pay}/day - ${parking_expense}/day = ${net_daily_pay}/day",
+      "Then divide this number by the number of hours Melissa spends in court each day to find her hourly pay: ${net_daily_pay}/day / {hours_per_day} hours/day = ${hourly_pay}/hour"
+    ],
+    "factual_assignment": {
+      "hours_per_day": 6,
+      "days": 3,
+      "daily_pay": 15,
+      "parking_expense": 3,
+      "net_daily_pay": 12,
+      "hourly_pay": 2
+    }
+  },
+  "merged_assignment": {
+    "hours_per_day": 6,
+    "days": 3,
+    "daily_pay": 1962.15,
+    "parking_expense": 392.43,
+    "net_daily_pay": 1569.72,
+    "hourly_pay": 261.62
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hours_per_day = 6\n    days = 3\n    daily_pay = 1962.15\n    parking_expense = 392.43\n\n    net_daily_pay = round(daily_pay - parking_expense, 2)\n    hourly_pay = round(net_daily_pay / hours_per_day, 2)\n\n    return {\n        \"hours_per_day\": hours_per_day,\n        \"days\": days,\n        \"daily_pay\": daily_pay,\n        \"parking_expense\": parking_expense,\n        \"net_daily_pay\": net_daily_pay,\n        \"hourly_pay\": hourly_pay\n    }\n",
+    "results": {
+      "hours_per_day": 6,
+      "days": 3,
+      "daily_pay": 1962.15,
+      "parking_expense": 392.43,
+      "net_daily_pay": 1569.72,
+      "hourly_pay": 261.62
+    }
+  },
+  "final": {
+    "question": "Melissa is summoned to jury duty. She spends 6 hours a day for 3 days listening to a court case. If Melissa is paid 1962.15 gourde per day but also has to pay 392.43 gourde for parking each day, how much jury pay does she make per hour after expenses?",
+    "answer_lines": [
+      "First find Melissa's net daily pay by subtracting the parking expense from her 1962.15 gourde gross pay: 1962.15 gourde/day - 392.43 gourde/day = 1569.72 gourde/day",
+      "Then divide this number by the number of hours Melissa spends in court each day to find her hourly pay: 1569.72 gourde/day / 6 hours/day = 261.62 gourde/hour",
+      "#### 261.62"
+    ],
+    "final_scalar": 261.62,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mélissa est convoquée pour le service du jury. Elle passe 6 heures par jour pendant 3 jours à écouter un procès au tribunal de Port-au-Prince. Si Mélissa est payée 1962,15 gourdes par jour mais doit également payer 392,43 gourdes pour le stationnement chaque jour, combien gagne-t-elle par heure après les dépenses ?",
+    "adapted_answer": [
+      "Trouvez d'abord la rémunération nette journalière de Mélissa en soustrayant les frais de stationnement de sa rémunération brute de 1962,15 gourdes : 1962,15 gourdes/jour - 392,43 gourdes/jour = 1569,72 gourdes/jour",
+      "Divisez ensuite ce nombre par le nombre d'heures que Mélissa passe au tribunal chaque jour pour trouver sa rémunération horaire : 1569,72 gourdes/jour / 6 heures/jour = 261,62 gourdes/heure"
+    ],
+    "adaptation_notes": "Replaced 'jury duty' with 'service du jury' and added 'au tribunal de Port-au-Prince' to give a Haitian context."
+  }
+}

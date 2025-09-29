@@ -1,0 +1,163 @@
+{
+  "index": 383,
+  "split": "test",
+  "original": {
+    "question": "Millie decides to open a lemonade stand. She spends $18 to buy enough supplies to make 3 pitchers of lemonade. Each pitcher holds 12 cups of lemonade. She sells each cup of lemonade for $1. She sells an average of 4 cups per hour that her lemonade stand is open. If Millie sells all of the lemonade, how much profit will she make per hour that she spends running the lemonade stand?",
+    "answer": "She has enough supplies to make 3 * 12 = <<3*12=36>>36 cups of lemonade.\nShe sells all of the lemonade for 36 * $1 = $<<36*1=36>>36.\nHer total profit for selling the lemonade is $36 - $18 = $<<36-18=18>>18.\nIt will take Millie 36 / 4 = <<36/4=9>>9 hours of work to sell all of the lemonade.\nHer hourly profit is $18 / 9 hours = $<<18/9=2>>2 per hour.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Millie",
+      "dollars",
+      "lemonade"
+    ],
+    "notes": "The name 'Millie' and the use of 'dollars' are culturally specific to Western regions. Lemonade is also a drink more commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_investment",
+      "value": 18,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cup_price",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 36,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_profit",
+      "value": 18,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "hourly_profit",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"cup\": {\"milliliter\": 236.588},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * list(conversions[original_unit].values())[0], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_investment\",\n    \"value\": 18,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"cup_price\",\n    \"value\": 1,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_revenue\",\n    \"value\": 36,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_profit\",\n    \"value\": 18,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"hourly_profit\",\n    \"value\": 2,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_investment",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 128.34,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "cup_price",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 36,
+        "original_unit": "dollar",
+        "converted_value": 256.68,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_profit",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 128.34,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hourly_profit",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Millie decides to open a lemonade stand. She spends ${initial_investment} to buy enough supplies to make {number_of_pitchers} pitchers of lemonade. Each pitcher holds {cups_per_pitcher} cups of lemonade. She sells each cup of lemonade for ${cup_price}. She sells an average of {cups_sold_per_hour} cups per hour that her lemonade stand is open. If Millie sells all of the lemonade, how much profit will she make per hour that she spends running the lemonade stand?",
+    "templatized_answer": [
+      "She has enough supplies to make {number_of_pitchers} * {cups_per_pitcher} = {number_of_pitchers} * {cups_per_pitcher} cups of lemonade.",
+      "She sells all of the lemonade for {number_of_pitchers} * {cups_per_pitcher} * ${cup_price} = ${total_revenue}.",
+      "Her total profit for selling the lemonade is ${total_revenue} - ${initial_investment} = ${total_profit}.",
+      "It will take Millie {number_of_pitchers} * {cups_per_pitcher} / {cups_sold_per_hour} = {number_of_pitchers} * {cups_per_pitcher} / {cups_sold_per_hour} hours of work to sell all of the lemonade.",
+      "Her hourly profit is ${total_profit} / ({number_of_pitchers} * {cups_per_pitcher} / {cups_sold_per_hour}) = ${hourly_profit} per hour.",
+      "#### ${hourly_profit}"
+    ],
+    "factual_assignment": {
+      "initial_investment": 18,
+      "cup_price": 1,
+      "total_revenue": 36,
+      "total_profit": 18,
+      "hourly_profit": 2,
+      "number_of_pitchers": 3,
+      "cups_per_pitcher": 12,
+      "cups_sold_per_hour": 4
+    }
+  },
+  "merged_assignment": {
+    "initial_investment": 128.34,
+    "cup_price": 7.13,
+    "total_revenue": 256.68,
+    "total_profit": 128.34,
+    "hourly_profit": 14.26,
+    "number_of_pitchers": 3,
+    "cups_per_pitcher": 12,
+    "cups_sold_per_hour": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_investment = 128.34\n    cup_price = 7.13\n    number_of_pitchers = 3\n    cups_per_pitcher = 12\n    cups_sold_per_hour = 4\n\n    total_cups = number_of_pitchers * cups_per_pitcher\n    total_revenue = total_cups * cup_price\n    total_profit = total_revenue - initial_investment\n    hours_to_sell = total_cups / cups_sold_per_hour\n    hourly_profit = total_profit / hours_to_sell\n\n    return {\n        \"initial_investment\": round(initial_investment, 2),\n        \"cup_price\": round(cup_price, 2),\n        \"total_revenue\": round(total_revenue, 2),\n        \"total_profit\": round(total_profit, 2),\n        \"hourly_profit\": round(hourly_profit, 2),\n        \"number_of_pitchers\": number_of_pitchers,\n        \"cups_per_pitcher\": cups_per_pitcher,\n        \"cups_sold_per_hour\": cups_sold_per_hour,\n        \"total_cups\": total_cups,\n        \"hours_to_sell\": round(hours_to_sell, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_investment": 128.34,
+      "cup_price": 7.13,
+      "total_revenue": 256.68,
+      "total_profit": 128.34,
+      "hourly_profit": 14.26,
+      "number_of_pitchers": 3,
+      "cups_per_pitcher": 12,
+      "cups_sold_per_hour": 4,
+      "total_cups": 36,
+      "hours_to_sell": 9.0
+    }
+  },
+  "final": {
+    "question": "Millie decides to open a lemonade stand. She spends 128.34 renminbi to buy enough supplies to make 3 pitchers of lemonade. Each pitcher holds 12 cups of lemonade. She sells each cup of lemonade for 7.13 renminbi. She sells an average of 4 cups per hour that her lemonade stand is open. If Millie sells all of the lemonade, how much profit will she make per hour that she spends running the lemonade stand?",
+    "answer_lines": [
+      "She has enough supplies to make 3 * 12 = 36 cups of lemonade.",
+      "She sells all of the lemonade for 36 * 7.13 renminbi = 256.68 renminbi.",
+      "Her total profit for selling the lemonade is 256.68 renminbi - 128.34 renminbi = 128.34 renminbi.",
+      "It will take Millie 36 / 4 = 9 hours of work to sell all of the lemonade.",
+      "Her hourly profit is 128.34 renminbi / 9 hours = 14.26 renminbi per hour.",
+      "#### 14.26"
+    ],
+    "final_scalar": 14.26,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mengmeng decides to open a sugarcane juice stand. She spends 128.34 renminbi to buy enough supplies to make 3 pitchers of sugarcane juice. Each pitcher holds 12 cups of sugarcane juice. She sells each cup of sugarcane juice for 7.13 renminbi. She sells an average of 4 cups per hour that her sugarcane juice stand is open. If Mengmeng sells all of the sugarcane juice, how much profit will she make per hour that she spends running the sugarcane juice stand?",
+    "adapted_answer": [
+      "She has enough supplies to make 3 * 12 = 36 cups of sugarcane juice.",
+      "She sells all of the sugarcane juice for 36 * 7.13 renminbi = 256.68 renminbi.",
+      "Her total profit for selling the sugarcane juice is 256.68 renminbi - 128.34 renminbi = 128.34 renminbi.",
+      "It will take Mengmeng 36 / 4 = 9 hours of work to sell all of the sugarcane juice.",
+      "Her hourly profit is 128.34 renminbi / 9 hours = 14.26 renminbi per hour.",
+      "#### 14.26"
+    ],
+    "adaptation_notes": "Replaced 'Millie' with 'Mengmeng' and 'lemonade' with 'sugarcane juice'."
+  }
+}

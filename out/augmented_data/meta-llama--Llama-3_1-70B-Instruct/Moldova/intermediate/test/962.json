@@ -1,0 +1,113 @@
+{
+  "index": 962,
+  "split": "test",
+  "original": {
+    "question": "Jen decides to travel to 3 different countries.  He has to pay $400 for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "answer": "He pays 400*.5=$<<400*.5=200>>200 more for tickets than supplies\nThat means the tickets cost 400+200=$<<400+200=600>>600\nSo it cost 600+400=$<<600+400=1000>>1000 in total.\n#### 1000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "travel_supplies_cost",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "travel_tickets_cost",
+      "value": 600.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_travel_cost",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"travel_supplies_cost\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"travel_tickets_cost\", \"value\": 600.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_travel_cost\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "travel_supplies_cost",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 6648.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "travel_tickets_cost",
+        "original_value": 600.0,
+        "original_unit": "dollar",
+        "converted_value": 9972.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_travel_cost",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 16620.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jen decides to travel to 3 different countries.  He has to pay ${travel_supplies_cost} for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "templatized_answer": [
+      "He pays {travel_supplies_cost}*.5=${{travel_supplies_cost}*.5} more for tickets than supplies",
+      "That means the tickets cost {travel_supplies_cost}+{travel_supplies_cost}*.5=${travel_tickets_cost}",
+      "So it cost {travel_tickets_cost}+{travel_supplies_cost}=${total_travel_cost} in total.",
+      "#### {total_travel_cost}"
+    ],
+    "factual_assignment": {
+      "travel_supplies_cost": 400.0,
+      "travel_tickets_cost": 600.0,
+      "total_travel_cost": 1000.0
+    }
+  },
+  "merged_assignment": {
+    "travel_supplies_cost": 6648.0,
+    "travel_tickets_cost": 9972.0,
+    "total_travel_cost": 16620.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    travel_supplies_cost = 6648.0\n    travel_tickets_cost = travel_supplies_cost * 1.5\n    total_travel_cost = travel_tickets_cost + travel_supplies_cost\n\n    return {\n        \"travel_supplies_cost\": travel_supplies_cost,\n        \"travel_tickets_cost\": travel_tickets_cost,\n        \"total_travel_cost\": total_travel_cost,\n        \"travel_supplies_cost*.5\": round(travel_supplies_cost * 0.5, 2)\n    }\n\nrecomputed_values = recompute()\nprint(recomputed_values)\n",
+    "results": {
+      "travel_supplies_cost": 6648.0,
+      "travel_tickets_cost": 9972.0,
+      "total_travel_cost": 16620.0,
+      "travel_supplies_cost*.5": 3324.0
+    }
+  },
+  "final": {
+    "question": "Jen decides to travel to 3 different countries.  He has to pay 6648 leu for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "answer_lines": [
+      "He pays 6648*.5=3324 leu more for tickets than supplies",
+      "That means the tickets cost 6648+3324=9972 leu",
+      "So it cost 9972+6648=16620 leu in total.",
+      "#### 16620"
+    ],
+    "final_scalar": 16620.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion decides to travel to 3 different countries.  He has to pay 6648 lei for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "adapted_answer": [
+      "He pays 6648*.5=3324 lei more for tickets than supplies",
+      "That means the tickets cost 6648+3324=9972 lei",
+      "So it cost 9972+6648=16620 lei in total.",
+      "#### 16620"
+    ],
+    "adaptation_notes": "Replaced 'Jen' with 'Ion' and 'leu' with 'lei' to better fit Moldovan context."
+  }
+}

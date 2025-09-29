@@ -1,0 +1,130 @@
+{
+  "index": 842,
+  "split": "test",
+  "original": {
+    "question": "While on vacation in Bali, Thea bought a hat from a craftsman worth $70. If she gave the craftsman four $20 bills, how much change did she get?",
+    "answer": "If she gave the craftsman four $20 bills, the total amount of money she gave to the craftsman is 4*$20 = $<<4*20=80>>80.\nSince the hat was worth $70, the craftsman gave her change equal to $80-$70=$10\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Thea",
+      "Bali",
+      "dollars"
+    ],
+    "notes": "Thea is a non-Pakistani name, Bali is a location outside Pakistan, and dollars is a unit of currency not native to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hat_cost",
+      "value": 70.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bill_value",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_bills",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hat_cost\", \"value\": 70.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bill_value\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_bills\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hat_cost",
+        "original_value": 70.0,
+        "original_unit": "dollar",
+        "converted_value": 19729.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "bill_value",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 5637.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_bills",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 22548.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "change",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "While on vacation in Bali, Thea bought a hat from a craftsman worth ${hat_cost}. If she gave the craftsman four ${bill_value} bills, how much change did she get?",
+    "templatized_answer": [
+      "If she gave the craftsman four ${bill_value} bills, the total amount of money she gave to the craftsman is {total_bills_given}*${bill_value} = ${total_bills_given}*{bill_value}.",
+      "Since the hat was worth ${hat_cost}, the craftsman gave her change equal to ${total_bills_given}*{bill_value}-${hat_cost}=${change}",
+      "#### {change}"
+    ],
+    "factual_assignment": {
+      "hat_cost": 70.0,
+      "bill_value": 20.0,
+      "total_bills_given": 4,
+      "change": 10.0,
+      "total_bills": 80.0
+    }
+  },
+  "merged_assignment": {
+    "hat_cost": 19729.5,
+    "bill_value": 5637.0,
+    "total_bills_given": 4,
+    "change": 2818.5,
+    "total_bills": 22548.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hat_cost = 19729.5\n    bill_value = 5637.0\n    total_bills_given = 4\n\n    total_bills = total_bills_given * bill_value\n    change = total_bills - hat_cost\n\n    return {\n        \"hat_cost\": hat_cost,\n        \"bill_value\": bill_value,\n        \"total_bills_given\": total_bills_given,\n        \"total_bills\": round(total_bills, 2),\n        \"change\": round(change, 2)\n    }\n",
+    "results": {
+      "hat_cost": 19729.5,
+      "bill_value": 5637.0,
+      "total_bills_given": 4,
+      "total_bills": 22548.0,
+      "change": 2818.5
+    }
+  },
+  "final": {
+    "question": "While on vacation in Bali, Thea bought a hat from a craftsman worth 19729.5 rupee. If she gave the craftsman four 5637.0 rupee bills, how much change did she get?",
+    "answer_lines": [
+      "If she gave the craftsman four 5637.0 rupee bills, the total amount of money she gave to the craftsman is 4*5637.0 rupee = 22548.0 rupee.",
+      "Since the hat was worth 19729.5 rupee, the craftsman gave her change equal to 22548.0 rupee-19729.5 rupee=2818.5 rupee",
+      "#### 2818.5"
+    ],
+    "final_scalar": 2818.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "While on vacation in Hunza, Thea bought a hat from a craftsman worth 19729.5 rupee. If she gave the craftsman four 5637.0 rupee bills, how much change did she get?",
+    "adapted_answer": [
+      "If she gave the craftsman four 5637.0 rupee bills, the total amount of money she gave to the craftsman is 4*5637.0 rupee = 22548.0 rupee.",
+      "Since the hat was worth 19729.5 rupee, the craftsman gave her change equal to 22548.0 rupee-19729.5 rupee=2818.5 rupee",
+      "#### 2818.5"
+    ],
+    "adaptation_notes": "Replaced 'Bali' with 'Hunza' to give the question a Pakistani context."
+  }
+}

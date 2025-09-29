@@ -1,0 +1,131 @@
+{
+  "index": 504,
+  "split": "test",
+  "original": {
+    "question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, strawberry. She paid $2 for a pack of grape gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of green apple gum. If she paid $7 in all, how many dollars did each pack of strawberry gum cost?",
+    "answer": "The green apple gum cost half as much as the $2 grape gum, so it cost 2 / 2 = $<<2/2=1>>1.\nThus, the two packs of strawberry gum cost 7 - 2 - 1 = $<<7-2-1=4>>4.\nTherefore, each pack of strawberry gum cost 4 / 2 = $<<4/2=2>>2.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "strawberry",
+      "grape",
+      "green apple"
+    ],
+    "notes": "The text contains units (dollars) and food items (strawberry, grape, green apple gum) that are not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "grape_gum_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "green_apple_gum_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "strawberry_gum_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"grape_gum_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"green_apple_gum_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"strawberry_gum_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "grape_gum_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "green_apple_gum_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 116.34,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "strawberry_gum_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, strawberry. She paid ${grape_gum_cost} for a pack of grape gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of green apple gum. If she paid ${total_cost} in all, how many dollars did each pack of strawberry gum cost?",
+    "templatized_answer": [
+      "The green apple gum cost half as much as the ${grape_gum_cost} grape gum, so it cost {grape_gum_cost} / 2 = ${green_apple_gum_cost}.",
+      "Thus, the two packs of strawberry gum cost {total_cost} - {grape_gum_cost} - {green_apple_gum_cost} = ${strawberry_gum_cost} * 2.",
+      "Therefore, each pack of strawberry gum cost ({total_cost} - {grape_gum_cost} - {green_apple_gum_cost}) / 2 = ${strawberry_gum_cost}.",
+      "#### {strawberry_gum_cost}"
+    ],
+    "factual_assignment": {
+      "grape_gum_cost": 2,
+      "green_apple_gum_cost": 1,
+      "total_cost": 7,
+      "strawberry_gum_cost": 2
+    }
+  },
+  "merged_assignment": {
+    "grape_gum_cost": 33.24,
+    "green_apple_gum_cost": 16.62,
+    "total_cost": 116.34,
+    "strawberry_gum_cost": 33.24
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    grape_gum_cost = 33.24\n    green_apple_gum_cost = grape_gum_cost / 2\n    total_cost = 116.34\n    strawberry_gum_cost = (total_cost - grape_gum_cost - green_apple_gum_cost) / 2\n\n    return {\n        \"grape_gum_cost\": round(grape_gum_cost, 2),\n        \"green_apple_gum_cost\": round(green_apple_gum_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"strawberry_gum_cost\": round(strawberry_gum_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "grape_gum_cost": 33.24,
+      "green_apple_gum_cost": 16.62,
+      "total_cost": 116.34,
+      "strawberry_gum_cost": 33.24
+    }
+  },
+  "final": {
+    "question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, strawberry. She paid 33.24 leu for a pack of grape gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of green apple gum. If she paid 116.34 leu in all, how many leu did each pack of strawberry gum cost?",
+    "answer_lines": [
+      "The green apple gum cost half as much as the 33.24 leu grape gum, so it cost 33.24 / 2 = 16.62 leu.",
+      "Thus, the two packs of strawberry gum cost 116.34 - 33.24 - 16.62 = 66.48 leu.",
+      "Therefore, each pack of strawberry gum cost (116.34 - 33.24 - 16.62) / 2 = 33.24 leu.",
+      "#### 33.24"
+    ],
+    "final_scalar": 33.24,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, visine. She paid 33.24 leu for a pack of prune gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of quince gum. If she paid 116.34 leu in all, how many leu did each pack of visine gum cost?",
+    "adapted_answer": [
+      "The quince gum cost half as much as the 33.24 leu prune gum, so it cost 33.24 / 2 = 16.62 leu.",
+      "Thus, the two packs of visine gum cost 116.34 - 33.24 - 16.62 = 66.48 leu.",
+      "Therefore, each pack of visine gum cost (116.34 - 33.24 - 16.62) / 2 = 33.24 leu.",
+      "#### 33.24"
+    ],
+    "adaptation_notes": "Replaced strawberry with visine, grape with prune, and green apple with quince to give the text a Moldovan context."
+  }
+}

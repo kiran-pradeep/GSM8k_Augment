@@ -1,0 +1,100 @@
+{
+  "index": 1184,
+  "split": "test",
+  "original": {
+    "question": "To heat during the winter, Ali ordered 850 kilos of coal. The coal is delivered in 50 kg bags, costing $18 per unit. How much does his order cost?",
+    "answer": "The number of bags Ali ordered is 850 kg/ 50 kg/bag = <<850/50=17>>17 bags\nThe total order cost is 17 bags x $18/bag = $<<17*18=306>>306\n#### 306"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusively in Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "coal_bag_cost",
+      "value": 18,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_order_cost",
+      "value": 306,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"coal_bag_cost\",\n    \"value\": 18,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_order_cost\",\n    \"value\": 306,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "coal_bag_cost",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 10248.84,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_order_cost",
+        "original_value": 306,
+        "original_unit": "dollar",
+        "converted_value": 174230.28,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To heat during the winter, Ali ordered {total_coal_weight} kilos of coal. The coal is delivered in {coal_bag_weight} kg bags, costing ${coal_bag_cost} per unit. How much does his order cost?",
+    "templatized_answer": [
+      "The number of bags Ali ordered is {total_coal_weight} kg/ {coal_bag_weight} kg/bag = {total_coal_weight}/{coal_bag_weight} bags",
+      "The total order cost is {total_coal_weight}/{coal_bag_weight} bags x ${coal_bag_cost}/bag = ${total_order_cost}",
+      "#### {total_order_cost}"
+    ],
+    "factual_assignment": {
+      "coal_bag_cost": 18,
+      "total_order_cost": 306,
+      "total_coal_weight": 850,
+      "coal_bag_weight": 50
+    }
+  },
+  "merged_assignment": {
+    "coal_bag_cost": 10248.84,
+    "total_order_cost": 174230.28,
+    "total_coal_weight": 850,
+    "coal_bag_weight": 50
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    coal_bag_cost = 10248.84\n    total_order_cost = 174230.28\n    total_coal_weight = 850\n    coal_bag_weight = 50\n\n    total_coal_weight_div_coal_bag_weight = total_coal_weight / coal_bag_weight\n\n    recomputed_values = {\n        \"coal_bag_cost\": coal_bag_cost,\n        \"total_order_cost\": total_order_cost,\n        \"total_coal_weight\": total_coal_weight,\n        \"coal_bag_weight\": coal_bag_weight,\n        \"total_coal_weight_div_coal_bag_weight\": round(total_coal_weight_div_coal_bag_weight, 2)\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "coal_bag_cost": 10248.84,
+      "total_order_cost": 174230.28,
+      "total_coal_weight": 850,
+      "coal_bag_weight": 50,
+      "total_coal_weight_div_coal_bag_weight": 17.0
+    }
+  },
+  "final": {
+    "question": "To heat during the winter, Ali ordered 850 kilos of coal. The coal is delivered in 50 kg bags, costing 10248.84 shilling per unit. How much does his order cost?",
+    "answer_lines": [
+      "The number of bags Ali ordered is 850 kg/ 50 kg/bag = 17.0 bags",
+      "The total order cost is 17.0 bags x 10248.84 shilling/bag = 174230.28 shilling",
+      "#### 174230.28"
+    ],
+    "final_scalar": 174230.28,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To heat during the winter, Ali ordered 850 kilos of coal. The coal is delivered in 50 kg bags, costing 10248.84 shilling per unit. How much does his order cost?",
+    "adapted_answer": [
+      "The number of bags Ali ordered is 850 kg/ 50 kg/bag = 17.0 bags",
+      "The total order cost is 17.0 bags x 10248.84 shilling/bag = 174230.28 shilling",
+      "#### 174230.28"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

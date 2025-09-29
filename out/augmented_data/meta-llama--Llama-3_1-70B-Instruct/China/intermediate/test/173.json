@@ -1,0 +1,180 @@
+{
+  "index": 173,
+  "split": "test",
+  "original": {
+    "question": "Jessica is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of $300/month, her credit card's minimum is $200/month, and her mortgage's minimum is $500/month. If Jessica wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "answer": "First find the total minimum payment each month: $300/month + $200/month + $500/month = $<<300+200+500=1000>>1000/month\nThen multiply that number by 50% to find how much extra Jessica pays each month: $1000/month * .5 = $<<1000*.5=500>>500/month\nAdd that number to the total minimum payment to find how much Jessica pays per month: $1000/month + $500/month = $<<1000+500=1500>>1500/month\nNow multiply that number by the number of months in a year to find Jessica's annual payment: $1500/month * 12 months/year = $<<1500*12=18000>>18,000/year\n#### 18000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jessica",
+      "dollars"
+    ],
+    "notes": "The name 'Jessica' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "student_loan_min",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "credit_card_min",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mortgage_min",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_min_month",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extra_month",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_month",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_year",
+      "value": 18000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * conversions[unit][converted_unit]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"student_loan_min\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"credit_card_min\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"mortgage_min\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_min_month\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extra_month\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_month\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_year\", \"value\": 18000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "student_loan_min",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "credit_card_min",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 1426.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "mortgage_min",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 3565.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_min_month",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 7130.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "extra_month",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 3565.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_month",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 10695.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_year",
+        "original_value": 18000.0,
+        "original_unit": "dollar",
+        "converted_value": 128340.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jessica is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of ${student_loan_min}/month, her credit card's minimum is ${credit_card_min}/month, and her mortgage's minimum is ${mortgage_min}/month. If Jessica wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "templatized_answer": [
+      "First find the total minimum payment each month: ${student_loan_min}/month + ${credit_card_min}/month + ${mortgage_min}/month = ${total_min_month}/month",
+      "Then multiply that number by 50% to find how much extra Jessica pays each month: ${total_min_month}/month * 0.5 = ${extra_month}/month",
+      "Add that number to the total minimum payment to find how much Jessica pays per month: ${total_min_month}/month + ${extra_month}/month = ${total_month}/month",
+      "Now multiply that number by the number of months in a year to find Jessica's annual payment: ${total_month}/month * 12 months/year = ${total_year}/year",
+      "#### {total_year}"
+    ],
+    "factual_assignment": {
+      "student_loan_min": 300.0,
+      "credit_card_min": 200.0,
+      "mortgage_min": 500.0,
+      "total_min_month": 1000.0,
+      "extra_month": 500.0,
+      "total_month": 1500.0,
+      "total_year": 18000.0
+    }
+  },
+  "merged_assignment": {
+    "student_loan_min": 2139.0,
+    "credit_card_min": 1426.0,
+    "mortgage_min": 3565.0,
+    "total_min_month": 7130.0,
+    "extra_month": 3565.0,
+    "total_month": 10695.0,
+    "total_year": 128340.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    student_loan_min = 2139.0\n    credit_card_min = 1426.0\n    mortgage_min = 3565.0\n\n    total_min_month = student_loan_min + credit_card_min + mortgage_min\n    extra_month = total_min_month * 0.5\n    total_month = total_min_month + extra_month\n    total_year = total_month * 12\n\n    return {\n        \"student_loan_min\": student_loan_min,\n        \"credit_card_min\": credit_card_min,\n        \"mortgage_min\": mortgage_min,\n        \"total_min_month\": round(total_min_month, 2),\n        \"extra_month\": round(extra_month, 2),\n        \"total_month\": round(total_month, 2),\n        \"total_year\": round(total_year, 2)\n    }\n",
+    "results": {
+      "student_loan_min": 2139.0,
+      "credit_card_min": 1426.0,
+      "mortgage_min": 3565.0,
+      "total_min_month": 7130.0,
+      "extra_month": 3565.0,
+      "total_month": 10695.0,
+      "total_year": 128340.0
+    }
+  },
+  "final": {
+    "question": "Jessica is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of 2139 renminbi/month, her credit card's minimum is 1426 renminbi/month, and her mortgage's minimum is 3565 renminbi/month. If Jessica wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "answer_lines": [
+      "First find the total minimum payment each month: 2139 renminbi/month + 1426 renminbi/month + 3565 renminbi/month = 7130 renminbi/month",
+      "Then multiply that number by 50% to find how much extra Jessica pays each month: 7130 renminbi/month * 0.5 = 3565 renminbi/month",
+      "Add that number to the total minimum payment to find how much Jessica pays per month: 7130 renminbi/month + 3565 renminbi/month = 10695 renminbi/month",
+      "Now multiply that number by the number of months in a year to find Jessica's annual payment: 10695 renminbi/month * 12 months/year = 128340 renminbi/year",
+      "#### 128340"
+    ],
+    "final_scalar": 128340,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Li Ming is trying to figure out how much to pay on all her debts each month. Her student loans have a minimum payment of 2139 renminbi/month, her credit card's minimum is 1426 renminbi/month, and her mortgage's minimum is 3565 renminbi/month. If Li Ming wants to pay 50% more than the minimum, how much does she pay in a year?",
+    "adapted_answer": [
+      "First find the total minimum payment each month: 2139 renminbi/month + 1426 renminbi/month + 3565 renminbi/month = 7130 renminbi/month",
+      "Then multiply that number by 50% to find how much extra Li Ming pays each month: 7130 renminbi/month * 0.5 = 3565 renminbi/month",
+      "Add that number to the total minimum payment to find how much Li Ming pays per month: 7130 renminbi/month + 3565 renminbi/month = 10695 renminbi/month",
+      "Now multiply that number by the number of months in a year to find Li Ming's annual payment: 10695 renminbi/month * 12 months/year = 128340 renminbi/year",
+      "#### 128340"
+    ],
+    "adaptation_notes": "Replaced 'Jessica' with 'Li Ming' to provide a Chinese context."
+  }
+}

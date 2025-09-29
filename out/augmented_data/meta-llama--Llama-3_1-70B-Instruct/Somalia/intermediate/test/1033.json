@@ -1,0 +1,130 @@
+{
+  "index": 1033,
+  "split": "test",
+  "original": {
+    "question": "Melissa is summoned to jury duty. She spends 6 hours a day for 3 days listening to a court case. If Melissa is paid $15 per day but also has to pay $3 for parking each day, how much jury pay does she make per hour after expenses?",
+    "answer": "First find Melissa's net daily pay by subtracting the parking expense from her $15 gross pay: $15/day - $3/day = $<<15-3=12>>12/day\nThen divide this number by the number of hours Melissa spends in court each day to find her hourly pay: $12/day / 6 hours/day = $<<12/6=2>>2/hour\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_pay",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "parking_expense",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "net_daily_pay",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "hourly_pay",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_pay\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"parking_expense\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"net_daily_pay\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"hourly_pay\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_pay",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 8540.7,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "parking_expense",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 1708.14,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "net_daily_pay",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "hourly_pay",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 1138.76,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Melissa is summoned to jury duty. She spends {hours_per_day} hours a day for {days} days listening to a court case. If Melissa is paid ${daily_pay} per day but also has to pay ${parking_expense} for parking each day, how much jury pay does she make per hour after expenses?",
+    "templatized_answer": [
+      "First find Melissa's net daily pay by subtracting the parking expense from her ${daily_pay} gross pay: ${daily_pay}/day - ${parking_expense}/day = ${net_daily_pay}/day",
+      "Then divide this number by the number of hours Melissa spends in court each day to find her hourly pay: ${net_daily_pay}/day / {hours_per_day} hours/day = ${hourly_pay}/hour"
+    ],
+    "factual_assignment": {
+      "hours_per_day": 6,
+      "days": 3,
+      "daily_pay": 15,
+      "parking_expense": 3,
+      "net_daily_pay": 12,
+      "hourly_pay": 2
+    }
+  },
+  "merged_assignment": {
+    "hours_per_day": 6,
+    "days": 3,
+    "daily_pay": 8540.7,
+    "parking_expense": 1708.14,
+    "net_daily_pay": 6832.56,
+    "hourly_pay": 1138.76
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hours_per_day = 6\n    days = 3\n    daily_pay = 8540.7\n    parking_expense = 1708.14\n\n    net_daily_pay = round(daily_pay - parking_expense, 2)\n    hourly_pay = round(net_daily_pay / hours_per_day, 2)\n\n    return {\n        \"hours_per_day\": hours_per_day,\n        \"days\": days,\n        \"daily_pay\": daily_pay,\n        \"parking_expense\": parking_expense,\n        \"net_daily_pay\": net_daily_pay,\n        \"hourly_pay\": hourly_pay\n    }\n",
+    "results": {
+      "hours_per_day": 6,
+      "days": 3,
+      "daily_pay": 8540.7,
+      "parking_expense": 1708.14,
+      "net_daily_pay": 6832.56,
+      "hourly_pay": 1138.76
+    }
+  },
+  "final": {
+    "question": "Melissa is summoned to jury duty. She spends 6 hours a day for 3 days listening to a court case. If Melissa is paid 8540.7 shilling per day but also has to pay 1708.14 shilling for parking each day, how much jury pay does she make per hour after expenses?",
+    "answer_lines": [
+      "First find Melissa's net daily pay by subtracting the parking expense from her 8540.7 shilling gross pay: 8540.7 shilling/day - 1708.14 shilling/day = 6832.56 shilling/day",
+      "Then divide this number by the number of hours Melissa spends in court each day to find her hourly pay: 6832.56 shilling/day / 6 hours/day = 1138.76 shilling/hour",
+      "#### 1138.76"
+    ],
+    "final_scalar": 1138.76,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Amina waa la korsaday inay ka qeyb gasho xukunka. Waxay ku sii days 6 saac oo maalin oo maalmo 3 iyaga oo dhagaysa muuqaalka maxkamada. Haddii Amina la siiyo 8540.7 shilin oo maalin oo maalmo 3, laakiin waxay sidoo kale u baahan tahay inay bixiso 1708.14 shilin oo baabuurta maalin oo maalmo 3, inta badan ee Amina ku guddooma xukunka maalin oo maalmo 3?",
+    "adapted_answer": [
+      "Hadii aad dooneysid in aad ogaataan xarajiyadda Amina ee maalin oo maalmo 3, ka celi parking fees-ga ka saarida xarajiyadda Amina ee maalin oo maalmo 3: 8540.7 shilin/maalin - 1708.14 shilin/maalin = 6832.56 shilin/maalin",
+      "Kadibna u qaybi xarajiyadda maalin oo maalmo 3 ee Amina tirada saac ee Amina ku sii jirta maxkamada maalin oo maalmo 3 si aad u ogaato xarajiyadda saac ee Amina: 6832.56 shilin/maalin / 6 saac/maalin = 1138.76 shilin/saac",
+      "#### 1138.76"
+    ],
+    "adaptation_notes": "Replaced 'Melissa' with 'Amina' and 'jury duty' with 'xukunka' to give the text a Somali context."
+  }
+}

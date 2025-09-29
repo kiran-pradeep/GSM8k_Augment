@@ -1,0 +1,134 @@
+{
+  "index": 1221,
+  "split": "test",
+  "original": {
+    "question": "Aiden is making his famous steakhouse-seasoned meatballs for a neighborhood cookout. He adds two tablespoons of his secret steakhouse seasoning for every pound of ground beef he uses. He gets sixteen meatballs from each pound of meat. If he wants to make 80 meatballs for the cookout, how much of his secret seasoning will he need?",
+    "answer": "To make 80 meatballs, Aiden will need 80 / 16 = <<80/16=5>>5 pounds of meat.\nAiden will need 5 * 2 = <<5*2=10>>10 tablespoons of his secret steakhouse seasoning to make 80 meatballs.\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Aiden",
+      "pounds",
+      "meatballs",
+      "steakhouse-seasoned"
+    ],
+    "notes": "The text contains a Western name, units of measurement, and food items not commonly associated with Chinese cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "meat_weight",
+      "value": 5.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "seasoning_amount",
+      "value": 10.0,
+      "unit": "tablespoon",
+      "context": "answer"
+    },
+    {
+      "variable": "initial_meat_weight",
+      "value": 1.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "initial_seasoning_amount",
+      "value": 2.0,
+      "unit": "tablespoon",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"tablespoon\": (\"milliliter\", 14.7868),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495),\n        \"dollar\": (\"renminbi\", 7.13)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"meat_weight\",\n    \"value\": 5.0,\n    \"unit\": \"pound\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"seasoning_amount\",\n    \"value\": 10.0,\n    \"unit\": \"tablespoon\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"initial_meat_weight\",\n    \"value\": 1.0,\n    \"unit\": \"pound\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"initial_seasoning_amount\",\n    \"value\": 2.0,\n    \"unit\": \"tablespoon\",\n    \"context\": \"question\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "meat_weight",
+        "original_value": 5.0,
+        "original_unit": "pound",
+        "converted_value": 2.27,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "seasoning_amount",
+        "original_value": 10.0,
+        "original_unit": "tablespoon",
+        "converted_value": 147.87,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "initial_meat_weight",
+        "original_value": 1.0,
+        "original_unit": "pound",
+        "converted_value": 0.45,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "initial_seasoning_amount",
+        "original_value": 2.0,
+        "original_unit": "tablespoon",
+        "converted_value": 29.57,
+        "converted_unit": "milliliter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aiden is making his famous steakhouse-seasoned meatballs for a neighborhood cookout. He adds {initial_seasoning_amount} tablespoons of his secret steakhouse seasoning for every {initial_meat_weight} pound of ground beef he uses. He gets {meatballs_per_pound} meatballs from each pound of meat. If he wants to make {total_meatballs} meatballs for the cookout, how much of his secret seasoning will he need?",
+    "templatized_answer": [
+      "To make {total_meatballs} meatballs, Aiden will need {total_meatballs} / {meatballs_per_pound} = {meat_weight} pounds of meat.",
+      "Aiden will need {meat_weight} * {initial_seasoning_amount} = {seasoning_amount} tablespoons of his secret steakhouse seasoning to make {total_meatballs} meatballs.",
+      "#### {seasoning_amount}"
+    ],
+    "factual_assignment": {
+      "initial_seasoning_amount": 2.0,
+      "initial_meat_weight": 1.0,
+      "meatballs_per_pound": 16,
+      "total_meatballs": 80,
+      "meat_weight": 5.0,
+      "seasoning_amount": 10.0
+    }
+  },
+  "merged_assignment": {
+    "initial_seasoning_amount": 29.57,
+    "initial_meat_weight": 0.45,
+    "meatballs_per_pound": 16,
+    "total_meatballs": 80,
+    "meat_weight": 2.27,
+    "seasoning_amount": 147.87
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_seasoning_amount = 29.57\n    initial_meat_weight = 0.45\n    meatballs_per_pound = 16\n    total_meatballs = 80\n\n    meat_weight = total_meatballs / meatballs_per_pound\n    seasoning_amount = meat_weight * initial_seasoning_amount\n\n    return {\n        \"initial_seasoning_amount\": round(initial_seasoning_amount, 2),\n        \"initial_meat_weight\": round(initial_meat_weight, 2),\n        \"meatballs_per_pound\": meatballs_per_pound,\n        \"total_meatballs\": total_meatballs,\n        \"meat_weight\": round(meat_weight, 2),\n        \"seasoning_amount\": round(seasoning_amount, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_seasoning_amount": 29.57,
+      "initial_meat_weight": 0.45,
+      "meatballs_per_pound": 16,
+      "total_meatballs": 80,
+      "meat_weight": 5.0,
+      "seasoning_amount": 147.85
+    }
+  },
+  "final": {
+    "question": "Aiden is making his famous steakhouse-seasoned meatballs for a neighborhood cookout. He adds 29.57 milliliters of his secret steakhouse seasoning for every 0.45 kilograms of ground beef he uses. He gets 16 meatballs from each 0.45 kilograms of meat. If he wants to make 80 meatballs for the cookout, how much of his secret seasoning will he need?",
+    "answer_lines": [
+      "To make 80 meatballs, Aiden will need 80 / 16 = 5 kilograms of meat.",
+      "Aiden will need 5 * 29.57 = 147.85 milliliters of his secret steakhouse seasoning to make 80 meatballs.",
+      "#### 147.85"
+    ],
+    "final_scalar": 147.85,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wei is making his famous Sichuan-peppercorn meatballs for a neighborhood cookout. He adds 29.57 milliliters of his secret Sichuan-peppercorn seasoning for every 0.45 kilograms of ground beef he uses. He gets 16 meatballs from each 0.45 kilograms of meat. If he wants to make 80 meatballs for the cookout, how much of his secret seasoning will he need?",
+    "adapted_answer": [
+      "To make 80 meatballs, Wei will need 80 / 16 = 5 kilograms of meat.",
+      "Wei will need 5 * 29.57 = 147.85 milliliters of his secret Sichuan-peppercorn seasoning to make 80 meatballs.",
+      "#### 147.85"
+    ],
+    "adaptation_notes": "Replaced 'Aiden' with 'Wei', 'steakhouse-seasoned' with 'Sichuan-peppercorn', and 'steakhouse' with 'Sichuan-peppercorn' to give the text a Chinese context."
+  }
+}

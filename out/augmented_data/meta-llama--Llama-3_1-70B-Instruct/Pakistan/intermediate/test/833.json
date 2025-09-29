@@ -1,0 +1,134 @@
+{
+  "index": 833,
+  "split": "test",
+  "original": {
+    "question": "Naruto can lift a mountain ten times higher than Kagiyami can.  But Kagiyami can lift a mountain 4 times higher than Saskay can.  And Saskay can lift a mountain 12 times higher than Pompei can.  If Pompei can lift a mountain 1 inch, how high can Naruto lift a mountain, in feet?",
+    "answer": "If Pompei can lift a mountain 1 inch, and Saskay can lift a mountain 12 times higher than Pompei can, then Saskay can lift a mountain 12*1=12 inches=1 foot.\nSince Kagiyami can lift a mountain 4 times higher than Saskay, then Kagiyami can lift a mountain 4*1=<<4*1=4>>4 feet.\nAnd since Naruto can lift a mountain ten times higher than Kagiyami. then Naruto can lift a mountain 10*4=<<10*4=40>>40 feet.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Naruto",
+      "Kagiyami",
+      "Saskay",
+      "Pompei",
+      "inches",
+      "feet"
+    ],
+    "notes": "The names appear to be of Japanese and possibly other international origins, and the units of measurement are imperial."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pompei_lift",
+      "value": 1,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "saskay_lift",
+      "value": 1,
+      "unit": "foot",
+      "context": "answer"
+    },
+    {
+      "variable": "kagiyami_lift",
+      "value": 4,
+      "unit": "feet",
+      "context": "answer"
+    },
+    {
+      "variable": "naruto_lift",
+      "value": 40,
+      "unit": "feet",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"feet\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"inch\": {\"to\": \"centimeter\", \"rate\": 2.54}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pompei_lift\", \"value\": 1, \"unit\": \"inch\", \"context\": \"question\"},\n    {\"variable\": \"saskay_lift\", \"value\": 1, \"unit\": \"foot\", \"context\": \"answer\"},\n    {\"variable\": \"kagiyami_lift\", \"value\": 4, \"unit\": \"feet\", \"context\": \"answer\"},\n    {\"variable\": \"naruto_lift\", \"value\": 40, \"unit\": \"feet\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pompei_lift",
+        "original_value": 1,
+        "original_unit": "inch",
+        "converted_value": 2.54,
+        "converted_unit": "centimeter"
+      },
+      {
+        "variable": "saskay_lift",
+        "original_value": 1,
+        "original_unit": "foot",
+        "converted_value": 0.3,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "kagiyami_lift",
+        "original_value": 4,
+        "original_unit": "feet",
+        "converted_value": 1.22,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "naruto_lift",
+        "original_value": 40,
+        "original_unit": "feet",
+        "converted_value": 12.19,
+        "converted_unit": "meter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Naruto can lift a mountain ten times higher than Kagiyami can.  But Kagiyami can lift a mountain 4 times higher than Saskay can.  And Saskay can lift a mountain 12 times higher than Pompei can.  If Pompei can lift a mountain {pompei_lift} inch, how high can Naruto lift a mountain, in feet?",
+    "templatized_answer": [
+      "If Pompei can lift a mountain {pompei_lift} inch, and Saskay can lift a mountain 12 times higher than Pompei can, then Saskay can lift a mountain 12*{pompei_lift}={saskay_lift} inches={saskay_lift} foot.",
+      "Since Kagiyami can lift a mountain 4 times higher than Saskay, then Kagiyami can lift a mountain 4*{saskay_lift}={kagiyami_lift} feet.",
+      "And since Naruto can lift a mountain ten times higher than Kagiyami. then Naruto can lift a mountain 10*{kagiyami_lift}={naruto_lift} feet.",
+      "#### {naruto_lift}"
+    ],
+    "factual_assignment": {
+      "pompei_lift": 1,
+      "saskay_lift": 1,
+      "kagiyami_lift": 4,
+      "naruto_lift": 40
+    }
+  },
+  "merged_assignment": {
+    "pompei_lift": 2.54,
+    "saskay_lift": 0.3,
+    "kagiyami_lift": 1.22,
+    "naruto_lift": 12.19
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pompei_lift = 2.54  # in cm\n    saskay_lift = pompei_lift * 12  # in cm\n    saskay_lift_feet = saskay_lift / 30.48  # in feet\n    kagiyami_lift = saskay_lift_feet * 4  # in feet\n    naruto_lift = kagiyami_lift * 10  # in feet\n\n    return {\n        \"pompei_lift\": round(pompei_lift, 2),\n        \"saskay_lift\": round(saskay_lift, 2),\n        \"saskay_lift_feet\": round(saskay_lift_feet, 2),\n        \"kagiyami_lift\": round(kagiyami_lift, 2),\n        \"naruto_lift\": round(naruto_lift, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "pompei_lift": 2.54,
+      "saskay_lift": 30.48,
+      "saskay_lift_feet": 1.0,
+      "kagiyami_lift": 4.0,
+      "naruto_lift": 40.0
+    }
+  },
+  "final": {
+    "question": "Naruto can lift a mountain ten times higher than Kagiyami can.  But Kagiyami can lift a mountain 4 times higher than Saskay can.  And Saskay can lift a mountain 12 times higher than Pompei can.  If Pompei can lift a mountain 2.54 centimeter, how high can Naruto lift a mountain, in meter?",
+    "answer_lines": [
+      "If Pompei can lift a mountain 2.54 centimeter, and Saskay can lift a mountain 12 times higher than Pompei can, then Saskay can lift a mountain 12*2.54=30.48 centimeter=0.3048 meter.",
+      "Since Kagiyami can lift a mountain 4 times higher than Saskay, then Kagiyami can lift a mountain 4*0.3048=1.2192 meter.",
+      "And since Naruto can lift a mountain ten times higher than Kagiyami. then Naruto can lift a mountain 10*1.2192=12.192 meter.",
+      "#### 12.192"
+    ],
+    "final_scalar": 12.192,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Babar can lift a mountain ten times higher than Afridi can. But Afridi can lift a mountain 4 times higher than Saba can. And Saba can lift a mountain 12 times higher than Bilal can. If Bilal can lift a mountain 2.54 centimeter, how high can Babar lift a mountain, in meter?",
+    "adapted_answer": [
+      "If Bilal can lift a mountain 2.54 centimeter, and Saba can lift a mountain 12 times higher than Bilal can, then Saba can lift a mountain 12*2.54=30.48 centimeter=0.3048 meter.",
+      "Since Afridi can lift a mountain 4 times higher than Saba, then Afridi can lift a mountain 4*0.3048=1.2192 meter.",
+      "And since Babar can lift a mountain ten times higher than Afridi. then Babar can lift a mountain 10*1.2192=12.192 meter.",
+      "#### 12.192"
+    ],
+    "adaptation_notes": "Replaced Naruto with Babar, Kagiyami with Afridi, Saskay with Saba, and Pompei with Bilal."
+  }
+}

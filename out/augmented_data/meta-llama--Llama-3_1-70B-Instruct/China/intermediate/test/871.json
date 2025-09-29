@@ -1,0 +1,96 @@
+{
+  "index": 871,
+  "split": "test",
+  "original": {
+    "question": "Tobias bought a big pizza with 60 pieces. He ate 2/5 of the pieces on the first day, 10 pieces on the second day, and 7/13 of the remaining pieces on the third day. How many pizza pieces has he eaten so far?",
+    "answer": "On the first day, Tobias ate 2/5*60 = <<2/5*60=24>>24 pieces of the pizza.\nOn the second day, Tobias ate 10 more pieces of the pizza, totaling 24+10 = <<24+10=34>>34 pieces\nThe number of pieces of pizza remaining is 60-34 = <<60-34=26>>26\nOn the third day, Tobias ate 7/13*26 = <<7/13*26=14>>14 pieces of pizza.\nSo far, he has eaten 14+34 = <<14+34=48>>48 pieces of the pizza he bought.\n#### 48"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tobias",
+      "pizza"
+    ],
+    "notes": "Tobias is a Western name and pizza is a Western food item."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 7.13, 'unit': 'renminbi'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit]['factor'], 2)\n            converted_unit = conversions[unit]['unit']\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Tobias bought a big pizza with {total_pieces} pieces. He ate {fraction_day1} of the pieces on the first day, {pieces_day2} pieces on the second day, and {fraction_day3} of the remaining pieces on the third day. How many pizza pieces has he eaten so far?",
+    "templatized_answer": [
+      "On the first day, Tobias ate {fraction_day1}*{total_pieces} = {pieces_day1} pieces of the pizza.",
+      "On the second day, Tobias ate {pieces_day2} more pieces of the pizza, totaling {pieces_day1}+{pieces_day2} = {total_pieces_day2} pieces",
+      "The number of pieces of pizza remaining is {total_pieces}-{total_pieces_day2} = {remaining_pieces} pieces",
+      "On the third day, Tobias ate {fraction_day3}*{remaining_pieces} = {pieces_day3} pieces of pizza.",
+      "So far, he has eaten {pieces_day3}+{total_pieces_day2} = {total_pieces_eaten} pieces of the pizza he bought.",
+      "#### {total_pieces_eaten}"
+    ],
+    "factual_assignment": {
+      "total_pieces": 60,
+      "fraction_day1": "2/5",
+      "pieces_day1": 24,
+      "pieces_day2": 10,
+      "fraction_day3": "7/13",
+      "total_pieces_day2": 34,
+      "remaining_pieces": 26,
+      "pieces_day3": 14,
+      "total_pieces_eaten": 48
+    }
+  },
+  "merged_assignment": {
+    "total_pieces": 60,
+    "fraction_day1": "2/5",
+    "pieces_day1": 24,
+    "pieces_day2": 10,
+    "fraction_day3": "7/13",
+    "total_pieces_day2": 34,
+    "remaining_pieces": 26,
+    "pieces_day3": 14,
+    "total_pieces_eaten": 48
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_pieces = 60\n    fraction_day1 = 2/5\n    pieces_day1 = fraction_day1 * total_pieces\n    pieces_day2 = 10\n    total_pieces_day2 = pieces_day1 + pieces_day2\n    remaining_pieces = total_pieces - total_pieces_day2\n    fraction_day3 = 7/13\n    pieces_day3 = fraction_day3 * remaining_pieces\n    total_pieces_eaten = pieces_day3 + total_pieces_day2\n\n    return {\n        \"total_pieces\": total_pieces,\n        \"fraction_day1\": fraction_day1,\n        \"pieces_day1\": round(pieces_day1, 2),\n        \"pieces_day2\": pieces_day2,\n        \"fraction_day3\": fraction_day3,\n        \"total_pieces_day2\": round(total_pieces_day2, 2),\n        \"remaining_pieces\": round(remaining_pieces, 2),\n        \"pieces_day3\": round(pieces_day3, 2),\n        \"total_pieces_eaten\": round(total_pieces_eaten, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_pieces": 60,
+      "fraction_day1": 0.4,
+      "pieces_day1": 24.0,
+      "pieces_day2": 10,
+      "fraction_day3": 0.5384615384615384,
+      "total_pieces_day2": 34.0,
+      "remaining_pieces": 26.0,
+      "pieces_day3": 14.0,
+      "total_pieces_eaten": 48.0
+    }
+  },
+  "final": {
+    "question": "Tobias bought a big pizza with 60 pieces. He ate 0.4 of the pieces on the first day, 10 pieces on the second day, and 0.5384615384615384 of the remaining pieces on the third day. How many pizza pieces has he eaten so far?",
+    "answer_lines": [
+      "On the first day, Tobias ate 0.4*60 = 24.0 pieces of the pizza.",
+      "On the second day, Tobias ate 10 more pieces of the pizza, totaling 24.0+10 = 34.0 pieces",
+      "The number of pieces of pizza remaining is 60-34.0 = 26.0 pieces",
+      "On the third day, Tobias ate 0.5384615384615384*26.0 = 14.0 pieces of pizza.",
+      "So far, he has eaten 14.0+34.0 = 48.0 pieces of the pizza he bought.",
+      "#### 48.0"
+    ],
+    "final_scalar": 48.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Tang bought a big huajuan with 60 pieces. He ate 0.4 of the pieces on the first day, 10 pieces on the second day, and 0.5384615384615384 of the remaining pieces on the third day. How many huajuan pieces has he eaten so far?",
+    "adapted_answer": [
+      "On the first day, Tang ate 0.4*60 = 24.0 pieces of the huajuan.",
+      "On the second day, Tang ate 10 more pieces of the huajuan, totaling 24.0+10 = 34.0 pieces",
+      "The number of pieces of huajuan remaining is 60-34.0 = 26.0 pieces",
+      "On the third day, Tang ate 0.5384615384615384*26.0 = 14.0 pieces of huajuan.",
+      "So far, he has eaten 14.0+34.0 = 48.0 pieces of the huajuan he bought.",
+      "#### 48.0"
+    ],
+    "adaptation_notes": "Replaced 'Tobias' with 'Tang' (a common Chinese name) and 'pizza' with 'huajuan' (a type of Chinese food, but note that huajuan is more like a savory pancake, a more suitable replacement could be 'bing' or a specific type of Chinese pizza)."
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "index": 943,
+  "split": "test",
+  "original": {
+    "question": "James gets 10 new CDs.  Each CD cost $15.  He gets them for 40% off.  He decides he doesn't like 5 of them and sells them for 40. How much money was he out?",
+    "answer": "He got a 15*.4=$<<15*.4=6>>6 discount on each CD\nThat means each CD cost 15-6=$<<15-6=9>>9\nSo he paid 10*9=$<<10*9=90>>90\nThat means he was out 90-40=$<<90-40=50>>50\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "dollars",
+      "CDs"
+    ],
+    "notes": "The name 'James' and the use of 'dollars' and 'CDs' are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cd_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cd_discount",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cd_sale_price",
+      "value": 9.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cd_resale",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "loss",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cd_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cd_discount\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cd_sale_price\", \"value\": 9.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cd_resale\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"loss\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cd_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 8540.7,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cd_discount",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 3416.28,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cd_sale_price",
+        "original_value": 9.0,
+        "original_unit": "dollar",
+        "converted_value": 5124.42,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 51244.2,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cd_resale",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 22775.2,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "loss",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 28469.0,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James gets {number_of_cds} new CDs.  Each CD cost ${cd_cost}.  He gets them for {discount_percentage}% off.  He decides he doesn't like {number_of_cds_sold} of them and sells them for ${cd_resale}. How much money was he out?",
+    "templatized_answer": [
+      "He got a {cd_cost} * {discount_percentage}/100 = ${cd_discount} discount on each CD",
+      "That means each CD cost {cd_cost} - {cd_discount} = ${cd_sale_price}",
+      "So he paid {number_of_cds} * {cd_sale_price} = ${total_cost}",
+      "That means he was out {total_cost} - {cd_resale} = ${loss}",
+      "#### {loss}"
+    ],
+    "factual_assignment": {
+      "number_of_cds": 10,
+      "cd_cost": 15.0,
+      "discount_percentage": 40,
+      "number_of_cds_sold": 5,
+      "cd_resale": 40.0,
+      "cd_discount": 6.0,
+      "cd_sale_price": 9.0,
+      "total_cost": 90.0,
+      "loss": 50.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_cds": 10,
+    "cd_cost": 8540.7,
+    "discount_percentage": 40,
+    "number_of_cds_sold": 5,
+    "cd_resale": 22775.2,
+    "cd_discount": 3416.28,
+    "cd_sale_price": 5124.42,
+    "total_cost": 51244.2,
+    "loss": 28469.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_cds = 10\n    cd_cost = 8540.7\n    discount_percentage = 40\n    number_of_cds_sold = 5\n    cd_resale = 22775.2\n\n    cd_discount = cd_cost * discount_percentage / 100\n    cd_sale_price = cd_cost - cd_discount\n    total_cost = number_of_cds * cd_sale_price\n    loss = total_cost - (cd_resale * number_of_cds_sold / number_of_cds)\n\n    return {\n        \"number_of_cds\": number_of_cds,\n        \"cd_cost\": round(cd_cost, 2),\n        \"discount_percentage\": discount_percentage,\n        \"number_of_cds_sold\": number_of_cds_sold,\n        \"cd_resale\": round(cd_resale, 2),\n        \"cd_discount\": round(cd_discount, 2),\n        \"cd_sale_price\": round(cd_sale_price, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"loss\": round(loss, 2)\n    }\n",
+    "results": {
+      "number_of_cds": 10,
+      "cd_cost": 8540.7,
+      "discount_percentage": 40,
+      "number_of_cds_sold": 5,
+      "cd_resale": 22775.2,
+      "cd_discount": 3416.28,
+      "cd_sale_price": 5124.42,
+      "total_cost": 51244.2,
+      "loss": 39856.6
+    }
+  },
+  "final": {
+    "question": "James gets 10 new CDs.  Each CD cost 8540.7 shilling.  He gets them for 40% off.  He decides he doesn't like 5 of them and sells them for 22775.2 shilling. How much money was he out?",
+    "answer_lines": [
+      "He got a 8540.7 * 40/100 = 3416.28 shilling discount on each CD",
+      "That means each CD cost 8540.7 - 3416.28 = 5124.42 shilling",
+      "So he paid 10 * 5124.42 = 51244.2 shilling",
+      "That means he was out 51244.2 - 22775.2 = 28469 shilling",
+      "#### 28469"
+    ],
+    "final_scalar": 28469,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan gets 10 new CDs.  Each CD cost 8540.7 shilling.  He gets them for 40% off.  He decides he doesn't like 5 of them and sells them for 22775.2 shilling. How much money was he out?",
+    "adapted_answer": [
+      "He got a 8540.7 * 40/100 = 3416.28 shilling discount on each CD",
+      "That means each CD cost 8540.7 - 3416.28 = 5124.42 shilling",
+      "So he paid 10 * 5124.42 = 51244.2 shilling",
+      "That means he was out 51244.2 - 22775.2 = 28469 shilling",
+      "#### 28469"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Aadan' to give the name a Somali context."
+  }
+}

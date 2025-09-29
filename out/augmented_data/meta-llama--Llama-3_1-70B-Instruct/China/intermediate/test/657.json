@@ -1,0 +1,156 @@
+{
+  "index": 657,
+  "split": "test",
+  "original": {
+    "question": "James buys a plane.  The plane cost $150,000.  He pays $5000 a month to rent a hanger to keep it in.  He also spends twice as much as that on fuel per month.  How much did it cost him to get and maintain the plane for the first year?",
+    "answer": "The fuel cost 5000*2=$<<5000*2=10000>>10000 per month\nWith the hanger that means he pays 10000+5000=$<<10000+5000=15000>>15,000 per month\nSo he spends 12*15000=$<<12*15000=180000>>180,000 a year\nThat means the total cost was 150,000+180,000=$<<150000+180000=330000>>330,000\n#### 330000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "dollars"
+    ],
+    "notes": "The name 'James' is culturally specific to Western regions and the unit 'dollars' is commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "plane_cost",
+      "value": 150000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hanger_rent",
+      "value": 5000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fuel_cost",
+      "value": 10000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_maintenance",
+      "value": 15000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_maintenance",
+      "value": 180000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 330000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"plane_cost\", \"value\": 150000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hanger_rent\", \"value\": 5000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fuel_cost\", \"value\": 10000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_maintenance\", \"value\": 15000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_maintenance\", \"value\": 180000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 330000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "plane_cost",
+        "original_value": 150000.0,
+        "original_unit": "dollar",
+        "converted_value": 1069500.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hanger_rent",
+        "original_value": 5000.0,
+        "original_unit": "dollar",
+        "converted_value": 35650.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "fuel_cost",
+        "original_value": 10000.0,
+        "original_unit": "dollar",
+        "converted_value": 10000.0,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "monthly_maintenance",
+        "original_value": 15000.0,
+        "original_unit": "dollar",
+        "converted_value": 15000.0,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "yearly_maintenance",
+        "original_value": 180000.0,
+        "original_unit": "dollar",
+        "converted_value": 180000.0,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 330000.0,
+        "original_unit": "dollar",
+        "converted_value": 330000.0,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James buys a plane.  The plane cost ${plane_cost}.  He pays ${hanger_rent} a month to rent a hanger to keep it in.  He also spends twice as much as that on fuel per month.  How much did it cost him to get and maintain the plane for the first year?",
+    "templatized_answer": [
+      "The fuel cost {hanger_rent}*2=${hanger_rent*2} per month",
+      "With the hanger that means he pays {hanger_rent*2}+{hanger_rent}=${hanger_rent*2+hanger_rent} per month",
+      "So he spends 12*{hanger_rent*2+hanger_rent}=${12*(hanger_rent*2+hanger_rent)} a year",
+      "That means the total cost was {plane_cost}+{12*(hanger_rent*2+hanger_rent)}=${plane_cost+12*(hanger_rent*2+hanger_rent)}",
+      "#### {plane_cost+12*(hanger_rent*2+hanger_rent)}"
+    ],
+    "factual_assignment": {
+      "plane_cost": 150000,
+      "hanger_rent": 5000
+    }
+  },
+  "merged_assignment": {
+    "plane_cost": 1069500.0,
+    "hanger_rent": 35650.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    plane_cost = 1069500.0\n    hanger_rent = 35650.0\n\n    fuel_cost = hanger_rent * 2\n    monthly_cost = fuel_cost + hanger_rent\n    yearly_cost = 12 * monthly_cost\n    total_cost = plane_cost + yearly_cost\n\n    return {\n        \"plane_cost\": plane_cost,\n        \"hanger_rent\": hanger_rent,\n        \"hanger_rent*2\": fuel_cost,\n        \"hanger_rent*2+hanger_rent\": monthly_cost,\n        \"12*(hanger_rent*2+hanger_rent)\": yearly_cost,\n        \"plane_cost+12*(hanger_rent*2+hanger_rent)\": total_cost\n    }\n",
+    "results": {
+      "plane_cost": 1069500.0,
+      "hanger_rent": 35650.0,
+      "hanger_rent*2": 71300.0,
+      "hanger_rent*2+hanger_rent": 106950.0,
+      "12*(hanger_rent*2+hanger_rent)": 1283400.0,
+      "plane_cost+12*(hanger_rent*2+hanger_rent)": 2352900.0
+    }
+  },
+  "final": {
+    "question": "James buys a plane.  The plane cost 1069500 renminbi.  He pays 35650 renminbi a month to rent a hanger to keep it in.  He also spends twice as much as that on fuel per month.  How much did it cost him to get and maintain the plane for the first year?",
+    "answer_lines": [
+      "The fuel cost 35650*2=71300 renminbi per month",
+      "With the hanger that means he pays 71300+35650=106950 renminbi per month",
+      "So he spends 12*106950=1283400 renminbi a year",
+      "That means the total cost was 1069500+1283400=2352900 renminbi",
+      "#### 2352900"
+    ],
+    "final_scalar": 2352900,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang buys a plane.  The plane cost 1069500 renminbi.  He pays 35650 renminbi a month to rent a hanger to keep it in.  He also spends twice as much as that on fuel per month.  How much did it cost him to get and maintain the plane for the first year?",
+    "adapted_answer": [
+      "The fuel cost 35650*2=71300 renminbi per month",
+      "With the hanger that means he pays 71300+35650=106950 renminbi per month",
+      "So he spends 12*106950=1283400 renminbi a year",
+      "That means the total cost was 1069500+1283400=2352900 renminbi",
+      "#### 2352900"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Wang' to give the name a Chinese context."
+  }
+}

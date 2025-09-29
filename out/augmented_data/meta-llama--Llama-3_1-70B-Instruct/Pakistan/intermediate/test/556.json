@@ -1,0 +1,111 @@
+{
+  "index": 556,
+  "split": "test",
+  "original": {
+    "question": "How much does it cost you for lunch today at Subway if you pay $40 for a foot-long fish sub and thrice as much for a six-inch cold-cut combo sub?",
+    "answer": "If you pay $40 for a foot-long fish sub, thrice as much for a six-inch cold-cut combo sub will be 3*$40= $120\nThe cost of lunch will be $120+$40 = $<<120+40=160>>160\n#### 160"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Subway",
+      "dollars",
+      "foot-long fish sub",
+      "six-inch cold-cut combo sub"
+    ],
+    "notes": "The text contains references to a US-based fast-food chain (Subway) and US units of currency (dollars), as well as food items not commonly associated with Pakistani cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "foot_long_sub_cost",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cold_cut_combo_sub_cost",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_lunch_cost",
+      "value": 160.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"foot_long_sub_cost\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cold_cut_combo_sub_cost\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_lunch_cost\", \"value\": 160.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "foot_long_sub_cost",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 11274.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cold_cut_combo_sub_cost",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 33822.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_lunch_cost",
+        "original_value": 160.0,
+        "original_unit": "dollar",
+        "converted_value": 45096.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "How much does it cost you for lunch today at Subway if you pay ${foot_long_sub_cost} for a foot-long fish sub and thrice as much for a six-inch cold-cut combo sub?",
+    "templatized_answer": [
+      "If you pay ${foot_long_sub_cost} for a foot-long fish sub, thrice as much for a six-inch cold-cut combo sub will be 3*${foot_long_sub_cost}= ${cold_cut_combo_sub_cost}",
+      "The cost of lunch will be ${cold_cut_combo_sub_cost}+${foot_long_sub_cost} = ${total_lunch_cost}"
+    ],
+    "factual_assignment": {
+      "foot_long_sub_cost": 40.0,
+      "cold_cut_combo_sub_cost": 120.0,
+      "total_lunch_cost": 160.0
+    }
+  },
+  "merged_assignment": {
+    "foot_long_sub_cost": 11274.0,
+    "cold_cut_combo_sub_cost": 33822.0,
+    "total_lunch_cost": 45096.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    foot_long_sub_cost = 11274.0\n    cold_cut_combo_sub_cost = 3 * foot_long_sub_cost\n    total_lunch_cost = cold_cut_combo_sub_cost + foot_long_sub_cost\n\n    return {\n        \"foot_long_sub_cost\": round(foot_long_sub_cost, 2),\n        \"cold_cut_combo_sub_cost\": round(cold_cut_combo_sub_cost, 2),\n        \"total_lunch_cost\": round(total_lunch_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "foot_long_sub_cost": 11274.0,
+      "cold_cut_combo_sub_cost": 33822.0,
+      "total_lunch_cost": 45096.0
+    }
+  },
+  "final": {
+    "question": "How much does it cost you for lunch today at Subway if you pay 11274 for a foot-long fish sub and thrice as much for a six-inch cold-cut combo sub?",
+    "answer_lines": [
+      "If you pay 11274 for a foot-long fish sub, thrice as much for a six-inch cold-cut combo sub will be 3*11274= 33822",
+      "The cost of lunch will be 33822+11274 = 45096",
+      "#### 45096"
+    ],
+    "final_scalar": 45096,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "How much does it cost you for lunch today at Salt'n Pepper if you pay 11274 for a foot-long fish sub and thrice as much for a six-inch chicken shawarma sub?",
+    "adapted_answer": [
+      "If you pay 11274 for a foot-long fish sub, thrice as much for a six-inch chicken shawarma sub will be 3*11274= 33822",
+      "The cost of lunch will be 33822+11274 = 45096",
+      "#### 45096"
+    ],
+    "adaptation_notes": "Replaced 'Subway' with 'Salt'n Pepper', 'six-inch cold-cut combo sub' with 'six-inch chicken shawarma sub'."
+  }
+}

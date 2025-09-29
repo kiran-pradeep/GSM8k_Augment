@@ -1,0 +1,101 @@
+{
+  "index": 1293,
+  "split": "test",
+  "original": {
+    "question": "A company produces chocolate in bars. In one day, it can produce 5000 bars. The company sells all the produced bars for $2 per bar. How much money will the company receive for selling produced chocolate bars during two weeks?",
+    "answer": "During two weeks the company can produce 14 * 5000 = <<14*5000=70000>>70000.\nIf the price of 1 bar is $2, the company will be able to make 70000 * 2 = $<<70000*2=140000>>140000 from the sales.\n#### 140000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "chocolate"
+    ],
+    "notes": "The use of dollars as currency and chocolate as a food item are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bar_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_sales",
+      "value": 140000,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"bar_price\",\n        \"value\": 2,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"total_sales\",\n        \"value\": 140000,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bar_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_sales",
+        "original_value": 140000,
+        "original_unit": "dollar",
+        "converted_value": 998200.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company produces chocolate in bars. In one day, it can produce {daily_production} bars. The company sells all the produced bars for ${bar_price} per bar. How much money will the company receive for selling produced chocolate bars during two weeks?",
+    "templatized_answer": [
+      "During two weeks the company can produce {days_in_two_weeks} * {daily_production} = {days_in_two_weeks} * {daily_production}.",
+      "If the price of 1 bar is ${bar_price}, the company will be able to make {days_in_two_weeks} * {daily_production} * {bar_price} = ${days_in_two_weeks} * {daily_production} * {bar_price}.",
+      "#### {total_sales}"
+    ],
+    "factual_assignment": {
+      "bar_price": 2,
+      "total_sales": 140000,
+      "daily_production": 5000,
+      "days_in_two_weeks": 14
+    }
+  },
+  "merged_assignment": {
+    "bar_price": 14.26,
+    "total_sales": 998200.0,
+    "daily_production": 5000,
+    "days_in_two_weeks": 14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"bar_price\": 14.26,\n        \"total_sales\": 998200.0,\n        \"daily_production\": 5000,\n        \"days_in_two_weeks\": 14\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"days_in_two_weeks\"] = factual_assignment[\"days_in_two_weeks\"]\n    recomputed_values[\"daily_production\"] = factual_assignment[\"daily_production\"]\n    recomputed_values[\"bar_price\"] = factual_assignment[\"bar_price\"]\n\n    recomputed_values[\"total_production\"] = recomputed_values[\"days_in_two_weeks\"] * recomputed_values[\"daily_production\"]\n    recomputed_values[\"total_sales\"] = round(recomputed_values[\"total_production\"] * recomputed_values[\"bar_price\"], 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "days_in_two_weeks": 14,
+      "daily_production": 5000,
+      "bar_price": 14.26,
+      "total_production": 70000,
+      "total_sales": 998200.0
+    }
+  },
+  "final": {
+    "question": "A company produces chocolate in bars. In one day, it can produce 5000 bars. The company sells all the produced bars for 14.26 renminbi per bar. How much money will the company receive for selling produced chocolate bars during two weeks?",
+    "answer_lines": [
+      "During two weeks the company can produce 14 * 5000 = 70000.",
+      "If the price of 1 bar is 14.26 renminbi, the company will be able to make 70000 * 14.26 = 998200 renminbi from the sales.",
+      "#### 998200"
+    ],
+    "final_scalar": 998200.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company produces (dòu jiàng guā) bean paste cakes. In one day, it can produce 5000 cakes. The company sells all the produced cakes for 14.26 renminbi per cake. How much money will the company receive for selling produced bean paste cakes during two weeks?",
+    "adapted_answer": [
+      "During two weeks the company can produce 14 * 5000 = 70000.",
+      "If the price of 1 cake is 14.26 renminbi, the company will be able to make 70000 * 14.26 = 998200 renminbi from the sales.",
+      "#### 998200"
+    ],
+    "adaptation_notes": "Replaced 'chocolate bars' with '(dòu jiàng guā) bean paste cakes' to adapt to Chinese context."
+  }
+}

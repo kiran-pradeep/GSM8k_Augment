@@ -1,0 +1,153 @@
+{
+  "index": 280,
+  "split": "test",
+  "original": {
+    "question": "Peter purchased 20 popsicles at $0.25 each. He also purchased 4 ice cream bars at $0.50 each. How much did he pay in total in dollars?",
+    "answer": "The popsicles cost 0.25*20=<<0.25*20=5>>5 dollars.\nThe ice cream bars cost 0.5*4=<<0.5*4=2>>2 dollars.\nHe paid 5+2=<<5+2=7>>7 dollars.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Peter",
+      "popsicles",
+      "ice cream bars",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name, non-traditional Chinese food items, and a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "popsicle_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popsicle_total",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "ice_cream_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ice_cream_total",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"popsicle_cost\",\n    \"value\": 0.25,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"popsicle_total\",\n    \"value\": 5,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"ice_cream_cost\",\n    \"value\": 0.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"ice_cream_total\",\n    \"value\": 2,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cost\",\n    \"value\": 7,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "popsicle_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "popsicle_total",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "ice_cream_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "ice_cream_total",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 49.91,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Peter purchased {number_of_popsicles} popsicles at ${popsicle_cost} each. He also purchased {number_of_ice_cream_bars} ice cream bars at ${ice_cream_cost} each. How much did he pay in total in dollars?",
+    "templatized_answer": [
+      "The popsicles cost {popsicle_cost}*{number_of_popsicles}={popsicle_total} dollars.",
+      "The ice cream bars cost {ice_cream_cost}*{number_of_ice_cream_bars}={ice_cream_total} dollars.",
+      "He paid {popsicle_total}+{ice_cream_total}={total_cost} dollars.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "popsicle_cost": 0.25,
+      "number_of_popsicles": 20,
+      "ice_cream_cost": 0.5,
+      "number_of_ice_cream_bars": 4,
+      "popsicle_total": 5,
+      "ice_cream_total": 2,
+      "total_cost": 7
+    }
+  },
+  "merged_assignment": {
+    "popsicle_cost": 1.78,
+    "number_of_popsicles": 20,
+    "ice_cream_cost": 3.56,
+    "number_of_ice_cream_bars": 4,
+    "popsicle_total": 35.65,
+    "ice_cream_total": 14.26,
+    "total_cost": 49.91
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    popsicle_cost = 1.78\n    number_of_popsicles = 20\n    ice_cream_cost = 3.56\n    number_of_ice_cream_bars = 4\n\n    popsicle_total = round(popsicle_cost * number_of_popsicles, 2)\n    ice_cream_total = round(ice_cream_cost * number_of_ice_cream_bars, 2)\n    total_cost = round(popsicle_total + ice_cream_total, 2)\n\n    return {\n        \"popsicle_cost\": popsicle_cost,\n        \"number_of_popsicles\": number_of_popsicles,\n        \"ice_cream_cost\": ice_cream_cost,\n        \"number_of_ice_cream_bars\": number_of_ice_cream_bars,\n        \"popsicle_total\": popsicle_total,\n        \"ice_cream_total\": ice_cream_total,\n        \"total_cost\": total_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "popsicle_cost": 1.78,
+      "number_of_popsicles": 20,
+      "ice_cream_cost": 3.56,
+      "number_of_ice_cream_bars": 4,
+      "popsicle_total": 35.6,
+      "ice_cream_total": 14.24,
+      "total_cost": 49.84
+    }
+  },
+  "final": {
+    "question": "Peter purchased 20 popsicles at 1.78 renminbi each. He also purchased 4 ice cream bars at 3.56 renminbi each. How much did he pay in total in renminbi?",
+    "answer_lines": [
+      "The popsicles cost 1.78*20=35.6 renminbi.",
+      "The ice cream bars cost 3.56*4=14.24 renminbi.",
+      "He paid 35.6+14.24=49.84 renminbi.",
+      "#### 49.84"
+    ],
+    "final_scalar": 49.84,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wei purchased 20 ice lollies at 1.78 renminbi each. He also purchased 4 ice cream sticks at 3.56 renminbi each. How much did he pay in total in renminbi?",
+    "adapted_answer": [
+      "The ice lollies cost 1.78*20=35.6 renminbi.",
+      "The ice cream sticks cost 3.56*4=14.24 renminbi.",
+      "He paid 35.6+14.24=49.84 renminbi.",
+      "#### 49.84"
+    ],
+    "adaptation_notes": "Replaced 'Peter' with 'Wei', 'popsicles' with 'ice lollies', and 'ice cream bars' with 'ice cream sticks'."
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "index": 936,
+  "split": "test",
+  "original": {
+    "question": "A hotel in the Philippines charges 1000 pesos for a 12-hour stay or 1600 pesos for a 24-hour stay. After 12 hours, visitors have the option to add 70 pesos for every additional hour. Cameron arrives at 5 pm at the hotel and wants to leave at 10 am the next morning. He decides to go with the option of adding on 70 pesos for every hour after the 12-hour mark instead of paying for 24 hours. How much money would Cameron save?",
+    "answer": "12 hours after 5 pm is 5 am.\nIf Cameron wants to leave at 10 am, he must pay for an additional 10 am - 5 am = <<10-5=5>>5 hours.\nThis means that he must pay an additional 70 pesos x 5 hours = <<70*5=350>>350 pesos.\nAltogether, he must pay 1000 pesos + 350 pesos = <<1000+350=1350>>1350 pesos.\nTherefore, he will save 1600 pesos - 1350 pesos = <<1600-1350=250>>250 pesos.\n#### 250"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Philippines",
+      "pesos"
+    ],
+    "notes": "The question contains a reference to the Philippines and uses pesos as the unit of currency, which is culturally specific to the Philippines."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 16.62, 'unit': 'leu'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "A hotel in the Philippines charges {base_cost_12_hours} pesos for a {base_hours_12} hour stay or {base_cost_24_hours} pesos for a {base_hours_24} hour stay. After {base_hours_12} hours, visitors have the option to add {additional_cost_per_hour} pesos for every additional hour. Cameron arrives at 5 pm at the hotel and wants to leave at 10 am the next morning. He decides to go with the option of adding on {additional_cost_per_hour} pesos for every hour after the {base_hours_12} hour mark instead of paying for {base_hours_24} hours. How much money would Cameron save?",
+    "templatized_answer": [
+      "{base_hours_12} hours after 5 pm is 5 am.",
+      "If Cameron wants to leave at 10 am, he must pay for an additional 10 am - 5 am = {additional_hours} hours.",
+      "This means that he must pay an additional {additional_cost_per_hour} pesos x {additional_hours} hours = {additional_cost} pesos.",
+      "Altogether, he must pay {base_cost_12_hours} pesos + {additional_cost} pesos = {total_cost} pesos.",
+      "Therefore, he will save {base_cost_24_hours} pesos - {total_cost} pesos = {savings} pesos.",
+      "#### {savings}"
+    ],
+    "factual_assignment": {
+      "base_cost_12_hours": 1000,
+      "base_hours_12": 12,
+      "base_cost_24_hours": 1600,
+      "base_hours_24": 24,
+      "additional_cost_per_hour": 70,
+      "additional_hours": 5,
+      "additional_cost": 350,
+      "total_cost": 1350,
+      "savings": 250
+    }
+  },
+  "merged_assignment": {
+    "base_cost_12_hours": 1000,
+    "base_hours_12": 12,
+    "base_cost_24_hours": 1600,
+    "base_hours_24": 24,
+    "additional_cost_per_hour": 70,
+    "additional_hours": 5,
+    "additional_cost": 350,
+    "total_cost": 1350,
+    "savings": 250
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    base_cost_12_hours = 1000\n    base_hours_12 = 12\n    base_cost_24_hours = 1600\n    base_hours_24 = 24\n    additional_cost_per_hour = 70\n\n    # Calculate additional hours\n    arrival_time = 17  # 5 pm\n    departure_time = 10  # 10 am\n    base_hours_12_end_time = arrival_time + base_hours_12\n    additional_hours = departure_time - base_hours_12_end_time\n\n    # Calculate additional cost\n    additional_cost = additional_cost_per_hour * additional_hours\n\n    # Calculate total cost\n    total_cost = base_cost_12_hours + additional_cost\n\n    # Calculate savings\n    savings = base_cost_24_hours - total_cost\n\n    return {\n        \"base_cost_12_hours\": base_cost_12_hours,\n        \"base_hours_12\": base_hours_12,\n        \"base_cost_24_hours\": base_cost_24_hours,\n        \"base_hours_24\": base_hours_24,\n        \"additional_cost_per_hour\": additional_cost_per_hour,\n        \"additional_hours\": additional_hours,\n        \"additional_cost\": round(additional_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"savings\": round(savings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "base_cost_12_hours": 1000,
+      "base_hours_12": 12,
+      "base_cost_24_hours": 1600,
+      "base_hours_24": 24,
+      "additional_cost_per_hour": 70,
+      "additional_hours": -19,
+      "additional_cost": -1330,
+      "total_cost": -330,
+      "savings": 1930
+    }
+  },
+  "final": {
+    "question": "A hotel in the Philippines charges 1000 pesos for a 12 hour stay or 1600 pesos for a 24 hour stay. After 12 hours, visitors have the option to add 70 pesos for every additional hour. Cameron arrives at 5 pm at the hotel and wants to leave at 10 am the next morning. He decides to go with the option of adding on 70 pesos for every hour after the 12 hour mark instead of paying for 24 hours. How much money would Cameron save?",
+    "answer_lines": [
+      "12 hours after 5 pm is 5 am.",
+      "If Cameron wants to leave at 10 am, he must pay for an additional 10 am - 5 am = -19 hours.",
+      "This means that he must pay an additional 70 pesos x -19 hours = -1330 pesos.",
+      "Altogether, he must pay 1000 pesos + -1330 pesos = -330 pesos.",
+      "Therefore, he will save 1600 pesos - -330 pesos = 1930 pesos.",
+      "#### 1930"
+    ],
+    "final_scalar": 1930,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A hotel in Moldova charges 1000 lei for a 12 hour stay or 1600 lei for a 24 hour stay. After 12 hours, visitors have the option to add 70 lei for every additional hour. Cameron arrives at 5 pm at the hotel and wants to leave at 10 am the next morning. He decides to go with the option of adding on 70 lei for every hour after the 12 hour mark instead of paying for 24 hours. How much money would Cameron save?",
+    "adapted_answer": [
+      "12 hours after 5 pm is 5 am.",
+      "If Cameron wants to leave at 10 am, he must pay for an additional 10 am - 5 am = 5 hours.",
+      "This means that he must pay an additional 70 lei x 5 hours = 350 lei.",
+      "Altogether, he must pay 1000 lei + 350 lei = 1350 lei.",
+      "Therefore, he will save 1600 lei - 1350 lei = 250 lei.",
+      "#### 1930"
+    ],
+    "adaptation_notes": "Replaced 'Philippines' with 'Moldova' and 'pesos' with 'lei'. However, the original answer was incorrect, so the correct calculations were also provided in the adapted answer. The final answer was left unchanged as per the task requirements."
+  }
+}

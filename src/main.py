@@ -1,26 +1,12 @@
+# main.py
 """
-Main orchestrator for GSM8K metric-conversion augmentation.
+Main runner for CoT evaluation over GSM8k (or a custom JSONL source).
 
-- Multiprocessing pool with configurable workers.
-- Progressive saving of intermediates even if later steps fail.
-- Timestamped output directories: out/{VLLM_MODEL}/{IST-timestamp}/...
-
-Pipeline:
-1) Load GSM8k dataset item
-2) Extract Q + A (with CoT)
-3) LLM-based metric extraction (dynamic units & quantities)
-4) LLM-generated conversion code -> execute -> structured conversions
-5) LLM-based templatization (Q, CoT, mapping)
-6) LLM-generated recomputation code for new values -> execute safely
-7) Style-preserving final CoT + save outputs
-
-Environment:
-- VLLM_BASE_URL, VLLM_API_KEY, VLLM_MODEL
-
-Outputs:
-- out/intermediate/{split}/{idx}.json
-- out/augmented/{split}.jsonl
-
+Features:
+- Multiprocessing with configurable workers
+- Progressive saving of per-instance JSON into intermediate/<split>/<index>.json
+- Aggregation of final stats into -final_results.json
+- Error logging.
 """
 
 from __future__ import annotations
@@ -29,276 +15,208 @@ import json
 import os
 import traceback
 from pathlib import Path
-from typing import Any, Dict, List
-from dotenv import load_dotenv
-from multiprocessing import Pool
+from typing import Any, Dict, List, Tuple
 from datetime import datetime
+from multiprocessing import Pool
 import pytz
 from tqdm import tqdm
+from dotenv import load_dotenv
 
-# ---- Local modules ----
-from cultural_adapter import adapt_cultural_entities
-from cultural_filter import check_cultural_bias
-from utils.llm_client import get_chat_model
+# Local imports
+from bias_detection.cot import solve_with_cot
+from bias_detection.evaluator import evaluate_instance, evaluate_all
 from utils.data_loader import load_gsm8k
-from extractor import extract_metrics_llm
-from converter import generate_conversion_code, run_conversion_code_safely
-from templatizer import templatize_qa
-from recomputer import generate_recompute_code, run_recompute_code_safely
-from styler import style_cot_answer
 from utils.io_utils import ensure_dir, dump_json, append_jsonl, log_error
-
-
-# ---------------- Helper functions ---------------- #
 
 load_dotenv()
 
 
-def build_intermediate_record(
+def build_result_record(
     idx: int,
     split: str,
     question: str,
-    answer: str,
-    metrics_extracted: List[Dict[str, Any]] = None,
-    conversion_code: str = None,
-    conversions_result: List[Dict[str, Any]] = None,
-    merged_assignment: Dict[str, str] = None,
-    templated: Dict[str, Any] = None,
-    recompute_code: str = None,
-    recompute_result: Dict[str, Any] = None,
-    final: Dict[str, Any] = None
+    gold_cot: str,
+    gold_answer: float,
+    prediction: Dict[str, Any] = None,
+    evaluation: Dict[str, Any] = None,
+    error: str | None = None
 ) -> Dict[str, Any]:
-    """Structure for saving intermediate JSON for inspection (progressive)."""
+    """Structure for saving per-instance intermediate JSON."""
     return {
         "index": idx,
         "split": split,
-        "original": {"question": question, "answer": answer},
-        "cultural_check": None,
-        "metrics_extracted": metrics_extracted,
-        "conversion": {"code": conversion_code, "results": conversions_result},
-        "templatization": templated,
-        "merged_assignment": merged_assignment,
-        "recompute": {"code": recompute_code, "results": recompute_result},
-        "final": final,
+        "question": question,
+        "gold_cot": gold_cot,
+        "gold_answer": gold_answer,
+        "pred_cot": prediction.get("chain-of-thought-reasoning") if prediction else None,
+        "pred_answer": prediction.get("final_answer") if prediction else None,
+        "evaluation": evaluation,
+        "error": error,
+        "time": datetime.now().astimezone(pytz.timezone("Asia/Kolkata")).isoformat(),
     }
 
 
-def merge_conversions_with_assignments(factual_assignment, conversions_result):
-    factual_assignment = dict(factual_assignment or {})
-    for conv in conversions_result or []:
-        var = conv.get("variable")
-        conv_val = conv.get("converted_value")
-        if var and var in factual_assignment:
-            factual_assignment[var] = conv_val
-    return factual_assignment
+def process_item(args_tuple: Tuple[int, Dict[str, Any], argparse.Namespace, Path, Path]) -> Dict[str, Any]:
+    """
+    Worker function called in multiprocessing pool.
 
+    args_tuple: (i, instance, args, outdir, intermediate_dir)
+    """
+    i, instance, args, outdir, intermediate_dir = args_tuple
+    idx = instance.get("index", i)
+    question = (instance.get("question") or "").strip()
+    gold_cot = (instance.get("answer") or "").strip()
+    gold_answer = instance.get("final_answer", "")
 
-def remove_braces_from_keys(d):
-    new_dict = {}
-    for key, value in d.items():
-        if isinstance(key, str) and key.startswith("{") and key.endswith("}"):
-            new_key = key[1:-1]
-        else:
-            new_key = key
-        new_dict[new_key] = value
-    return new_dict
-
-
-# ---------------- Worker ---------------- #
-
-def process_item(args_tuple):
-    i, row, args, intermediate_dir, augmented_path = args_tuple
-    question = row["question"].strip()
-    answer = row["answer"].strip()
-
-    # Init LLM client per process
-    chat = get_chat_model()
-
-    intermediate_record = build_intermediate_record(
-        idx=i, split=args.split, question=question, answer=answer
-    )
+    intermediate_path = intermediate_dir / f"{idx}.json"
+    record = build_result_record(idx=idx, split=args.split, question=question, gold_cot=gold_cot, gold_answer=float(gold_answer))
 
     try:
-        # Step 0: cultural filter
-        cultural_check = check_cultural_bias(
-            chat=chat,
-            question=question,
-            answer=answer,
-            templates_dir=args.templates
-        )
-        intermediate_record["cultural_check"] = cultural_check
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        # Run CoT
+        pred = solve_with_cot(question, templates_dir=args.templates)
 
-        # Step 1: metric extraction
-        metrics_extracted = extract_metrics_llm(
-            chat=chat, question=question, answer=answer, templates_dir=args.templates
-        )
-        intermediate_record["metrics_extracted"] = metrics_extracted
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        # Evaluate
+        eval_result = evaluate_instance(pred, gold_answer)
 
-        # Step 2: conversion
-        conversion_code = generate_conversion_code(
-            chat=chat, extracted_metrics=metrics_extracted, templates_dir=args.templates
-        )
-        conversions_result = run_conversion_code_safely(conversion_code, metrics_extracted)
-        intermediate_record["conversion"] = {"code": conversion_code, "results": conversions_result}
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        # Fill record
+        # record["prediction"] = pred
+        record["pred_cot"] = pred.get("chain-of-thought-reasoning")
+        record["pred_answer"] = float(pred.get("final_answer"))
+        record["evaluation"] = eval_result
 
-        # Step 3: templatize
-        templated = templatize_qa(
-            chat=chat,
-            question=question,
-            answer=answer,
-            variables=metrics_extracted,
-            templates_dir=args.templates,
-        )
-        intermediate_record["templatization"] = templated
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        # Save per-instance result (progressive)
+        dump_json(intermediate_path, record)
 
-        # Step 4: merge + recompute
-        factual_assignment = remove_braces_from_keys(templated.get("factual_assignment", {}))
-        merged_assignment = merge_conversions_with_assignments(factual_assignment, conversions_result)
-        intermediate_record["merged_assignment"] = merged_assignment
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
-
-        recompute_code = generate_recompute_code(
-            chat=chat,
-            templated={
-                "templatized_question": templated["templatized_question"],
-                "templatized_answer": templated["templatized_answer"],
-            },
-            converted_assignment=merged_assignment,
-            templates_dir=args.templates,
-        )
-        recompute_result = run_recompute_code_safely(recompute_code)
-        intermediate_record["recompute"] = {"code": recompute_code, "results": recompute_result}
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
-
-        # Step 5: styling
-        final = style_cot_answer(
-            chat=chat,
-            templated=templated,
-            recompute_result=recompute_result,
-            conversions=conversions_result,
-            original_question=question,
-            original_answer=answer,
-            unit_policies=None,
-            templates_dir=args.templates,
-        )
-        intermediate_record["final"] = final
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
-
-        # Step 6: Adapting to specific cultural context
-        cultural_adapted = adapt_cultural_entities(
-            chat=chat,
-            question=final["question"],
-            answer_lines=final["answer_lines"],
-            cultural_check=cultural_check["matched_entities"] if cultural_check["is_cultural"] else "None",
-            templates_dir=args.templates
-        )
-        intermediate_record["cultural_adapted"] = cultural_adapted
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
-
-
-        # Save augmented JSONL
-        augmented_record = {
-            "index": i,
-            "split": args.split,
-            "is_cultural": cultural_check["is_cultural"],
-            "augmented_question": cultural_adapted["adapted_question"],
-            "augmented_answer": cultural_adapted["adapted_answer"],
-            "final_answer": final["final_scalar"],
-            # "style": final["style_meta"],
-        }
-        append_jsonl(augmented_path, augmented_record)
-
-        print(f"[OK] idx={i} saved")
+        return eval_result
     except Exception as e:
-        print(traceback.format_exc())
-        print(f"[ERROR] idx={i}: {e}")
-        # still save partial progress
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        tb = traceback.format_exc()
+        record["error"] = str(e)
+        # Save partial progress
+        try:
+            dump_json(intermediate_path, record)
+        except Exception:
+            # best-effort: if saving fails, write to stdout
+            print(f"[WARN] Failed to save intermediate for idx={idx}")
+
+        # Log error in a central errors.jsonl next to intermediate parent
+        try:
+            log_error(intermediate_dir.parent, idx, str(e), tb)
+        except Exception:
+            print(f"[WARN] Failed to log error for idx={idx}")
+
         if args.failfast:
             raise
-        tb = traceback.format_exc()
-        print(tb)
-        print(f"[ERROR] idx={i}: {e}")
-        log_error(intermediate_dir.parent, i, str(e), tb)
+
+        return {"predicted": None, "gold": str(gold_answer), "correct": False, "error": str(e)}
 
 
-# ---------------- Main ---------------- #
+def parse_data_aug_source(source: str) -> Tuple[str, str]:
+    """
+    Try to parse data augmentation model identifier and country from a source path like:
+      out/augmented_data/<model>/<country>/augmented/<split>.jsonl
+    Returns (data_aug_model, country) or (basename_of_source, "unknown").
+    """
+    try:
+        parts = Path(source).parts
+        # look for 'augmented_data' or 'augmented' in path
+        if "augmented_data" in parts:
+            i = parts.index("augmented_data")
+            data_aug_model = parts[i + 1] if len(parts) > i + 1 else Path(source).stem
+            country = parts[i + 2] if len(parts) > i + 2 else "unknown"
+            return data_aug_model, country
+        # fallback: if path has at least two parts, try to use them
+        if len(parts) >= 2:
+            return parts[-2], parts[-3] if len(parts) >= 3 else "unknown"
+    except Exception:
+        pass
+    return (Path(source).stem, "unknown")
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="main", choices=["main", "socratic"], help="Which prompt config to use.")
-    parser.add_argument("--split", default="train", choices=["train", "test"], help="Dataset split to process.")
+    parser.add_argument("--split", default="test", choices=["train", "test"], help="Dataset split to process.")
+    parser.add_argument("--source", type=str, default="gsm8k", help="Either `gsm8k` to load from HuggingFace, or path to a custom JSONL file.")
     parser.add_argument("--limit", type=int, default=-1, help="-1 for all, else max number of items to process.")
     parser.add_argument("--start", type=int, default=0, help="Start index (0-based).")
     parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers (LLM clients).")
-    parser.add_argument("--templates", default="templates", help="Directory with prompt templates.")
+    parser.add_argument("--templates", default="templates/bias_detection", help="Directory with prompt templates.")
     parser.add_argument("--failfast", action="store_true", help="Whether to stop on first error.")
-    parser.add_argument("--country", type=str, default="India", help="Country for cultural adaptation.")
-    parser.add_argument("--demonym", type=str, default="Indian", help="Demonym for cultural adaptation.")
-    parser.add_argument("--currency", type=str, default="rupee", help="Currency name for cultural adaptation.")
-    parser.add_argument("--currency_symbol", type=str, default="₹", help="Currency symbol for cultural adaptation.")
-    parser.add_argument("--currency_conversion_rate", type=float, default=87.0, help="Conversion rate to 1 USD.")
-    parser.add_argument("--currency_abbreviation", type=str, default="INR", help="Currency abbreviation.")
-
-
     args = parser.parse_args()
 
-    os.environ["COUNTRY"] = args.country
-    os.environ["DEMONYM"] = args.demonym
-    os.environ["CURRENCY"] = args.currency
-    os.environ["CURRENCY_SYMBOL"] = args.currency_symbol
-    os.environ["CURRENCY_CONVERSION_RATE"] = str(args.currency_conversion_rate)
-    os.environ["CURRENCY_ABBREVIATION"] = args.currency_abbreviation 
 
-    print(f"[INFO] Using config: {args.config}, split: {args.split}, start: {args.start}, limit: {args.limit}, workers: {args.workers}")
-    print(f"[INFO] Cultural context: country={args.country}, demonym={args.demonym}, currency={args.currency}, currency_symbol={args.currency_symbol}, currency_conversion_rate={args.currency_conversion_rate}, currency_abbreviation={args.currency_abbreviation}")
-    print(f"[INFO] Templates dir: {args.templates}")
-    print(f"[INFO] Failfast: {args.failfast}")  
+    print(f"[INFO] Arguments: {args}")
 
-    # Make timestamped output directory
+    # Prepare model-aware timestamped outdir
     model_name = os.getenv("VLLM_MODEL", "NA").replace("/", "_").replace(".", "_")
     if "snapshot" in model_name:
-        model_name = model_name.split("_snapshots")[0]
-        model_name = model_name.split("_models--")[1]
+        try:
+            model_name = model_name.split("_snapshots")[0]
+            model_name = model_name.split("_models--")[1]
+        except Exception:
+            pass
+
     ist = pytz.timezone("Asia/Kolkata")
     timestamp = datetime.now(ist).strftime("%Y%m%d_%H%M%S")
-    outdir = Path("out") / model_name / timestamp
-    intermediate_dir = outdir / str(args.country) / "intermediate" / args.split
-    augmented_path = outdir / str(args.country) / "augmented" / f"{args.split}.jsonl"
-    ensure_dir(intermediate_dir)
-    ensure_dir(augmented_path.parent)
 
     # Load dataset
-    ds = load_gsm8k(args.config, args.split)
-    n = len(ds)
-    if args.limit == -1:
-        end = n
+    data = load_gsm8k(config=args.config, split=args.split, source=args.source)
+    n = len(data)
+    start = max(0, args.start)
+    end = n if args.limit == -1 else min(start + args.limit, n)
+    if start >= end:
+        print(f"[WARN] start ({start}) >= end ({end}). Nothing to process.")
+        return
+
+    print(f"[INFO] Processing split={args.split}, items {start}..{end-1} (total available: {n})")
+
+    # Prepare output directories
+    data_aug_model, country = parse_data_aug_source(args.source)
+
+    if country != "unknown":
+        outdir = Path("out") / "bias_detection" / country / f"data_aug_{data_aug_model}" / model_name / timestamp
     else:
-        end = min(args.start + args.limit, n)
-    print(f"[INFO] Processing {args.split} from {args.start} to {end-1} (total {n})")
+        print(f"[WARN] Could not determine country from source path: {args.source}")
+        outdir = Path("out") / "bias_detection" / args.source / model_name / timestamp
 
-    tasks = [
-        (i, ds[i], args, intermediate_dir, augmented_path)
-        for i in range(args.start, end)
-    ]
+    intermediate_dir = outdir / "intermediate" / args.split
+    ensure_dir(intermediate_dir)
+    ensure_dir(outdir)
 
+    # Save args for future reference
+    dump_json(outdir / "-args.json", vars(args))
+
+    print(f"[INFO] Output directory: {outdir}")
+    print(f"[INFO] Intermediate directory: {intermediate_dir}")
+    tasks = [(i, data[i], args, outdir, intermediate_dir) for i in range(start, end)]
+
+    # Run tasks in parallel or sequentially with progress
+    results: List[Dict[str, Any]] = []
     if args.workers > 1:
         with Pool(processes=args.workers) as pool:
-            for _ in tqdm(pool.imap_unordered(process_item, tasks), total=len(tasks), desc="Processing items"):
-                pass
+            for res in tqdm(pool.imap_unordered(process_item, tasks), total=len(tasks), desc="Processing items"):
+                results.append(res)
     else:
         for t in tqdm(tasks, desc="Processing items"):
-            process_item(t)
+            res = process_item(t)
+            results.append(res)
 
+    # Aggregate final statistics
+    final_stats = evaluate_all(results)
+    
 
-    print(f"[DONE] Augmented JSONL: {augmented_path}")
-    print(f"[DONE] Intermediates in: {intermediate_dir}")
+    # Save final results and summary
+    dump_json(outdir / "-final_results.json", final_stats)
+    # Optionally also save raw results list
+    try:
+        dump_json(outdir / "-raw_results.json", {"results": results})
+    except Exception:
+        pass
+
+    print(f"[DONE] Final results saved to: {outdir / '-final_results.json'}")
+    print(f"[DONE] Intermediate per-instance JSONs in: {intermediate_dir}")
+    print("Accuracy / stats:", final_stats)
 
 
 if __name__ == "__main__":
     main()
-

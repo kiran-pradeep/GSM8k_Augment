@@ -1,0 +1,146 @@
+{
+  "index": 1146,
+  "split": "test",
+  "original": {
+    "question": "Adam has $100 and wants to spend it to open a rock stand. He can buy rocks for $5 each and sell them for $7 each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "answer": "He can buy 20 rocks because 100 / 5 = <<100/5=20>>20\nHe sells 12 of these rocks because 20 x .6 = <<20*.6=12>>12\nHe makes $84 selling these because 12 x 7 = <<12*7=84>>84\nHe lost $16 on his business because 100 - 84 = <<100-84=16>>16\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Adam",
+      "dollars"
+    ],
+    "notes": "The name 'Adam' and the unit 'dollars' are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_investment",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rock_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rock_selling_price",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 84,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "loss",
+      "value": 16,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_investment\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rock_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rock_selling_price\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_revenue\", \"value\": 84, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"loss\", \"value\": 16, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_investment",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 56938.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "rock_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 2846.9,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "rock_selling_price",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 3985.66,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 84,
+        "original_unit": "dollar",
+        "converted_value": 47827.92,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "loss",
+        "original_value": 16,
+        "original_unit": "dollar",
+        "converted_value": 9110.08,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Adam has ${initial_investment} and wants to spend it to open a rock stand. He can buy rocks for ${rock_cost} each and sell them for ${rock_selling_price} each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "templatized_answer": [
+      "He can buy {initial_investment}/{rock_cost} rocks because {initial_investment} / {rock_cost} = {initial_investment}/{rock_cost}",
+      "He sells {initial_investment}/{rock_cost} * 0.6 rocks because {initial_investment}/{rock_cost} * 0.6 = {initial_investment}/{rock_cost} * 0.6",
+      "He makes {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} selling these because {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} = {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}",
+      "He lost {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} on his business because {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price} = {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}",
+      "#### {initial_investment} - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}"
+    ],
+    "factual_assignment": {
+      "initial_investment": 100,
+      "rock_cost": 5,
+      "rock_selling_price": 7
+    }
+  },
+  "merged_assignment": {
+    "initial_investment": 56938.0,
+    "rock_cost": 2846.9,
+    "rock_selling_price": 3985.66
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_investment = 56938.0\n    rock_cost = 2846.9\n    rock_selling_price = 3985.66\n\n    num_rocks = initial_investment / rock_cost\n    num_rocks_sold = num_rocks * 0.6\n    revenue = num_rocks_sold * rock_selling_price\n    loss = initial_investment - revenue\n\n    return {\n        \"initial_investment\": initial_investment,\n        \"rock_cost\": rock_cost,\n        \"rock_selling_price\": rock_selling_price,\n        \"initial_investment/{rock_cost}\": round(num_rocks, 2),\n        \"initial_investment/{rock_cost} * 0.6\": round(num_rocks_sold, 2),\n        \"initial_investment/{rock_cost} * 0.6 * {rock_selling_price}\": round(revenue, 2),\n        \"initial_investment - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}\": round(loss, 2)\n    }\n",
+    "results": {
+      "initial_investment": 56938.0,
+      "rock_cost": 2846.9,
+      "rock_selling_price": 3985.66,
+      "initial_investment/{rock_cost}": 20.0,
+      "initial_investment/{rock_cost} * 0.6": 12.0,
+      "initial_investment/{rock_cost} * 0.6 * {rock_selling_price}": 47827.92,
+      "initial_investment - {initial_investment}/{rock_cost} * 0.6 * {rock_selling_price}": 9110.08
+    }
+  },
+  "final": {
+    "question": "Adam has 56938.0 shilling and wants to spend it to open a rock stand. He can buy rocks for 2846.9 shilling each and sell them for 3985.66 shilling each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "answer_lines": [
+      "He can buy 20.0 rocks because 56938.0 / 2846.9 = 20.0",
+      "He sells 12.0 rocks because 20.0 * 0.6 = 12.0",
+      "He makes 47827.92 shilling selling these because 20.0 * 0.6 * 3985.66 = 47827.92",
+      "He lost 9110.08 shilling on his business because 56938.0 - 47827.92 = 9110.08",
+      "#### 9110.08"
+    ],
+    "final_scalar": 9110.08,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan has 56938.0 shilling and wants to spend it to open a rock stand. He can buy rocks for 2846.9 shilling each and sell them for 3985.66 shilling each. If he invests all his money in the rock stand but only sells 60% of his inventory, how much money does he lose?",
+    "adapted_answer": [
+      "He can buy 20.0 rocks because 56938.0 / 2846.9 = 20.0",
+      "He sells 12.0 rocks because 20.0 * 0.6 = 12.0",
+      "He makes 47827.92 shilling selling these because 20.0 * 0.6 * 3985.66 = 47827.92",
+      "He lost 9110.08 shilling on his business because 56938.0 - 47827.92 = 9110.08",
+      "#### 9110.08"
+    ],
+    "adaptation_notes": "Replaced 'Adam' with 'Aadan' to give the name a Somali context."
+  }
+}

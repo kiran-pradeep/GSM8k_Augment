@@ -11,6 +11,7 @@ Utility functions for file I/O.
 from datetime import datetime
 import json
 from pathlib import Path
+import re
 from typing import Any, Dict
 
 from filelock import FileLock
@@ -55,3 +56,16 @@ def log_error(outdir: Path, idx: int, error: str, tb: str):
         "traceback": tb
     }
     append_jsonl(log_path, record)
+
+
+def fix_control_chars(text):
+    """
+    Replace newlines and carriage returns inside JSON string values
+    with their escaped versions (\n, \r) to ensure valid JSON.
+    """
+    def replacer(match):
+        inner = match.group(1)
+        inner_fixed = inner.replace('\n', '\\n').replace('\r', '')
+        return f'"{inner_fixed}"'
+
+    return re.sub(r'"([^"\\]*(?:\\.[^"\\]*)*)"', replacer, text)

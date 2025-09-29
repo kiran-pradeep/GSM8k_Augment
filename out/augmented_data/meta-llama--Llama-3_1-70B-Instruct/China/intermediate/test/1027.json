@@ -1,0 +1,125 @@
+{
+  "index": 1027,
+  "split": "test",
+  "original": {
+    "question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for $3, the second with 4 sandwiches for $6, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "answer": "So the price for 1 sandwich is $3 / 2 sandwiches = $<<3/2=1.5>>1.5/sandwich\nNow the price for the package with 8 sandwiches would be $1.5/sandwich * 8 sandwiches = $<<1.5*8=12>>12\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "sandwiches"
+    ],
+    "notes": "The text contains a unit of currency (dollars) and a food item (sandwiches) that are not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "package1_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "package2_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sandwich_price",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "package3_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"package1_cost\",\n    \"value\": 3,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"package2_cost\",\n    \"value\": 6,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"sandwich_price\",\n    \"value\": 1.5,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"package3_cost\",\n    \"value\": 12,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "package1_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "package2_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "sandwich_price",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 1.5,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "package3_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 12,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for ${package1_cost}, the second with 4 sandwiches for ${package2_cost}, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "templatized_answer": [
+      "So the price for 1 sandwich is ${package1_cost} / 2 sandwiches = ${sandwich_price}/sandwich",
+      "Now the price for the package with 8 sandwiches would be ${sandwich_price}/sandwich * 8 sandwiches = ${package3_cost}"
+    ],
+    "factual_assignment": {
+      "package1_cost": 3,
+      "package2_cost": 6,
+      "sandwich_price": 1.5,
+      "package3_cost": 12
+    }
+  },
+  "merged_assignment": {
+    "package1_cost": 21.39,
+    "package2_cost": 42.78,
+    "sandwich_price": 1.5,
+    "package3_cost": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    package1_cost = 21.39\n    package2_cost = 42.78\n    sandwich_price = package1_cost / 2\n    package3_cost = sandwich_price * 8\n\n    return {\n        \"package1_cost\": round(package1_cost, 2),\n        \"package2_cost\": round(package2_cost, 2),\n        \"sandwich_price\": round(sandwich_price, 2),\n        \"package3_cost\": round(package3_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "package1_cost": 21.39,
+      "package2_cost": 42.78,
+      "sandwich_price": 10.7,
+      "package3_cost": 85.56
+    }
+  },
+  "final": {
+    "question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for 21.39 renminbi, the second with 4 sandwiches for 42.78 renminbi, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "answer_lines": [
+      "So the price for 1 sandwich is 21.39 renminbi / 2 sandwiches = 10.695 renminbi/sandwich",
+      "Now the price for the package with 8 sandwiches would be 10.695 renminbi/sandwich * 8 sandwiches = 85.56 renminbi",
+      "#### 85.56"
+    ],
+    "final_scalar": 85.56,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A store offers baozi in 3 different package sizes: the first package with 2 baozi for 21.39 renminbi, the second with 4 baozi for 42.78 renminbi, and a third with 8 baozi, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 baozi cost?",
+    "adapted_answer": [
+      "So the price for 1 baozi is 21.39 renminbi / 2 baozi = 10.695 renminbi/baozi",
+      "Now the price for the package with 8 baozi would be 10.695 renminbi/baozi * 8 baozi = 85.56 renminbi",
+      "#### 85.56"
+    ],
+    "adaptation_notes": "Replaced 'sandwiches' with 'baozi' (a type of Chinese steamed bun) to adapt the text to a Chinese context."
+  }
+}

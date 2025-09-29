@@ -1,0 +1,132 @@
+{
+  "index": 691,
+  "split": "test",
+  "original": {
+    "question": "John brings his dog to the vet. His dog needs 2 vaccines, which are $20 each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought $125 with him, how much does he leave with?",
+    "answer": "The vaccines cost 40 because 2 x 20 = <<2*20=40>>40\nThe vaccines are 40% of his total bill because 100 - 60 = <<100-60=40>>40\nThe total bill is $100 because 40 / .4 = <<40/.4=100>>100\nHe leaves with $25 because 125 - 100 = <<125-100=25>>25\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' and the unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "vaccine_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_bill",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "wallet_amount",
+      "value": 125,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_amount",
+      "value": 25,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"vaccine_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_bill\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"wallet_amount\", \"value\": 125, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_amount\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "vaccine_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 1740,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_bill",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 8700,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "wallet_amount",
+        "original_value": 125,
+        "original_unit": "dollar",
+        "converted_value": 10875,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_amount",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 2175,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John brings his dog to the vet. His dog needs 2 vaccines, which are ${vaccine_cost} each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought ${wallet_amount} with him, how much does he leave with?",
+    "templatized_answer": [
+      "The vaccines cost {2*vaccine_cost} because 2 x {vaccine_cost} = {2*vaccine_cost}",
+      "The vaccines are {100-60}% of his total bill because 100 - 60 = {100-60}",
+      "The total bill is ${total_bill} because {2*vaccine_cost} / .4 = {total_bill}",
+      "He leaves with ${wallet_amount} - ${total_bill} because {wallet_amount} - {total_bill} = {wallet_amount} - {total_bill}",
+      "#### {wallet_amount} - {total_bill}"
+    ],
+    "factual_assignment": {
+      "vaccine_cost": 20,
+      "total_bill": 100,
+      "wallet_amount": 125
+    }
+  },
+  "merged_assignment": {
+    "vaccine_cost": 1740,
+    "total_bill": 8700,
+    "wallet_amount": 10875
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    vaccine_cost = 1740\n    wallet_amount = 10875\n\n    total_bill = (2 * vaccine_cost) / 0.4\n    total_bill = round(total_bill, 2)\n\n    result = {\n        \"vaccine_cost\": vaccine_cost,\n        \"total_bill\": total_bill,\n        \"wallet_amount\": wallet_amount,\n        \"2*vaccine_cost\": 2 * vaccine_cost,\n        \"100-60\": 100 - 60,\n        \"wallet_amount - total_bill\": wallet_amount - total_bill\n    }\n\n    return result\n",
+    "results": {
+      "vaccine_cost": 1740,
+      "total_bill": 8700.0,
+      "wallet_amount": 10875,
+      "2*vaccine_cost": 3480,
+      "100-60": 40,
+      "wallet_amount - total_bill": 2175.0
+    }
+  },
+  "final": {
+    "question": "John brings his dog to the vet. His dog needs 2 vaccines, which are 1740 rupees each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought 10875 rupees with him, how much does he leave with?",
+    "answer_lines": [
+      "The vaccines cost 3480 rupees because 2 x 1740 = 3480",
+      "The vaccines are 40% of his total bill because 100 - 60 = 40",
+      "The total bill is 8700 rupees because 3480 / .4 = 8700",
+      "He leaves with 2175 rupees because 10875 - 8700 = 2175",
+      "#### 2175"
+    ],
+    "final_scalar": 2175,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan brings his dog to the vet. His dog needs 2 vaccines, which are 1740 rupees each, and a heartworm check. The heartworm check is 60% of his total bill. If he brought 10875 rupees with him, how much does he leave with?",
+    "adapted_answer": [
+      "The vaccines cost 3480 rupees because 2 x 1740 = 3480",
+      "The vaccines are 40% of his total bill because 100 - 60 = 40",
+      "The total bill is 8700 rupees because 3480 / .4 = 8700",
+      "He leaves with 2175 rupees because 10875 - 8700 = 2175",
+      "#### 2175"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Rohan' to give the name an Indian context."
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "index": 298,
+  "split": "test",
+  "original": {
+    "question": "Carmen goes to an auction to win an antique desk. She accepts the opening bid of $200 and continues bidding until she wins. The bids on the desk rise by $50 each time and 3 other people each bid once. Carmen bids after each of the 3 other people and eventually wins. How much money, in dollars, does the desk cost her?",
+    "answer": "3 other people are bidding on the desk so there are 3 bids * $50 per bid = $<<3*50=150>>150 added to the cost of the desk by other people.\nCarmen also has to bid against each person, so she also adds 3 bids * $50 per bid = $<<3*50=150>>150 to the overall cost.\nSo in these bids, there has been a total of $150 + $150 = $<<150+150=300>>300 added to the initial cost of the desk.\nThe desk therefore costs $200 opening bid + $300 added cost = $<<200+300=500>>500.\n#### 500"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "opening_bid",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bid_increment",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "other_bidders_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "carmen_bids_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_added_cost",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "desk_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"opening_bid\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bid_increment\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"other_bidders_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"carmen_bids_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_added_cost\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"desk_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "opening_bid",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 3324.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "bid_increment",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 831.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "other_bidders_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 2493.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "carmen_bids_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 2493.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_added_cost",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 4986.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "desk_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 8310.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carmen goes to an auction to win an antique desk. She accepts the opening bid of ${opening_bid} and continues bidding until she wins. The bids on the desk rise by ${bid_increment} each time and 3 other people each bid once. Carmen bids after each of the 3 other people and eventually wins. How much money, in dollars, does the desk cost her?",
+    "templatized_answer": [
+      "3 other people are bidding on the desk so there are 3 bids * ${bid_increment} per bid = ${other_bidders_cost} added to the cost of the desk by other people.",
+      "Carmen also has to bid against each person, so she also adds 3 bids * ${bid_increment} per bid = ${carmen_bids_cost} to the overall cost.",
+      "So in these bids, there has been a total of ${other_bidders_cost} + ${carmen_bids_cost} = ${total_added_cost} added to the initial cost of the desk.",
+      "The desk therefore costs ${opening_bid} opening bid + ${total_added_cost} added cost = ${desk_cost}.",
+      "#### {desk_cost}"
+    ],
+    "factual_assignment": {
+      "opening_bid": 200.0,
+      "bid_increment": 50.0,
+      "other_bidders_cost": 150.0,
+      "carmen_bids_cost": 150.0,
+      "total_added_cost": 300.0,
+      "desk_cost": 500.0
+    }
+  },
+  "merged_assignment": {
+    "opening_bid": 3324.0,
+    "bid_increment": 831.0,
+    "other_bidders_cost": 2493.0,
+    "carmen_bids_cost": 2493.0,
+    "total_added_cost": 4986.0,
+    "desk_cost": 8310.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    opening_bid = 3324.0\n    bid_increment = 831.0\n\n    other_bidders_cost = 3 * bid_increment\n    carmen_bids_cost = 3 * bid_increment\n    total_added_cost = other_bidders_cost + carmen_bids_cost\n    desk_cost = opening_bid + total_added_cost\n\n    return {\n        \"opening_bid\": opening_bid,\n        \"bid_increment\": bid_increment,\n        \"other_bidders_cost\": round(other_bidders_cost, 2),\n        \"carmen_bids_cost\": round(carmen_bids_cost, 2),\n        \"total_added_cost\": round(total_added_cost, 2),\n        \"desk_cost\": round(desk_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "opening_bid": 3324.0,
+      "bid_increment": 831.0,
+      "other_bidders_cost": 2493.0,
+      "carmen_bids_cost": 2493.0,
+      "total_added_cost": 4986.0,
+      "desk_cost": 8310.0
+    }
+  },
+  "final": {
+    "question": "Carmen goes to an auction to win an antique desk. She accepts the opening bid of 3324 leu and continues bidding until she wins. The bids on the desk rise by 831 leu each time and 3 other people each bid once. Carmen bids after each of the 3 other people and eventually wins. How much money, in leu, does the desk cost her?",
+    "answer_lines": [
+      "3 other people are bidding on the desk so there are 3 bids * 831 leu per bid = 2493 leu added to the cost of the desk by other people.",
+      "Carmen also has to bid against each person, so she also adds 3 bids * 831 leu per bid = 2493 leu to the overall cost.",
+      "So in these bids, there has been a total of 2493 leu + 2493 leu = 4986 leu added to the initial cost of the desk.",
+      "The desk therefore costs 3324 leu opening bid + 4986 leu added cost = 8310 leu.",
+      "#### 8310"
+    ],
+    "final_scalar": 8310,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Carmen goes to an auction to win an antique masă. She accepts the opening bid of 3324 lei and continues bidding until she wins. The bids on the masă rise by 831 lei each time and 3 other people each bid once. Carmen bids after each of the 3 other people and eventually wins. How much money, in lei, does the masă cost her?",
+    "adapted_answer": [
+      "3 other people are bidding on the masă so there are 3 bids * 831 lei per bid = 2493 lei added to the cost of the masă by other people.",
+      "Carmen also has to bid against each person, so she also adds 3 bids * 831 lei per bid = 2493 lei to the overall cost.",
+      "So in these bids, there has been a total of 2493 lei + 2493 lei = 4986 lei added to the initial cost of the masă.",
+      "The masă therefore costs 3324 lei opening bid + 4986 lei added cost = 8310 lei.",
+      "#### 8310"
+    ],
+    "adaptation_notes": "Replaced 'desk' with 'masă' (Romanian for 'table' or 'desk') and 'leu' with 'lei' (the official currency of Moldova)."
+  }
+}

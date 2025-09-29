@@ -1,0 +1,161 @@
+{
+  "index": 1299,
+  "split": "test",
+  "original": {
+    "question": "Janet goes to the mall and spends $3.50 on ice cream, $7.50 each for movie tickets for herself and her younger sister, and $8.50 on a bracelet. If her parents gave her $40, how many dollars does she have left?",
+    "answer": "First calculate the cost of the movie tickets by multiplying the price per ticket by 2: $7.50 * 2 = $<<7.5*2=15.00>>15.00\nThen add up all the money Janet spent: $3.50 + $15.00 + $8.50 = $<<3.5+15+8.5=27.00>>27.00\nNow subtract Janet's spending from the initial amount of money she had: $40.00 - $27.00 = $<<40-27=13.00>>13.00\n#### 13"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "movie tickets",
+      "mall",
+      "ice cream",
+      "bracelet"
+    ],
+    "notes": "The text contains culturally specific entities such as 'dollars' (US currency), 'movie tickets', 'mall', 'ice cream', and 'bracelet' which are not specific to Haitian culture."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ice_cream_cost",
+      "value": 3.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "movie_ticket_cost",
+      "value": 7.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bracelet_cost",
+      "value": 8.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "parents_gift",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 27.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "money_left",
+      "value": 13.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ice_cream_cost\", \"value\": 3.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"movie_ticket_cost\", \"value\": 7.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bracelet_cost\", \"value\": 8.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"parents_gift\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 27.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"money_left\", \"value\": 13.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ice_cream_cost",
+        "original_value": 3.5,
+        "original_unit": "dollar",
+        "converted_value": 457.84,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "movie_ticket_cost",
+        "original_value": 7.5,
+        "original_unit": "dollar",
+        "converted_value": 981.08,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "bracelet_cost",
+        "original_value": 8.5,
+        "original_unit": "dollar",
+        "converted_value": 1111.88,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "parents_gift",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 5232.4,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 27.0,
+        "original_unit": "dollar",
+        "converted_value": 3531.87,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "money_left",
+        "original_value": 13.0,
+        "original_unit": "dollar",
+        "converted_value": 1700.53,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Janet goes to the mall and spends ${ice_cream_cost} on ice cream, ${movie_ticket_cost} each for movie tickets for herself and her younger sister, and ${bracelet_cost} on a bracelet. If her parents gave her ${parents_gift}, how many dollars does she have left?",
+    "templatized_answer": [
+      "First calculate the cost of the movie tickets by multiplying the price per ticket by 2: ${movie_ticket_cost} * 2 = ${movie_ticket_cost * 2}",
+      "Then add up all the money Janet spent: ${ice_cream_cost} + ${movie_ticket_cost * 2} + ${bracelet_cost} = ${ice_cream_cost + movie_ticket_cost * 2 + bracelet_cost}",
+      "Now subtract Janet's spending from the initial amount of money she had: ${parents_gift} - ${ice_cream_cost + movie_ticket_cost * 2 + bracelet_cost} = ${parents_gift - ice_cream_cost - movie_ticket_cost * 2 - bracelet_cost}",
+      "#### {parents_gift - ice_cream_cost - movie_ticket_cost * 2 - bracelet_cost}"
+    ],
+    "factual_assignment": {
+      "ice_cream_cost": 3.5,
+      "movie_ticket_cost": 7.5,
+      "bracelet_cost": 8.5,
+      "parents_gift": 40.0
+    }
+  },
+  "merged_assignment": {
+    "ice_cream_cost": 457.84,
+    "movie_ticket_cost": 981.08,
+    "bracelet_cost": 1111.88,
+    "parents_gift": 5232.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    ice_cream_cost = 457.84\n    movie_ticket_cost = 981.08\n    bracelet_cost = 1111.88\n    parents_gift = 5232.4\n\n    movie_ticket_cost_total = round(movie_ticket_cost * 2, 2)\n    total_spent = round(ice_cream_cost + movie_ticket_cost_total + bracelet_cost, 2)\n    amount_left = round(parents_gift - total_spent, 2)\n\n    return {\n        \"ice_cream_cost\": ice_cream_cost,\n        \"movie_ticket_cost\": movie_ticket_cost,\n        \"movie_ticket_cost * 2\": movie_ticket_cost_total,\n        \"bracelet_cost\": bracelet_cost,\n        \"ice_cream_cost + movie_ticket_cost * 2 + bracelet_cost\": total_spent,\n        \"parents_gift\": parents_gift,\n        \"parents_gift - ice_cream_cost - movie_ticket_cost * 2 - bracelet_cost\": amount_left\n    }\n",
+    "results": {
+      "ice_cream_cost": 457.84,
+      "movie_ticket_cost": 981.08,
+      "movie_ticket_cost * 2": 1962.16,
+      "bracelet_cost": 1111.88,
+      "ice_cream_cost + movie_ticket_cost * 2 + bracelet_cost": 3531.88,
+      "parents_gift": 5232.4,
+      "parents_gift - ice_cream_cost - movie_ticket_cost * 2 - bracelet_cost": 1700.52
+    }
+  },
+  "final": {
+    "question": "Janet goes to the mall and spends 457.84 gourde on ice cream, 981.08 gourde each for movie tickets for herself and her younger sister, and 1111.88 gourde on a bracelet. If her parents gave her 5232.4 gourde, how many gourde does she have left?",
+    "answer_lines": [
+      "First calculate the cost of the movie tickets by multiplying the price per ticket by 2: 981.08 * 2 = 1962.16",
+      "Then add up all the money Janet spent: 457.84 + 1962.16 + 1111.88 = 3531.88",
+      "Now subtract Janet's spending from the initial amount of money she had: 5232.4 - 3531.88 = 1700.52",
+      "#### 1700.52"
+    ],
+    "final_scalar": 1700.52,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Janet goes to the marché and spends 457.84 gourde on aiglons, 981.08 gourde each for billets de cinéma for herself and her younger sister, and 1111.88 gourde on a bague. If her parents gave her 5232.4 gourde, how many gourde does she have left?",
+    "adapted_answer": [
+      "First calculate the cost of the billets de cinéma by multiplying the price per ticket by 2: 981.08 * 2 = 1962.16",
+      "Then add up all the money Janet spent: 457.84 + 1962.16 + 1111.88 = 3531.88",
+      "Now subtract Janet's spending from the initial amount of money she had: 5232.4 - 3531.88 = 1700.52",
+      "#### 1700.52"
+    ],
+    "adaptation_notes": "Replaced 'mall' with 'marché', 'ice cream' with 'aiglons', 'movie tickets' with 'billets de cinéma', and 'bracelet' with 'bague' to give the text a Haitian context."
+  }
+}

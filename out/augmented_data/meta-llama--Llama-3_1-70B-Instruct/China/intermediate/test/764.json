@@ -1,0 +1,194 @@
+{
+  "index": 764,
+  "split": "test",
+  "original": {
+    "question": "Leila buys 3 cucumbers from the market. Cucumbers are $2 each. Jack buys 5 tomatoes from the grocery store.  Tomatoes are $1 each. Chase buys 1 head of lettuce from the farmer’s market.  Lettuce cost $3 each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "answer": "Leila spends 3 x $2 = $<<3*2=6>>6.\nJack spends 5 x $1 = $<<5*1=5>>5.\nChase spends 1 x $3 = $<<1*3=3>>3.\nTogether, they spend a total of $6 + $5 + $3 = $<<6+5+3=14>>14.\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Leila",
+      "Jack",
+      "Chase",
+      "cucumbers",
+      "tomatoes",
+      "lettuce",
+      "dollars"
+    ],
+    "notes": "Names and food items are not specific to Chinese culture, and the unit of currency is dollars."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cucumber_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cucumber_total",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "tomato_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tomato_total",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "lettuce_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lettuce_total",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 14,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cucumber_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cucumber_total\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"tomato_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tomato_total\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"lettuce_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lettuce_total\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 14, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cucumber_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "cucumber_total",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "tomato_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "tomato_total",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lettuce_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lettuce_total",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 14,
+        "original_unit": "dollar",
+        "converted_value": 99.82,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Leila buys {cucumber_quantity} cucumbers from the market. Cucumbers are ${cucumber_cost} each. Jack buys {tomato_quantity} tomatoes from the grocery store.  Tomatoes are ${tomato_cost} each. Chase buys {lettuce_quantity} head of lettuce from the farmer’s market.  Lettuce cost ${lettuce_cost} each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "templatized_answer": [
+      "Leila spends {cucumber_quantity} x ${cucumber_cost} = ${cucumber_total}.",
+      "Jack spends {tomato_quantity} x ${tomato_cost} = ${tomato_total}.",
+      "Chase spends {lettuce_quantity} x ${lettuce_cost} = ${lettuce_total}.",
+      "Together, they spend a total of ${cucumber_total} + ${tomato_total} + ${lettuce_total} = ${total_spent}.",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "cucumber_quantity": 3,
+      "cucumber_cost": 2,
+      "cucumber_total": 6,
+      "tomato_quantity": 5,
+      "tomato_cost": 1,
+      "tomato_total": 5,
+      "lettuce_quantity": 1,
+      "lettuce_cost": 3,
+      "lettuce_total": 3,
+      "total_spent": 14
+    }
+  },
+  "merged_assignment": {
+    "cucumber_quantity": 3,
+    "cucumber_cost": 14.26,
+    "cucumber_total": 42.78,
+    "tomato_quantity": 5,
+    "tomato_cost": 7.13,
+    "tomato_total": 35.65,
+    "lettuce_quantity": 1,
+    "lettuce_cost": 21.39,
+    "lettuce_total": 21.39,
+    "total_spent": 99.82
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cucumber_quantity = 3\n    cucumber_cost = 14.26\n    cucumber_total = round(cucumber_quantity * cucumber_cost, 2)\n\n    tomato_quantity = 5\n    tomato_cost = 7.13\n    tomato_total = round(tomato_quantity * tomato_cost, 2)\n\n    lettuce_quantity = 1\n    lettuce_cost = 21.39\n    lettuce_total = round(lettuce_quantity * lettuce_cost, 2)\n\n    total_spent = round(cucumber_total + tomato_total + lettuce_total, 2)\n\n    return {\n        \"cucumber_quantity\": cucumber_quantity,\n        \"cucumber_cost\": cucumber_cost,\n        \"cucumber_total\": cucumber_total,\n        \"tomato_quantity\": tomato_quantity,\n        \"tomato_cost\": tomato_cost,\n        \"tomato_total\": tomato_total,\n        \"lettuce_quantity\": lettuce_quantity,\n        \"lettuce_cost\": lettuce_cost,\n        \"lettuce_total\": lettuce_total,\n        \"total_spent\": total_spent\n    }\n",
+    "results": {
+      "cucumber_quantity": 3,
+      "cucumber_cost": 14.26,
+      "cucumber_total": 42.78,
+      "tomato_quantity": 5,
+      "tomato_cost": 7.13,
+      "tomato_total": 35.65,
+      "lettuce_quantity": 1,
+      "lettuce_cost": 21.39,
+      "lettuce_total": 21.39,
+      "total_spent": 99.82
+    }
+  },
+  "final": {
+    "question": "Leila buys 3 cucumbers from the market. Cucumbers are 14.26 renminbi each. Jack buys 5 tomatoes from the grocery store.  Tomatoes are 7.13 renminbi each. Chase buys 1 head of lettuce from the farmer’s market.  Lettuce cost 21.39 renminbi each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "answer_lines": [
+      "Leila spends 3 x 14.26 renminbi = 42.78 renminbi.",
+      "Jack spends 5 x 7.13 renminbi = 35.65 renminbi.",
+      "Chase spends 1 x 21.39 renminbi = 21.39 renminbi.",
+      "Together, they spend a total of 42.78 renminbi + 35.65 renminbi + 21.39 renminbi = 99.82 renminbi.",
+      "#### 99.82"
+    ],
+    "final_scalar": 99.82,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling buys 3 huanggua from the market. Huanggua are 14.26 renminbi each. Jian buys 5 fanqie from the grocery store.  Fanqie are 7.13 renminbi each. Chen buys 1 head of wosun from the farmer’s market.  Wosun cost 21.39 renminbi each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "adapted_answer": [
+      "Ling spends 3 x 14.26 renminbi = 42.78 renminbi.",
+      "Jian spends 5 x 7.13 renminbi = 35.65 renminbi.",
+      "Chen spends 1 x 21.39 renminbi = 21.39 renminbi.",
+      "Together, they spend a total of 42.78 renminbi + 35.65 renminbi + 21.39 renminbi = 99.82 renminbi.",
+      "#### 99.82"
+    ],
+    "adaptation_notes": "Replaced 'Leila' with 'Ling', 'Jack' with 'Jian', 'Chase' with 'Chen', 'cucumbers' with 'huanggua', 'tomatoes' with 'fanqie', and 'lettuce' with 'wosun'."
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "index": 678,
+  "split": "test",
+  "original": {
+    "question": "Lorie earns $10 per hour. Karen earns twice what Lorie earns. How much does Karen earn in two days if she works 3 hours per day?",
+    "answer": "Karen earns $10 x 2 = $<<10*2=20>>20 per hour.\nSo she earns $20 x 3 = $<<20*3=60>>60 per day.\nThus, she earns $60 x 2 = $<<60*2=120>>120 in two days.\n#### 120"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Lorie",
+      "Karen",
+      "dollars"
+    ],
+    "notes": "Contains Western names and a non-Chinese currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lorie_earnings",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "karen_earnings_per_hour",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "karen_earnings_per_day",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "karen_earnings_two_days",
+      "value": 120,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"lorie_earnings\",\n    \"value\": 10,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"karen_earnings_per_hour\",\n    \"value\": 20,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"karen_earnings_per_day\",\n    \"value\": 60,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"karen_earnings_two_days\",\n    \"value\": 120,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lorie_earnings",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "karen_earnings_per_hour",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "karen_earnings_per_day",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "karen_earnings_two_days",
+        "original_value": 120,
+        "original_unit": "dollar",
+        "converted_value": 855.6,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Lorie earns ${lorie_earnings} per hour. Karen earns twice what Lorie earns. How much does Karen earn in two days if she works {hours_per_day} hours per day?",
+    "templatized_answer": [
+      "Karen earns ${lorie_earnings} x 2 = ${karen_earnings_per_hour} per hour.",
+      "So she earns ${karen_earnings_per_hour} x {hours_per_day} = ${karen_earnings_per_day} per day.",
+      "Thus, she earns ${karen_earnings_per_day} x {days} = ${karen_earnings_two_days} in two days.",
+      "#### {karen_earnings_two_days}"
+    ],
+    "factual_assignment": {
+      "lorie_earnings": 10,
+      "karen_earnings_per_hour": 20,
+      "karen_earnings_per_day": 60,
+      "karen_earnings_two_days": 120,
+      "hours_per_day": 3,
+      "days": 2
+    }
+  },
+  "merged_assignment": {
+    "lorie_earnings": 71.3,
+    "karen_earnings_per_hour": 142.6,
+    "karen_earnings_per_day": 427.8,
+    "karen_earnings_two_days": 855.6,
+    "hours_per_day": 3,
+    "days": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    lorie_earnings = 71.3\n    karen_earnings_per_hour = lorie_earnings * 2\n    hours_per_day = 3\n    days = 2\n\n    karen_earnings_per_day = karen_earnings_per_hour * hours_per_day\n    karen_earnings_two_days = karen_earnings_per_day * days\n\n    return {\n        \"lorie_earnings\": round(lorie_earnings, 2),\n        \"karen_earnings_per_hour\": round(karen_earnings_per_hour, 2),\n        \"karen_earnings_per_day\": round(karen_earnings_per_day, 2),\n        \"karen_earnings_two_days\": round(karen_earnings_two_days, 2),\n        \"hours_per_day\": hours_per_day,\n        \"days\": days\n    }\n\nprint(recompute())\n",
+    "results": {
+      "lorie_earnings": 71.3,
+      "karen_earnings_per_hour": 142.6,
+      "karen_earnings_per_day": 427.8,
+      "karen_earnings_two_days": 855.6,
+      "hours_per_day": 3,
+      "days": 2
+    }
+  },
+  "final": {
+    "question": "Lorie earns 71.3 renminbi per hour. Karen earns twice what Lorie earns. How much does Karen earn in two days if she works 3 hours per day?",
+    "answer_lines": [
+      "Karen earns 71.3 x 2 = 142.6 per hour.",
+      "So she earns 142.6 x 3 = 427.8 per day.",
+      "Thus, she earns 427.8 x 2 = 855.6 in two days.",
+      "#### 855.6"
+    ],
+    "final_scalar": 855.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling earns 71.3 renminbi per hour. Mei earns twice what Ling earns. How much does Mei earn in two days if she works 3 hours per day?",
+    "adapted_answer": [
+      "Mei earns 71.3 x 2 = 142.6 per hour.",
+      "So she earns 142.6 x 3 = 427.8 per day.",
+      "Thus, she earns 427.8 x 2 = 855.6 in two days.",
+      "#### 855.6"
+    ],
+    "adaptation_notes": "Replaced 'Lorie' with 'Ling' and 'Karen' with 'Mei' to give the names a Chinese context."
+  }
+}

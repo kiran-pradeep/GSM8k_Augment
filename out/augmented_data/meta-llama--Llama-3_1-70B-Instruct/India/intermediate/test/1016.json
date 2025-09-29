@@ -1,0 +1,129 @@
+{
+  "index": 1016,
+  "split": "test",
+  "original": {
+    "question": "Mrs. Tatiana owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. What would be the price of carrots after three years if it was $120 initially? (Round to the nearest integer)",
+    "answer": "In the first year, the price of carrots increases by 5/100*120 = $<<5/100*120=6>>6\nAfter 3 years, the price of carrots will increase by $6*3 = $<<6*3=18>>18\nThe total price of carrots after three years will be 120+18 = $<<120+18=138>>138\n#### 138"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tatiana",
+      "dollars"
+    ],
+    "notes": "Name 'Tatiana' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_carrot_price",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_year_price_increase",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_price_increase",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_carrot_price",
+      "value": 138.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_carrot_price\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_year_price_increase\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_price_increase\", \"value\": 18.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_carrot_price\", \"value\": 138.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_carrot_price",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 10440.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "first_year_price_increase",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 522.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_price_increase",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 1566.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "final_carrot_price",
+        "original_value": 138.0,
+        "original_unit": "dollar",
+        "converted_value": 12006.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mrs. Tatiana owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. What would be the price of carrots after three years if it was ${initial_carrot_price} initially? (Round to the nearest integer)",
+    "templatized_answer": [
+      "In the first year, the price of carrots increases by 5/100*{initial_carrot_price} = ${first_year_price_increase}",
+      "After 3 years, the price of carrots will increase by {first_year_price_increase}*3 = ${total_price_increase}",
+      "The total price of carrots after three years will be {initial_carrot_price}+{total_price_increase} = ${final_carrot_price}",
+      "#### {final_carrot_price}"
+    ],
+    "factual_assignment": {
+      "initial_carrot_price": 120.0,
+      "first_year_price_increase": 6.0,
+      "total_price_increase": 18.0,
+      "final_carrot_price": 138.0
+    }
+  },
+  "merged_assignment": {
+    "initial_carrot_price": 10440.0,
+    "first_year_price_increase": 522.0,
+    "total_price_increase": 1566.0,
+    "final_carrot_price": 12006.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_carrot_price = 10440.0\n    first_year_price_increase = round(initial_carrot_price * 0.05, 2)\n    total_price_increase = round(first_year_price_increase * 3, 2)\n    final_carrot_price = round(initial_carrot_price + total_price_increase)\n\n    return {\n        \"initial_carrot_price\": initial_carrot_price,\n        \"first_year_price_increase\": first_year_price_increase,\n        \"total_price_increase\": total_price_increase,\n        \"final_carrot_price\": final_carrot_price\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_carrot_price": 10440.0,
+      "first_year_price_increase": 522.0,
+      "total_price_increase": 1566.0,
+      "final_carrot_price": 12006
+    }
+  },
+  "final": {
+    "question": "Mrs. Tatiana owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. What would be the price of carrots after three years if it was 10440 initially? (Round to the nearest integer)",
+    "answer_lines": [
+      "In the first year, the price of carrots increases by 5/100*10440 = 522",
+      "After 3 years, the price of carrots will increase by 522*3 = 1566",
+      "The total price of carrots after three years will be 10440+1566 = 12006",
+      "#### 12006"
+    ],
+    "final_scalar": 12006,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mrs. Nalini owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. What would be the price of carrots after three years if it was 10440 initially? (Round to the nearest integer)",
+    "adapted_answer": [
+      "In the first year, the price of carrots increases by 5/100*10440 = 522",
+      "After 3 years, the price of carrots will increase by 522*3 = 1566",
+      "The total price of carrots after three years will be 10440+1566 = 12006",
+      "#### 12006"
+    ],
+    "adaptation_notes": "Replaced 'Tatiana' with 'Nalini' to provide an Indian context."
+  }
+}

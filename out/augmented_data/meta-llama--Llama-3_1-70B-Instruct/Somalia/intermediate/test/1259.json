@@ -1,0 +1,123 @@
+{
+  "index": 1259,
+  "split": "test",
+  "original": {
+    "question": "Derrick has a bakery that makes 10 dozen doughnuts every day, selling at $2 per doughnut. How much money does Derrick make in June if he sells all the doughnuts?",
+    "answer": "A dozen doughnuts have 12 doughnuts, and if Derrick makes 10 dozen in a day, the total number of doughnuts he makes is 10*12 = <<10*12=120>>120 doughnuts.\nSince each doughnut sells at $2 per piece, Derrick makes 120*$2 = $<<120*2=240>>240 per day from selling his doughnuts.\nIn June, with 30 days, after making and selling the doughnuts every day, Derrick makes $240*30 = $<<30*240=7200>>7200\n#### 7200"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Derrick",
+      "doughnuts",
+      "dollars",
+      "June"
+    ],
+    "notes": "The name Derrick, the food item doughnuts, the unit dollars, and the month June are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "doughnut_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 240,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 7200,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"doughnut_price\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_earnings\", \"value\": 240, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_earnings\", \"value\": 7200, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "doughnut_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 1138.76,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 240,
+        "original_unit": "dollar",
+        "converted_value": 136651.2,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 7200,
+        "original_unit": "dollar",
+        "converted_value": 4099536.0,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Derrick has a bakery that makes {dozens_per_day} dozen doughnuts every day, selling at ${doughnut_price} per doughnut. How much money does Derrick make in June if he sells all the doughnuts?",
+    "templatized_answer": [
+      "A dozen doughnuts have {doughnuts_per_dozen} doughnuts, and if Derrick makes {dozens_per_day} dozen in a day, the total number of doughnuts he makes is {dozens_per_day}*{doughnuts_per_dozen} = {dozens_per_day}*{doughnuts_per_dozen} doughnuts.",
+      "Since each doughnut sells at ${doughnut_price} per piece, Derrick makes {dozens_per_day}*{doughnuts_per_dozen}*${doughnut_price} = ${daily_earnings} per day from selling his doughnuts.",
+      "In June, with {days_in_month} days, after making and selling the doughnuts every day, Derrick makes ${daily_earnings}*{days_in_month} = ${monthly_earnings}"
+    ],
+    "factual_assignment": {
+      "dozens_per_day": 10,
+      "doughnuts_per_dozen": 12,
+      "doughnut_price": 2,
+      "daily_earnings": 240,
+      "monthly_earnings": 7200,
+      "days_in_month": 30
+    }
+  },
+  "merged_assignment": {
+    "dozens_per_day": 10,
+    "doughnuts_per_dozen": 12,
+    "doughnut_price": 1138.76,
+    "daily_earnings": 136651.2,
+    "monthly_earnings": 4099536.0,
+    "days_in_month": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    dozens_per_day = 10\n    doughnuts_per_dozen = 12\n    doughnut_price = 1138.76\n    days_in_month = 30\n\n    total_doughnuts_per_day = dozens_per_day * doughnuts_per_dozen\n    daily_earnings = total_doughnuts_per_day * doughnut_price\n    monthly_earnings = daily_earnings * days_in_month\n\n    return {\n        \"dozens_per_day\": dozens_per_day,\n        \"doughnuts_per_dozen\": doughnuts_per_dozen,\n        \"doughnut_price\": round(doughnut_price, 2),\n        \"total_doughnuts_per_day\": total_doughnuts_per_day,\n        \"daily_earnings\": round(daily_earnings, 2),\n        \"monthly_earnings\": round(monthly_earnings, 2),\n        \"days_in_month\": days_in_month\n    }\n\nprint(recompute())\n",
+    "results": {
+      "dozens_per_day": 10,
+      "doughnuts_per_dozen": 12,
+      "doughnut_price": 1138.76,
+      "total_doughnuts_per_day": 120,
+      "daily_earnings": 136651.2,
+      "monthly_earnings": 4099536.0,
+      "days_in_month": 30
+    }
+  },
+  "final": {
+    "question": "Derrick has a bakery that makes 10 dozen doughnuts every day, selling at 1138.76 shilling per doughnut. How much money does Derrick make in June if he sells all the doughnuts?",
+    "answer_lines": [
+      "A dozen doughnuts have 12 doughnuts, and if Derrick makes 10 dozen in a day, the total number of doughnuts he makes is 10*12 = 120 doughnuts.",
+      "Since each doughnut sells at 1138.76 shilling per piece, Derrick makes 120*1138.76 = 136651.2 shilling per day from selling his doughnuts.",
+      "In June, with 30 days, after making and selling the doughnuts every day, Derrick makes 136651.2*30 = 4099536.0 shilling",
+      "#### 4099536.0"
+    ],
+    "final_scalar": 4099536.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cabdulle wuxuu leeyahay bakari ay sameeyaan 10 dozen biskoowdihiin maalin kasta, waxayna iibsanayaan 1138.76 shilling per biskoowdihiin. Waxa ugu badnaa maalinta June ee uu biskoowdihiin kasta oo uu sameeyo?",
+    "adapted_answer": [
+      "Dozen biskoowdihiin waxay leeyihiin 12 biskoowdihiin, iyo haddii Cabdulle sameeyo 10 dozen maalin kasta, jumla biskoowdihiin uu sameeyo waa 10*12 = 120 biskoowdihiin.",
+      "Waxa jira biskoowdihiin kasta oo iibsata 1138.76 shilling per qay, Cabdulle wuxuu sameeyaa 120*1138.76 = 136651.2 shilling maalin kasta oo uu biskoowdihiin kasta oo uu sameeyo iibinayo.",
+      "Bishii Juun, waxa jira 30 maalin, marka Cabdulle sameeyo iyo iibinayo biskoowdihiin kasta maalin kasta, Cabdulle wuxuu sameeyaa 136651.2*30 = 4099536.0 shilling"
+    ],
+    "adaptation_notes": "Replaced \"Derrick\" with \"Cabdulle\" and \"doughnuts\" with \"biskoowdihiin\" to give the text a Somali context."
+  }
+}

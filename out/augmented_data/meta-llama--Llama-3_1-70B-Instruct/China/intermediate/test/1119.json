@@ -1,0 +1,155 @@
+{
+  "index": 1119,
+  "split": "test",
+  "original": {
+    "question": "Amalia, Megan, and Dior divided the home chores so that each person had something to do while the others were working. Amalia's work was to mow the lawn, which took her 4 hours. Megan had to walk the dog and this took her 2 hours longer than Amalia to complete her chore. Dior's work was to do laundry and she took well over 4 hours longer than the time Amalia took to mow the lawn. Calculate the total time they all took to do their chores altogether.",
+    "answer": "Megan took 2 hours longer than Amalia to do her work, a total of 4+2 = 6 hours.\nAmalia and Megan's total time to finish their work is 6+4 = <<6+4=10>>10 hours.\nIf Amalia took 4 hours to mow the lawn, and Dior took 4 hours longer than her while doing laundry, Dior took 4+4 = <<4+4=8>>8 hours to do the laundry.\nIn total, they took 10+8 = <<10+8=18>>18 hours together doing their chores.\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Amalia",
+      "Megan",
+      "Dior"
+    ],
+    "notes": "The names Amalia, Megan, and Dior are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "amalia_time",
+      "value": 4.0,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "megan_time",
+      "value": 6.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "amalia_and_megan_time",
+      "value": 10.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "dior_time",
+      "value": 8.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "total_time",
+      "value": 18.0,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"hour\": {\"unit\": \"hour\", \"factor\": 1},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"amalia_time\", \"value\": 4.0, \"unit\": \"hour\", \"context\": \"question\"},\n    {\"variable\": \"megan_time\", \"value\": 6.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"amalia_and_megan_time\", \"value\": 10.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"dior_time\", \"value\": 8.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"total_time\", \"value\": 18.0, \"unit\": \"hour\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "amalia_time",
+        "original_value": 4.0,
+        "original_unit": "hour",
+        "converted_value": 4.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "megan_time",
+        "original_value": 6.0,
+        "original_unit": "hour",
+        "converted_value": 6.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "amalia_and_megan_time",
+        "original_value": 10.0,
+        "original_unit": "hour",
+        "converted_value": 10.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "dior_time",
+        "original_value": 8.0,
+        "original_unit": "hour",
+        "converted_value": 8.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "total_time",
+        "original_value": 18.0,
+        "original_unit": "hour",
+        "converted_value": 18.0,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Amalia, Megan, and Dior divided the home chores so that each person had something to do while the others were working. Amalia's work was to mow the lawn, which took her {amalia_time} hours. Megan had to walk the dog and this took her {megan_extra_time} hours longer than Amalia to complete her chore. Dior's work was to do laundry and she took well over {dior_extra_time} hours longer than the time Amalia took to mow the lawn. Calculate the total time they all took to do their chores altogether.",
+    "templatized_answer": [
+      "Megan took {megan_extra_time} hours longer than Amalia to do her work, a total of {amalia_time}+{megan_extra_time} = {megan_time} hours.",
+      "Amalia and Megan's total time to finish their work is {megan_time}+{amalia_time} = {amalia_and_megan_time} hours.",
+      "If Amalia took {amalia_time} hours to mow the lawn, and Dior took {dior_extra_time} hours longer than her while doing laundry, Dior took {amalia_time}+{dior_extra_time} = {dior_time} hours to do the laundry.",
+      "In total, they took {amalia_and_megan_time}+{dior_time} = {total_time} hours together doing their chores.",
+      "#### {total_time}"
+    ],
+    "factual_assignment": {
+      "amalia_time": 4.0,
+      "megan_extra_time": 2.0,
+      "megan_time": 6.0,
+      "amalia_and_megan_time": 10.0,
+      "dior_extra_time": 4.0,
+      "dior_time": 8.0,
+      "total_time": 18.0
+    }
+  },
+  "merged_assignment": {
+    "amalia_time": 4.0,
+    "megan_extra_time": 2.0,
+    "megan_time": 6.0,
+    "amalia_and_megan_time": 10.0,
+    "dior_extra_time": 4.0,
+    "dior_time": 8.0,
+    "total_time": 18.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    amalia_time = 4.0\n    megan_extra_time = 2.0\n    megan_time = round(amalia_time + megan_extra_time, 2)\n    amalia_and_megan_time = round(megan_time + amalia_time, 2)\n    dior_extra_time = 4.0\n    dior_time = round(amalia_time + dior_extra_time, 2)\n    total_time = round(amalia_and_megan_time + dior_time, 2)\n\n    return {\n        \"amalia_time\": amalia_time,\n        \"megan_extra_time\": megan_extra_time,\n        \"megan_time\": megan_time,\n        \"amalia_and_megan_time\": amalia_and_megan_time,\n        \"dior_extra_time\": dior_extra_time,\n        \"dior_time\": dior_time,\n        \"total_time\": total_time\n    }\n",
+    "results": {
+      "amalia_time": 4.0,
+      "megan_extra_time": 2.0,
+      "megan_time": 6.0,
+      "amalia_and_megan_time": 10.0,
+      "dior_extra_time": 4.0,
+      "dior_time": 8.0,
+      "total_time": 18.0
+    }
+  },
+  "final": {
+    "question": "Amalia, Megan, and Dior divided the home chores so that each person had something to do while the others were working. Amalia's work was to mow the lawn, which took her 4.0 hours. Megan had to walk the dog and this took her 2.0 hours longer than Amalia to complete her chore. Dior's work was to do laundry and she took well over 4.0 hours longer than the time Amalia took to mow the lawn. Calculate the total time they all took to do their chores altogether.",
+    "answer_lines": [
+      "Megan took 2.0 hours longer than Amalia to do her work, a total of 4.0+2.0 = 6.0 hours.",
+      "Amalia and Megan's total time to finish their work is 6.0+4.0 = 10.0 hours.",
+      "If Amalia took 4.0 hours to mow the lawn, and Dior took 4.0 hours longer than her while doing laundry, Dior took 4.0+4.0 = 8.0 hours to do the laundry.",
+      "In total, they took 10.0+8.0 = 18.0 hours together doing their chores.",
+      "#### 18.0"
+    ],
+    "final_scalar": 18.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ailing, Mengya, and Diya divided the home chores so that each person had something to do while the others were working. Ailing's work was to mow the lawn, which took her 4.0 hours. Mengya had to walk the dog and this took her 2.0 hours longer than Ailing to complete her chore. Diya's work was to do laundry and she took well over 4.0 hours longer than the time Ailing took to mow the lawn. Calculate the total time they all took to do their chores altogether.",
+    "adapted_answer": [
+      "Mengya took 2.0 hours longer than Ailing to do her work, a total of 4.0+2.0 = 6.0 hours.",
+      "Ailing and Mengya's total time to finish their work is 6.0+4.0 = 10.0 hours.",
+      "If Ailing took 4.0 hours to mow the lawn, and Diya took 4.0 hours longer than her while doing laundry, Diya took 4.0+4.0 = 8.0 hours to do the laundry.",
+      "In total, they took 10.0+8.0 = 18.0 hours together doing their chores.",
+      "#### 18.0"
+    ],
+    "adaptation_notes": "Replaced Amalia with Ailing, Megan with Mengya, and Dior with Diya to give the names a Chinese context."
+  }
+}

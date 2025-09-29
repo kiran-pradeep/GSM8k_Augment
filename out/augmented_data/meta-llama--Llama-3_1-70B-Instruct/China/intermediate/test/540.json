@@ -1,0 +1,95 @@
+{
+  "index": 540,
+  "split": "test",
+  "original": {
+    "question": "$18 is shared among 3 boys. The eldest added $5 to his share and added another $10 the following day. He later needed some money and spent $8 from his total so far. After saving some more, he was able to triple the amount he had left after spending the $8. How much does he have now?",
+    "answer": "Each boy gets $18/3 = $<<18/3=6>>6.\nThe eldest had $5+$6=$<<5+6=11>>11 after adding $5 to his share.\nHe added another $10 so he had $11+$10=$<<11+10=21>>21.\nThen he had $21-$8=$<<21-8=13>>13 after spending $8.\nSo, he now has $13*3=$<<13*3=39>>39.\n#### 39"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_share",
+      "value": 18,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eldest_addition_1",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eldest_addition_2",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eldest_spending",
+      "value": 8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eldest_final_amount",
+      "value": 39,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if unit == \"dollar\":\n            converted_unit = \"renminbi\"\n            converted_value = value * 7.13\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_share\",\n    \"value\": 18,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"eldest_addition_1\",\n    \"value\": 5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"eldest_addition_2\",\n    \"value\": 10,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"eldest_spending\",\n    \"value\": 8,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"eldest_final_amount\",\n    \"value\": 39,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_share",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 128.34,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eldest_addition_1",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eldest_addition_2",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eldest_spending",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eldest_final_amount",
+        "original_value": 39,
+        "original_unit": "dollar",
+        "converted_value": 278.07,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": null,
+  "merged_assignment": null,
+  "recompute": {
+    "code": null,
+    "results": null
+  },
+  "final": null,
+  "cultural_adapted": null
+}

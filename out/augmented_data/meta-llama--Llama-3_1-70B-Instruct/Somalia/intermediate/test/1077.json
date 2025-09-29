@@ -1,0 +1,90 @@
+{
+  "index": 1077,
+  "split": "test",
+  "original": {
+    "question": "Paul is at a train station and is waiting for his train. He isn't sure how long he needs to wait, but he knows that the fourth train scheduled to arrive at the station is the one he needs to get on. The first train is scheduled to arrive in 10 minutes, and this train will stay in the station for 20 minutes. The second train is to arrive half an hour after the first train leaves the station, and this second train will stay in the station for a quarter of the amount of time that the first train stayed in the station. The third train is to arrive an hour after the second train leaves the station, and this third train is to leave the station immediately after it arrives.  The fourth train will arrive 20 minutes after the third train leaves, and this is the train Paul will board.  In total, how long, in minutes, will Paul wait for his train?",
+    "answer": "The first train stays in the station for 10 minutes * 2 = <<10*2=20>>20 minutes.\nSo Paul waits for the first train for 20 + 10 = <<20+10=30>>30 minutes.\nThe second train arrives after half an hour, which is the same as 60 minutes / 2 = <<60/2=30>>30 minutes.\nIt then stays in the station for a quarter of the time the first train did which is 20 minutes / 4 = <<20/4=5>>5 minutes.\nSo Paul waits for the second train for 30 + 5 = <<30+5=35>>35 minutes.\nThe third train arrives an hour later, which is the same as 60 minutes * 1 hour = <<60*1=60>>60 minutes.\nAfter the final wait, Paul has waited a total of 30 minutes for the first train + 35 minutes for the second train + 60 minutes for the third train + 20 minutes final wait = <<30+35+60+20=145>>145 minutes.\n#### 145"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "train station",
+      "train"
+    ],
+    "notes": "The entities 'train station' and 'train' are culturally specific to regions other than Somalia, as they are more commonly associated with Western or developed countries."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 569.38, 'unit': 'shilling'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Paul is at a train station and is waiting for his train. He isn't sure how long he needs to wait, but he knows that the fourth train scheduled to arrive at the station is the one he needs to get on. The first train is scheduled to arrive in {first_train_arrival_time} minutes, and this train will stay in the station for {first_train_station_time} minutes. The second train is to arrive half an hour after the first train leaves the station, and this second train will stay in the station for a quarter of the amount of time that the first train stayed in the station. The third train is to arrive an hour after the second train leaves the station, and this third train is to leave the station immediately after it arrives.  The fourth train will arrive {fourth_train_arrival_time} minutes after the third train leaves, and this is the train Paul will board.  In total, how long, in minutes, will Paul wait for his train?",
+    "templatized_answer": [
+      "The first train stays in the station for {first_train_arrival_time} minutes * 2 = {first_train_station_time} minutes.",
+      "So Paul waits for the first train for {first_train_station_time} + {first_train_arrival_time} = {first_train_total_time} minutes.",
+      "The second train arrives after half an hour, which is the same as {hour_in_minutes} minutes / 2 = {half_hour} minutes.",
+      "It then stays in the station for a quarter of the time the first train did which is {first_train_station_time} minutes / 4 = {second_train_station_time} minutes.",
+      "So Paul waits for the second train for {half_hour} + {second_train_station_time} = {second_train_total_time} minutes.",
+      "The third train arrives an hour later, which is the same as {hour_in_minutes} minutes * 1 hour = {hour_in_minutes} minutes.",
+      "After the final wait, Paul has waited a total of {first_train_total_time} minutes for the first train + {second_train_total_time} minutes for the second train + {hour_in_minutes} minutes for the third train + {fourth_train_arrival_time} minutes final wait = {total_wait_time} minutes.",
+      "#### {total_wait_time}"
+    ],
+    "factual_assignment": {
+      "first_train_arrival_time": 10,
+      "first_train_station_time": 20,
+      "hour_in_minutes": 60,
+      "fourth_train_arrival_time": 20
+    }
+  },
+  "merged_assignment": {
+    "first_train_arrival_time": 10,
+    "first_train_station_time": 20,
+    "hour_in_minutes": 60,
+    "fourth_train_arrival_time": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"first_train_arrival_time\": 10,\n        \"first_train_station_time\": 20,\n        \"hour_in_minutes\": 60,\n        \"fourth_train_arrival_time\": 20\n    }\n\n    first_train_total_time = factual_assignment[\"first_train_arrival_time\"] + factual_assignment[\"first_train_station_time\"]\n    half_hour = factual_assignment[\"hour_in_minutes\"] / 2\n    second_train_station_time = factual_assignment[\"first_train_station_time\"] / 4\n    second_train_total_time = half_hour + second_train_station_time\n    total_wait_time = first_train_total_time + second_train_total_time + factual_assignment[\"hour_in_minutes\"] + factual_assignment[\"fourth_train_arrival_time\"]\n\n    recomputed_values = {\n        \"first_train_station_time\": factual_assignment[\"first_train_station_time\"],\n        \"first_train_total_time\": first_train_total_time,\n        \"half_hour\": half_hour,\n        \"second_train_station_time\": second_train_station_time,\n        \"second_train_total_time\": second_train_total_time,\n        \"hour_in_minutes\": factual_assignment[\"hour_in_minutes\"],\n        \"total_wait_time\": round(total_wait_time, 2)\n    }\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "first_train_station_time": 20,
+      "first_train_total_time": 30,
+      "half_hour": 30.0,
+      "second_train_station_time": 5.0,
+      "second_train_total_time": 35.0,
+      "hour_in_minutes": 60,
+      "total_wait_time": 145.0
+    }
+  },
+  "final": {
+    "question": "Paul is at a train station and is waiting for his train. He isn't sure how long he needs to wait, but he knows that the fourth train scheduled to arrive at the station is the one he needs to get on. The first train is scheduled to arrive in 10 minutes, and this train will stay in the station for 20 minutes. The second train is to arrive half an hour after the first train leaves the station, and this second train will stay in the station for a quarter of the amount of time that the first train stayed in the station. The third train is to arrive an hour after the second train leaves the station, and this third train is to leave the station immediately after it arrives.  The fourth train will arrive 20 minutes after the third train leaves, and this is the train Paul will board.  In total, how long, in minutes, will Paul wait for his train?",
+    "answer_lines": [
+      "The first train stays in the station for 10 minutes * 2 = 20 minutes.",
+      "So Paul waits for the first train for 20 + 10 = 30 minutes.",
+      "The second train arrives after half an hour, which is the same as 60 minutes / 2 = 30 minutes.",
+      "It then stays in the station for a quarter of the time the first train did which is 20 minutes / 4 = 5 minutes.",
+      "So Paul waits for the second train for 30 + 5 = 35 minutes.",
+      "The third train arrives an hour later, which is the same as 60 minutes * 1 hour = 60 minutes.",
+      "After the final wait, Paul has waited a total of 30 minutes for the first train + 35 minutes for the second train + 60 minutes for the third train + 20 minutes final wait = 145 minutes.",
+      "#### 145"
+    ],
+    "final_scalar": 145.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aadan wuxuu joogaa isgoyska gaadiidka, waxaana wata garoonka markii gaadiidka afraad ee ugu horreeyay ee soo booqanaya isgoyska ay tahay gaadiidka uu u baahanyahay inuu ku dhaqo. Gaadiidka koowaad waxay soo booqanaysaa muddo 10 daqiiqo, waxayna ku nooshaysaa isgoyska muddo 20 daqiiqo. Gaadiidka labaad waxay soo booqanaysaa nus markii gaadiidka koowaad ay ka baxaysay isgoyska, waxayna ku nooshaysaa isgoyska rubuc muddo gaadiidka koowaad ay ku nooshaysay. Gaadiidka saddexaad waxay soo booqanaysaa saac markii gaadiidka labaad ay ka baxaysay isgoyska, waxayna ku nooshaysaa isgoyska mar labaad ay soo booqatay. Gaadiidka afraad waxay soo booqanaysaa 20 daqiiqo markii gaadiidka saddexaad ay ka baxaysay, waxayna tahay gaadiidka Aadan uu ku dhaqayo. Waxaa jira in Aadan ugu wataa muddo ku dhaqayo gaadiidka, daqiiqado ah?",
+    "adapted_answer": [
+      "Gaadiidka koowaad waxay ku nooshaysaa isgoyska muddo 10 daqiiqo * 2 = 20 daqiiqo.",
+      "Waxaa Aadan ugu wataa gaadiidka koowaad 20 + 10 = 30 daqiiqo.",
+      "Gaadiidka labaad waxay soo booqanaysaa nus saac, oo ah 60 daqiiqo / 2 = 30 daqiiqo.",
+      "Waxay ku nooshaysaa isgoyska rubuc muddo gaadiidka koowaad ay ku nooshaysay, oo ah 20 daqiiqo / 4 = 5 daqiiqo.",
+      "Waxaa Aadan ugu wataa gaadiidka labaad 30 + 5 = 35 daqiiqo.",
+      "Gaadiidka saddexaad waxay soo booqanaysaa saac, oo ah 60 daqiiqo * 1 saac = 60 daqiiqo.",
+      "Markii ugu dambeeyay, Aadan wuxuu ugu wataa 30 daqiiqo gaadiidka koowaad + 35 daqiiqo gaadiidka labaad + 60 daqiiqo gaadiidka saddexaad + 20 daqiiqo ugu dambeeyay = 145 daqiiqo.",
+      "#### 145"
+    ],
+    "adaptation_notes": "Replaced 'train station' with 'isgoyska gaadiidka' and 'train' with 'gaadiidka'."
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "index": 851,
+  "split": "test",
+  "original": {
+    "question": "James buys 2 pairs of shoes a month.  He spends $2640 on shoes each year.  How much does he pay on average for each pair of shoes?",
+    "answer": "He buys 2*12=<<2*12=24>>24 pairs of shoes a year\nSo he spends 2640/24=$<<2640/24=110>>110 per pair\n#### 110"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "dollars"
+    ],
+    "notes": "The name 'James' is culturally specific to Western regions and the unit 'dollars' is primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shoes_yearly_cost",
+      "value": 2640.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "shoes_avg_cost",
+      "value": 110.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"shoes_yearly_cost\",\n        \"value\": 2640.0,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"shoes_avg_cost\",\n        \"value\": 110.0,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shoes_yearly_cost",
+        "original_value": 2640.0,
+        "original_unit": "dollar",
+        "converted_value": 229680.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "shoes_avg_cost",
+        "original_value": 110.0,
+        "original_unit": "dollar",
+        "converted_value": 9570.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James buys 2 pairs of shoes a month. He spends ${shoes_yearly_cost} on shoes each year. How much does he pay on average for each pair of shoes?",
+    "templatized_answer": [
+      "He buys 2*12={2*12} pairs of shoes a year",
+      "So he spends {shoes_yearly_cost}/{2*12}=${shoes_yearly_cost}/{2*12} per pair",
+      "#### {shoes_avg_cost}"
+    ],
+    "factual_assignment": {
+      "shoes_yearly_cost": 2640.0,
+      "shoes_avg_cost": 110.0
+    }
+  },
+  "merged_assignment": {
+    "shoes_yearly_cost": 229680.0,
+    "shoes_avg_cost": 9570.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    shoes_yearly_cost = 229680.0\n    shoes_avg_cost = 9570.0\n\n    # Recompute intermediate steps\n    shoes_monthly_cost = shoes_yearly_cost / 12\n    shoes_pairs_per_year = 2 * 12\n    shoes_avg_cost_recomputed = shoes_yearly_cost / shoes_pairs_per_year\n\n    # Round to 2 decimal places where appropriate\n    shoes_avg_cost_recomputed = round(shoes_avg_cost_recomputed, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"shoes_yearly_cost\": shoes_yearly_cost,\n        \"shoes_avg_cost\": shoes_avg_cost,\n        \"2*12\": shoes_pairs_per_year,\n        \"shoes_yearly_cost/{2*12}\": shoes_avg_cost_recomputed,\n        \"shoes_avg_cost\": shoes_avg_cost_recomputed\n    }\n",
+    "results": {
+      "shoes_yearly_cost": 229680.0,
+      "shoes_avg_cost": 9570.0,
+      "2*12": 24,
+      "shoes_yearly_cost/{2*12}": 9570.0
+    }
+  },
+  "final": {
+    "question": "James buys 2 pairs of shoes a month. He spends 229680 rupees on shoes each year. How much does he pay on average for each pair of shoes?",
+    "answer_lines": [
+      "He buys 2*12=24 pairs of shoes a year",
+      "So he spends 229680/24=9570 rupees per pair",
+      "#### 9570"
+    ],
+    "final_scalar": 9570.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan buys 2 pairs of shoes a month. He spends 229680 rupees on shoes each year. How much does he pay on average for each pair of shoes?",
+    "adapted_answer": [
+      "He buys 2*12=24 pairs of shoes a year",
+      "So he spends 229680/24=9570 rupees per pair",
+      "#### 9570"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Rohan' to provide an Indian context."
+  }
+}

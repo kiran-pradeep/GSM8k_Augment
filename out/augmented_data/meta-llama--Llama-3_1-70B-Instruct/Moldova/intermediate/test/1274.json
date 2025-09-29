@@ -1,0 +1,129 @@
+{
+  "index": 1274,
+  "split": "test",
+  "original": {
+    "question": "A family of parents and a child go to the cinema. The cost of an adult ticket is $12 and a child ticket is $8. Then they buy 2 popcorns for $3 each. How many dollars do they pay in total?",
+    "answer": "Adult tickets cost 12*2=$<<12*2=24>>24\nPopcorns cost 2*3=$<<2*3=6>>6\nThey pay 24+8+6=$<<24+8+6=38>>38 in total.\n#### 38"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "popcorns"
+    ],
+    "notes": "The use of dollars as currency and popcorns as a snack are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "adult_ticket_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "child_ticket_cost",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popcorn_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 38.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"adult_ticket_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"child_ticket_cost\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"popcorn_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 38.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "adult_ticket_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 199.44,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "child_ticket_cost",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 132.96,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "popcorn_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 38.0,
+        "original_unit": "dollar",
+        "converted_value": 631.56,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A family of parents and a child go to the cinema. The cost of an adult ticket is ${adult_ticket_cost} and a child ticket is ${child_ticket_cost}. Then they buy 2 popcorns for ${popcorn_cost} each. How many dollars do they pay in total?",
+    "templatized_answer": [
+      "Adult tickets cost {adult_ticket_cost}*2=${adult_ticket_cost}*2",
+      "Popcorns cost 2*{popcorn_cost}=${popcorn_cost}*2",
+      "They pay {adult_ticket_cost}*2+{child_ticket_cost}+{popcorn_cost}*2=${adult_ticket_cost}*2+{child_ticket_cost}+{popcorn_cost}*2",
+      "#### {adult_ticket_cost}*2+{child_ticket_cost}+{popcorn_cost}*2"
+    ],
+    "factual_assignment": {
+      "adult_ticket_cost": 12.0,
+      "child_ticket_cost": 8.0,
+      "popcorn_cost": 3.0
+    }
+  },
+  "merged_assignment": {
+    "adult_ticket_cost": 199.44,
+    "child_ticket_cost": 132.96,
+    "popcorn_cost": 49.86
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    adult_ticket_cost = 199.44\n    child_ticket_cost = 132.96\n    popcorn_cost = 49.86\n\n    adult_tickets_cost = adult_ticket_cost * 2\n    popcorns_cost = popcorn_cost * 2\n    total_cost = adult_tickets_cost + child_ticket_cost + popcorns_cost\n\n    return {\n        \"{adult_ticket_cost}\": round(adult_ticket_cost, 2),\n        \"{child_ticket_cost}\": round(child_ticket_cost, 2),\n        \"{popcorn_cost}\": round(popcorn_cost, 2),\n        \"{adult_ticket_cost}*2\": round(adult_tickets_cost, 2),\n        \"2*{popcorn_cost}\": round(popcorns_cost, 2),\n        \"{adult_ticket_cost}*2+{child_ticket_cost}+{popcorn_cost}*2\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "{adult_ticket_cost}": 199.44,
+      "{child_ticket_cost}": 132.96,
+      "{popcorn_cost}": 49.86,
+      "{adult_ticket_cost}*2": 398.88,
+      "2*{popcorn_cost}": 99.72,
+      "{adult_ticket_cost}*2+{child_ticket_cost}+{popcorn_cost}*2": 631.56
+    }
+  },
+  "final": {
+    "question": "A family of parents and a child go to the cinema. The cost of an adult ticket is 199.44 leu and a child ticket is 132.96 leu. Then they buy 2 popcorns for 49.86 leu each. How many leu do they pay in total?",
+    "answer_lines": [
+      "Adult tickets cost 199.44*2=398.88 leu",
+      "Popcorns cost 2*49.86=99.72 leu",
+      "They pay 398.88+132.96+99.72=631.56 leu",
+      "#### 631.56"
+    ],
+    "final_scalar": 631.56,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A family of parents and a child go to the cinema. The cost of an adult ticket is 199.44 leu and a child ticket is 132.96 leu. Then they buy 2 mămăligăs for 49.86 leu each. How many leu do they pay in total?",
+    "adapted_answer": [
+      "Adult tickets cost 199.44*2=398.88 leu",
+      "Mămăligăs cost 2*49.86=99.72 leu",
+      "They pay 398.88+132.96+99.72=631.56 leu",
+      "#### 631.56"
+    ],
+    "adaptation_notes": "Replaced 'popcorns' with 'mămăligăs', a traditional Moldovan dish, to adapt the text to a Moldovan context."
+  }
+}

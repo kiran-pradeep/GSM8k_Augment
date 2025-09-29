@@ -1,0 +1,146 @@
+{
+  "index": 1110,
+  "split": "test",
+  "original": {
+    "question": "Although Soledad works in a windowless office, she loves the outdoors. She will be on vacation for the entire month of June and cannot wait to hike 9,300 miles within that month. She is thinking of walking twice a day, covering 125 miles each time. How many more miles per day must Soledad hike to complete her journey on time?",
+    "answer": "June has 30 days, so Soledad must hike 9,300 miles / 30 days = <<9300/30=310>>310 miles/day\nInitially, she wanted to hike 2 times/day * 125 miles/time = <<2*125=250>>250 miles/day\nTo complete her journey, she must increase her hike by 310 miles/day - 250 miles/day = 60 miles/day\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Soledad",
+      "June",
+      "miles"
+    ],
+    "notes": "Soledad is a Spanish name, June is a month in the Gregorian calendar, and miles are a unit of distance commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_hike",
+      "value": 9300.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "hike_per_time",
+      "value": 125.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "required_hike_per_day",
+      "value": 310.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "initial_hike_per_day",
+      "value": 250.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "additional_hike_per_day",
+      "value": 60.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"shilling\", \"factor\": 569.38}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"total_hike\",\n    \"value\": 9300.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"hike_per_time\",\n    \"value\": 125.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"required_hike_per_day\",\n    \"value\": 310.0,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"initial_hike_per_day\",\n    \"value\": 250.0,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"additional_hike_per_day\",\n    \"value\": 60.0,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_hike",
+        "original_value": 9300.0,
+        "original_unit": "mile",
+        "converted_value": 14966.86,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "hike_per_time",
+        "original_value": 125.0,
+        "original_unit": "mile",
+        "converted_value": 201.17,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "required_hike_per_day",
+        "original_value": 310.0,
+        "original_unit": "mile",
+        "converted_value": 498.9,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "initial_hike_per_day",
+        "original_value": 250.0,
+        "original_unit": "mile",
+        "converted_value": 402.33,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "additional_hike_per_day",
+        "original_value": 60.0,
+        "original_unit": "mile",
+        "converted_value": 96.56,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Although Soledad works in a windowless office, she loves the outdoors. She will be on vacation for the entire month of June and cannot wait to hike {total_hike} miles within that month. She is thinking of walking twice a day, covering {hike_per_time} miles each time. How many more miles per day must Soledad hike to complete her journey on time?",
+    "templatized_answer": [
+      "June has 30 days, so Soledad must hike {total_hike} miles / 30 days = {required_hike_per_day} miles/day",
+      "Initially, she wanted to hike 2 times/day * {hike_per_time} miles/time = {initial_hike_per_day} miles/day",
+      "To complete her journey, she must increase her hike by {required_hike_per_day} miles/day - {initial_hike_per_day} miles/day = {additional_hike_per_day} miles/day",
+      "#### {additional_hike_per_day}"
+    ],
+    "factual_assignment": {
+      "total_hike": 9300.0,
+      "hike_per_time": 125.0,
+      "required_hike_per_day": 310.0,
+      "initial_hike_per_day": 250.0,
+      "additional_hike_per_day": 60.0
+    }
+  },
+  "merged_assignment": {
+    "total_hike": 14966.86,
+    "hike_per_time": 201.17,
+    "required_hike_per_day": 498.9,
+    "initial_hike_per_day": 402.33,
+    "additional_hike_per_day": 96.56
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_hike = 14966.86\n    hike_per_time = 201.17\n\n    required_hike_per_day = total_hike / 30\n    required_hike_per_day = round(required_hike_per_day, 2)\n\n    initial_hike_per_day = 2 * hike_per_time\n    initial_hike_per_day = round(initial_hike_per_day, 2)\n\n    additional_hike_per_day = required_hike_per_day - initial_hike_per_day\n    additional_hike_per_day = round(additional_hike_per_day, 2)\n\n    return {\n        \"total_hike\": total_hike,\n        \"hike_per_time\": hike_per_time,\n        \"required_hike_per_day\": required_hike_per_day,\n        \"initial_hike_per_day\": initial_hike_per_day,\n        \"additional_hike_per_day\": additional_hike_per_day\n    }\n",
+    "results": {
+      "total_hike": 14966.86,
+      "hike_per_time": 201.17,
+      "required_hike_per_day": 498.9,
+      "initial_hike_per_day": 402.34,
+      "additional_hike_per_day": 96.56
+    }
+  },
+  "final": {
+    "question": "Although Soledad works in a windowless office, she loves the outdoors. She will be on vacation for the entire month of June and cannot wait to hike 14,966.86 kilometers within that month. She is thinking of walking twice a day, covering 201.17 kilometers each time. How many more kilometers per day must Soledad hike to complete her journey on time?",
+    "answer_lines": [
+      "June has 30 days, so Soledad must hike 14,966.86 kilometers / 30 days = 498.9 kilometers/day",
+      "Initially, she wanted to hike 2 times/day * 201.17 kilometers/time = 402.34 kilometers/day",
+      "To complete her journey, she must increase her hike by 498.9 kilometers/day - 402.34 kilometers/day = 96.56 kilometers/day",
+      "#### 96.56"
+    ],
+    "final_scalar": 96.56,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Although Hodan works in a windowless office, she loves the outdoors. She will be on vacation for the entire month of Juun and cannot wait to hike 14,966.86 kilometers within that month. She is thinking of walking twice a day, covering 201.17 kilometers each time. How many more kilometers per day must Hodan hike to complete her journey on time?",
+    "adapted_answer": [
+      "Juun has 30 days, so Hodan must hike 14,966.86 kilometers / 30 days = 498.9 kilometers/day",
+      "Initially, she wanted to hike 2 times/day * 201.17 kilometers/time = 402.34 kilometers/day",
+      "To complete her journey, she must increase her hike by 498.9 kilometers/day - 402.34 kilometers/day = 96.56 kilometers/day",
+      "#### 96.56"
+    ],
+    "adaptation_notes": "Replaced 'Soledad' with 'Hodan' (a Somali name) and 'June' with 'Juun' (the Somali word for June)."
+  }
+}

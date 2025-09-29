@@ -1,0 +1,152 @@
+{
+  "index": 224,
+  "split": "test",
+  "original": {
+    "question": "Carlos and Benji are at the beach. Carlos rents a canoe for $30 an hour and Benji rents a banana boat raft for $18 an hour. If Carlos uses the boat for 3 hours and Benji uses the raft for 5 hours, how much will they pay for their rentals, altogether?",
+    "answer": "Carlos would have to pay $30 x 3 = $<<30*3=90>>90\nBenji would have to pay $18 x 5 = $<<18*5=90>>90\nAll together, Carlos and Benji will have to pay $90 + $90 = $<<90+90=180>>180\n#### 180"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Carlos",
+      "Benji",
+      "dollars"
+    ],
+    "notes": "The names Carlos and Benji, and the unit of currency 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "canoe_rental",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "banana_boat_rental",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "carlos_rental",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "benji_rental",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_rental",
+      "value": 180.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"canoe_rental\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"banana_boat_rental\", \"value\": 18.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"carlos_rental\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"benji_rental\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_rental\", \"value\": 180.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "canoe_rental",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 2610.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "banana_boat_rental",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 1566.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "carlos_rental",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 7830.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "benji_rental",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 7830.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_rental",
+        "original_value": 180.0,
+        "original_unit": "dollar",
+        "converted_value": 15660.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carlos and Benji are at the beach. Carlos rents a canoe for ${canoe_rental} an hour and Benji rents a banana boat raft for ${banana_boat_rental} an hour. If Carlos uses the boat for {carlos_hours} hours and Benji uses the raft for {benji_hours} hours, how much will they pay for their rentals, altogether?",
+    "templatized_answer": [
+      "Carlos would have to pay ${canoe_rental} x {carlos_hours} = ${carlos_rental}",
+      "Benji would have to pay ${banana_boat_rental} x {benji_hours} = ${benji_rental}",
+      "All together, Carlos and Benji will have to pay ${carlos_rental} + ${benji_rental} = ${total_rental}",
+      "#### ${total_rental}"
+    ],
+    "factual_assignment": {
+      "canoe_rental": 30.0,
+      "banana_boat_rental": 18.0,
+      "carlos_rental": 90.0,
+      "benji_rental": 90.0,
+      "total_rental": 180.0,
+      "carlos_hours": 3,
+      "benji_hours": 5
+    }
+  },
+  "merged_assignment": {
+    "canoe_rental": 2610.0,
+    "banana_boat_rental": 1566.0,
+    "carlos_rental": 7830.0,
+    "benji_rental": 7830.0,
+    "total_rental": 15660.0,
+    "carlos_hours": 3,
+    "benji_hours": 5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    canoe_rental = 2610.0\n    banana_boat_rental = 1566.0\n    carlos_hours = 3\n    benji_hours = 5\n\n    carlos_rental = round(canoe_rental * carlos_hours, 2)\n    benji_rental = round(banana_boat_rental * benji_hours, 2)\n    total_rental = round(carlos_rental + benji_rental, 2)\n\n    return {\n        \"canoe_rental\": canoe_rental,\n        \"banana_boat_rental\": banana_boat_rental,\n        \"carlos_hours\": carlos_hours,\n        \"benji_hours\": benji_hours,\n        \"carlos_rental\": carlos_rental,\n        \"benji_rental\": benji_rental,\n        \"total_rental\": total_rental,\n    }\n",
+    "results": {
+      "canoe_rental": 2610.0,
+      "banana_boat_rental": 1566.0,
+      "carlos_hours": 3,
+      "benji_hours": 5,
+      "carlos_rental": 7830.0,
+      "benji_rental": 7830.0,
+      "total_rental": 15660.0
+    }
+  },
+  "final": {
+    "question": "Carlos and Benji are at the beach. Carlos rents a canoe for 2610 rupees an hour and Benji rents a banana boat raft for 1566 rupees an hour. If Carlos uses the boat for 3 hours and Benji uses the raft for 5 hours, how much will they pay for their rentals, altogether?",
+    "answer_lines": [
+      "Carlos would have to pay 2610 x 3 = 7830",
+      "Benji would have to pay 1566 x 5 = 7830",
+      "All together, Carlos and Benji will have to pay 7830 + 7830 = 15660",
+      "#### 15660"
+    ],
+    "final_scalar": 15660,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan and Aarav are at the beach. Rohan rents a canoe for 2610 rupees an hour and Aarav rents a banana boat raft for 1566 rupees an hour. If Rohan uses the boat for 3 hours and Aarav uses the raft for 5 hours, how much will they pay for their rentals, altogether?",
+    "adapted_answer": [
+      "Rohan would have to pay 2610 x 3 = 7830",
+      "Aarav would have to pay 1566 x 5 = 7830",
+      "All together, Rohan and Aarav will have to pay 7830 + 7830 = 15660",
+      "#### 15660"
+    ],
+    "adaptation_notes": "Replaced 'Carlos' with 'Rohan' and 'Benji' with 'Aarav' to use Indian names."
+  }
+}

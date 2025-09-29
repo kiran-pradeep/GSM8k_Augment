@@ -1,0 +1,145 @@
+{
+  "index": 420,
+  "split": "test",
+  "original": {
+    "question": "To fund his store, Mr. Josue solicited money from two banks. The first bank gave him $4000, and the second company gave him twice as much. If he initially had $5000 in capital, how much capital does he have now?",
+    "answer": "If the second bank gave him twice as much money as the first bank, he received 2*$4000 = $<<2*4000=8000>>8000 from the second bank.\nThe total amount of money Mr. Josue got from the two banks is $8000+$4000 = $<<8000+4000=12000>>12000\nIf he initially had capital of $5000, his capital now is $12000+$5000= $17000\n#### 17000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mr. Josue",
+      "dollars"
+    ],
+    "notes": "The name 'Mr. Josue' is not typically Chinese, and the unit 'dollars' is used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_bank_loan",
+      "value": 4000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_bank_loan",
+      "value": 8000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_bank_loan",
+      "value": 12000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "initial_capital",
+      "value": 5000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "current_capital",
+      "value": 17000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * conversions[unit][converted_unit]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_bank_loan\", \"value\": 4000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_bank_loan\", \"value\": 8000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_bank_loan\", \"value\": 12000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"initial_capital\", \"value\": 5000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"current_capital\", \"value\": 17000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_bank_loan",
+        "original_value": 4000.0,
+        "original_unit": "dollar",
+        "converted_value": 28520.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "second_bank_loan",
+        "original_value": 8000.0,
+        "original_unit": "dollar",
+        "converted_value": 57040.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_bank_loan",
+        "original_value": 12000.0,
+        "original_unit": "dollar",
+        "converted_value": 85560.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "initial_capital",
+        "original_value": 5000.0,
+        "original_unit": "dollar",
+        "converted_value": 35650.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "current_capital",
+        "original_value": 17000.0,
+        "original_unit": "dollar",
+        "converted_value": 121210.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To fund his store, Mr. Josue solicited money from two banks. The first bank gave him ${first_bank_loan}, and the second company gave him twice as much. If he initially had ${initial_capital} in capital, how much capital does he have now?",
+    "templatized_answer": [
+      "If the second bank gave him twice as much money as the first bank, he received 2*${first_bank_loan} = ${second_bank_loan} from the second bank.",
+      "The total amount of money Mr. Josue got from the two banks is ${second_bank_loan}+${first_bank_loan} = ${total_bank_loan}",
+      "If he initially had capital of ${initial_capital}, his capital now is ${total_bank_loan}+${initial_capital}= ${current_capital}",
+      "#### {current_capital}"
+    ],
+    "factual_assignment": {
+      "first_bank_loan": 4000.0,
+      "second_bank_loan": 8000.0,
+      "total_bank_loan": 12000.0,
+      "initial_capital": 5000.0,
+      "current_capital": 17000.0
+    }
+  },
+  "merged_assignment": {
+    "first_bank_loan": 28520.0,
+    "second_bank_loan": 57040.0,
+    "total_bank_loan": 85560.0,
+    "initial_capital": 35650.0,
+    "current_capital": 121210.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_bank_loan = 28520.0\n    second_bank_loan = 2 * first_bank_loan\n    total_bank_loan = second_bank_loan + first_bank_loan\n    initial_capital = 35650.0\n    current_capital = total_bank_loan + initial_capital\n\n    return {\n        \"first_bank_loan\": round(first_bank_loan, 2),\n        \"second_bank_loan\": round(second_bank_loan, 2),\n        \"total_bank_loan\": round(total_bank_loan, 2),\n        \"initial_capital\": round(initial_capital, 2),\n        \"current_capital\": round(current_capital, 2)\n    }\n",
+    "results": {
+      "first_bank_loan": 28520.0,
+      "second_bank_loan": 57040.0,
+      "total_bank_loan": 85560.0,
+      "initial_capital": 35650.0,
+      "current_capital": 121210.0
+    }
+  },
+  "final": {
+    "question": "To fund his store, Mr. Josue solicited money from two banks. The first bank gave him 28520 renminbi, and the second company gave him twice as much. If he initially had 35650 renminbi in capital, how much capital does he have now?",
+    "answer_lines": [
+      "If the second bank gave him twice as much money as the first bank, he received 2*28520 = 57040 renminbi from the second bank.",
+      "The total amount of money Mr. Josue got from the two banks is 57040+28520 = 85560 renminbi",
+      "If he initially had capital of 35650 renminbi, his capital now is 85560+35650= 121210 renminbi",
+      "#### 121210"
+    ],
+    "final_scalar": 121210.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To fund his store, Mr. Liu solicited money from two banks. The first bank gave him 28520 renminbi, and the second company gave him twice as much. If he initially had 35650 renminbi in capital, how much capital does he have now?",
+    "adapted_answer": [
+      "If the second bank gave him twice as much money as the first bank, he received 2*28520 = 57040 renminbi from the second bank.",
+      "The total amount of money Mr. Liu got from the two banks is 57040+28520 = 85560 renminbi",
+      "If he initially had capital of 35650 renminbi, his capital now is 85560+35650= 121210 renminbi",
+      "#### 121210"
+    ],
+    "adaptation_notes": "Replaced 'Mr. Josue' with 'Mr. Liu' to give the name a Chinese context."
+  }
+}

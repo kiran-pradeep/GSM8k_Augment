@@ -1,0 +1,150 @@
+{
+  "index": 747,
+  "split": "test",
+  "original": {
+    "question": "A tomato vendor decides to switch who he buys his tomatoes for.  He sells 500 tomatoes a day.  He used to buy them for $.5 each but he gets a new vendor who sells them for $.4 each.  How much money does he save a week?",
+    "answer": "He buys 500*7=<<500*7=3500>>3500\nHe used to pay 3500*.5=$<<3500*.5=1750>>1750\nHe now pays 3500*.4=$<<3500*.4=1400>>1400\nSo he saves 1750-1400=$<<1750-1400=350>>350\n#### 350"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "tomatoes"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in Western countries, and 'tomatoes' which is a food item commonly used in many cuisines but not typically associated with traditional Somali cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "old_cost_per_tomato",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "new_cost_per_tomato",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "old_weekly_cost",
+      "value": 1750,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "new_weekly_cost",
+      "value": 1400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_savings",
+      "value": 350,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"old_cost_per_tomato\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"new_cost_per_tomato\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"old_weekly_cost\", \"value\": 1750, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"new_weekly_cost\", \"value\": 1400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_savings\", \"value\": 350, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "old_cost_per_tomato",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 284.69,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "new_cost_per_tomato",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 227.75,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "old_weekly_cost",
+        "original_value": 1750,
+        "original_unit": "dollar",
+        "converted_value": 996415.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "new_weekly_cost",
+        "original_value": 1400,
+        "original_unit": "dollar",
+        "converted_value": 797132.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "weekly_savings",
+        "original_value": 350,
+        "original_unit": "dollar",
+        "converted_value": 199283.0,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A tomato vendor decides to switch who he buys his tomatoes for.  He sells {tomatoes_per_day} tomatoes a day.  He used to buy them for ${old_cost_per_tomato} each but he gets a new vendor who sells them for ${new_cost_per_tomato} each.  How much money does he save a week?",
+    "templatized_answer": [
+      "He buys {tomatoes_per_day}*7={tomatoes_per_day}*7",
+      "He used to pay {tomatoes_per_day}*7*{old_cost_per_tomato}=${old_weekly_cost}",
+      "He now pays {tomatoes_per_day}*7*{new_cost_per_tomato}=${new_weekly_cost}",
+      "So he saves {old_weekly_cost}-{new_weekly_cost}=${weekly_savings}"
+    ],
+    "factual_assignment": {
+      "old_cost_per_tomato": 0.5,
+      "new_cost_per_tomato": 0.4,
+      "old_weekly_cost": 1750,
+      "new_weekly_cost": 1400,
+      "weekly_savings": 350,
+      "tomatoes_per_day": 500
+    }
+  },
+  "merged_assignment": {
+    "old_cost_per_tomato": 284.69,
+    "new_cost_per_tomato": 227.75,
+    "old_weekly_cost": 996415.0,
+    "new_weekly_cost": 797132.0,
+    "weekly_savings": 199283.0,
+    "tomatoes_per_day": 500
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    old_cost_per_tomato = 284.69\n    new_cost_per_tomato = 227.75\n    tomatoes_per_day = 500\n\n    old_weekly_cost = round(tomatoes_per_day * 7 * old_cost_per_tomato, 2)\n    new_weekly_cost = round(tomatoes_per_day * 7 * new_cost_per_tomato, 2)\n    weekly_savings = round(old_weekly_cost - new_weekly_cost, 2)\n\n    return {\n        \"tomatoes_per_day\": tomatoes_per_day,\n        \"old_cost_per_tomato\": old_cost_per_tomato,\n        \"new_cost_per_tomato\": new_cost_per_tomato,\n        \"old_weekly_cost\": old_weekly_cost,\n        \"new_weekly_cost\": new_weekly_cost,\n        \"weekly_savings\": weekly_savings\n    }\n",
+    "results": {
+      "tomatoes_per_day": 500,
+      "old_cost_per_tomato": 284.69,
+      "new_cost_per_tomato": 227.75,
+      "old_weekly_cost": 996415.0,
+      "new_weekly_cost": 797125.0,
+      "weekly_savings": 199290.0
+    }
+  },
+  "final": {
+    "question": "A tomato vendor decides to switch who he buys his tomatoes for.  He sells 500 tomatoes a day.  He used to buy them for 284.69 shilling each but he gets a new vendor who sells them for 227.75 shilling each.  How much money does he save a week?",
+    "answer_lines": [
+      "He buys 500*7=3500",
+      "He used to pay 3500*284.69=996415 shilling",
+      "He now pays 3500*227.75=797125 shilling",
+      "So he saves 996415-797125=199290 shilling",
+      "#### 199290"
+    ],
+    "final_scalar": 199290,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A baasto vendor decides to switch who he buys his baasto for.  He sells 500 baasto a day.  He used to buy them for 284.69 shilling each but he gets a new vendor who sells them for 227.75 shilling each.  How much money does he save a week?",
+    "adapted_answer": [
+      "He buys 500*7=3500",
+      "He used to pay 3500*284.69=996415 shilling",
+      "He now pays 3500*227.75=797125 shilling",
+      "So he saves 996415-797125=199290 shilling",
+      "#### 199290"
+    ],
+    "adaptation_notes": "Replaced 'tomato' with 'baasto', a Somali word for tomato."
+  }
+}

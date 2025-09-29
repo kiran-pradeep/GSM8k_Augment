@@ -1,0 +1,111 @@
+{
+  "index": 57,
+  "split": "test",
+  "original": {
+    "question": "A wooden bridge can carry no more than 5000 pounds. A delivery truck filled with identical boxes, each weighing 15 pounds, will pass over the bridge. The combined weight of the driver and the empty truck is 3755 pounds. What is the maximum number of boxes which can be loaded onto the truck while not exceeding the bridge's weight limit?",
+    "answer": "The boxes can weigh up to 5000 pounds - 3755 pounds = <<5000-3755=1245>>1245 pounds in total.\nThere can be 1245 / 15 = <<1245/15=83>>83 boxes loaded onto the truck without exceeding the bridge's weight limit.\n#### 83"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "pounds"
+    ],
+    "notes": "The unit 'pounds' is commonly used in the US and UK, but not in India where 'kilograms' is the standard unit of weight."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bridge_weight_limit",
+      "value": 5000.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "box_weight",
+      "value": 15.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "truck_driver_weight",
+      "value": 3755.0,
+      "unit": "pound",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"rupee\", 87),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_factor = conversions[unit]\n            converted_value = round(value * conversion_factor, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bridge_weight_limit\", \"value\": 5000.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"box_weight\", \"value\": 15.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"truck_driver_weight\", \"value\": 3755.0, \"unit\": \"pound\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bridge_weight_limit",
+        "original_value": 5000.0,
+        "original_unit": "pound",
+        "converted_value": 2267.96,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "box_weight",
+        "original_value": 15.0,
+        "original_unit": "pound",
+        "converted_value": 6.8,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "truck_driver_weight",
+        "original_value": 3755.0,
+        "original_unit": "pound",
+        "converted_value": 1703.24,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A wooden bridge can carry no more than {bridge_weight_limit} pounds. A delivery truck filled with identical boxes, each weighing {box_weight} pounds, will pass over the bridge. The combined weight of the driver and the empty truck is {truck_driver_weight} pounds. What is the maximum number of boxes which can be loaded onto the truck while not exceeding the bridge's weight limit?",
+    "templatized_answer": [
+      "The boxes can weigh up to {bridge_weight_limit} pounds - {truck_driver_weight} pounds = {bridge_weight_limit} - {truck_driver_weight} pounds in total.",
+      "There can be ({bridge_weight_limit} - {truck_driver_weight}) / {box_weight} = ({bridge_weight_limit} - {truck_driver_weight}) / {box_weight} boxes loaded onto the truck without exceeding the bridge's weight limit.",
+      "#### ({bridge_weight_limit} - {truck_driver_weight}) / {box_weight}"
+    ],
+    "factual_assignment": {
+      "bridge_weight_limit": 5000.0,
+      "box_weight": 15.0,
+      "truck_driver_weight": 3755.0
+    }
+  },
+  "merged_assignment": {
+    "bridge_weight_limit": 2267.96,
+    "box_weight": 6.8,
+    "truck_driver_weight": 1703.24
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bridge_weight_limit = 2267.96\n    truck_driver_weight = 1703.24\n    box_weight = 6.8\n\n    total_box_weight = round(bridge_weight_limit - truck_driver_weight, 2)\n    max_boxes = round((bridge_weight_limit - truck_driver_weight) / box_weight, 2)\n\n    return {\n        \"bridge_weight_limit\": bridge_weight_limit,\n        \"truck_driver_weight\": truck_driver_weight,\n        \"box_weight\": box_weight,\n        \"bridge_weight_limit - truck_driver_weight\": total_box_weight,\n        \"(bridge_weight_limit - truck_driver_weight) / box_weight\": max_boxes\n    }\n",
+    "results": {
+      "bridge_weight_limit": 2267.96,
+      "truck_driver_weight": 1703.24,
+      "box_weight": 6.8,
+      "bridge_weight_limit - truck_driver_weight": 564.72,
+      "(bridge_weight_limit - truck_driver_weight) / box_weight": 83.05
+    }
+  },
+  "final": {
+    "question": "A wooden bridge can carry no more than 2267.96 kilograms. A delivery truck filled with identical boxes, each weighing 6.8 kilograms, will pass over the bridge. The combined weight of the driver and the empty truck is 1703.24 kilograms. What is the maximum number of boxes which can be loaded onto the truck while not exceeding the bridge's weight limit?",
+    "answer_lines": [
+      "The boxes can weigh up to 2267.96 kilograms - 1703.24 kilograms = 564.72 kilograms in total.",
+      "There can be 564.72 / 6.8 = 83.05 boxes loaded onto the truck without exceeding the bridge's weight limit.",
+      "#### 83.05"
+    ],
+    "final_scalar": 83.05,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A wooden bridge in rural Maharashtra can carry no more than 2267.96 kilograms. A Tata truck filled with identical boxes of basmati rice, each weighing 6.8 kilograms, will pass over the bridge. The combined weight of the driver and the empty truck is 1703.24 kilograms. What is the maximum number of boxes which can be loaded onto the truck while not exceeding the bridge's weight limit?",
+    "adapted_answer": [
+      "The boxes can weigh up to 2267.96 kilograms - 1703.24 kilograms = 564.72 kilograms in total.",
+      "There can be 564.72 / 6.8 = 83.05 boxes loaded onto the truck without exceeding the bridge's weight limit.",
+      "#### 83.05"
+    ],
+    "adaptation_notes": "Replaced 'delivery truck' with 'Tata truck' and added 'in rural Maharashtra' and 'boxes of basmati rice' to give the question an Indian context."
+  }
+}

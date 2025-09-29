@@ -1,0 +1,139 @@
+{
+  "index": 788,
+  "split": "test",
+  "original": {
+    "question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has $50 and the trip costs $300?",
+    "answer": "John's school has decided to pay 300 / 2 = $<<300/2=150>>150 for his trip.\nIn total John has covered 150 + 50 = $<<150+50=200>>200 for his trip\nTherefore, John needs 300 - 200 = $<<300-200=100>>100 more for the trip.\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' and the unit 'dollars' are culturally specific to regions other than Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "trip_cost",
+      "value": 300,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "johns_money",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "school_contribution",
+      "value": 150,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_covered",
+      "value": 200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "missing_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"trip_cost\", \"value\": 300, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"johns_money\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"school_contribution\", \"value\": 150, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_covered\", \"value\": 200, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"missing_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "trip_cost",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 170814.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "johns_money",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 28469.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "school_contribution",
+        "original_value": 150,
+        "original_unit": "dollar",
+        "converted_value": 85407.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_covered",
+        "original_value": 200,
+        "original_unit": "dollar",
+        "converted_value": 113876.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "missing_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 56938.0,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has ${johns_money} and the trip costs ${trip_cost}?",
+    "templatized_answer": [
+      "John's school has decided to pay {trip_cost} / 2 = ${trip_cost / 2} for his trip.",
+      "In total John has covered {trip_cost / 2} + {johns_money} = ${trip_cost / 2 + johns_money} for his trip",
+      "Therefore, John needs {trip_cost} - {trip_cost / 2 + johns_money} = ${trip_cost - (trip_cost / 2 + johns_money)} more for the trip.",
+      "#### {trip_cost - (trip_cost / 2 + johns_money)}"
+    ],
+    "factual_assignment": {
+      "trip_cost": 300,
+      "johns_money": 50
+    }
+  },
+  "merged_assignment": {
+    "trip_cost": 170814.0,
+    "johns_money": 28469.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    trip_cost = 170814.0\n    johns_money = 28469.0\n\n    school_contribution = trip_cost / 2\n    total_covered = school_contribution + johns_money\n    missing_amount = trip_cost - total_covered\n\n    return {\n        \"trip_cost\": trip_cost,\n        \"johns_money\": johns_money,\n        \"trip_cost / 2\": school_contribution,\n        \"trip_cost / 2 + johns_money\": total_covered,\n        \"trip_cost - (trip_cost / 2 + johns_money)\": missing_amount\n    }\n\nprint(recompute())\n",
+    "results": {
+      "trip_cost": 170814.0,
+      "johns_money": 28469.0,
+      "trip_cost / 2": 85407.0,
+      "trip_cost / 2 + johns_money": 113876.0,
+      "trip_cost - (trip_cost / 2 + johns_money)": 56938.0
+    }
+  },
+  "final": {
+    "question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has 28469 shilling and the trip costs 170814 shilling?",
+    "answer_lines": [
+      "John's school has decided to pay 170814 / 2 = 85407 shilling for his trip.",
+      "In total John has covered 85407 + 28469 = 113876 shilling for his trip",
+      "Therefore, John needs 170814 - 113876 = 56938 shilling more for the trip.",
+      "#### 56938"
+    ],
+    "final_scalar": 56938,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Cismaan is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is Cismaan missing if he has 28469 shilling and the trip costs 170814 shilling?",
+    "adapted_answer": [
+      "Cismaan's school has decided to pay 170814 / 2 = 85407 shilling for his trip.",
+      "In total Cismaan has covered 85407 + 28469 = 113876 shilling for his trip",
+      "Therefore, Cismaan needs 170814 - 113876 = 56938 shilling more for the trip.",
+      "#### 56938"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Cismaan', a common Somali name."
+  }
+}

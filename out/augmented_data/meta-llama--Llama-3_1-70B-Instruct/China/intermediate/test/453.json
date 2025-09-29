@@ -1,0 +1,123 @@
+{
+  "index": 453,
+  "split": "test",
+  "original": {
+    "question": "Jenna starts out with 8 sapphires. She trades 3 sapphires for two rubies. If sapphires are worth $800 and rubies are worth $1200, how much money are all her jewels worth?",
+    "answer": "First find the total number of sapphires Jenna still has: 8 sapphires - 3 sapphires = <<8-3=5>>5 sapphires\nThen multiply this number by the cost per sapphire to find the total cost of the sapphires: 5 sapphires * $800/sapphire = $<<5*800=4000>>4000\nThen find the total value of the rubies: 2 rubies * $1200/ruby = $<<2*1200=2400>>2400\nThen amount this to the cost of the sapphires to find the total value of her jewelry: $2400 + $4000 = $<<2400+4000=6400>>6400\n#### 6400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jenna",
+      "dollars"
+    ],
+    "notes": "The name 'Jenna' is a Western name and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "sapphire_value",
+      "value": 800,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ruby_value",
+      "value": 1200,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_jewels_worth",
+      "value": 6400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"sapphire_value\", \"value\": 800, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ruby_value\", \"value\": 1200, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_jewels_worth\", \"value\": 6400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "sapphire_value",
+        "original_value": 800,
+        "original_unit": "dollar",
+        "converted_value": 5704.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "ruby_value",
+        "original_value": 1200,
+        "original_unit": "dollar",
+        "converted_value": 8556.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_jewels_worth",
+        "original_value": 6400,
+        "original_unit": "dollar",
+        "converted_value": 45632.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jenna starts out with {initial_sapphires} sapphires. She trades {traded_sapphires} sapphires for two rubies. If sapphires are worth ${sapphire_value} and rubies are worth ${ruby_value}, how much money are all her jewels worth?",
+    "templatized_answer": [
+      "First find the total number of sapphires Jenna still has: {initial_sapphires} sapphires - {traded_sapphires} sapphires = {initial_sapphires} - {traded_sapphires} sapphires",
+      "Then multiply this number by the cost per sapphire to find the total cost of the sapphires: ({initial_sapphires} - {traded_sapphires}) sapphires * ${sapphire_value}/sapphire = $(({initial_sapphires} - {traded_sapphires}) * {sapphire_value})",
+      "Then find the total value of the rubies: 2 rubies * ${ruby_value}/ruby = $(2 * {ruby_value})",
+      "Then amount this to the cost of the sapphires to find the total value of her jewelry: $((2 * {ruby_value}) + ({initial_sapphires} - {traded_sapphires}) * {sapphire_value}) = $(({initial_sapphires} - {traded_sapphires}) * {sapphire_value} + 2 * {ruby_value})",
+      "#### $(({initial_sapphires} - {traded_sapphires}) * {sapphire_value} + 2 * {ruby_value})"
+    ],
+    "factual_assignment": {
+      "initial_sapphires": 8,
+      "traded_sapphires": 3,
+      "sapphire_value": 800,
+      "ruby_value": 1200
+    }
+  },
+  "merged_assignment": {
+    "initial_sapphires": 8,
+    "traded_sapphires": 3,
+    "sapphire_value": 5704.0,
+    "ruby_value": 8556.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_sapphires = 8\n    traded_sapphires = 3\n    sapphire_value = 5704.0\n    ruby_value = 8556.0\n\n    remaining_sapphires = initial_sapphires - traded_sapphires\n    total_sapphire_value = round((initial_sapphires - traded_sapphires) * sapphire_value, 2)\n    total_ruby_value = round(2 * ruby_value, 2)\n    total_jewelry_value = round(total_sapphire_value + total_ruby_value, 2)\n\n    return {\n        \"initial_sapphires\": initial_sapphires,\n        \"traded_sapphires\": traded_sapphires,\n        \"sapphire_value\": sapphire_value,\n        \"ruby_value\": ruby_value,\n        \"initial_sapphires - traded_sapphires\": remaining_sapphires,\n        \"({initial_sapphires} - {traded_sapphires}) * {sapphire_value}\": total_sapphire_value,\n        \"2 * {ruby_value}\": total_ruby_value,\n        \"({initial_sapphires} - {traded_sapphires}) * {sapphire_value} + 2 * {ruby_value}\": total_jewelry_value\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_sapphires": 8,
+      "traded_sapphires": 3,
+      "sapphire_value": 5704.0,
+      "ruby_value": 8556.0,
+      "initial_sapphires - traded_sapphires": 5,
+      "({initial_sapphires} - {traded_sapphires}) * {sapphire_value}": 28520.0,
+      "2 * {ruby_value}": 17112.0,
+      "({initial_sapphires} - {traded_sapphires}) * {sapphire_value} + 2 * {ruby_value}": 45632.0
+    }
+  },
+  "final": {
+    "question": "Jenna starts out with 8 sapphires. She trades 3 sapphires for two rubies. If sapphires are worth 5704.0 renminbi and rubies are worth 8556.0 renminbi, how much money are all her jewels worth?",
+    "answer_lines": [
+      "First find the total number of sapphires Jenna still has: 8 sapphires - 3 sapphires = 5 sapphires",
+      "Then multiply this number by the cost per sapphire to find the total cost of the sapphires: 5 sapphires * 5704.0 renminbi/sapphire = 28520.0 renminbi",
+      "Then find the total value of the rubies: 2 rubies * 8556.0 renminbi/ruby = 17112.0 renminbi",
+      "Then amount this to the cost of the sapphires to find the total value of her jewelry: 17112.0 renminbi + 28520.0 renminbi = 45632.0 renminbi",
+      "#### 45632.0"
+    ],
+    "final_scalar": 45632.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling starts out with 8 sapphires. She trades 3 sapphires for two rubies. If sapphires are worth 5704.0 renminbi and rubies are worth 8556.0 renminbi, how much money are all her jewels worth?",
+    "adapted_answer": [
+      "First find the total number of sapphires Ling still has: 8 sapphires - 3 sapphires = 5 sapphires",
+      "Then multiply this number by the cost per sapphire to find the total cost of the sapphires: 5 sapphires * 5704.0 renminbi/sapphire = 28520.0 renminbi",
+      "Then find the total value of the rubies: 2 rubies * 8556.0 renminbi/ruby = 17112.0 renminbi",
+      "Then amount this to the cost of the sapphires to find the total value of her jewelry: 17112.0 renminbi + 28520.0 renminbi = 45632.0 renminbi",
+      "#### 45632.0"
+    ],
+    "adaptation_notes": "Replaced 'Jenna' with 'Ling' to give the name a Chinese context."
+  }
+}

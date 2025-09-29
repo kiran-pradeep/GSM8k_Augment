@@ -1,0 +1,124 @@
+{
+  "index": 1055,
+  "split": "test",
+  "original": {
+    "question": "James has to buy insurance.  Since he had an accident it was 60% more than normal.  The normal cost is $120 a month.  How much does he pay a year?",
+    "answer": "The insurance is 120*.6=$<<120*.6=72>>72 per month more expensive than normal\nSo he paid 120+72=$<<120+72=192>>192 a month\nThat means he pays 12*192=$<<12*192=2304>>2304\n#### 2304"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "dollars"
+    ],
+    "notes": "The name 'James' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "normal_insurance_cost",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_insurance_cost",
+      "value": 72.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_insurance_cost",
+      "value": 192.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_insurance_cost",
+      "value": 2304.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"normal_insurance_cost\",\n    \"value\": 120.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"additional_insurance_cost\",\n    \"value\": 72.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"monthly_insurance_cost\",\n    \"value\": 192.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"yearly_insurance_cost\",\n    \"value\": 2304.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "normal_insurance_cost",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 855.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "additional_insurance_cost",
+        "original_value": 72.0,
+        "original_unit": "dollar",
+        "converted_value": 513.36,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_insurance_cost",
+        "original_value": 192.0,
+        "original_unit": "dollar",
+        "converted_value": 1368.96,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "yearly_insurance_cost",
+        "original_value": 2304.0,
+        "original_unit": "dollar",
+        "converted_value": 16427.52,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James has to buy insurance. Since he had an accident it was 60% more than normal. The normal cost is ${normal_insurance_cost} a month. How much does he pay a year?",
+    "templatized_answer": [
+      "The insurance is {normal_insurance_cost}*.6=${{normal_insurance_cost}*.6} per month more expensive than normal",
+      "So he paid {normal_insurance_cost}+{normal_insurance_cost}*.6=${{normal_insurance_cost}+{normal_insurance_cost}*.6} a month",
+      "That means he pays 12*({normal_insurance_cost}+{normal_insurance_cost}*.6)=${{12*({normal_insurance_cost}+{normal_insurance_cost}*.6)}}",
+      "#### {yearly_insurance_cost}"
+    ],
+    "factual_assignment": {
+      "normal_insurance_cost": 120.0,
+      "yearly_insurance_cost": 2304.0
+    }
+  },
+  "merged_assignment": {
+    "normal_insurance_cost": 855.6,
+    "yearly_insurance_cost": 16427.52
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    normal_insurance_cost = 855.6\n    insurance_cost_increase = normal_insurance_cost * 0.6\n    monthly_insurance_cost = normal_insurance_cost + insurance_cost_increase\n    yearly_insurance_cost = 12 * monthly_insurance_cost\n\n    return {\n        \"normal_insurance_cost\": normal_insurance_cost,\n        \"insurance_cost_increase\": round(insurance_cost_increase, 2),\n        \"monthly_insurance_cost\": round(monthly_insurance_cost, 2),\n        \"yearly_insurance_cost\": round(yearly_insurance_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "normal_insurance_cost": 855.6,
+      "insurance_cost_increase": 513.36,
+      "monthly_insurance_cost": 1368.96,
+      "yearly_insurance_cost": 16427.52
+    }
+  },
+  "final": {
+    "question": "James has to buy insurance. Since he had an accident it was 60% more than normal. The normal cost is 855.6 renminbi a month. How much does he pay a year?",
+    "answer_lines": [
+      "The insurance is 855.6*.6=513.36 renminbi per month more expensive than normal",
+      "So he paid 855.6+513.36=1368.96 renminbi a month",
+      "That means he pays 12*1368.96=16427.52 renminbi",
+      "#### 16427.52"
+    ],
+    "final_scalar": 16427.52,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "李张帮需要购买保险爽。和三是一个场型事気后、保险用费比渊常情的超过的60%。渊常用费是855.6万人民之月。你这个年要会美值多少。",
+    "adapted_answer": [
+      "保险用费比渊常情的超过的60%、简于855.6*.6=513.36万人民之月。",
+      "此起一月你要美值855.6+513.36=1368.96万人民。",
+      "此起一年你要美值12*1368.96=16427.52万人民"
+    ],
+    "adaptation_notes": "Replaced “James” with 李张帮, a common Chinese name."
+  }
+}

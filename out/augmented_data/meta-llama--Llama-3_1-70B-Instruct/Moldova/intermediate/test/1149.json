@@ -1,0 +1,112 @@
+{
+  "index": 1149,
+  "split": "test",
+  "original": {
+    "question": "Jen got 3 fish.  They each need $1 worth of food a day.  How much does she spend on food in the month of May?",
+    "answer": "He spends 3*1=$<<3*1=3>>3 on food a day\nSo he spends 3*31=$<<3*31=93>>93 a month\n#### 93"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not the official currency of Moldova (Moldovan leu)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "food_cost_per_day",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_cost_per_day_total",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "food_cost_per_month",
+      "value": 93,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"food_cost_per_day\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_cost_per_day_total\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"food_cost_per_month\", \"value\": 93, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "food_cost_per_day",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "food_cost_per_day_total",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "food_cost_per_month",
+        "original_value": 93,
+        "original_unit": "dollar",
+        "converted_value": 1545.66,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jen got {number_of_fish} fish.  They each need ${food_cost_per_day} worth of food a day.  How much does she spend on food in the month of May?",
+    "templatized_answer": [
+      "He spends {number_of_fish}*{food_cost_per_day}=${number_of_fish}*{food_cost_per_day} on food a day",
+      "So he spends {number_of_fish}*{days_in_month}=${number_of_fish}*{days_in_month} a month",
+      "#### {number_of_fish}*{days_in_month}"
+    ],
+    "factual_assignment": {
+      "number_of_fish": 3,
+      "food_cost_per_day": 1,
+      "days_in_month": 31
+    }
+  },
+  "merged_assignment": {
+    "number_of_fish": 3,
+    "food_cost_per_day": 16.62,
+    "days_in_month": 31
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_fish = 3\n    food_cost_per_day = 16.62\n    days_in_month = 31\n\n    daily_food_cost = number_of_fish * food_cost_per_day\n    monthly_food_cost = daily_food_cost * days_in_month\n\n    return {\n        \"number_of_fish\": number_of_fish,\n        \"food_cost_per_day\": round(food_cost_per_day, 2),\n        \"days_in_month\": days_in_month,\n        \"number_of_fish*food_cost_per_day\": round(daily_food_cost, 2),\n        \"number_of_fish*days_in_month\": number_of_fish * days_in_month,\n        \"number_of_fish*days_in_month*food_cost_per_day\": round(monthly_food_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_fish": 3,
+      "food_cost_per_day": 16.62,
+      "days_in_month": 31,
+      "number_of_fish*food_cost_per_day": 49.86,
+      "number_of_fish*days_in_month": 93,
+      "number_of_fish*days_in_month*food_cost_per_day": 1545.66
+    }
+  },
+  "final": {
+    "question": "Jen got 3 fish.  They each need 16.62 leu worth of food a day.  How much does she spend on food in the month of May?",
+    "answer_lines": [
+      "He spends 3*16.62=49.86 leu on food a day",
+      "So he spends 3*31=93 a month",
+      "#### 1545.66"
+    ],
+    "final_scalar": 1545.66,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jen got 3 fish.  They each need 16.62 lei worth of food a day.  How much does she spend on food in the month of May?",
+    "adapted_answer": [
+      "She spends 3*16.62=49.86 lei on food a day",
+      "So she spends 3*31=93 a month",
+      "#### 1545.66"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei', as 'lei' is the correct plural form of the Moldovan currency."
+  }
+}

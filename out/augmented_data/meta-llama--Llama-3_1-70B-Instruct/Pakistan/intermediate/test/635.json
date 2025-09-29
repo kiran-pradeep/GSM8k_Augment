@@ -1,0 +1,103 @@
+{
+  "index": 635,
+  "split": "test",
+  "original": {
+    "question": "Manny signed up for Karate classes for $60. His parents tell him that if his classes end up costing more than $10 per class, then they won't sign him up again. If there are 10 total classes, how many can he miss before they don't sign him up again?",
+    "answer": "He must attend at least six classes, because 60 / 6 = <<60/6=10>>10\nHe can skip 4 class because 10 - 4 = <<10-4=6>>6\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Manny",
+      "dollars"
+    ],
+    "notes": "Name 'Manny' and unit 'dollars' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "karate_classes_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "max_cost_per_class",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"karate_classes_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"max_cost_per_class\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "karate_classes_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 16911.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "max_cost_per_class",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Manny signed up for Karate classes for ${karate_classes_cost}. His parents tell him that if his classes end up costing more than ${max_cost_per_class} per class, then they won't sign him up again. If there are {total_classes} total classes, how many can he miss before they don't sign him up again?",
+    "templatized_answer": [
+      "He must attend at least {min_classes_to_attend} classes, because {karate_classes_cost} / {min_classes_to_attend} = {max_cost_per_class}",
+      "He can skip {classes_to_skip} classes because {total_classes} - {classes_to_skip} = {min_classes_to_attend}",
+      "#### {classes_to_skip}"
+    ],
+    "factual_assignment": {
+      "karate_classes_cost": 60.0,
+      "max_cost_per_class": 10.0,
+      "total_classes": 10,
+      "min_classes_to_attend": 6,
+      "classes_to_skip": 4
+    }
+  },
+  "merged_assignment": {
+    "karate_classes_cost": 16911.0,
+    "max_cost_per_class": 2818.5,
+    "total_classes": 10,
+    "min_classes_to_attend": 6,
+    "classes_to_skip": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    karate_classes_cost = 16911.0\n    max_cost_per_class = 2818.5\n    total_classes = 10\n\n    min_classes_to_attend = round(karate_classes_cost / max_cost_per_class)\n    classes_to_skip = total_classes - min_classes_to_attend\n\n    return {\n        \"karate_classes_cost\": karate_classes_cost,\n        \"max_cost_per_class\": max_cost_per_class,\n        \"total_classes\": total_classes,\n        \"min_classes_to_attend\": min_classes_to_attend,\n        \"classes_to_skip\": classes_to_skip\n    }\n",
+    "results": {
+      "karate_classes_cost": 16911.0,
+      "max_cost_per_class": 2818.5,
+      "total_classes": 10,
+      "min_classes_to_attend": 6,
+      "classes_to_skip": 4
+    }
+  },
+  "final": {
+    "question": "Manny signed up for Karate classes for 16911. His parents tell him that if his classes end up costing more than 2818.5 per class, then they won't sign him up again. If there are 10 total classes, how many can he miss before they don't sign him up again?",
+    "answer_lines": [
+      "He must attend at least 6 classes, because 16911 / 6 = 2818.5",
+      "He can skip 4 classes because 10 - 4 = 6",
+      "#### 4"
+    ],
+    "final_scalar": 4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran signed up for Karate classes for 16911 rupees. His parents tell him that if his classes end up costing more than 2818.5 rupees per class, then they won't sign him up again. If there are 10 total classes, how many can he miss before they don't sign him up again?",
+    "adapted_answer": [
+      "He must attend at least 6 classes, because 16911 / 6 = 2818.5",
+      "He can skip 4 classes because 10 - 4 = 6",
+      "#### 4"
+    ],
+    "adaptation_notes": "Replaced 'Manny' with 'Kamran' and implied 'dollars' with 'rupees' to give the question a Pakistani context."
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "index": 237,
+  "split": "test",
+  "original": {
+    "question": "Johnny took his allowance of $20 and added an extra $10 to it.  He then invested this sum of money, which tripled in a year.  How much money did he have after a year?",
+    "answer": "Johnny invested twenty and ten dollars for a total of 20+10=<<20+10=30>>30 dollars invested\nJohnny tripled this amount of money over the year, for a total of 30*=90 dollars\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Johnny",
+      "dollars"
+    ],
+    "notes": "The name 'Johnny' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_allowance",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_allowance",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_investment",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_after_year",
+      "value": 90,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_allowance\",\n    \"value\": 20,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"extra_allowance\",\n    \"value\": 10,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_investment\",\n    \"value\": 30,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_after_year\",\n    \"value\": 90,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_allowance",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "extra_allowance",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_investment",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_after_year",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 641.7,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Johnny took his allowance of ${initial_allowance} and added an extra ${extra_allowance} to it.  He then invested this sum of money, which tripled in a year.  How much money did he have after a year?",
+    "templatized_answer": [
+      "Johnny invested {initial_allowance} and {extra_allowance} dollars for a total of {initial_allowance}+{extra_allowance}={initial_allowance}+{extra_allowance} dollars invested",
+      "Johnny tripled this amount of money over the year, for a total of ({initial_allowance}+{extra_allowance})*3={total_after_year} dollars"
+    ],
+    "factual_assignment": {
+      "initial_allowance": 20,
+      "extra_allowance": 10,
+      "total_after_year": 90
+    }
+  },
+  "merged_assignment": {
+    "initial_allowance": 142.6,
+    "extra_allowance": 71.3,
+    "total_after_year": 641.7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_allowance = 142.6\n    extra_allowance = 71.3\n    total_after_year = 641.7\n\n    computed_values = {\n        \"initial_allowance\": initial_allowance,\n        \"extra_allowance\": extra_allowance,\n        \"total_after_year\": total_after_year\n    }\n\n    computed_values[\"initial_allowance_plus_extra_allowance\"] = round(initial_allowance + extra_allowance, 2)\n    computed_values[\"total_after_year_computed\"] = round((initial_allowance + extra_allowance) * 3, 2)\n\n    return computed_values\n",
+    "results": {
+      "initial_allowance": 142.6,
+      "extra_allowance": 71.3,
+      "total_after_year": 641.7,
+      "initial_allowance_plus_extra_allowance": 213.9,
+      "total_after_year_computed": 641.7
+    }
+  },
+  "final": {
+    "question": "Johnny took his allowance of 142.6 renminbi and added an extra 71.3 renminbi to it.  He then invested this sum of money, which tripled in a year.  How much money did he have after a year?",
+    "answer_lines": [
+      "Johnny invested 142.6 and 71.3 renminbi for a total of 142.6+71.3=213.9 renminbi invested",
+      "Johnny tripled this amount of money over the year, for a total of 213.9*3=641.7 renminbi",
+      "#### 641.7"
+    ],
+    "final_scalar": 641.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jiang took his allowance of 142.6 renminbi and added an extra 71.3 renminbi to it.  He then invested this sum of money, which tripled in a year.  How much money did he have after a year?",
+    "adapted_answer": [
+      "Jiang invested 142.6 and 71.3 renminbi for a total of 142.6+71.3=213.9 renminbi invested",
+      "Jiang tripled this amount of money over the year, for a total of 213.9*3=641.7 renminbi",
+      "#### 641.7"
+    ],
+    "adaptation_notes": "Replaced 'Johnny' with 'Jiang', a common Chinese name."
+  }
+}

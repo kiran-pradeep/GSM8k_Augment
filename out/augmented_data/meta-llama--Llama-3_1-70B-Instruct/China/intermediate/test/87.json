@@ -1,0 +1,146 @@
+{
+  "index": 87,
+  "split": "test",
+  "original": {
+    "question": "A company pays each of its employees $600 in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Sylvie just clocked 5 years in the company last December, what's her annual salary after three more years of service?",
+    "answer": "In a month, Sylvie earns $600. which totals $600/month * 12 months/year = $7200 in a year.\nSylvie earnings will increase by 10/100 * $7200/year = $<<10/100*7200=720>>720/year after 5 years.\nIn three years, the total increase in her salary will be 3 years * $720/year = $<<3*720=2160>>2160\nAfter three years, Sylvie will be paid $7200 + $2160 = $<<7200+2160=9360>>9360\n#### 9360"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sylvie",
+      "dollars",
+      "December"
+    ],
+    "notes": "Detected Western name, non-Chinese currency unit, and a month name that is part of the Gregorian calendar used globally but not exclusive to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_salary",
+      "value": 600,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "annual_salary",
+      "value": 7200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "annual_increase",
+      "value": 720,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_increase",
+      "value": 2160,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_annual_salary",
+      "value": 9360,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"monthly_salary\",\n    \"value\": 600,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"annual_salary\",\n    \"value\": 7200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"annual_increase\",\n    \"value\": 720,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_increase\",\n    \"value\": 2160,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"final_annual_salary\",\n    \"value\": 9360,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_salary",
+        "original_value": 600,
+        "original_unit": "dollar",
+        "converted_value": 4278.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "annual_salary",
+        "original_value": 7200,
+        "original_unit": "dollar",
+        "converted_value": 51336.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "annual_increase",
+        "original_value": 720,
+        "original_unit": "dollar",
+        "converted_value": 5133.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_increase",
+        "original_value": 2160,
+        "original_unit": "dollar",
+        "converted_value": 15400.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "final_annual_salary",
+        "original_value": 9360,
+        "original_unit": "dollar",
+        "converted_value": 66736.8,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company pays each of its employees ${monthly_salary} in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Sylvie just clocked 5 years in the company last December, what's her annual salary after three more years of service?",
+    "templatized_answer": [
+      "In a month, Sylvie earns ${monthly_salary}. which totals ${monthly_salary}/month * 12 months/year = ${monthly_salary}*12/year in a year.",
+      "Sylvie earnings will increase by 10/100 * ${monthly_salary}*12/year = ${annual_increase}/year after 5 years.",
+      "In three years, the total increase in her salary will be 3 years * ${annual_increase}/year = ${total_increase}",
+      "After three years, Sylvie will be paid ${monthly_salary}*12 + ${total_increase} = ${final_annual_salary}",
+      "#### ${final_annual_salary}"
+    ],
+    "factual_assignment": {
+      "monthly_salary": 600,
+      "annual_increase": 720,
+      "total_increase": 2160,
+      "final_annual_salary": 9360
+    }
+  },
+  "merged_assignment": {
+    "monthly_salary": 4278.0,
+    "annual_increase": 5133.6,
+    "total_increase": 15400.8,
+    "final_annual_salary": 66736.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_salary = 4278.0\n    annual_increase = round(monthly_salary * 12 * 0.1, 2)\n    total_increase = round(annual_increase * 3, 2)\n    final_annual_salary = round(monthly_salary * 12 + total_increase, 2)\n\n    return {\n        \"monthly_salary\": monthly_salary,\n        \"annual_increase\": annual_increase,\n        \"total_increase\": total_increase,\n        \"final_annual_salary\": final_annual_salary\n    }\n",
+    "results": {
+      "monthly_salary": 4278.0,
+      "annual_increase": 5133.6,
+      "total_increase": 15400.8,
+      "final_annual_salary": 66736.8
+    }
+  },
+  "final": {
+    "question": "A company pays each of its employees 4278.0 renminbi in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Sylvie just clocked 5 years in the company last December, what's her annual salary after three more years of service?",
+    "answer_lines": [
+      "In a month, Sylvie earns 4278.0 renminbi. which totals 4278.0 renminbi/month * 12 months/year = 51336.0 renminbi/year in a year.",
+      "Sylvie earnings will increase by 10/100 * 51336.0 renminbi/year = 5133.6 renminbi/year after 5 years.",
+      "In three years, the total increase in her salary will be 3 years * 5133.6 renminbi/year = 15400.8 renminbi",
+      "After three years, Sylvie will be paid 51336.0 renminbi + 15400.8 renminbi = 66736.8 renminbi",
+      "#### 66736.8"
+    ],
+    "final_scalar": 66736.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company pays each of its employees 4278.0 renminbi in a month. The company has a policy of increasing the salaries of each of its employees by 10% of the initial salary every year for those who've stayed in the company for five years. If Xiǎo Lǐ just clocked 5 years in the company last Winter Solstice, what's her annual salary after three more years of service?",
+    "adapted_answer": [
+      "In a month, Xiǎo Lǐ earns 4278.0 renminbi. which totals 4278.0 renminbi/month * 12 months/year = 51336.0 renminbi/year in a year.",
+      "Xiǎo Lǐ earnings will increase by 10/100 * 51336.0 renminbi/year = 5133.6 renminbi/year after 5 years.",
+      "In three years, the total increase in her salary will be 3 years * 5133.6 renminbi/year = 15400.8 renminbi",
+      "After three years, Xiǎo Lǐ will be paid 51336.0 renminbi + 15400.8 renminbi = 66736.8 renminbi",
+      "#### 66736.8"
+    ],
+    "adaptation_notes": "Replaced 'Sylvie' with 'Xiǎo Lǐ' (a common Chinese name) and 'December' with 'Winter Solstice' (a traditional Chinese holiday)."
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "index": 896,
+  "split": "test",
+  "original": {
+    "question": "John rents his car out 10 times a month for 3 hours each time.  He gets paid $25 an hour.  If his car payment is $500, how much profit does he make on his car?",
+    "answer": "He rents his car 10*3=<<10*3=30>>30 hour a month\nSo he makes 25*30=$<<25*30=750>>750 a month\nThat means he has a profit of 750-500=$<<750-500=250>>250 a month\n#### 250"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_rental_rate",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "car_payment",
+      "value": 500,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_profit",
+      "value": 250,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"hourly_rental_rate\",\n    \"value\": 25,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"car_payment\",\n    \"value\": 500,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"monthly_profit\",\n    \"value\": 250,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_rental_rate",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 178.25,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "car_payment",
+        "original_value": 500,
+        "original_unit": "dollar",
+        "converted_value": 3565.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_profit",
+        "original_value": 250,
+        "original_unit": "dollar",
+        "converted_value": 250,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John rents his car out {number_of_rentals} times a month for {rental_hours} hours each time. He gets paid ${hourly_rental_rate} an hour. If his car payment is ${car_payment}, how much profit does he make on his car?",
+    "templatized_answer": [
+      "He rents his car {number_of_rentals}*{rental_hours}={number_of_rentals}*{rental_hours} hour a month",
+      "So he makes {hourly_rental_rate}*{number_of_rentals}*{rental_hours}=${hourly_rental_rate}*{number_of_rentals}*{rental_hours} a month",
+      "That means he has a profit of {hourly_rental_rate}*{number_of_rentals}*{rental_hours}-{car_payment}=${hourly_rental_rate}*{number_of_rentals}*{rental_hours}-{car_payment} a month",
+      "#### {monthly_profit}"
+    ],
+    "factual_assignment": {
+      "hourly_rental_rate": 25,
+      "car_payment": 500,
+      "monthly_profit": 250,
+      "number_of_rentals": 10,
+      "rental_hours": 3
+    }
+  },
+  "merged_assignment": {
+    "hourly_rental_rate": 178.25,
+    "car_payment": 3565.0,
+    "monthly_profit": 250,
+    "number_of_rentals": 10,
+    "rental_hours": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_rental_rate = 178.25\n    car_payment = 3565.0\n    number_of_rentals = 10\n    rental_hours = 3\n\n    total_rental_hours = number_of_rentals * rental_hours\n    monthly_revenue = hourly_rental_rate * total_rental_hours\n    monthly_profit = round(monthly_revenue - car_payment, 2)\n\n    return {\n        \"hourly_rental_rate\": hourly_rental_rate,\n        \"car_payment\": car_payment,\n        \"monthly_profit\": monthly_profit,\n        \"number_of_rentals\": number_of_rentals,\n        \"rental_hours\": rental_hours,\n        \"total_rental_hours\": total_rental_hours,\n        \"monthly_revenue\": round(monthly_revenue, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hourly_rental_rate": 178.25,
+      "car_payment": 3565.0,
+      "monthly_profit": 1782.5,
+      "number_of_rentals": 10,
+      "rental_hours": 3,
+      "total_rental_hours": 30,
+      "monthly_revenue": 5347.5
+    }
+  },
+  "final": {
+    "question": "John rents his car out 10 times a month for 3 hours each time. He gets paid 178.25 renminbi an hour. If his car payment is 3565.0 renminbi, how much profit does he make on his car?",
+    "answer_lines": [
+      "He rents his car 10*3=30 hour a month",
+      "So he makes 178.25*30=5347.5 renminbi a month",
+      "That means he has a profit of 5347.5-3565.0=1782.5 renminbi a month",
+      "#### 1782.5"
+    ],
+    "final_scalar": 1782.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang rents his car out 10 times a month for 3 hours each time. He gets paid 178.25 renminbi an hour. If his car payment is 3565.0 renminbi, how much profit does he make on his car?",
+    "adapted_answer": [
+      "He rents his car 10*3=30 hours a month",
+      "So he makes 178.25*30=5347.5 renminbi a month",
+      "That means he has a profit of 5347.5-3565.0=1782.5 renminbi a month",
+      "#### 1782.5"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang' to give the name a Chinese context."
+  }
+}

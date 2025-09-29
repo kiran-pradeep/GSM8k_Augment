@@ -1,0 +1,167 @@
+{
+  "index": 1042,
+  "split": "test",
+  "original": {
+    "question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost $5. On the second race, he won $1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "answer": "On the second race he won $11 because 1+ 5 x 2 = <<1+5*2=11>>11\nOn the third race he lost $15 because 10 x 1.5 = <<10*1.5=15>>15\nHe lost a total of $20 on the first and third races because 15 + 5 = <<15+5=20>>20\n\nHe lost $9 that day because 11 - 20 = <<11-20=-9>>-9\nHe lost an average of $3 per race because 9 / 3 = <<9/3=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Johnny",
+      "dollars"
+    ],
+    "notes": "The name 'Johnny' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_race_loss",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_race_win",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "third_race_loss",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_loss",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_net_loss",
+      "value": 9,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "average_loss",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] not in [\"renminbi\", \"kilogram\", \"gram\", \"kilometer\", \"meter\", \"liter\", \"milliliter\", \"minute\", \"hour\"]:\n            converted_value, converted_unit = convert(metric[\"value\"], metric[\"unit\"])\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"first_race_loss\",\n    \"value\": 5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"second_race_win\",\n    \"value\": 11,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"third_race_loss\",\n    \"value\": 15,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_loss\",\n    \"value\": 20,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_net_loss\",\n    \"value\": 9,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"average_loss\",\n    \"value\": 3,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_race_loss",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "second_race_win",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 78.43,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "third_race_loss",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_loss",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_net_loss",
+        "original_value": 9,
+        "original_unit": "dollar",
+        "converted_value": 64.17,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "average_loss",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost ${first_race_loss}. On the second race, he won $1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "templatized_answer": [
+      "On the second race he won ${second_race_win} because 1+ {first_race_loss} x 2 = {second_race_win}",
+      "On the third race he lost ${third_race_loss} because {second_race_win} x 1.5 = {third_race_loss}",
+      "He lost a total of ${total_loss} on the first and third races because {third_race_loss} + {first_race_loss} = {total_loss}",
+      "He lost ${total_net_loss} that day because {second_race_win} - {total_loss} = {total_net_loss}",
+      "He lost an average of ${average_loss} per race because {total_net_loss} / 3 = {average_loss}",
+      "#### {average_loss}"
+    ],
+    "factual_assignment": {
+      "first_race_loss": 5,
+      "second_race_win": 11,
+      "third_race_loss": 15,
+      "total_loss": 20,
+      "total_net_loss": 9,
+      "average_loss": 3
+    }
+  },
+  "merged_assignment": {
+    "first_race_loss": 35.65,
+    "second_race_win": 78.43,
+    "third_race_loss": 106.95,
+    "total_loss": 142.6,
+    "total_net_loss": 64.17,
+    "average_loss": 21.39
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_race_loss = 35.65\n    second_race_win = 1 + 2 * first_race_loss\n    third_race_loss = 1.5 * second_race_win\n    total_loss = third_race_loss + first_race_loss\n    total_net_loss = second_race_win - total_loss\n    average_loss = total_net_loss / 3\n\n    return {\n        \"first_race_loss\": round(first_race_loss, 2),\n        \"second_race_win\": round(second_race_win, 2),\n        \"third_race_loss\": round(third_race_loss, 2),\n        \"total_loss\": round(total_loss, 2),\n        \"total_net_loss\": round(total_net_loss, 2),\n        \"average_loss\": round(average_loss, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "first_race_loss": 35.65,
+      "second_race_win": 72.3,
+      "third_race_loss": 108.45,
+      "total_loss": 144.1,
+      "total_net_loss": -71.8,
+      "average_loss": -23.93
+    }
+  },
+  "final": {
+    "question": "Johnny's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost 35.65 renminbi. On the second race, he won 1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "answer_lines": [
+      "On the second race he won 72.3 renminbi because 1+ 35.65 x 2 = 72.3",
+      "On the third race he lost 108.45 renminbi because 72.3 x 1.5 = 108.45",
+      "He lost a total of 144.1 renminbi on the first and third races because 108.45 + 35.65 = 144.1",
+      "He lost -71.8 renminbi that day because 72.3 - 144.1 = -71.8",
+      "He lost an average of -23.93 renminbi per race because -71.8 / 3 = -23.93",
+      "#### -23.93"
+    ],
+    "final_scalar": -23.93,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jiang's dad brought him to watch some horse racing and his dad bet money. On the first race, he lost 35.65 renminbi. On the second race, he won 1 more than twice the amount he previously lost. On the third race, he lost 1.5 times as much as he won in the second race. How much did he lose on average that day?",
+    "adapted_answer": [
+      "On the second race he won 72.3 renminbi because 1+ 35.65 x 2 = 72.3",
+      "On the third race he lost 108.45 renminbi because 72.3 x 1.5 = 108.45",
+      "He lost a total of 144.1 renminbi on the first and third races because 108.45 + 35.65 = 144.1",
+      "He lost -71.8 renminbi that day because 72.3 - 144.1 = -71.8",
+      "He lost an average of -23.93 renminbi per race because -71.8 / 3 = -23.93",
+      "#### -23.93"
+    ],
+    "adaptation_notes": "Replaced 'Johnny' with 'Jiang' to give the name a Chinese context."
+  }
+}

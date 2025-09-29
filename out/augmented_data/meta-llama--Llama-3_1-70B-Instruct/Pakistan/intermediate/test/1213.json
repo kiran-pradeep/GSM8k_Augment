@@ -1,0 +1,164 @@
+{
+  "index": 1213,
+  "split": "test",
+  "original": {
+    "question": "Stephen borrowed $300 from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Stephen will give his sister $25 per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Stephen pay in the twelfth month?",
+    "answer": "Stephen will pay an additional $300 x 2/100 = $<<300*2/100=6>>6.\nHe should return a total of $300 + $6 = $<<300+6=306>>306.\nFor eleven months Stephen will pay a total of $25 x 11 = $<<25*11=275>>275.\nTherefore, Stephen will pay 306 - 275 = $<<306-275=31>>31 on the twelfth month.\n#### 31"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Stephen"
+    ],
+    "notes": "The use of 'dollars' as a unit of currency and the name 'Stephen' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "borrowed_money",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_payment",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "interest",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_return",
+      "value": 306.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_paid",
+      "value": 275.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "twelfth_month_payment",
+      "value": 31.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"borrowed_money\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_payment\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"interest\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_return\", \"value\": 306.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_paid\", \"value\": 275.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"twelfth_month_payment\", \"value\": 31.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "borrowed_money",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 84555.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "monthly_payment",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 7046.25,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "interest",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 1691.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_return",
+        "original_value": 306.0,
+        "original_unit": "dollar",
+        "converted_value": 86246.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_paid",
+        "original_value": 275.0,
+        "original_unit": "dollar",
+        "converted_value": 77508.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "twelfth_month_payment",
+        "original_value": 31.0,
+        "original_unit": "dollar",
+        "converted_value": 8737.35,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Stephen borrowed ${borrowed_money} from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Stephen will give his sister ${monthly_payment} per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Stephen pay in the twelfth month?",
+    "templatized_answer": [
+      "Stephen will pay an additional ${borrowed_money} x 2/100 = ${interest}.",
+      "He should return a total of ${borrowed_money} + ${interest} = ${total_return}.",
+      "For eleven months Stephen will pay a total of ${monthly_payment} x 11 = ${total_paid}.",
+      "Therefore, Stephen will pay ${total_return} - ${total_paid} = ${twelfth_month_payment} on the twelfth month.",
+      "#### {twelfth_month_payment}"
+    ],
+    "factual_assignment": {
+      "borrowed_money": 300.0,
+      "monthly_payment": 25.0,
+      "interest": 6.0,
+      "total_return": 306.0,
+      "total_paid": 275.0,
+      "twelfth_month_payment": 31.0
+    }
+  },
+  "merged_assignment": {
+    "borrowed_money": 84555.0,
+    "monthly_payment": 7046.25,
+    "interest": 1691.1,
+    "total_return": 86246.1,
+    "total_paid": 77508.75,
+    "twelfth_month_payment": 8737.35
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    borrowed_money = 84555.0\n    interest = borrowed_money * 2 / 100\n    total_return = borrowed_money + interest\n    monthly_payment = 7046.25\n    total_paid = monthly_payment * 11\n    twelfth_month_payment = total_return - total_paid\n\n    return {\n        \"borrowed_money\": borrowed_money,\n        \"interest\": round(interest, 2),\n        \"total_return\": round(total_return, 2),\n        \"monthly_payment\": monthly_payment,\n        \"total_paid\": round(total_paid, 2),\n        \"twelfth_month_payment\": round(twelfth_month_payment, 2)\n    }\n",
+    "results": {
+      "borrowed_money": 84555.0,
+      "interest": 1691.1,
+      "total_return": 86246.1,
+      "monthly_payment": 7046.25,
+      "total_paid": 77508.75,
+      "twelfth_month_payment": 8737.35
+    }
+  },
+  "final": {
+    "question": "Stephen borrowed 84555 rupee from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Stephen will give his sister 7046.25 rupee per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Stephen pay in the twelfth month?",
+    "answer_lines": [
+      "Stephen will pay an additional 84555 x 2/100 = 1691.1.",
+      "He should return a total of 84555 + 1691.1 = 86246.1.",
+      "For eleven months Stephen will pay a total of 7046.25 x 11 = 77508.75.",
+      "Therefore, Stephen will pay 86246.1 - 77508.75 = 8737.35 on the twelfth month.",
+      "#### 8737.35"
+    ],
+    "final_scalar": 8737.35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Shahid borrowed 84555 rupee from his sister and promised to return it with an additional 2% of the money he owed. For 11 months Shahid will give his sister 7046.25 rupee per month and the remaining amount, including the interest, will be paid on the twelfth month. How much will Shahid pay in the twelfth month?",
+    "adapted_answer": [
+      "Shahid will pay an additional 84555 x 2/100 = 1691.1.",
+      "He should return a total of 84555 + 1691.1 = 86246.1.",
+      "For eleven months Shahid will pay a total of 7046.25 x 11 = 77508.75.",
+      "Therefore, Shahid will pay 86246.1 - 77508.75 = 8737.35 on the twelfth month.",
+      "#### 8737.35"
+    ],
+    "adaptation_notes": "Replaced 'Stephen' with 'Shahid' to give the name a Pakistani context."
+  }
+}

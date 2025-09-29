@@ -1,0 +1,117 @@
+{
+  "index": 606,
+  "split": "test",
+  "original": {
+    "question": "Every 2 miles a car drives the tires rotate 725 times.  Jeremy drives 400 miles a month.  If each tire can undergo 10,440,000 rotations how many years before the tire needs to be replaced?",
+    "answer": "Jeremy drives 400/2=<<400/2=200>>200 segments of 2 miles\nThat means each month the car undergoes 200*725=<<200*725=145000>>145,000 rotations\nSo the tire can last for 10,440,000/145,000=<<10440000/145000=72>>72 months\nThat means the tires will last 72/12=<<72/12=6>>6 years\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles"
+    ],
+    "notes": "The unit 'miles' is commonly used in the United States and other countries, but not in Somalia, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "car_driving_distance",
+      "value": 2.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "jeremy_monthly_driving_distance",
+      "value": 400.0,
+      "unit": "mile",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"shilling\", \"factor\": 569.38}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"car_driving_distance\",\n        \"value\": 2.0,\n        \"unit\": \"mile\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"jeremy_monthly_driving_distance\",\n        \"value\": 400.0,\n        \"unit\": \"mile\",\n        \"context\": \"question\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "car_driving_distance",
+        "original_value": 2.0,
+        "original_unit": "mile",
+        "converted_value": 3.22,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "jeremy_monthly_driving_distance",
+        "original_value": 400.0,
+        "original_unit": "mile",
+        "converted_value": 643.74,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Every {car_driving_distance} miles a car drives the tires rotate {tire_rotations_per_segment} times.  Jeremy drives {jeremy_monthly_driving_distance} miles a month.  If each tire can undergo {max_tire_rotations} rotations how many years before the tire needs to be replaced?",
+    "templatized_answer": [
+      "Jeremy drives {jeremy_monthly_driving_distance}/{car_driving_distance}={jeremy_monthly_driving_distance_per_segment} segments of {car_driving_distance} miles",
+      "That means each month the car undergoes {jeremy_monthly_driving_distance_per_segment}*{tire_rotations_per_segment}={monthly_tire_rotations} rotations",
+      "So the tire can last for {max_tire_rotations}/{monthly_tire_rotations}={tire_lifetime_months} months",
+      "That means the tires will last {tire_lifetime_months}/12={tire_lifetime_years} years",
+      "#### {tire_lifetime_years}"
+    ],
+    "factual_assignment": {
+      "car_driving_distance": 2.0,
+      "jeremy_monthly_driving_distance": 400.0,
+      "tire_rotations_per_segment": 725,
+      "max_tire_rotations": 10440000,
+      "jeremy_monthly_driving_distance_per_segment": 200,
+      "monthly_tire_rotations": 145000,
+      "tire_lifetime_months": 72,
+      "tire_lifetime_years": 6
+    }
+  },
+  "merged_assignment": {
+    "car_driving_distance": 3.22,
+    "jeremy_monthly_driving_distance": 643.74,
+    "tire_rotations_per_segment": 725,
+    "max_tire_rotations": 10440000,
+    "jeremy_monthly_driving_distance_per_segment": 200,
+    "monthly_tire_rotations": 145000,
+    "tire_lifetime_months": 72,
+    "tire_lifetime_years": 6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    car_driving_distance = 3.22\n    jeremy_monthly_driving_distance = 643.74\n    tire_rotations_per_segment = 725\n    max_tire_rotations = 10440000\n\n    jeremy_monthly_driving_distance_per_segment = jeremy_monthly_driving_distance / car_driving_distance\n    jeremy_monthly_driving_distance_per_segment = round(jeremy_monthly_driving_distance_per_segment, 2)\n\n    monthly_tire_rotations = jeremy_monthly_driving_distance_per_segment * tire_rotations_per_segment\n    monthly_tire_rotations = round(monthly_tire_rotations, 2)\n\n    tire_lifetime_months = max_tire_rotations / monthly_tire_rotations\n    tire_lifetime_months = round(tire_lifetime_months, 2)\n\n    tire_lifetime_years = tire_lifetime_months / 12\n    tire_lifetime_years = round(tire_lifetime_years, 2)\n\n    return {\n        \"car_driving_distance\": car_driving_distance,\n        \"jeremy_monthly_driving_distance\": jeremy_monthly_driving_distance,\n        \"tire_rotations_per_segment\": tire_rotations_per_segment,\n        \"max_tire_rotations\": max_tire_rotations,\n        \"jeremy_monthly_driving_distance_per_segment\": jeremy_monthly_driving_distance_per_segment,\n        \"monthly_tire_rotations\": monthly_tire_rotations,\n        \"tire_lifetime_months\": tire_lifetime_months,\n        \"tire_lifetime_years\": tire_lifetime_years\n    }\n\nprint(recompute())\n",
+    "results": {
+      "car_driving_distance": 3.22,
+      "jeremy_monthly_driving_distance": 643.74,
+      "tire_rotations_per_segment": 725,
+      "max_tire_rotations": 10440000,
+      "jeremy_monthly_driving_distance_per_segment": 199.92,
+      "monthly_tire_rotations": 144942.0,
+      "tire_lifetime_months": 72.03,
+      "tire_lifetime_years": 6.0
+    }
+  },
+  "final": {
+    "question": "Every 3.22 kilometers a car drives the tires rotate 725 times.  Jeremy drives 643.74 kilometers a month.  If each tire can undergo 10440000 rotations how many years before the tire needs to be replaced?",
+    "answer_lines": [
+      "Jeremy drives 643.74/3.22=199.92 segments of 3.22 kilometers",
+      "That means each month the car undergoes 199.92*725=144942.0 rotations",
+      "So the tire can last for 10440000/144942.0=72.03 months",
+      "That means the tires will last 72.03/12=6.0 years",
+      "#### 6.0"
+    ],
+    "final_scalar": 6.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Every 3.22 kilometers a car drives in Mogadishu the tires rotate 725 times.  Abdi drives 643.74 kilometers a month.  If each tire can undergo 10440000 rotations how many years before the tire needs to be replaced?",
+    "adapted_answer": [
+      "Abdi drives 643.74/3.22=199.92 segments of 3.22 kilometers",
+      "That means each month the car undergoes 199.92*725=144942.0 rotations",
+      "So the tire can last for 10440000/144942.0=72.03 months",
+      "That means the tires will last 72.03/12=6.0 years",
+      "#### 6.0"
+    ],
+    "adaptation_notes": "Replaced 'Jeremy' with 'Abdi' and added 'in Mogadishu' to give the question a Somali context."
+  }
+}

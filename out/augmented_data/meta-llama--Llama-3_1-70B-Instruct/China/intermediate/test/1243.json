@@ -1,0 +1,136 @@
+{
+  "index": 1243,
+  "split": "test",
+  "original": {
+    "question": "Archie buys beef jerky that comes 30 sticks to a bag and costs $18.00 per bag.  If Archie buys 1 bag while they're $3.00 off a bag, how much will each stick of jerky cost in cents?",
+    "answer": "The bags are $18.00 with a $3.00 coupon so each bag is 18-3 = $<<18-3=15.00>>15.00\nThe bag has 30 sticks of jerky and costs $15.00 so each stick will cost 15/30 = $0.50\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Archie",
+      "dollars",
+      "beef jerky"
+    ],
+    "notes": "The name Archie and the use of dollars are culturally specific to Western regions, and beef jerky is a food item commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bag_cost",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "coupon_discount",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discounted_bag_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "stick_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"bag_cost\",\n    \"value\": 18.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"coupon_discount\",\n    \"value\": 3.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"discounted_bag_cost\",\n    \"value\": 15.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"stick_cost\",\n    \"value\": 0.5,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bag_cost",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 128.34,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "coupon_discount",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "discounted_bag_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "stick_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Archie buys beef jerky that comes {sticks_per_bag} sticks to a bag and costs ${bag_cost} per bag.  If Archie buys 1 bag while they're ${coupon_discount} off a bag, how much will each stick of jerky cost in cents?",
+    "templatized_answer": [
+      "The bags are ${bag_cost} with a ${coupon_discount} coupon so each bag is {bag_cost}-{coupon_discount} = ${discounted_bag_cost}",
+      "The bag has {sticks_per_bag} sticks of jerky and costs ${discounted_bag_cost} so each stick will cost {discounted_bag_cost}/{sticks_per_bag} = ${stick_cost}",
+      "To convert dollars to cents, multiply by 100: {stick_cost} * 100 = {stick_cost_in_cents}",
+      "#### {stick_cost_in_cents}"
+    ],
+    "factual_assignment": {
+      "bag_cost": 18.0,
+      "coupon_discount": 3.0,
+      "discounted_bag_cost": 15.0,
+      "stick_cost": 0.5,
+      "sticks_per_bag": 30,
+      "stick_cost_in_cents": 50
+    }
+  },
+  "merged_assignment": {
+    "bag_cost": 128.34,
+    "coupon_discount": 21.39,
+    "discounted_bag_cost": 106.95,
+    "stick_cost": 3.56,
+    "sticks_per_bag": 30,
+    "stick_cost_in_cents": 50
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bag_cost = 128.34\n    coupon_discount = 21.39\n    sticks_per_bag = 30\n\n    discounted_bag_cost = round(bag_cost - coupon_discount, 2)\n    stick_cost = round(discounted_bag_cost / sticks_per_bag, 2)\n    stick_cost_in_cents = round(stick_cost * 100)\n\n    return {\n        \"bag_cost\": bag_cost,\n        \"coupon_discount\": coupon_discount,\n        \"discounted_bag_cost\": discounted_bag_cost,\n        \"stick_cost\": stick_cost,\n        \"sticks_per_bag\": sticks_per_bag,\n        \"stick_cost_in_cents\": stick_cost_in_cents\n    }\n",
+    "results": {
+      "bag_cost": 128.34,
+      "coupon_discount": 21.39,
+      "discounted_bag_cost": 106.95,
+      "stick_cost": 3.56,
+      "sticks_per_bag": 30,
+      "stick_cost_in_cents": 356
+    }
+  },
+  "final": {
+    "question": "Archie buys beef jerky that comes 30 sticks to a bag and costs 128.34 renminbi per bag.  If Archie buys 1 bag while they're 21.39 renminbi off a bag, how much will each stick of jerky cost in cents?",
+    "answer_lines": [
+      "The bags are 128.34 renminbi with a 21.39 renminbi coupon so each bag is 128.34-21.39 = 106.95 renminbi",
+      "The bag has 30 sticks of jerky and costs 106.95 renminbi so each stick will cost 106.95/30 = 3.56 renminbi",
+      "To convert renminbi to cents, multiply by 100 and divide by the renminbi to dollar conversion rate (1 dollar = 7.05 renminbi), then multiply by 100: 3.56 * 100 / 7.05 * 100 = 356",
+      "#### 356"
+    ],
+    "final_scalar": 356,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang buys rou gan (dried meat) that comes 30 sticks to a bag and costs 128.34 renminbi per bag.  If Wang buys 1 bag while they're 21.39 renminbi off a bag, how much will each stick of rou gan cost in cents?",
+    "adapted_answer": [
+      "The bags are 128.34 renminbi with a 21.39 renminbi coupon so each bag is 128.34-21.39 = 106.95 renminbi",
+      "The bag has 30 sticks of rou gan and costs 106.95 renminbi so each stick will cost 106.95/30 = 3.56 renminbi",
+      "To convert renminbi to cents, multiply by 100 and divide by the renminbi to dollar conversion rate (1 dollar = 7.05 renminbi), then multiply by 100: 3.56 * 100 / 7.05 * 100 = 356",
+      "#### 356"
+    ],
+    "adaptation_notes": "Replaced 'Archie' with 'Wang', 'beef jerky' with 'rou gan (dried meat)' to adapt to Chinese context."
+  }
+}

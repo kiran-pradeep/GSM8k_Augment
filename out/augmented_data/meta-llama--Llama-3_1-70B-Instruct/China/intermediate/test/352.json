@@ -1,0 +1,142 @@
+{
+  "index": 352,
+  "split": "test",
+  "original": {
+    "question": "After Andrea saved some money, she then spent the rest of her money on an $11 sweater and gave her brother $4. If she had $36 in the beginning, how much did Andrea save?",
+    "answer": "Andrea spent and gave her brother a total of $11 + $4 = $<<11+4=15>>15.\nSo, she saved $36 - $15 = $<<36-15=21>>21.\n#### 21"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Andrea",
+      "dollars"
+    ],
+    "notes": "The name 'Andrea' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_savings",
+      "value": 36,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sweater_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "brother_gift",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "amount_saved",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_savings\",\n    \"value\": 36,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"sweater_cost\",\n    \"value\": 11,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"brother_gift\",\n    \"value\": 4,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_spent\",\n    \"value\": 15,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"amount_saved\",\n    \"value\": 21,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_savings",
+        "original_value": 36,
+        "original_unit": "dollar",
+        "converted_value": 256.68,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "sweater_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 78.43,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "brother_gift",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "amount_saved",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 149.73,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "After Andrea saved some money, she then spent the rest of her money on an ${sweater_cost} sweater and gave her brother ${brother_gift}. If she had ${initial_savings} in the beginning, how much did Andrea save?",
+    "templatized_answer": [
+      "Andrea spent and gave her brother a total of ${sweater_cost} + ${brother_gift} = ${total_spent}.",
+      "So, she saved ${initial_savings} - ${total_spent} = ${amount_saved}.",
+      "#### {amount_saved}"
+    ],
+    "factual_assignment": {
+      "initial_savings": 36,
+      "sweater_cost": 11,
+      "brother_gift": 4,
+      "total_spent": 15,
+      "amount_saved": 21
+    }
+  },
+  "merged_assignment": {
+    "initial_savings": 256.68,
+    "sweater_cost": 78.43,
+    "brother_gift": 28.52,
+    "total_spent": 106.95,
+    "amount_saved": 149.73
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_savings = 256.68\n    sweater_cost = 78.43\n    brother_gift = 28.52\n\n    total_spent = round(sweater_cost + brother_gift, 2)\n    amount_saved = round(initial_savings - total_spent, 2)\n\n    return {\n        \"initial_savings\": initial_savings,\n        \"sweater_cost\": sweater_cost,\n        \"brother_gift\": brother_gift,\n        \"total_spent\": total_spent,\n        \"amount_saved\": amount_saved\n    }\n",
+    "results": {
+      "initial_savings": 256.68,
+      "sweater_cost": 78.43,
+      "brother_gift": 28.52,
+      "total_spent": 106.95,
+      "amount_saved": 149.73
+    }
+  },
+  "final": {
+    "question": "After Andrea saved some money, she then spent the rest of her money on a 78.43 renminbi sweater and gave her brother 28.52 renminbi. If she had 256.68 renminbi in the beginning, how much did Andrea save?",
+    "answer_lines": [
+      "Andrea spent and gave her brother a total of 78.43 renminbi + 28.52 renminbi = 106.95 renminbi.",
+      "So, she saved 256.68 renminbi - 106.95 renminbi = 149.73 renminbi.",
+      "#### 149.73"
+    ],
+    "final_scalar": 149.73,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "After Li Ming saved some money, she then spent the rest of her money on a 78.43 renminbi sweater and gave her brother 28.52 renminbi. If she had 256.68 renminbi in the beginning, how much did Li Ming save?",
+    "adapted_answer": [
+      "Li Ming spent and gave her brother a total of 78.43 renminbi + 28.52 renminbi = 106.95 renminbi.",
+      "So, she saved 256.68 renminbi - 106.95 renminbi = 149.73 renminbi.",
+      "#### 149.73"
+    ],
+    "adaptation_notes": "Replaced 'Andrea' with 'Li Ming' to give the name a Chinese context."
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "index": 1062,
+  "split": "test",
+  "original": {
+    "question": "Hannah slips on a banana peel and breaks her arm. The doctor charges her $200 for the cast, $300/hour for a 30-minute visit, $4/pill for 30 painkillers, and $6/hour for a mandatory minimum of 2 hours of parking. How much does the doctor's visit cost total?",
+    "answer": "First find the length of the visit in hours: 30 minutes / 60 minutes/hour = <<30/60=.5>>.5 hours\nThen find the total cost of the visit: $300/hour * .5 hours = $<<300*.5=150>>150\nThen find the total cost of the painkillers: $4/pill * 30 pills = $<<4*30=120>>120\nThen find the cost of the parking: $6/hour * 2 hours = $<<6*2=12>>12\nThen add all the different costs to find the total cost: $12 + $120 + $150 + $200 = $<<12+120+150+200=482>>482\n#### 482"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Hannah",
+      "banana",
+      "dollars"
+    ],
+    "notes": "The name 'Hannah' and the use of 'dollars' are culturally specific to regions other than China. Banana is a common food item globally, but in this context, the reference to slipping on a banana peel is a Western cultural trope."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cast_cost",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "visit_cost_per_hour",
+      "value": 300.0,
+      "unit": "dollar/hour",
+      "context": "question"
+    },
+    {
+      "variable": "painkiller_cost_per_pill",
+      "value": 4.0,
+      "unit": "dollar/pill",
+      "context": "question"
+    },
+    {
+      "variable": "parking_cost_per_hour",
+      "value": 6.0,
+      "unit": "dollar/hour",
+      "context": "question"
+    },
+    {
+      "variable": "visit_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "painkiller_total_cost",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "parking_total_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 482.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"dollar/hour\": {\"unit\": \"renminbi/hour\", \"factor\": 7.13},\n        \"dollar/pill\": {\"unit\": \"renminbi/pill\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = original_value * conversions[original_unit][\"factor\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cast_cost\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"visit_cost_per_hour\", \"value\": 300.0, \"unit\": \"dollar/hour\", \"context\": \"question\"},\n    {\"variable\": \"painkiller_cost_per_pill\", \"value\": 4.0, \"unit\": \"dollar/pill\", \"context\": \"question\"},\n    {\"variable\": \"parking_cost_per_hour\", \"value\": 6.0, \"unit\": \"dollar/hour\", \"context\": \"question\"},\n    {\"variable\": \"visit_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"painkiller_total_cost\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"parking_total_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 482.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cast_cost",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 1426.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "visit_cost_per_hour",
+        "original_value": 300.0,
+        "original_unit": "dollar/hour",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi/hour"
+      },
+      {
+        "variable": "painkiller_cost_per_pill",
+        "original_value": 4.0,
+        "original_unit": "dollar/pill",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi/pill"
+      },
+      {
+        "variable": "parking_cost_per_hour",
+        "original_value": 6.0,
+        "original_unit": "dollar/hour",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi/hour"
+      },
+      {
+        "variable": "visit_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 1069.5,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "painkiller_total_cost",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 855.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "parking_total_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 85.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 482.0,
+        "original_unit": "dollar",
+        "converted_value": 3436.66,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Hannah slips on a banana peel and breaks her arm. The doctor charges her ${cast_cost} for the cast, ${visit_cost_per_hour}/hour for a 30-minute visit, ${painkiller_cost_per_pill}/pill for 30 painkillers, and ${parking_cost_per_hour}/hour for a mandatory minimum of 2 hours of parking. How much does the doctor's visit cost total?",
+    "templatized_answer": [
+      "First find the length of the visit in hours: 30 minutes / 60 minutes/hour = {visit_length_in_hours} hours",
+      "Then find the total cost of the visit: ${visit_cost_per_hour}/hour * {visit_length_in_hours} hours = ${visit_cost}",
+      "Then find the total cost of the painkillers: ${painkiller_cost_per_pill}/pill * 30 pills = ${painkiller_total_cost}",
+      "Then find the cost of the parking: ${parking_cost_per_hour}/hour * 2 hours = ${parking_total_cost}",
+      "Then add all the different costs to find the total cost: ${parking_total_cost} + ${painkiller_total_cost} + ${visit_cost} + ${cast_cost} = ${total_cost}"
+    ],
+    "factual_assignment": {
+      "cast_cost": 200.0,
+      "visit_cost_per_hour": 300.0,
+      "painkiller_cost_per_pill": 4.0,
+      "parking_cost_per_hour": 6.0,
+      "visit_length_in_hours": 0.5,
+      "visit_cost": 150.0,
+      "painkiller_total_cost": 120.0,
+      "parking_total_cost": 12.0,
+      "total_cost": 482.0
+    }
+  },
+  "merged_assignment": {
+    "cast_cost": 1426.0,
+    "visit_cost_per_hour": 2139.0,
+    "painkiller_cost_per_pill": 28.52,
+    "parking_cost_per_hour": 42.78,
+    "visit_length_in_hours": 0.5,
+    "visit_cost": 1069.5,
+    "painkiller_total_cost": 855.6,
+    "parking_total_cost": 85.56,
+    "total_cost": 3436.66
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cast_cost = 1426.0\n    visit_cost_per_hour = 2139.0\n    painkiller_cost_per_pill = 28.52\n    parking_cost_per_hour = 42.78\n\n    visit_length_in_hours = 30 / 60\n    visit_cost = round(visit_cost_per_hour * visit_length_in_hours, 2)\n    painkiller_total_cost = round(painkiller_cost_per_pill * 30, 2)\n    parking_total_cost = round(parking_cost_per_hour * 2, 2)\n    total_cost = round(parking_total_cost + painkiller_total_cost + visit_cost + cast_cost, 2)\n\n    return {\n        \"cast_cost\": cast_cost,\n        \"visit_cost_per_hour\": visit_cost_per_hour,\n        \"painkiller_cost_per_pill\": painkiller_cost_per_pill,\n        \"parking_cost_per_hour\": parking_cost_per_hour,\n        \"visit_length_in_hours\": visit_length_in_hours,\n        \"visit_cost\": visit_cost,\n        \"painkiller_total_cost\": painkiller_total_cost,\n        \"parking_total_cost\": parking_total_cost,\n        \"total_cost\": total_cost\n    }\n",
+    "results": {
+      "cast_cost": 1426.0,
+      "visit_cost_per_hour": 2139.0,
+      "painkiller_cost_per_pill": 28.52,
+      "parking_cost_per_hour": 42.78,
+      "visit_length_in_hours": 0.5,
+      "visit_cost": 1069.5,
+      "painkiller_total_cost": 855.6,
+      "parking_total_cost": 85.56,
+      "total_cost": 3436.66
+    }
+  },
+  "final": {
+    "question": "Hannah slips on a banana peel and breaks her arm. The doctor charges her 1426 renminbi for the cast, 2139 renminbi/hour for a 30-minute visit, 28.52 renminbi/pill for 30 painkillers, and 42.78 renminbi/hour for a mandatory minimum of 2 hours of parking. How much does the doctor's visit cost total?",
+    "answer_lines": [
+      "First find the length of the visit in hours: 30 minutes / 60 minutes/hour = 0.5 hours",
+      "Then find the total cost of the visit: 2139 renminbi/hour * 0.5 hours = 1069.5 renminbi",
+      "Then find the total cost of the painkillers: 28.52 renminbi/pill * 30 pills = 855.6 renminbi",
+      "Then find the cost of the parking: 42.78 renminbi/hour * 2 hours = 85.56 renminbi",
+      "Then add all the different costs to find the total cost: 85.56 renminbi + 855.6 renminbi + 1069.5 renminbi + 1426 renminbi = 3436.66 renminbi",
+      "#### 3436.66"
+    ],
+    "final_scalar": 3436.66,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling slips on a xiangjiao peel and breaks her arm. The doctor charges her 1426 renminbi for the cast, 2139 renminbi/hour for a 30-minute visit, 28.52 renminbi/pill for 30 painkillers, and 42.78 renminbi/hour for a mandatory minimum of 2 hours of parking. How much does the doctor's visit cost total?",
+    "adapted_answer": [
+      "First find the length of the visit in hours: 30 minutes / 60 minutes/hour = 0.5 hours",
+      "Then find the total cost of the visit: 2139 renminbi/hour * 0.5 hours = 1069.5 renminbi",
+      "Then find the total cost of the painkillers: 28.52 renminbi/pill * 30 pills = 855.6 renminbi",
+      "Then find the cost of the parking: 42.78 renminbi/hour * 2 hours = 85.56 renminbi",
+      "Then add all the different costs to find the total cost: 85.56 renminbi + 855.6 renminbi + 1069.5 renminbi + 1426 renminbi = 3436.66 renminbi",
+      "#### 3436.66"
+    ],
+    "adaptation_notes": "Replaced 'Hannah' with 'Ling' and 'banana' with 'xiangjiao' (Chinese for banana)."
+  }
+}

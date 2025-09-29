@@ -1,0 +1,198 @@
+{
+  "index": 814,
+  "split": "test",
+  "original": {
+    "question": "A new arcade opens up and Jack decides to play with his 3 friends.  Jack can play a game with 1 quarter for 20 minutes.  Two of his friends are significantly worse than him and can only play half as long.  One of them is significantly better and can play for 1.5 times as long.  They play for 4 hours.  How much money is used?",
+    "answer": "Jack puts change in 60/20=<<60/20=3>>3 times an hour\nSo he spends 3*.25=$<<3*.25=.75>>.75 an hour\nHis two friends add change 3*2=<<3*2=6>>6 times an hour\nSo they spend 6*.25=$<<6*.25=1.5>>1.5 an hour\nHis last friend puts in money 3/1.5=<<3/1.5=2>>2 times an hour\nSo he spends 2*.25=$<<2*.25=.50>>.50 an hour\nSo in total they spend .75+1.5+.5=$<<.75+1.5+.5=2.75>>2.75 an hour\nSo they spend 2.75*4=$<<2.75*4=11>>11 in the 4 hours\n#### 11"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jack",
+      "quarter",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name and US-specific units of currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "game_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jack_spent",
+      "value": 0.75,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "friends_spent",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "best_friend_spent",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 2.75,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent_4_hours",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"game_cost\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jack_spent\", \"value\": 0.75, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"friends_spent\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"best_friend_spent\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 2.75, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent_4_hours\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "game_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "jack_spent",
+        "original_value": 0.75,
+        "original_unit": "dollar",
+        "converted_value": 5.35,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "friends_spent",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 10.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "best_friend_spent",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 2.75,
+        "original_unit": "dollar",
+        "converted_value": 19.61,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent_4_hours",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 78.43,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A new arcade opens up and Jack decides to play with his {number_of_friends} friends.  Jack can play a game with {game_cost} for {game_duration_minutes} minutes.  Two of his friends are significantly worse than him and can only play half as long.  One of them is significantly better and can play for {better_friend_multiplier} times as long.  They play for {total_hours} hours.  How much money is used?",
+    "templatized_answer": [
+      "Jack puts change in {game_duration_minutes}/{game_duration_minutes}={jack_game_frequency} times an hour",
+      "So he spends {jack_game_frequency}*{game_cost}=${jack_spent} an hour",
+      "His two friends add change {jack_game_frequency}*2={friends_game_frequency} times an hour",
+      "So they spend {friends_game_frequency}*{game_cost}=${friends_spent} an hour",
+      "His last friend puts in money {jack_game_frequency}/{better_friend_multiplier}={best_friend_game_frequency} times an hour",
+      "So he spends {best_friend_game_frequency}*{game_cost}=${best_friend_spent} an hour",
+      "So in total they spend {jack_spent}+{friends_spent}+{best_friend_spent}=${total_spent} an hour",
+      "So they spend {total_spent}*{total_hours}=${total_spent_4_hours} in the {total_hours} hours",
+      "#### {total_spent_4_hours}"
+    ],
+    "factual_assignment": {
+      "number_of_friends": "3",
+      "game_cost": "0.25",
+      "game_duration_minutes": "20",
+      "better_friend_multiplier": "1.5",
+      "total_hours": "4",
+      "jack_game_frequency": "3",
+      "jack_spent": "0.75",
+      "friends_game_frequency": "6",
+      "friends_spent": "1.5",
+      "best_friend_game_frequency": "2",
+      "best_friend_spent": "0.5",
+      "total_spent": "2.75",
+      "total_spent_4_hours": "11"
+    }
+  },
+  "merged_assignment": {
+    "number_of_friends": "3",
+    "game_cost": 1.78,
+    "game_duration_minutes": "20",
+    "better_friend_multiplier": "1.5",
+    "total_hours": "4",
+    "jack_game_frequency": "3",
+    "jack_spent": 5.35,
+    "friends_game_frequency": "6",
+    "friends_spent": 10.7,
+    "best_friend_game_frequency": "2",
+    "best_friend_spent": 3.56,
+    "total_spent": 19.61,
+    "total_spent_4_hours": 78.43
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    number_of_friends = 3\n    game_cost = 1.78\n    game_duration_minutes = 20\n    better_friend_multiplier = 1.5\n    total_hours = 4\n\n    # Recompute placeholders\n    jack_game_frequency = 60 / game_duration_minutes\n    jack_spent = round(jack_game_frequency * game_cost, 2)\n    friends_game_frequency = jack_game_frequency * 2\n    friends_spent = round(friends_game_frequency * game_cost, 2)\n    best_friend_game_frequency = jack_game_frequency / better_friend_multiplier\n    best_friend_spent = round(best_friend_game_frequency * game_cost, 2)\n    total_spent = round(jack_spent + friends_spent + best_friend_spent, 2)\n    total_spent_4_hours = round(total_spent * total_hours, 2)\n\n    return {\n        \"number_of_friends\": number_of_friends,\n        \"game_cost\": game_cost,\n        \"game_duration_minutes\": game_duration_minutes,\n        \"better_friend_multiplier\": better_friend_multiplier,\n        \"total_hours\": total_hours,\n        \"jack_game_frequency\": round(jack_game_frequency, 2),\n        \"jack_spent\": jack_spent,\n        \"friends_game_frequency\": round(friends_game_frequency, 2),\n        \"friends_spent\": friends_spent,\n        \"best_friend_game_frequency\": round(best_friend_game_frequency, 2),\n        \"best_friend_spent\": best_friend_spent,\n        \"total_spent\": total_spent,\n        \"total_spent_4_hours\": total_spent_4_hours\n    }\n",
+    "results": {
+      "number_of_friends": 3,
+      "game_cost": 1.78,
+      "game_duration_minutes": 20,
+      "better_friend_multiplier": 1.5,
+      "total_hours": 4,
+      "jack_game_frequency": 3.0,
+      "jack_spent": 5.34,
+      "friends_game_frequency": 6.0,
+      "friends_spent": 10.68,
+      "best_friend_game_frequency": 2.0,
+      "best_friend_spent": 3.56,
+      "total_spent": 19.58,
+      "total_spent_4_hours": 78.32
+    }
+  },
+  "final": {
+    "question": "A new arcade opens up and Jack decides to play with his 3 friends.  Jack can play a game with 1.78 renminbi for 20 minutes.  Two of his friends are significantly worse than him and can only play half as long.  One of them is significantly better and can play for 1.5 times as long.  They play for 4 hours.  How much money is used?",
+    "answer_lines": [
+      "Jack puts change in 60/20=3.0 times an hour",
+      "So he spends 3.0*1.78=5.34 renminbi an hour",
+      "His two friends add change 3.0*2=6.0 times an hour",
+      "So they spend 6.0*1.78=10.68 renminbi an hour",
+      "His last friend puts in money 3.0/1.5=2.0 times an hour",
+      "So he spends 2.0*1.78=3.56 renminbi an hour",
+      "So in total they spend 5.34+10.68+3.56=19.58 renminbi an hour",
+      "So they spend 19.58*4=78.32 renminbi in the 4 hours",
+      "#### 78.32"
+    ],
+    "final_scalar": 78.32,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A new arcade opens up and Wei decides to play with his 3 friends.  Wei can play a game with 1.78 renminbi for 20 minutes.  Two of his friends are significantly worse than him and can only play half as long.  One of them is significantly better and can play for 1.5 times as long.  They play for 4 hours.  How much money is used?",
+    "adapted_answer": [
+      "Wei puts change in 60/20=3.0 times an hour",
+      "So he spends 3.0*1.78=5.34 renminbi an hour",
+      "His two friends add change 3.0*2=6.0 times an hour",
+      "So they spend 6.0*1.78=10.68 renminbi an hour",
+      "His last friend puts in money 3.0/1.5=2.0 times an hour",
+      "So he spends 2.0*1.78=3.56 renminbi an hour",
+      "So in total they spend 5.34+10.68+3.56=19.58 renminbi an hour",
+      "So they spend 19.58*4=78.32 renminbi in the 4 hours",
+      "#### 78.32"
+    ],
+    "adaptation_notes": "Replaced 'Jack' with 'Wei' to give the name a Chinese context."
+  }
+}

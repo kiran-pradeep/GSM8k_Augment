@@ -1,0 +1,123 @@
+{
+  "index": 1108,
+  "split": "test",
+  "original": {
+    "question": "My mom went to a gardening shop. She bought a set of pots for $19 and a sack of garden soil for $26. At checkout, she used a coupon for $7 off. How much money did my mom spend at the gardening shop?",
+    "answer": "The total cost of the pots and a sack of garden soil is $19 + $26 = $<<19+26=45>>45.\nSo, my mom spent $45 - $7 = $<<45-7=38>>38 at the gardening store.\n#### 38"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusively in Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pots_cost",
+      "value": 19,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "soil_cost",
+      "value": 26,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "coupon_discount",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 38,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pots_cost\", \"value\": 19, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"soil_cost\", \"value\": 26, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"coupon_discount\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 38, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pots_cost",
+        "original_value": 19,
+        "original_unit": "dollar",
+        "converted_value": 10818.22,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "soil_cost",
+        "original_value": 26,
+        "original_unit": "dollar",
+        "converted_value": 14803.88,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "coupon_discount",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 3985.66,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 38,
+        "original_unit": "dollar",
+        "converted_value": 21636.44,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "My mom went to a gardening shop. She bought a set of pots for ${pots_cost} and a sack of garden soil for ${soil_cost}. At checkout, she used a coupon for ${coupon_discount} off. How much money did my mom spend at the gardening shop?",
+    "templatized_answer": [
+      "The total cost of the pots and a sack of garden soil is ${pots_cost} + ${soil_cost} = ${pots_cost + soil_cost}.",
+      "So, my mom spent ${pots_cost + soil_cost} - ${coupon_discount} = ${pots_cost + soil_cost - coupon_discount} at the gardening store.",
+      "#### {pots_cost + soil_cost - coupon_discount}"
+    ],
+    "factual_assignment": {
+      "pots_cost": 19,
+      "soil_cost": 26,
+      "coupon_discount": 7
+    }
+  },
+  "merged_assignment": {
+    "pots_cost": 10818.22,
+    "soil_cost": 14803.88,
+    "coupon_discount": 3985.66
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pots_cost = 10818.22\n    soil_cost = 14803.88\n    coupon_discount = 3985.66\n\n    total_cost = pots_cost + soil_cost\n    total_spent = total_cost - coupon_discount\n\n    return {\n        \"pots_cost\": pots_cost,\n        \"soil_cost\": soil_cost,\n        \"coupon_discount\": coupon_discount,\n        \"pots_cost + soil_cost\": round(total_cost, 2),\n        \"pots_cost + soil_cost - coupon_discount\": round(total_spent, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "pots_cost": 10818.22,
+      "soil_cost": 14803.88,
+      "coupon_discount": 3985.66,
+      "pots_cost + soil_cost": 25622.1,
+      "pots_cost + soil_cost - coupon_discount": 21636.44
+    }
+  },
+  "final": {
+    "question": "My mom went to a gardening shop. She bought a set of pots for 10818.22 shilling and a sack of garden soil for 14803.88 shilling. At checkout, she used a coupon for 3985.66 shilling off. How much money did my mom spend at the gardening shop?",
+    "answer_lines": [
+      "The total cost of the pots and a sack of garden soil is 10818.22 + 14803.88 = 25622.1.",
+      "So, my mom spent 25622.1 - 3985.66 = 21636.44 at the gardening store.",
+      "#### 21636.44"
+    ],
+    "final_scalar": 21636.44,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Hooyaday wuxuu tagay duka xoolo-dhaqashada. Waxay iibisay set ka mid ah kabooyin 10818.22 shilling iyo kis gacan kuuri ah 14803.88 shilling. Markii waxay tagi jiray, waxay isticmaaleen kupon 3985.66 shilling oo hoos u dhigay. Waxa ay hooyaday ugu jireysay duka xoolo-dhaqashada?",
+    "adapted_answer": [
+      "Jumla qiimaha kabooyinka iyo kis gacan kuuri ah waa 10818.22 + 14803.88 = 25622.1.",
+      "Hooyaday wuxuu ugu jireysay 25622.1 - 3985.66 = 21636.44 duka xoolo-dhaqashada."
+    ],
+    "adaptation_notes": "Replaced 'gardening shop' with 'duka xoolo-dhaqashada', 'pots' with 'kabooyin', 'garden soil' with 'gacan kuuri', 'gardening store' with 'duka xoolo-dhaqashada', and 'mom' with 'hooyaday'."
+  }
+}

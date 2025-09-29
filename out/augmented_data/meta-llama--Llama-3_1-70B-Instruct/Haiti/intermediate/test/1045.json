@@ -1,0 +1,129 @@
+{
+  "index": 1045,
+  "split": "test",
+  "original": {
+    "question": "Three people divided an amount of $1920. The second took $80 more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "answer": "Let X be the amount of what the first took.\nThe second took X+<<+80=80>>80.\nThe third took (X+80)*2.\nThe total amount X + (X+80) + (X+80)*2 = 1920.\nX + X + 80 + 2*X + 80*2 = 1920\nX*4 + 240 = 1920.\nX*4 = 1680.\nX = <<420=420>>420.\n#### 420"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is commonly used in the United States and other countries, but in Haiti, the official currency is the Haitian gourde."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_amount",
+      "value": 1920.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_person_extra",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_person_share",
+      "value": 420.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_amount\", \"value\": 1920.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_person_extra\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_person_share\", \"value\": 420.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_amount",
+        "original_value": 1920.0,
+        "original_unit": "dollar",
+        "converted_value": 251155.2,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "second_person_extra",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 10464.8,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "first_person_share",
+        "original_value": 420.0,
+        "original_unit": "dollar",
+        "converted_value": 54940.2,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Three people divided an amount of ${total_amount}. The second took ${second_person_extra} more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "templatized_answer": [
+      "Let X be the amount of what the first took.",
+      "The second took X+{second_person_extra}.",
+      "The third took (X+{second_person_extra})*2.",
+      "The total amount X + (X+{second_person_extra}) + (X+{second_person_extra})*2 = {total_amount}.",
+      "X + X + {second_person_extra} + 2*X + {second_person_extra}*2 = {total_amount}",
+      "X*4 + {second_person_extra}*3 = {total_amount}.",
+      "X*4 = {total_amount} - {second_person_extra}*3.",
+      "X = ({total_amount} - {second_person_extra}*3)/4.",
+      "#### {first_person_share}"
+    ],
+    "factual_assignment": {
+      "total_amount": 1920.0,
+      "second_person_extra": 80.0,
+      "first_person_share": 420.0
+    }
+  },
+  "merged_assignment": {
+    "total_amount": 251155.2,
+    "second_person_extra": 10464.8,
+    "first_person_share": 54940.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_amount = 251155.2\n    second_person_extra = 10464.8\n\n    X = (total_amount - second_person_extra * 3) / 4\n    X = round(X, 2)\n\n    second_person_share = X + second_person_extra\n    second_person_share = round(second_person_share, 2)\n\n    third_person_share = (X + second_person_extra) * 2\n    third_person_share = round(third_person_share, 2)\n\n    return {\n        \"total_amount\": total_amount,\n        \"second_person_extra\": second_person_extra,\n        \"first_person_share\": X,\n        \"second_person_share\": second_person_share,\n        \"third_person_share\": third_person_share\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_amount": 251155.2,
+      "second_person_extra": 10464.8,
+      "first_person_share": 54940.2,
+      "second_person_share": 65405.0,
+      "third_person_share": 130810.0
+    }
+  },
+  "final": {
+    "question": "Three people divided an amount of 251155.2 gourde. The second took 10464.8 gourde more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "answer_lines": [
+      "Let X be the amount of what the first took.",
+      "The second took X+10464.8 gourde.",
+      "The third took (X+10464.8 gourde)*2.",
+      "The total amount X + (X+10464.8 gourde) + (X+10464.8 gourde)*2 = 251155.2 gourde.",
+      "X + X + 10464.8 gourde + 2*X + 10464.8 gourde*2 = 251155.2 gourde",
+      "X*4 + 10464.8 gourde*3 = 251155.2 gourde.",
+      "X*4 = 251155.2 gourde - 10464.8 gourde*3.",
+      "X = (251155.2 gourde - 10464.8 gourde*3)/4.",
+      "#### 54940.2"
+    ],
+    "final_scalar": 54940.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Three people divided an amount of 251155.2 gourde. The second took 10464.8 gourde more than the first and the third took twice what the second took. Calculate the share of the first one.",
+    "adapted_answer": [
+      "Let X be the amount of what the first took.",
+      "The second took X+10464.8 gourde.",
+      "The third took (X+10464.8 gourde)*2.",
+      "The total amount X + (X+10464.8 gourde) + (X+10464.8 gourde)*2 = 251155.2 gourde.",
+      "X + X + 10464.8 gourde + 2*X + 10464.8 gourde*2 = 251155.2 gourde",
+      "X*4 + 10464.8 gourde*3 = 251155.2 gourde.",
+      "X*4 = 251155.2 gourde - 10464.8 gourde*3.",
+      "X = (251155.2 gourde - 10464.8 gourde*3)/4.",
+      "#### 54940.2"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "index": 725,
+  "split": "test",
+  "original": {
+    "question": "A cat eats nine sausages in 30 minutes. A dog can eat the same number of sausages in 2/3 the amount of time the cat takes. Calculate the average time the two take the eat the sausages.",
+    "answer": "If the cat takes 30 minutes to eat the sausages, the dog takes 2/3*30 = <<30*2/3=20>>20 minutes.\nThe total amount of time the cat and the dog take to eat the sausages is 20+30 = <<20+30=50>>50 minutes.\nThe average time in minutes that the two take to eat the sausages is 50/2 = <<50/2=25>>25 minutes.\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "sausages"
+    ],
+    "notes": "Sausages are not commonly associated with Haitian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cat_time",
+      "value": 30.0,
+      "unit": "minute",
+      "context": "question"
+    },
+    {
+      "variable": "dog_time",
+      "value": 20.0,
+      "unit": "minute",
+      "context": "answer"
+    },
+    {
+      "variable": "total_time",
+      "value": 50.0,
+      "unit": "minute",
+      "context": "answer"
+    },
+    {
+      "variable": "average_time",
+      "value": 25.0,
+      "unit": "minute",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"minute\": {\"to\": \"minute\", \"rate\": 1},\n        \"hour\": {\"to\": \"hour\", \"rate\": 1}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = original_value * conversions[original_unit][\"rate\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"cat_time\",\n    \"value\": 30.0,\n    \"unit\": \"minute\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"dog_time\",\n    \"value\": 20.0,\n    \"unit\": \"minute\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_time\",\n    \"value\": 50.0,\n    \"unit\": \"minute\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"average_time\",\n    \"value\": 25.0,\n    \"unit\": \"minute\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cat_time",
+        "original_value": 30.0,
+        "original_unit": "minute",
+        "converted_value": 30.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "dog_time",
+        "original_value": 20.0,
+        "original_unit": "minute",
+        "converted_value": 20.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "total_time",
+        "original_value": 50.0,
+        "original_unit": "minute",
+        "converted_value": 50.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "average_time",
+        "original_value": 25.0,
+        "original_unit": "minute",
+        "converted_value": 25.0,
+        "converted_unit": "minute"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A cat eats nine sausages in {cat_time} minutes. A dog can eat the same number of sausages in 2/3 the amount of time the cat takes. Calculate the average time the two take the eat the sausages.",
+    "templatized_answer": [
+      "If the cat takes {cat_time} minutes to eat the sausages, the dog takes 2/3*{cat_time} = {dog_time} minutes.",
+      "The total amount of time the cat and the dog take to eat the sausages is {dog_time}+{cat_time} = {total_time} minutes.",
+      "The average time in minutes that the two take to eat the sausages is {total_time}/2 = {average_time} minutes.",
+      "#### {average_time}"
+    ],
+    "factual_assignment": {
+      "cat_time": 30.0,
+      "dog_time": 20.0,
+      "total_time": 50.0,
+      "average_time": 25.0
+    }
+  },
+  "merged_assignment": {
+    "cat_time": 30.0,
+    "dog_time": 20.0,
+    "total_time": 50.0,
+    "average_time": 25.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cat_time = 30.0\n    dog_time = (2/3) * cat_time\n    total_time = dog_time + cat_time\n    average_time = total_time / 2\n\n    return {\n        \"cat_time\": round(cat_time, 2),\n        \"dog_time\": round(dog_time, 2),\n        \"total_time\": round(total_time, 2),\n        \"average_time\": round(average_time, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "cat_time": 30.0,
+      "dog_time": 20.0,
+      "total_time": 50.0,
+      "average_time": 25.0
+    }
+  },
+  "final": {
+    "question": "A cat eats nine sausages in 30 minutes. A dog can eat the same number of sausages in 2/3 the amount of time the cat takes. Calculate the average time the two take the eat the sausages.",
+    "answer_lines": [
+      "If the cat takes 30 minutes to eat the sausages, the dog takes 2/3*30 = 20 minutes.",
+      "The total amount of time the cat and the dog take to eat the sausages is 20+30 = 50 minutes.",
+      "The average time in minutes that the two take to eat the sausages is 50/2 = 25 minutes.",
+      "#### 25"
+    ],
+    "final_scalar": 25.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A cat eats nine akara in 30 minutes. A dog can eat the same number of akara in 2/3 the amount of time the cat takes. Calculate the average time the two take the eat the akara.",
+    "adapted_answer": [
+      "If the cat takes 30 minutes to eat the akara, the dog takes 2/3*30 = 20 minutes.",
+      "The total amount of time the cat and the dog take to eat the akara is 20+30 = 50 minutes.",
+      "The average time in minutes that the two take to eat the akara is 50/2 = 25 minutes.",
+      "#### 25"
+    ],
+    "adaptation_notes": "Replaced 'sausages' with 'akara', a traditional Haitian food."
+  }
+}

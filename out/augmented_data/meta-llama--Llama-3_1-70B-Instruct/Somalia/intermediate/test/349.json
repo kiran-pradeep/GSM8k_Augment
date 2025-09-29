@@ -1,0 +1,145 @@
+{
+  "index": 349,
+  "split": "test",
+  "original": {
+    "question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs $25 per week. Treats cost $20 per month. Medicine costs $100 per month. How much money does Madeline spend on her dog per year if there are 4 weeks in a month?",
+    "answer": "Madeline spends$25*4=$<<25*4=100>>100 on food for her dog per month.\nShe spends $100+$20+$100=$<<100+20+100=220>>220 on her dog per month.\nShe will spend $220*12=$<<220*12=2640>>2640 on her dog per year\n#### 2640"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Madeline"
+    ],
+    "notes": "The text contains the name 'Madeline' which is not typically Somali, and the unit 'dollars' which is a currency used in many countries, including the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "food_cost",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "treats_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "medicine_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_cost",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_cost",
+      "value": 2640.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"food_cost\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"treats_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"medicine_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_cost\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_cost\", \"value\": 2640.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "food_cost",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 14234.5,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "treats_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 11387.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "medicine_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 56938.0,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "monthly_cost",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 125263.6,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "yearly_cost",
+        "original_value": 2640.0,
+        "original_unit": "dollar",
+        "converted_value": 1503163.2,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs ${food_cost} per week. Treats cost ${treats_cost} per month. Medicine costs ${medicine_cost} per month. How much money does Madeline spend on her dog per year if there are {weeks_in_month} weeks in a month?",
+    "templatized_answer": [
+      "Madeline spends ${food_cost}*{weeks_in_month}=${food_cost}*{weeks_in_month} on food for her dog per month.",
+      "She spends ${medicine_cost}+${treats_cost}+${medicine_cost}=${medicine_cost}+${treats_cost}+${medicine_cost} on her dog per month.",
+      "She will spend (${medicine_cost}+${treats_cost}+${medicine_cost})*12=({medicine_cost}+{treats_cost}+{medicine_cost})*12 on her dog per year",
+      "#### ({medicine_cost}+{treats_cost}+{medicine_cost})*12"
+    ],
+    "factual_assignment": {
+      "food_cost": 25.0,
+      "treats_cost": 20.0,
+      "medicine_cost": 100.0,
+      "weeks_in_month": 4
+    }
+  },
+  "merged_assignment": {
+    "food_cost": 14234.5,
+    "treats_cost": 11387.6,
+    "medicine_cost": 56938.0,
+    "weeks_in_month": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"food_cost\": 14234.5,\n        \"treats_cost\": 11387.6,\n        \"medicine_cost\": 56938.0,\n        \"weeks_in_month\": 4\n    }\n\n    food_cost_per_month = factual_assignment[\"food_cost\"] * factual_assignment[\"weeks_in_month\"]\n    total_cost_per_month = factual_assignment[\"medicine_cost\"] + factual_assignment[\"treats_cost\"] + factual_assignment[\"medicine_cost\"]\n    total_cost_per_year = total_cost_per_month * 12\n\n    return {\n        \"{food_cost}\": factual_assignment[\"food_cost\"],\n        \"{treats_cost}\": factual_assignment[\"treats_cost\"],\n        \"{medicine_cost}\": factual_assignment[\"medicine_cost\"],\n        \"{weeks_in_month}\": factual_assignment[\"weeks_in_month\"],\n        \"{food_cost}*{weeks_in_month}\": round(food_cost_per_month, 2),\n        \"{medicine_cost}+{treats_cost}+{medicine_cost}\": round(total_cost_per_month, 2),\n        \"({medicine_cost}+{treats_cost}+{medicine_cost})*12\": round(total_cost_per_year, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "{food_cost}": 14234.5,
+      "{treats_cost}": 11387.6,
+      "{medicine_cost}": 56938.0,
+      "{weeks_in_month}": 4,
+      "{food_cost}*{weeks_in_month}": 56938.0,
+      "{medicine_cost}+{treats_cost}+{medicine_cost}": 125263.6,
+      "({medicine_cost}+{treats_cost}+{medicine_cost})*12": 1503163.2
+    }
+  },
+  "final": {
+    "question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs 14234.5 shilling per week. Treats cost 11387.6 shilling per month. Medicine costs 56938.0 shilling per month. How much money does Madeline spend on her dog per year if there are 4 weeks in a month?",
+    "answer_lines": [
+      "Madeline spends 14234.5*4=56938.0 shilling on food for her dog per month.",
+      "She spends 56938.0+11387.6+56938.0=125263.6 shilling on her dog per month.",
+      "She will spend 125263.6*12=1503163.2 shilling on her dog per year",
+      "#### 1503163.2"
+    ],
+    "final_scalar": 1503163.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Every month, Amina has to buy food, treats, and medicine for her dog. Food costs 14234.5 shilling per week. Treats cost 11387.6 shilling per month. Medicine costs 56938.0 shilling per month. How much money does Amina spend on her dog per year if there are 4 weeks in a month?",
+    "adapted_answer": [
+      "Amina spends 14234.5*4=56938.0 shilling on food for her dog per month.",
+      "She spends 56938.0+11387.6+56938.0=125263.6 shilling on her dog per month.",
+      "She will spend 125263.6*12=1503163.2 shilling on her dog per year",
+      "#### 1503163.2"
+    ],
+    "adaptation_notes": "Replaced 'Madeline' with 'Amina' to give the name a Somali context."
+  }
+}

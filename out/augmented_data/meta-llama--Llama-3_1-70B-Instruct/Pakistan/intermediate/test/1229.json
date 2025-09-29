@@ -1,0 +1,122 @@
+{
+  "index": 1229,
+  "split": "test",
+  "original": {
+    "question": "In November, a toy was $40. In December, the price increased by 80%. In January, the price decreased by 50%. What was the price of the toy after it was discounted in January?",
+    "answer": "In November, the toy's price was $<<40=40>>40.\nThe 80% increment represents 40*0.8=$32\nIn December, the toy's price was 40 + 32 = $<<40+32=72>>72.\nThe 50% increment from January represents 72*0.5=<<72*0.5=36>>36\nIn January, the toy's price is 72 - 36 = $<<72-36=36>>36.\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "november_price",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "december_price",
+      "value": 72.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "january_price",
+      "value": 36.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"november_price\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"december_price\", \"value\": 72.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"january_price\", \"value\": 36.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "november_price",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 11274.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "december_price",
+        "original_value": 72.0,
+        "original_unit": "dollar",
+        "converted_value": 20293.2,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "january_price",
+        "original_value": 36.0,
+        "original_unit": "dollar",
+        "converted_value": 10146.6,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "In November, a toy was ${november_price}. In December, the price increased by 80%. In January, the price decreased by 50%. What was the price of the toy after it was discounted in January?",
+    "templatized_answer": [
+      "In November, the toy's price was ${november_price}.",
+      "The 80% increment represents {november_price}*0.8=${november_price*0.8}",
+      "In December, the toy's price was {november_price} + {november_price*0.8} = ${november_price + november_price*0.8}.",
+      "The 50% decrement from January represents ({november_price} + {november_price*0.8})*0.5=({november_price} + {november_price*0.8})*0.5",
+      "In January, the toy's price is ({november_price} + {november_price*0.8}) - ({november_price} + {november_price*0.8})*0.5 = ${november_price + november_price*0.8 - (november_price + november_price*0.8)*0.5}.",
+      "#### {november_price + november_price*0.8 - (november_price + november_price*0.8)*0.5}"
+    ],
+    "factual_assignment": {
+      "november_price": 40.0,
+      "november_price*0.8": 32.0,
+      "november_price + november_price*0.8": 72.0,
+      "november_price + november_price*0.8 - (november_price + november_price*0.8)*0.5": 36.0
+    }
+  },
+  "merged_assignment": {
+    "november_price": 11274.0,
+    "november_price*0.8": 32.0,
+    "november_price + november_price*0.8": 72.0,
+    "november_price + november_price*0.8 - (november_price + november_price*0.8)*0.5": 36.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    november_price = 11274.0\n    november_price_increment = november_price * 0.8\n    december_price = november_price + november_price_increment\n    january_price_decrement = december_price * 0.5\n    january_price = december_price - january_price_decrement\n\n    return {\n        \"november_price\": november_price,\n        \"november_price*0.8\": round(november_price_increment, 2),\n        \"november_price + november_price*0.8\": round(december_price, 2),\n        \"({november_price} + {november_price*0.8})*0.5\": round(january_price_decrement, 2),\n        \"november_price + november_price*0.8 - (november_price + november_price*0.8)*0.5\": round(january_price, 2)\n    }\n",
+    "results": {
+      "november_price": 11274.0,
+      "november_price*0.8": 9019.2,
+      "november_price + november_price*0.8": 20293.2,
+      "({november_price} + {november_price*0.8})*0.5": 10146.6,
+      "november_price + november_price*0.8 - (november_price + november_price*0.8)*0.5": 10146.6
+    }
+  },
+  "final": {
+    "question": "In November, a toy was 11274. In December, the price increased by 80%. In January, the price decreased by 50%. What was the price of the toy after it was discounted in January?",
+    "answer_lines": [
+      "In November, the toy's price was 11274.",
+      "The 80% increment represents 11274*0.8=9019.2",
+      "In December, the toy's price was 11274 + 9019.2 = 20293.2.",
+      "The 50% decrement from January represents (11274 + 9019.2)*0.5=10146.6",
+      "In January, the toy's price is (11274 + 9019.2) - 10146.6 = 10146.6.",
+      "#### 10146.6"
+    ],
+    "final_scalar": 10146.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "In November, a toy was 11274 rupees. In December, the price increased by 80%. In January, the price decreased by 50%. What was the price of the toy after it was discounted in January?",
+    "adapted_answer": [
+      "In November, the toy's price was 11274 rupees.",
+      "The 80% increment represents 11274*0.8=9019.2 rupees",
+      "In December, the toy's price was 11274 + 9019.2 = 20293.2 rupees.",
+      "The 50% decrement from January represents (11274 + 9019.2)*0.5=10146.6 rupees",
+      "In January, the toy's price is (11274 + 9019.2) - 10146.6 = 10146.6 rupees.",
+      "#### 10146.6"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to give the question a Pakistani context."
+  }
+}

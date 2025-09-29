@@ -1,0 +1,145 @@
+{
+  "index": 717,
+  "split": "test",
+  "original": {
+    "question": "A pencil cost $0.50, and an eraser cost $0.25. If you bought 6 pencils and 8 erasers and paid $10, how much change would you get?",
+    "answer": "6 pencils cost 6 x $0.50 = $<<6*0.5=3>>3.\n8 erasers cost 8 x $0.25 = $<<8*0.25=2>>2.\nThus, you spent $3 + $2 = $<<3+2=5>>5.\nTherefore, you would get $10 - $5 = $<<10-5=5>>5 change.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pencil_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eraser_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "payment",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pencil_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"eraser_cost\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"payment\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pencil_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eraser_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "payment",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "change",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A pencil cost ${pencil_cost}, and an eraser cost ${eraser_cost}. If you bought 6 pencils and 8 erasers and paid ${payment}, how much change would you get?",
+    "templatized_answer": [
+      "6 pencils cost 6 x ${pencil_cost} = ${6*pencil_cost}.",
+      "8 erasers cost 8 x ${eraser_cost} = ${8*eraser_cost}.",
+      "Thus, you spent ${6*pencil_cost} + ${8*eraser_cost} = ${6*pencil_cost+8*eraser_cost}.",
+      "Therefore, you would get ${payment} - ${6*pencil_cost+8*eraser_cost} = ${payment-(6*pencil_cost+8*eraser_cost)} change.",
+      "#### ${payment-(6*pencil_cost+8*eraser_cost)}"
+    ],
+    "factual_assignment": {
+      "pencil_cost": 0.5,
+      "eraser_cost": 0.25,
+      "payment": 10
+    }
+  },
+  "merged_assignment": {
+    "pencil_cost": 3.56,
+    "eraser_cost": 1.78,
+    "payment": 71.3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pencil_cost = 3.56\n    eraser_cost = 1.78\n    payment = 71.3\n\n    pencil_cost_6 = round(6 * pencil_cost, 2)\n    eraser_cost_8 = round(8 * eraser_cost, 2)\n    total_cost = round(pencil_cost_6 + eraser_cost_8, 2)\n    change = round(payment - total_cost, 2)\n\n    return {\n        \"pencil_cost\": pencil_cost,\n        \"eraser_cost\": eraser_cost,\n        \"payment\": payment,\n        \"6*pencil_cost\": pencil_cost_6,\n        \"8*eraser_cost\": eraser_cost_8,\n        \"6*pencil_cost+8*eraser_cost\": total_cost,\n        \"payment-(6*pencil_cost+8*eraser_cost)\": change\n    }\n",
+    "results": {
+      "pencil_cost": 3.56,
+      "eraser_cost": 1.78,
+      "payment": 71.3,
+      "6*pencil_cost": 21.36,
+      "8*eraser_cost": 14.24,
+      "6*pencil_cost+8*eraser_cost": 35.6,
+      "payment-(6*pencil_cost+8*eraser_cost)": 35.7
+    }
+  },
+  "final": {
+    "question": "A pencil cost 3.56 renminbi, and an eraser cost 1.78 renminbi. If you bought 6 pencils and 8 erasers and paid 71.3 renminbi, how much change would you get?",
+    "answer_lines": [
+      "6 pencils cost 6 x 3.56 renminbi = 21.36 renminbi.",
+      "8 erasers cost 8 x 1.78 renminbi = 14.24 renminbi.",
+      "Thus, you spent 21.36 renminbi + 14.24 renminbi = 35.6 renminbi.",
+      "Therefore, you would get 71.3 renminbi - 35.6 renminbi = 35.7 renminbi change.",
+      "#### 35.7"
+    ],
+    "final_scalar": 35.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A pencil cost 3.56 renminbi, and an eraser cost 1.78 renminbi. If you bought 6 pencils and 8 erasers and paid 71.3 renminbi, how much change would you get?",
+    "adapted_answer": [
+      "6 pencils cost 6 x 3.56 renminbi = 21.36 renminbi.",
+      "8 erasers cost 8 x 1.78 renminbi = 14.24 renminbi.",
+      "Thus, you spent 21.36 renminbi + 14.24 renminbi = 35.6 renminbi.",
+      "Therefore, you would get 71.3 renminbi - 35.6 renminbi = 35.7 renminbi change.",
+      "#### 35.7"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

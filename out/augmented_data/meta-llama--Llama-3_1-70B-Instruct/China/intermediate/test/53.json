@@ -1,0 +1,152 @@
+{
+  "index": 53,
+  "split": "test",
+  "original": {
+    "question": "A mechanic charges different rates to repair the tires of trucks and cars.  For each truck tire that is repaired, the mechanic will charge $60 and for each car tire that is repaired, the mechanic will charge $40.  On Thursday, the mechanic repairs 6 truck tires and 4 car tires.  On Friday, the mechanic repairs 12 car tries and doesn't repair any truck tires.  How much more revenue did the mechanic earn on the day with higher revenue?",
+    "answer": "On Thursday the mechanic charged a total of 6*60 + 4*40 = $<<6*60+4*40=520>>520.\nOn Friday the mechanic charged a total of 12*40 = $<<12*40=480>>480.\nThus, on Thursday, the day with higher revenue, the mechanic had 520-480 = $<<520-480=40>>40 more revenue than on Friday.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The text contains a unit of currency (dollars) that is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "truck_tire_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "car_tire_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "thursday_revenue",
+      "value": 520,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "friday_revenue",
+      "value": 480,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "revenue_difference",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"truck_tire_cost\",\n    \"value\": 60,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"car_tire_cost\",\n    \"value\": 40,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"thursday_revenue\",\n    \"value\": 520,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"friday_revenue\",\n    \"value\": 480,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"revenue_difference\",\n    \"value\": 40,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "truck_tire_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "car_tire_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "thursday_revenue",
+        "original_value": 520,
+        "original_unit": "dollar",
+        "converted_value": 520,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "friday_revenue",
+        "original_value": 480,
+        "original_unit": "dollar",
+        "converted_value": 480,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "revenue_difference",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 40,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A mechanic charges different rates to repair the tires of trucks and cars.  For each truck tire that is repaired, the mechanic will charge ${truck_tire_cost} and for each car tire that is repaired, the mechanic will charge ${car_tire_cost}.  On Thursday, the mechanic repairs {thursday_truck_tires} truck tires and {thursday_car_tires} car tires.  On Friday, the mechanic repairs {friday_car_tires} car tires and doesn't repair any truck tires.  How much more revenue did the mechanic earn on the day with higher revenue?",
+    "templatized_answer": [
+      "On Thursday the mechanic charged a total of {thursday_truck_tires}*{truck_tire_cost} + {thursday_car_tires}*{car_tire_cost} = ${thursday_revenue}.",
+      "On Friday the mechanic charged a total of {friday_car_tires}*{car_tire_cost} = ${friday_revenue}.",
+      "Thus, on Thursday, the day with higher revenue, the mechanic had {thursday_revenue}-{friday_revenue} = ${revenue_difference} more revenue than on Friday.",
+      "#### {revenue_difference}"
+    ],
+    "factual_assignment": {
+      "truck_tire_cost": 60,
+      "car_tire_cost": 40,
+      "thursday_truck_tires": 6,
+      "thursday_car_tires": 4,
+      "friday_car_tires": 12,
+      "thursday_revenue": 520,
+      "friday_revenue": 480,
+      "revenue_difference": 40
+    }
+  },
+  "merged_assignment": {
+    "truck_tire_cost": 427.8,
+    "car_tire_cost": 285.2,
+    "thursday_truck_tires": 6,
+    "thursday_car_tires": 4,
+    "friday_car_tires": 12,
+    "thursday_revenue": 520,
+    "friday_revenue": 480,
+    "revenue_difference": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    truck_tire_cost = 427.8\n    car_tire_cost = 285.2\n    thursday_truck_tires = 6\n    thursday_car_tires = 4\n    friday_car_tires = 12\n\n    thursday_revenue = thursday_truck_tires * truck_tire_cost + thursday_car_tires * car_tire_cost\n    friday_revenue = friday_car_tires * car_tire_cost\n    revenue_difference = thursday_revenue - friday_revenue\n\n    return {\n        \"truck_tire_cost\": truck_tire_cost,\n        \"car_tire_cost\": car_tire_cost,\n        \"thursday_truck_tires\": thursday_truck_tires,\n        \"thursday_car_tires\": thursday_car_tires,\n        \"friday_car_tires\": friday_car_tires,\n        \"thursday_revenue\": round(thursday_revenue, 2),\n        \"friday_revenue\": round(friday_revenue, 2),\n        \"revenue_difference\": round(revenue_difference, 2)\n    }\n",
+    "results": {
+      "truck_tire_cost": 427.8,
+      "car_tire_cost": 285.2,
+      "thursday_truck_tires": 6,
+      "thursday_car_tires": 4,
+      "friday_car_tires": 12,
+      "thursday_revenue": 3707.6,
+      "friday_revenue": 3422.4,
+      "revenue_difference": 285.2
+    }
+  },
+  "final": {
+    "question": "A mechanic charges different rates to repair the tires of trucks and cars.  For each truck tire that is repaired, the mechanic will charge 427.8 renminbi and for each car tire that is repaired, the mechanic will charge 285.2 renminbi.  On Thursday, the mechanic repairs 6 truck tires and 4 car tires.  On Friday, the mechanic repairs 12 car tires and doesn't repair any truck tires.  How much more revenue did the mechanic earn on the day with higher revenue?",
+    "answer_lines": [
+      "On Thursday the mechanic charged a total of 6*427.8 + 4*285.2 = 3707.6 renminbi.",
+      "On Friday the mechanic charged a total of 12*285.2 = 3422.4 renminbi.",
+      "Thus, on Thursday, the day with higher revenue, the mechanic had 3707.6-3422.4 = 285.2 renminbi more revenue than on Friday.",
+      "#### 285.2"
+    ],
+    "final_scalar": 285.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A mechanic charges different rates to repair the tires of trucks and cars.  For each truck tire that is repaired, the mechanic will charge 427.8 renminbi and for each car tire that is repaired, the mechanic will charge 285.2 renminbi.  On Thursday, the mechanic repairs 6 truck tires and 4 car tires.  On Friday, the mechanic repairs 12 car tires and doesn't repair any truck tires.  How much more revenue did the mechanic earn on the day with higher revenue?",
+    "adapted_answer": [
+      "On Thursday the mechanic charged a total of 6*427.8 + 4*285.2 = 3707.6 renminbi.",
+      "On Friday the mechanic charged a total of 12*285.2 = 3422.4 renminbi.",
+      "Thus, on Thursday, the day with higher revenue, the mechanic had 3707.6-3422.4 = 285.2 renminbi more revenue than on Friday."
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

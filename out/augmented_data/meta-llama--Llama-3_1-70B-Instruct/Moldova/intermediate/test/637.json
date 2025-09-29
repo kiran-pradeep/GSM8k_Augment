@@ -1,0 +1,120 @@
+{
+  "index": 637,
+  "split": "test",
+  "original": {
+    "question": "Reggie, Lynn, and Paisley ran together. Paisley ran 4 miles. Reggie ran 5 times what Paisley ran and 3 miles farther than Lynn. How many miles did Lynn run?",
+    "answer": "Paisley ran <<4=4>>4 miles.\nReggie ran 5 * 4 miles = <<5*4=20>>20 miles\nLynn ran 3 miles less than Reggie = 20 - 3 = 17 miles\nLynn ran <<17=17>>17 miles.\n#### 17"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Reggie",
+      "Lynn",
+      "Paisley",
+      "miles"
+    ],
+    "notes": "The names Reggie, Lynn, and Paisley are culturally specific to regions other than Moldova, and the unit 'miles' is not commonly used in Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "paisley_run",
+      "value": 4,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "reggie_run",
+      "value": 20,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "lynn_run",
+      "value": 17,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"leu\", \"factor\": 16.62}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"paisley_run\", \"value\": 4, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"reggie_run\", \"value\": 20, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"lynn_run\", \"value\": 17, \"unit\": \"mile\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "paisley_run",
+        "original_value": 4,
+        "original_unit": "mile",
+        "converted_value": 6.44,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "reggie_run",
+        "original_value": 20,
+        "original_unit": "mile",
+        "converted_value": 32.19,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "lynn_run",
+        "original_value": 17,
+        "original_unit": "mile",
+        "converted_value": 27.36,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Reggie, Lynn, and Paisley ran together. Paisley ran {paisley_run} miles. Reggie ran 5 times what Paisley ran and 3 miles farther than Lynn. How many miles did Lynn run?",
+    "templatized_answer": [
+      "Paisley ran {paisley_run} miles.",
+      "Reggie ran 5 * {paisley_run} miles = 5 * {paisley_run} miles",
+      "Reggie ran 5 * {paisley_run} miles = {reggie_run} miles",
+      "Lynn ran 3 miles less than Reggie = {reggie_run} - 3 = {lynn_run} miles",
+      "Lynn ran {lynn_run} miles."
+    ],
+    "factual_assignment": {
+      "paisley_run": 4,
+      "reggie_run": 20,
+      "lynn_run": 17
+    }
+  },
+  "merged_assignment": {
+    "paisley_run": 6.44,
+    "reggie_run": 32.19,
+    "lynn_run": 27.36
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    paisley_run = 6.44\n    reggie_run = 5 * paisley_run\n    lynn_run = reggie_run - 3\n\n    return {\n        \"paisley_run\": round(paisley_run, 2),\n        \"reggie_run\": round(reggie_run, 2),\n        \"lynn_run\": round(lynn_run, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "paisley_run": 6.44,
+      "reggie_run": 32.2,
+      "lynn_run": 29.2
+    }
+  },
+  "final": {
+    "question": "Reggie, Lynn, and Paisley ran together. Paisley ran 6.44 kilometers. Reggie ran 5 times what Paisley ran and 3 kilometers farther than Lynn. How many kilometers did Lynn run?",
+    "answer_lines": [
+      "Paisley ran 6.44 kilometers.",
+      "Reggie ran 5 * 6.44 kilometers = 5 * 6.44 kilometers",
+      "Reggie ran 5 * 6.44 kilometers = 32.2 kilometers",
+      "Lynn ran 3 kilometers less than Reggie = 32.2 - 3 = 29.2 kilometers",
+      "Lynn ran 29.2 kilometers.",
+      "#### 29.2"
+    ],
+    "final_scalar": 29.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Vasile, Natalia, and Cristina ran together. Cristina ran 6.44 kilometers. Vasile ran 5 times what Cristina ran and 3 kilometers farther than Natalia. How many kilometers did Natalia run?",
+    "adapted_answer": [
+      "Cristina ran 6.44 kilometers.",
+      "Vasile ran 5 * 6.44 kilometers = 5 * 6.44 kilometers",
+      "Vasile ran 5 * 6.44 kilometers = 32.2 kilometers",
+      "Natalia ran 3 kilometers less than Vasile = 32.2 - 3 = 29.2 kilometers",
+      "Natalia ran 29.2 kilometers.",
+      "#### 29.2"
+    ],
+    "adaptation_notes": "Replaced names with Moldovan equivalents: Reggie -> Vasile, Lynn -> Natalia, Paisley -> Cristina."
+  }
+}

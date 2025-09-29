@@ -1,0 +1,129 @@
+{
+  "index": 873,
+  "split": "test",
+  "original": {
+    "question": "David has $12.48 and wants to buy 16 bolts from a bin at the hardware store. Each bolt costs $0.03. How much money does David have left after paying for the bolts?",
+    "answer": "David paid 16 * 0.03 = $<<16*0.03=0.48>>0.48 for the bolts.\nDavid has $12.48 - $0.48 = $12 left.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "David"
+    ],
+    "notes": "The text contains a non-Chinese unit of currency (dollars) and a Western name (David)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 12.48,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bolt_cost",
+      "value": 0.03,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_bolt_cost",
+      "value": 0.48,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 12.48, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bolt_cost\", \"value\": 0.03, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_bolt_cost\", \"value\": 0.48, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 12.48,
+        "original_unit": "dollar",
+        "converted_value": 88.98,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bolt_cost",
+        "original_value": 0.03,
+        "original_unit": "dollar",
+        "converted_value": 0.21,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_bolt_cost",
+        "original_value": 0.48,
+        "original_unit": "dollar",
+        "converted_value": 3.42,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 85.56,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "David has ${initial_money} and wants to buy {number_of_bolts} bolts from a bin at the hardware store. Each bolt costs ${bolt_cost}. How much money does David have left after paying for the bolts?",
+    "templatized_answer": [
+      "David paid {number_of_bolts} * ${bolt_cost} = ${total_bolt_cost} for the bolts.",
+      "David has ${initial_money} - ${total_bolt_cost} = ${remaining_money}.",
+      "#### {remaining_money}"
+    ],
+    "factual_assignment": {
+      "initial_money": 12.48,
+      "bolt_cost": 0.03,
+      "total_bolt_cost": 0.48,
+      "remaining_money": 12,
+      "number_of_bolts": 16
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 88.98,
+    "bolt_cost": 0.21,
+    "total_bolt_cost": 3.42,
+    "remaining_money": 85.56,
+    "number_of_bolts": 16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 88.98\n    bolt_cost = 0.21\n    number_of_bolts = 16\n\n    total_bolt_cost = round(number_of_bolts * bolt_cost, 2)\n    remaining_money = round(initial_money - total_bolt_cost, 2)\n\n    return {\n        \"initial_money\": initial_money,\n        \"bolt_cost\": bolt_cost,\n        \"total_bolt_cost\": total_bolt_cost,\n        \"remaining_money\": remaining_money,\n        \"number_of_bolts\": number_of_bolts\n    }\n",
+    "results": {
+      "initial_money": 88.98,
+      "bolt_cost": 0.21,
+      "total_bolt_cost": 3.36,
+      "remaining_money": 85.62,
+      "number_of_bolts": 16
+    }
+  },
+  "final": {
+    "question": "David has 88.98 renminbi and wants to buy 16 bolts from a bin at the hardware store. Each bolt costs 0.21 renminbi. How much money does David have left after paying for the bolts?",
+    "answer_lines": [
+      "David paid 16 * 0.21 = 3.36 renminbi for the bolts.",
+      "David has 88.98 - 3.36 = 85.62 renminbi.",
+      "#### 85.62"
+    ],
+    "final_scalar": 85.62,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang has 88.98 renminbi and wants to buy 16 bolts from a bin at the hardware store. Each bolt costs 0.21 renminbi. How much money does Wang have left after paying for the bolts?",
+    "adapted_answer": [
+      "Wang paid 16 * 0.21 = 3.36 renminbi for the bolts.",
+      "Wang has 88.98 - 3.36 = 85.62 renminbi.",
+      "#### 85.62"
+    ],
+    "adaptation_notes": "Replaced 'David' with 'Wang' to give the name a Chinese context."
+  }
+}

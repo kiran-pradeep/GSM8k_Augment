@@ -1,0 +1,153 @@
+{
+  "index": 747,
+  "split": "test",
+  "original": {
+    "question": "A tomato vendor decides to switch who he buys his tomatoes for.  He sells 500 tomatoes a day.  He used to buy them for $.5 each but he gets a new vendor who sells them for $.4 each.  How much money does he save a week?",
+    "answer": "He buys 500*7=<<500*7=3500>>3500\nHe used to pay 3500*.5=$<<3500*.5=1750>>1750\nHe now pays 3500*.4=$<<3500*.4=1400>>1400\nSo he saves 1750-1400=$<<1750-1400=350>>350\n#### 350"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "tomatoes"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in the United States, and 'tomatoes' which is a food item commonly used in Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "old_cost_per_tomato",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "new_cost_per_tomato",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "old_weekly_cost",
+      "value": 1750,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "new_weekly_cost",
+      "value": 1400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_savings",
+      "value": 350,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n    {\"variable\": \"old_cost_per_tomato\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"new_cost_per_tomato\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"old_weekly_cost\", \"value\": 1750, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"new_weekly_cost\", \"value\": 1400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_savings\", \"value\": 350, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "old_cost_per_tomato",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "new_cost_per_tomato",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 2.85,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "old_weekly_cost",
+        "original_value": 1750,
+        "original_unit": "dollar",
+        "converted_value": 12477.5,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "new_weekly_cost",
+        "original_value": 1400,
+        "original_unit": "dollar",
+        "converted_value": 9982.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_savings",
+        "original_value": 350,
+        "original_unit": "dollar",
+        "converted_value": 2495.5,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A tomato vendor decides to switch who he buys his tomatoes for.  He sells {tomatoes_per_day} tomatoes a day.  He used to buy them for ${old_cost_per_tomato} each but he gets a new vendor who sells them for ${new_cost_per_tomato} each.  How much money does he save a week?",
+    "templatized_answer": [
+      "He buys {tomatoes_per_day}*7={weekly_tomatoes}",
+      "He used to pay {weekly_tomatoes}*{old_cost_per_tomato}=${old_weekly_cost}",
+      "He now pays {weekly_tomatoes}*{new_cost_per_tomato}=${new_weekly_cost}",
+      "So he saves {old_weekly_cost}-{new_weekly_cost}=${weekly_savings}"
+    ],
+    "factual_assignment": {
+      "old_cost_per_tomato": 0.5,
+      "new_cost_per_tomato": 0.4,
+      "old_weekly_cost": 1750,
+      "new_weekly_cost": 1400,
+      "weekly_savings": 350,
+      "tomatoes_per_day": 500,
+      "weekly_tomatoes": 3500
+    }
+  },
+  "merged_assignment": {
+    "old_cost_per_tomato": 3.56,
+    "new_cost_per_tomato": 2.85,
+    "old_weekly_cost": 12477.5,
+    "new_weekly_cost": 9982.0,
+    "weekly_savings": 2495.5,
+    "tomatoes_per_day": 500,
+    "weekly_tomatoes": 3500
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    old_cost_per_tomato = 3.56\n    new_cost_per_tomato = 2.85\n    tomatoes_per_day = 500\n\n    weekly_tomatoes = tomatoes_per_day * 7\n    old_weekly_cost = weekly_tomatoes * old_cost_per_tomato\n    new_weekly_cost = weekly_tomatoes * new_cost_per_tomato\n    weekly_savings = old_weekly_cost - new_weekly_cost\n\n    return {\n        \"tomatoes_per_day\": tomatoes_per_day,\n        \"old_cost_per_tomato\": round(old_cost_per_tomato, 2),\n        \"new_cost_per_tomato\": round(new_cost_per_tomato, 2),\n        \"weekly_tomatoes\": weekly_tomatoes,\n        \"old_weekly_cost\": round(old_weekly_cost, 2),\n        \"new_weekly_cost\": round(new_weekly_cost, 2),\n        \"weekly_savings\": round(weekly_savings, 2)\n    }\n",
+    "results": {
+      "tomatoes_per_day": 500,
+      "old_cost_per_tomato": 3.56,
+      "new_cost_per_tomato": 2.85,
+      "weekly_tomatoes": 3500,
+      "old_weekly_cost": 12460.0,
+      "new_weekly_cost": 9975.0,
+      "weekly_savings": 2485.0
+    }
+  },
+  "final": {
+    "question": "A tomato vendor decides to switch who he buys his tomatoes for.  He sells 500 tomatoes a day.  He used to buy them for 3.56 renminbi each but he gets a new vendor who sells them for 2.85 renminbi each.  How much money does he save a week?",
+    "answer_lines": [
+      "He buys 500*7=3500",
+      "He used to pay 3500*3.56=12460.0 renminbi",
+      "He now pays 3500*2.85=9975.0 renminbi",
+      "So he saves 12460.0-9975.0=2485.0 renminbi",
+      "#### 2485.0"
+    ],
+    "final_scalar": 2485.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A Chinese eggplant vendor decides to switch who he buys his Chinese eggplants from.  He sells 500 Chinese eggplants a day.  He used to buy them for 3.56 renminbi each but he gets a new vendor who sells them for 2.85 renminbi each.  How much money does he save a week?",
+    "adapted_answer": [
+      "He buys 500*7=3500",
+      "He used to pay 3500*3.56=12460.0 renminbi",
+      "He now pays 3500*2.85=9975.0 renminbi",
+      "So he saves 12460.0-9975.0=2485.0 renminbi",
+      "#### 2485.0"
+    ],
+    "adaptation_notes": "Replaced 'tomatoes' with 'Chinese eggplants' to adapt the text to a Chinese context."
+  }
+}

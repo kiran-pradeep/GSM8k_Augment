@@ -1,0 +1,168 @@
+{
+  "index": 452,
+  "split": "test",
+  "original": {
+    "question": "A car is on a road trip and drives 60 mph for 2 hours, and then 30 mph for 1 hour. What is the car's average speed in mph during this trip?",
+    "answer": "The car drives 60*2=<<60*2=120>>120 miles for 2 hours.\nThe car drives 30*1=<<30*1=30>>30 miles for 1 hour.\nIt drives a total of 120+30=<<120+30=150>>150 miles.\nLet S be the average speed, M be the number of miles, and H the number of hours spent driving.\nThen we have, S=M/H, so, S=150 miles/3 hours = <<150/3=50>>50 mph\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "mph",
+      "miles"
+    ],
+    "notes": "The question contains units of speed and distance that are not commonly used in China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "speed_1",
+      "value": 60,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "speed_2",
+      "value": 30,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "distance_1",
+      "value": 120,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "distance_2",
+      "value": 30,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "total_distance",
+      "value": 150,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "average_speed",
+      "value": 50,
+      "unit": "mph",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mph\": {\"unit\": \"km/h\", \"factor\": 1.60934},\n        \"mile\": {\"unit\": \"km\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kg\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"g\", \"factor\": 28.3495},\n        \"gallon\": {\"unit\": \"L\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"mL\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"CNY\", \"factor\": 7.13}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"speed_1\",\n    \"value\": 60,\n    \"unit\": \"mph\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"speed_2\",\n    \"value\": 30,\n    \"unit\": \"mph\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"distance_1\",\n    \"value\": 120,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"distance_2\",\n    \"value\": 30,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_distance\",\n    \"value\": 150,\n    \"unit\": \"mile\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"average_speed\",\n    \"value\": 50,\n    \"unit\": \"mph\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "speed_1",
+        "original_value": 60,
+        "original_unit": "mph",
+        "converted_value": 96.56,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "speed_2",
+        "original_value": 30,
+        "original_unit": "mph",
+        "converted_value": 48.28,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "distance_1",
+        "original_value": 120,
+        "original_unit": "mile",
+        "converted_value": 193.12,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "distance_2",
+        "original_value": 30,
+        "original_unit": "mile",
+        "converted_value": 48.28,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "total_distance",
+        "original_value": 150,
+        "original_unit": "mile",
+        "converted_value": 241.4,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "average_speed",
+        "original_value": 50,
+        "original_unit": "mph",
+        "converted_value": 80.47,
+        "converted_unit": "km/h"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A car is on a road trip and drives {speed_1} mph for 2 hours, and then {speed_2} mph for 1 hour. What is the car's average speed in mph during this trip?",
+    "templatized_answer": [
+      "The car drives {speed_1}*2={distance_1} miles for 2 hours.",
+      "The car drives {speed_2}*1={distance_2} miles for 1 hour.",
+      "It drives a total of {distance_1}+{distance_2}={total_distance} miles.",
+      "Let S be the average speed, M be the number of miles, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S={total_distance} miles/{total_hours} hours = {average_speed} mph"
+    ],
+    "factual_assignment": {
+      "speed_1": 60,
+      "speed_2": 30,
+      "distance_1": 120,
+      "distance_2": 30,
+      "total_distance": 150,
+      "average_speed": 50,
+      "total_hours": 3
+    }
+  },
+  "merged_assignment": {
+    "speed_1": 96.56,
+    "speed_2": 48.28,
+    "distance_1": 193.12,
+    "distance_2": 48.28,
+    "total_distance": 241.4,
+    "average_speed": 80.47,
+    "total_hours": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    speed_1 = 96.56\n    speed_2 = 48.28\n    distance_1 = speed_1 * 2\n    distance_2 = speed_2 * 1\n    total_distance = distance_1 + distance_2\n    total_hours = 3\n    average_speed = total_distance / total_hours\n\n    return {\n        \"speed_1\": round(speed_1, 2),\n        \"speed_2\": round(speed_2, 2),\n        \"distance_1\": round(distance_1, 2),\n        \"distance_2\": round(distance_2, 2),\n        \"total_distance\": round(total_distance, 2),\n        \"average_speed\": round(average_speed, 2),\n        \"total_hours\": total_hours\n    }\n\nprint(recompute())\n",
+    "results": {
+      "speed_1": 96.56,
+      "speed_2": 48.28,
+      "distance_1": 193.12,
+      "distance_2": 48.28,
+      "total_distance": 241.4,
+      "average_speed": 80.47,
+      "total_hours": 3
+    }
+  },
+  "final": {
+    "question": "A car is on a road trip and drives 96.56 km/h for 2 hours, and then 48.28 km/h for 1 hour. What is the car's average speed in km/h during this trip?",
+    "answer_lines": [
+      "The car drives 96.56*2=193.12 kilometers for 2 hours.",
+      "The car drives 48.28*1=48.28 kilometers for 1 hour.",
+      "It drives a total of 193.12+48.28=241.4 kilometers.",
+      "Let S be the average speed, M be the number of kilometers, and H the number of hours spent driving.",
+      "Then we have, S=M/H, so, S=241.4 kilometers/3 hours = 80.47 km/h",
+      "#### 80.47"
+    ],
+    "final_scalar": 80.47,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "一辆汽车在公路旅行中以96.56 公里/小时的速度行驶2小时，然后以48.28公里/小时的速度行驶1小时。这辆车在整个行程中的平均速度是多少公里/小时？",
+    "adapted_answer": [
+      "这辆车以96.56*2=193.12公里的速度行驶2小时。",
+      "这辆车以48.28*1=48.28公里的速度行驶1小时。",
+      "它总共行驶了193.12+48.28=241.4公里。",
+      "设S为平均速度，M为行驶公里数，H为行驶小时数。",
+      "那么我们有，S=M/H，所以，S=241.4公里/3小时=80.47公里/小时"
+    ],
+    "adaptation_notes": "Replaced 'km/h' with '公里/小时' to use Chinese units, and rephrased the question to fit Chinese context."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "index": 69,
+  "split": "test",
+  "original": {
+    "question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of $5 for 8 weeks. At the end of the 8 weeks, if she has a total of $100, how much money did Bailey start with?",
+    "answer": "In 8 weeks, Bailey receives $5 * 8 = $<<5*8=40>>40 in allowance\nBailey started with $100 - $40 = $<<100-40=60>>60\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bailey",
+      "dollars"
+    ],
+    "notes": "Bailey is a Western name and dollars is a non-Chinese currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_allowance",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_allowance",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "initial_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_allowance\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_allowance\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"initial_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_allowance",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_allowance",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "initial_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of ${weekly_allowance} for 8 weeks. At the end of the 8 weeks, if she has a total of ${total_money}, how much money did Bailey start with?",
+    "templatized_answer": [
+      "In 8 weeks, Bailey receives ${weekly_allowance} * 8 = ${weekly_allowance} * 8 in allowance",
+      "Bailey started with ${total_money} - ${weekly_allowance} * 8 = ${total_money} - ${weekly_allowance} * 8",
+      "#### {initial_money}"
+    ],
+    "factual_assignment": {
+      "weekly_allowance": 5,
+      "total_money": 100,
+      "initial_money": 60
+    }
+  },
+  "merged_assignment": {
+    "weekly_allowance": 35.65,
+    "total_money": 713.0,
+    "initial_money": 427.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    weekly_allowance = 35.65\n    total_money = 713.0\n    initial_money = total_money - (weekly_allowance * 8)\n    \n    return {\n        \"weekly_allowance\": weekly_allowance,\n        \"weekly_allowance * 8\": round(weekly_allowance * 8, 2),\n        \"total_money\": total_money,\n        \"total_money - ${weekly_allowance} * 8\": round(total_money - (weekly_allowance * 8), 2),\n        \"initial_money\": round(initial_money, 2)\n    }\n",
+    "results": {
+      "weekly_allowance": 35.65,
+      "weekly_allowance * 8": 285.2,
+      "total_money": 713.0,
+      "total_money - ${weekly_allowance} * 8": 427.8,
+      "initial_money": 427.8
+    }
+  },
+  "final": {
+    "question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of 35.65 renminbi for 8 weeks. At the end of the 8 weeks, if she has a total of 713.0 renminbi, how much money did Bailey start with?",
+    "answer_lines": [
+      "In 8 weeks, Bailey receives 35.65 renminbi * 8 = 285.2 renminbi in allowance",
+      "Bailey started with 713.0 renminbi - 285.2 renminbi = 427.8 renminbi",
+      "#### 427.8"
+    ],
+    "final_scalar": 427.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mengmeng starts with a certain amount of money. Then she receives a weekly allowance of 35.65 renminbi for 8 weeks. At the end of the 8 weeks, if she has a total of 713.0 renminbi, how much money did Mengmeng start with?",
+    "adapted_answer": [
+      "In 8 weeks, Mengmeng receives 35.65 renminbi * 8 = 285.2 renminbi in allowance",
+      "Mengmeng started with 713.0 renminbi - 285.2 renminbi = 427.8 renminbi",
+      "#### 427.8"
+    ],
+    "adaptation_notes": "Replaced 'Bailey' with 'Mengmeng' to give the name a Chinese context."
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "index": 902,
+  "split": "test",
+  "original": {
+    "question": "The educational shop is selling notebooks for $1.50 each and a ballpen at $0.5 each.  William bought five notebooks and a ballpen. How much did he spend in all?",
+    "answer": "The cost of the six notebooks was 5 x $1.50 = $7.5.\nTherefore, William spent a total of $7.50 + $0.50 = $<<7.5+0.5=8>>8 in all.\n#### 8"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "William"
+    ],
+    "notes": "The use of 'dollars' as currency and the name 'William' indicate cultural specificity to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "notebook_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ballpen_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"notebook_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ballpen_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "notebook_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 10.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "ballpen_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The educational shop is selling notebooks for ${notebook_cost} each and a ballpen at ${ballpen_cost} each.  William bought five notebooks and a ballpen. How much did he spend in all?",
+    "templatized_answer": [
+      "The cost of the five notebooks was 5 x ${notebook_cost} = ${5*notebook_cost}.",
+      "Therefore, William spent a total of ${5*notebook_cost} + ${ballpen_cost} = ${5*notebook_cost+ballpen_cost} in all."
+    ],
+    "factual_assignment": {
+      "notebook_cost": 1.5,
+      "ballpen_cost": 0.5,
+      "5*notebook_cost": 7.5,
+      "5*notebook_cost+ballpen_cost": 8.0
+    }
+  },
+  "merged_assignment": {
+    "notebook_cost": 10.7,
+    "ballpen_cost": 3.56,
+    "5*notebook_cost": 7.5,
+    "5*notebook_cost+ballpen_cost": 8.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    notebook_cost = 10.7\n    ballpen_cost = 3.56\n    five_notebook_cost = 5 * notebook_cost\n    total_cost = five_notebook_cost + ballpen_cost\n\n    return {\n        \"notebook_cost\": round(notebook_cost, 2),\n        \"ballpen_cost\": round(ballpen_cost, 2),\n        \"5*notebook_cost\": round(five_notebook_cost, 2),\n        \"5*notebook_cost+ballpen_cost\": round(total_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "notebook_cost": 10.7,
+      "ballpen_cost": 3.56,
+      "5*notebook_cost": 53.5,
+      "5*notebook_cost+ballpen_cost": 57.06
+    }
+  },
+  "final": {
+    "question": "The educational shop is selling notebooks for 10.7 renminbi each and a ballpen at 3.56 renminbi each.  William bought five notebooks and a ballpen. How much did he spend in all?",
+    "answer_lines": [
+      "The cost of the five notebooks was 5 x 10.7 = 53.5.",
+      "Therefore, William spent a total of 53.5 + 3.56 = 57.06 in all.",
+      "#### 57.06"
+    ],
+    "final_scalar": 57.06,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The educational shop is selling notebooks for 10.7 renminbi each and a ballpen at 3.56 renminbi each.  Wei bought five notebooks and a ballpen. How much did he spend in all?",
+    "adapted_answer": [
+      "The cost of the five notebooks was 5 x 10.7 = 53.5.",
+      "Therefore, Wei spent a total of 53.5 + 3.56 = 57.06 in all.",
+      "#### 57.06"
+    ],
+    "adaptation_notes": "Replaced 'William' with 'Wei' to give the name a Chinese context."
+  }
+}

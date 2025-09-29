@@ -1,0 +1,157 @@
+{
+  "index": 1041,
+  "split": "test",
+  "original": {
+    "question": "Molly is catering a birthday party for her sister and invited 16 people. 10 people want the chicken salad which is $6.50 per person and 6 people want the pasta salad at $6 per person. What is the total amount Molly will pay for the catering?",
+    "answer": "Multiply the number of people who want chicken salad by the cost per person, so the cost is 10 x $6.50 = $<<10*6.5=65>>65.\nMultiply the amount of people who want pasta salad by the cost per person, so the cost is 6 x $6.00 = $<<6*6=36>>36.\nThe total cost of chicken salad and pasta salad is $65 + $36 = $<<65+36=101>>101.\n#### 101"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Molly",
+      "birthday party",
+      "chicken salad",
+      "pasta salad",
+      "dollars"
+    ],
+    "notes": "The names, food items, and units are culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "chicken_salad_cost",
+      "value": 6.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pasta_salad_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "chicken_salad_total",
+      "value": 65.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "pasta_salad_total",
+      "value": 36.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 101.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"chicken_salad_cost\",\n    \"value\": 6.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"pasta_salad_cost\",\n    \"value\": 6.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"chicken_salad_total\",\n    \"value\": 65.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"pasta_salad_total\",\n    \"value\": 36.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cost\",\n    \"value\": 101.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "chicken_salad_cost",
+        "original_value": 6.5,
+        "original_unit": "dollar",
+        "converted_value": 850.26,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "pasta_salad_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 784.86,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "chicken_salad_total",
+        "original_value": 65.0,
+        "original_unit": "dollar",
+        "converted_value": 8502.65,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "pasta_salad_total",
+        "original_value": 36.0,
+        "original_unit": "dollar",
+        "converted_value": 4709.16,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 101.0,
+        "original_unit": "dollar",
+        "converted_value": 13211.81,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Molly is catering a birthday party for her sister and invited {number_of_people} people. {chicken_salad_people} people want the chicken salad which is ${chicken_salad_cost} per person and {pasta_salad_people} people want the pasta salad at ${pasta_salad_cost} per person. What is the total amount Molly will pay for the catering?",
+    "templatized_answer": [
+      "Multiply the number of people who want chicken salad by the cost per person, so the cost is {chicken_salad_people} x ${chicken_salad_cost} = ${chicken_salad_total}.",
+      "Multiply the amount of people who want pasta salad by the cost per person, so the cost is {pasta_salad_people} x ${pasta_salad_cost} = ${pasta_salad_total}.",
+      "The total cost of chicken salad and pasta salad is ${chicken_salad_total} + ${pasta_salad_total} = ${total_cost}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "number_of_people": 16,
+      "chicken_salad_people": 10,
+      "pasta_salad_people": 6,
+      "chicken_salad_cost": 6.5,
+      "pasta_salad_cost": 6.0,
+      "chicken_salad_total": 65.0,
+      "pasta_salad_total": 36.0,
+      "total_cost": 101.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_people": 16,
+    "chicken_salad_people": 10,
+    "pasta_salad_people": 6,
+    "chicken_salad_cost": 850.26,
+    "pasta_salad_cost": 784.86,
+    "chicken_salad_total": 8502.65,
+    "pasta_salad_total": 4709.16,
+    "total_cost": 13211.81
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_people = 16\n    chicken_salad_people = 10\n    pasta_salad_people = 6\n    chicken_salad_cost = round(850.26, 2)\n    pasta_salad_cost = round(784.86, 2)\n\n    chicken_salad_total = round(chicken_salad_people * chicken_salad_cost, 2)\n    pasta_salad_total = round(pasta_salad_people * pasta_salad_cost, 2)\n    total_cost = round(chicken_salad_total + pasta_salad_total, 2)\n\n    return {\n        \"number_of_people\": number_of_people,\n        \"chicken_salad_people\": chicken_salad_people,\n        \"pasta_salad_people\": pasta_salad_people,\n        \"chicken_salad_cost\": chicken_salad_cost,\n        \"pasta_salad_cost\": pasta_salad_cost,\n        \"chicken_salad_total\": chicken_salad_total,\n        \"pasta_salad_total\": pasta_salad_total,\n        \"total_cost\": total_cost\n    }\n",
+    "results": {
+      "number_of_people": 16,
+      "chicken_salad_people": 10,
+      "pasta_salad_people": 6,
+      "chicken_salad_cost": 850.26,
+      "pasta_salad_cost": 784.86,
+      "chicken_salad_total": 8502.6,
+      "pasta_salad_total": 4709.16,
+      "total_cost": 13211.76
+    }
+  },
+  "final": {
+    "question": "Molly is catering a birthday party for her sister and invited 16 people. 10 people want the chicken salad which is 850.26 gourde per person and 6 people want the pasta salad at 784.86 gourde per person. What is the total amount Molly will pay for the catering?",
+    "answer_lines": [
+      "Multiply the number of people who want chicken salad by the cost per person, so the cost is 10 x 850.26 gourde = 8502.6 gourde.",
+      "Multiply the amount of people who want pasta salad by the cost per person, so the cost is 6 x 784.86 gourde = 4709.16 gourde.",
+      "The total cost of chicken salad and pasta salad is 8502.6 gourde + 4709.16 gourde = 13211.76 gourde.",
+      "#### 13211.76"
+    ],
+    "final_scalar": 13211.76,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine is catering a fête patronale for her sister and invited 16 people. 10 people want the salade de poulet which is 850.26 gourde per person and 6 people want the salade de pâtes at 784.86 gourde per person. What is the total amount Nadine will pay for the catering?",
+    "adapted_answer": [
+      "Multiply the number of people who want salade de poulet by the cost per person, so the cost is 10 x 850.26 gourde = 8502.6 gourde.",
+      "Multiply the amount of people who want salade de pâtes by the cost per person, so the cost is 6 x 784.86 gourde = 4709.16 gourde.",
+      "The total cost of salade de poulet and salade de pâtes is 8502.6 gourde + 4709.16 gourde = 13211.76 gourde.",
+      "#### 13211.76"
+    ],
+    "adaptation_notes": "Replaced 'Molly' with 'Nadine', 'birthday party' with 'fête patronale', 'chicken salad' with 'salade de poulet', and 'pasta salad' with 'salade de pâtes'."
+  }
+}

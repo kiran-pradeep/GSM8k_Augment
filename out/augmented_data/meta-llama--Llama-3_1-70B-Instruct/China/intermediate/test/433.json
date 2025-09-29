@@ -1,0 +1,102 @@
+{
+  "index": 433,
+  "split": "test",
+  "original": {
+    "question": "15 gallons of gas were equally divided into 5 different containers. Josey needed 1/4 of a container to run her lawnmower. How many pints of gasoline did Josey need?",
+    "answer": "15 gallons = 120 pints\n120/5 = <<120/5=24>>24 pints per container\n(1/4)24 = 6 pints\nJosey needed 6 pints of gas for her lawnmower.\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "gallons",
+      "pints"
+    ],
+    "notes": "The units 'gallons' and 'pints' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "gas_total",
+      "value": 15,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "gas_needed",
+      "value": 6,
+      "unit": "pint",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"pint\": {\"unit\": \"liter\", \"factor\": 0.473176}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = value * conversions[unit][\"factor\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"gas_total\",\n        \"value\": 15,\n        \"unit\": \"gallon\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"gas_needed\",\n        \"value\": 6,\n        \"unit\": \"pint\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "gas_total",
+        "original_value": 15,
+        "original_unit": "gallon",
+        "converted_value": 56.78,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "gas_needed",
+        "original_value": 6,
+        "original_unit": "pint",
+        "converted_value": 2.84,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "{gas_total} gallons of gas were equally divided into 5 different containers. Josey needed 1/4 of a container to run her lawnmower. How many pints of gasoline did Josey need?",
+    "templatized_answer": [
+      "{gas_total} gallons = {gas_total}*8 pints",
+      "{gas_total}*8/5 = {gas_total}*8/5 pints per container",
+      "(1/4)*({gas_total}*8/5) = {gas_needed} pints",
+      "Josey needed {gas_needed} pints of gas for her lawnmower.",
+      "#### {gas_needed}"
+    ],
+    "factual_assignment": {
+      "gas_total": 15,
+      "gas_needed": 6
+    }
+  },
+  "merged_assignment": {
+    "gas_total": 56.78,
+    "gas_needed": 2.84
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    gas_total = 56.78\n    gas_total_pints = round(gas_total * 8, 2)\n    gas_per_container = round(gas_total_pints / 5, 2)\n    gas_needed = round((1/4) * gas_per_container, 2)\n    \n    return {\n        \"gas_total\": gas_total,\n        \"gas_total_pints\": gas_total_pints,\n        \"gas_per_container\": gas_per_container,\n        \"gas_needed\": gas_needed\n    }\n\nrecomputed_values = recompute()\nprint(recomputed_values)\n",
+    "results": {
+      "gas_total": 56.78,
+      "gas_total_pints": 454.24,
+      "gas_per_container": 90.85,
+      "gas_needed": 22.71
+    }
+  },
+  "final": {
+    "question": "56.78 liters of gas were equally divided into 5 different containers. Josey needed 1/4 of a container to run her lawnmower. How many pints of gasoline did Josey need?",
+    "answer_lines": [
+      "56.78 liters = 454.24 pints",
+      "454.24/5 = 90.85 pints per container",
+      "(1/4)*90.85 = 22.71 pints",
+      "Josey needed 22.71 pints of gas for her lawnmower.",
+      "#### 22.71"
+    ],
+    "final_scalar": 22.71,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "56.78 liters of gas were equally divided into 5 different containers. Josey needed 1/4 of a container to run her lawnmower. How many liǎng of gasoline did Josey need?",
+    "adapted_answer": [
+      "56.78 liters = 454.24 liǎng",
+      "454.24/5 = 90.85 liǎng per container",
+      "(1/4)*90.85 = 22.71 liǎng",
+      "Josey needed 22.71 liǎng of gas for her lawnmower.",
+      "#### 22.71"
+    ],
+    "adaptation_notes": "Replaced 'pints' with 'liǎng' (a Chinese unit of volume)."
+  }
+}

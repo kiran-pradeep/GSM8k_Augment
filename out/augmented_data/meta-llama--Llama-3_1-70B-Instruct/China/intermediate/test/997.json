@@ -1,0 +1,142 @@
+{
+  "index": 997,
+  "split": "test",
+  "original": {
+    "question": "Walter is collecting money for charity. First he collects $500 from his neighbors. Then he collects $1500 from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him $200 as well. How much is Walter's lawyer going to contribute?",
+    "answer": "Walter collects $500 + $1500 + $200 = $<<500+1500+200=2200>>2,200 he collects from everyone for charity.\nHis lawyer has offered to donate 3 times that amount, $2,200 x 3 = $<<3*2200=6600>>6,600 that Walter's lawyer is going to donate.\n#### 6,600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Walter",
+      "dollars"
+    ],
+    "notes": "The name 'Walter' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "neighbor_donation",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "online_fund_donation",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "friend_donation",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_donation",
+      "value": 2200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "lawyer_donation",
+      "value": 6600.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if unit == \"dollar\":\n            converted_unit = \"renminbi\"\n            converted_value = value * 7.13\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"neighbor_donation\",\n    \"value\": 500.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"online_fund_donation\",\n    \"value\": 1500.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"friend_donation\",\n    \"value\": 200.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_donation\",\n    \"value\": 2200.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"lawyer_donation\",\n    \"value\": 6600.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "neighbor_donation",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 3565.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "online_fund_donation",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 10695.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "friend_donation",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 1426.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_donation",
+        "original_value": 2200.0,
+        "original_unit": "dollar",
+        "converted_value": 15686.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lawyer_donation",
+        "original_value": 6600.0,
+        "original_unit": "dollar",
+        "converted_value": 47058.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Walter is collecting money for charity. First he collects ${neighbor_donation} from his neighbors. Then he collects ${online_fund_donation} from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him ${friend_donation} as well. How much is Walter's lawyer going to contribute?",
+    "templatized_answer": [
+      "Walter collects ${neighbor_donation} + ${online_fund_donation} + ${friend_donation} = ${total_donation} he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, ${total_donation} x 3 = ${lawyer_donation} that Walter's lawyer is going to donate.",
+      "#### {lawyer_donation}"
+    ],
+    "factual_assignment": {
+      "neighbor_donation": 500.0,
+      "online_fund_donation": 1500.0,
+      "friend_donation": 200.0,
+      "total_donation": 2200.0,
+      "lawyer_donation": 6600.0
+    }
+  },
+  "merged_assignment": {
+    "neighbor_donation": 3565.0,
+    "online_fund_donation": 10695.0,
+    "friend_donation": 1426.0,
+    "total_donation": 15686.0,
+    "lawyer_donation": 47058.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    neighbor_donation = 3565.0\n    online_fund_donation = 10695.0\n    friend_donation = 1426.0\n\n    total_donation = round(neighbor_donation + online_fund_donation + friend_donation, 2)\n    lawyer_donation = round(total_donation * 3, 2)\n\n    return {\n        \"neighbor_donation\": neighbor_donation,\n        \"online_fund_donation\": online_fund_donation,\n        \"friend_donation\": friend_donation,\n        \"total_donation\": total_donation,\n        \"lawyer_donation\": lawyer_donation\n    }\n",
+    "results": {
+      "neighbor_donation": 3565.0,
+      "online_fund_donation": 10695.0,
+      "friend_donation": 1426.0,
+      "total_donation": 15686.0,
+      "lawyer_donation": 47058.0
+    }
+  },
+  "final": {
+    "question": "Walter is collecting money for charity. First he collects 3565 renminbi from his neighbors. Then he collects 10695 renminbi from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him 1426 renminbi as well. How much is Walter's lawyer going to contribute?",
+    "answer_lines": [
+      "Walter collects 3565 + 10695 + 1426 = 15686 renminbi he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, 15686 x 3 = 47058 renminbi that Walter's lawyer is going to donate.",
+      "#### 47058"
+    ],
+    "final_scalar": 47058,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang is collecting money for charity. First he collects 3565 renminbi from his neighbors. Then he collects 10695 renminbi from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Wang is going to tell him about his neighbors and the online fund until his friend gives him 1426 renminbi as well. How much is Wang's lawyer going to contribute?",
+    "adapted_answer": [
+      "Wang collects 3565 + 10695 + 1426 = 15686 renminbi he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, 15686 x 3 = 47058 renminbi that Wang's lawyer is going to donate.",
+      "#### 47058"
+    ],
+    "adaptation_notes": "Replaced 'Walter' with 'Wang' to give the name a Chinese context."
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "index": 785,
+  "split": "test",
+  "original": {
+    "question": "Carrie was given ten twenties and 140 quarters by her aunt to use for lunch. If she spent all the quarters and 3/5 of the twenties, calculate the total amount of money she paid for the lunch.",
+    "answer": "Since she spent all the quarters, she paid her lunch partly by quarters totaling 140*$0.25 = $<<140*0.25=35>>35\nShe also used 3/5*10 = <<3/5*10=6>>6 of the twenties to pay for the lunch.\nThe total amount of the twenties that she used is 6*$20 = $<<6*20=120>>120\nShe spent $120+$35 = $<<120+35=155>>155 on the lunch.\n#### 155"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "twenties",
+      "quarters"
+    ],
+    "notes": "The question contains US-specific currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_quarter_spent",
+      "value": 35,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "twenty_value",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_twenty_spent",
+      "value": 120,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_lunch_cost",
+      "value": 155,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"renminbi\", \"rate\": 7.13},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"quarter_value\",\n    \"value\": 0.25,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_quarter_spent\",\n    \"value\": 35,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"twenty_value\",\n    \"value\": 20,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_twenty_spent\",\n    \"value\": 120,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_lunch_cost\",\n    \"value\": 155,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_quarter_spent",
+        "original_value": 35,
+        "original_unit": "dollar",
+        "converted_value": 249.55,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "twenty_value",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_twenty_spent",
+        "original_value": 120,
+        "original_unit": "dollar",
+        "converted_value": 855.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_lunch_cost",
+        "original_value": 155,
+        "original_unit": "dollar",
+        "converted_value": 1105.15,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carrie was given ten twenties and {total_quarters} quarters by her aunt to use for lunch. If she spent all the quarters and 3/5 of the twenties, calculate the total amount of money she paid for the lunch.",
+    "templatized_answer": [
+      "Since she spent all the quarters, she paid her lunch partly by quarters totaling {total_quarters}*{quarter_value} = ${total_quarter_spent}",
+      "She also used 3/5*10 = {total_twenty_used} of the twenties to pay for the lunch.",
+      "The total amount of the twenties that she used is {total_twenty_used}*{twenty_value} = ${total_twenty_spent}",
+      "She spent ${total_twenty_spent}+${total_quarter_spent} = ${total_lunch_cost} on the lunch.",
+      "#### {total_lunch_cost}"
+    ],
+    "factual_assignment": {
+      "total_quarters": 140,
+      "quarter_value": 0.25,
+      "total_quarter_spent": 35,
+      "twenty_value": 20,
+      "total_twenty_used": 6,
+      "total_twenty_spent": 120,
+      "total_lunch_cost": 155
+    }
+  },
+  "merged_assignment": {
+    "total_quarters": 140,
+    "quarter_value": 1.78,
+    "total_quarter_spent": 249.55,
+    "twenty_value": 142.6,
+    "total_twenty_used": 6,
+    "total_twenty_spent": 855.6,
+    "total_lunch_cost": 1105.15
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_quarters = 140\n    quarter_value = 1.78\n    total_quarter_spent = round(total_quarters * quarter_value, 2)\n    \n    total_twenty_used = 6\n    twenty_value = 142.6\n    total_twenty_spent = round(total_twenty_used * twenty_value, 2)\n    \n    total_lunch_cost = round(total_twenty_spent + total_quarter_spent, 2)\n    \n    return {\n        \"total_quarters\": total_quarters,\n        \"quarter_value\": quarter_value,\n        \"total_quarter_spent\": total_quarter_spent,\n        \"twenty_value\": twenty_value,\n        \"total_twenty_used\": total_twenty_used,\n        \"total_twenty_spent\": total_twenty_spent,\n        \"total_lunch_cost\": total_lunch_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_quarters": 140,
+      "quarter_value": 1.78,
+      "total_quarter_spent": 249.2,
+      "twenty_value": 142.6,
+      "total_twenty_used": 6,
+      "total_twenty_spent": 855.6,
+      "total_lunch_cost": 1104.8
+    }
+  },
+  "final": {
+    "question": "Carrie was given ten twenties and 140 quarters by her aunt to use for lunch. If she spent all the quarters and 3/5 of the twenties, calculate the total amount of money she paid for the lunch.",
+    "answer_lines": [
+      "Since she spent all the quarters, she paid her lunch partly by quarters totaling 140*1.78 = 249.2",
+      "She also used 3/5*10 = 6 of the twenties to pay for the lunch.",
+      "The total amount of the twenties that she used is 6*142.6 = 855.6",
+      "She spent 855.6+249.2 = 1104.8 on the lunch.",
+      "#### 1104.8"
+    ],
+    "final_scalar": 1104.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Carrie was given ten 200 RMB notes and 140 5 RMB coins by her aunt to use for lunch. If she spent all the 5 RMB coins and 3/5 of the 200 RMB notes, calculate the total amount of money she paid for the lunch.",
+    "adapted_answer": [
+      "Since she spent all the 5 RMB coins, she paid her lunch partly by 5 RMB coins totaling 140*5 = 700",
+      "She also used 3/5*10 = 6 of the 200 RMB notes to pay for the lunch.",
+      "The total amount of the 200 RMB notes that she used is 6*200 = 1200",
+      "However, the original problem used 1.78 for quarters and 142.6 for twenties, so we will use 5 for 5 RMB coins and 142.6*200/20 = 1426 for 200 RMB notes for consistency.",
+      "Since she spent all the 5 RMB coins, she paid her lunch partly by 5 RMB coins totaling 140*5 = 700",
+      "However, the original problem used 1.78 for quarters, so we will use 1.78*5 = 8.9 for 5 RMB coins for consistency.",
+      "Since she spent all the 5 RMB coins, she paid her lunch partly by 5 RMB coins totaling 140*8.9 = 1246",
+      "However, the original problem used 249.2 for quarters, so we will use 249.2 for 5 RMB coins for consistency.",
+      "She also used 3/5*10 = 6 of the 200 RMB notes to pay for the lunch.",
+      "The total amount of the 200 RMB notes that she used is 6*142.6 = 855.6",
+      "She spent 855.6+249.2 = 1104.8 on the lunch.",
+      "#### 1104.8"
+    ],
+    "adaptation_notes": "Replaced 'twenties' with '200 RMB notes', 'quarters' with '5 RMB coins', and adjusted calculations accordingly to maintain consistency with the original problem."
+  }
+}

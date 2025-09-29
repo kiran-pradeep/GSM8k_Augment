@@ -1,0 +1,125 @@
+{
+  "index": 1027,
+  "split": "test",
+  "original": {
+    "question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for $3, the second with 4 sandwiches for $6, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "answer": "So the price for 1 sandwich is $3 / 2 sandwiches = $<<3/2=1.5>>1.5/sandwich\nNow the price for the package with 8 sandwiches would be $1.5/sandwich * 8 sandwiches = $<<1.5*8=12>>12\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "sandwiches"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in the US, and 'sandwiches' which is a food item not commonly associated with Indian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "package1_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "package2_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sandwich_price",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "package3_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87.0},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"package1_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"package2_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sandwich_price\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"package3_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "package1_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 261.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "package2_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 522.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "sandwich_price",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 130.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "package3_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1044.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for ${package1_cost}, the second with 4 sandwiches for ${package2_cost}, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "templatized_answer": [
+      "So the price for 1 sandwich is ${package1_cost} / 2 sandwiches = ${sandwich_price}/sandwich",
+      "Now the price for the package with 8 sandwiches would be ${sandwich_price}/sandwich * 8 sandwiches = ${package3_cost}"
+    ],
+    "factual_assignment": {
+      "package1_cost": 3,
+      "package2_cost": 6,
+      "sandwich_price": 1.5,
+      "package3_cost": 12
+    }
+  },
+  "merged_assignment": {
+    "package1_cost": 261.0,
+    "package2_cost": 522.0,
+    "sandwich_price": 130.5,
+    "package3_cost": 1044.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    package1_cost = 261.0\n    package2_cost = 522.0\n\n    sandwich_price = package1_cost / 2\n    sandwich_price = round(sandwich_price, 2)\n\n    package3_cost = sandwich_price * 8\n    package3_cost = round(package3_cost, 2)\n\n    return {\n        \"package1_cost\": package1_cost,\n        \"package2_cost\": package2_cost,\n        \"sandwich_price\": sandwich_price,\n        \"package3_cost\": package3_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "package1_cost": 261.0,
+      "package2_cost": 522.0,
+      "sandwich_price": 130.5,
+      "package3_cost": 1044.0
+    }
+  },
+  "final": {
+    "question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for 261.0 rupee, the second with 4 sandwiches for 522.0 rupee, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "answer_lines": [
+      "So the price for 1 sandwich is 261.0 rupee / 2 sandwiches = 130.5 rupee/sandwich",
+      "Now the price for the package with 8 sandwiches would be 130.5 rupee/sandwich * 8 sandwiches = 1044.0 rupee",
+      "#### 1044.0"
+    ],
+    "final_scalar": 1044.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A store offers vada pav in 3 different package sizes: the first package with 2 vada pav for 261.0 rupee, the second with 4 vada pav for 522.0 rupee, and a third with 8 vada pav, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 vada pav cost?",
+    "adapted_answer": [
+      "So the price for 1 vada pav is 261.0 rupee / 2 vada pav = 130.5 rupee/vada pav",
+      "Now the price for the package with 8 vada pav would be 130.5 rupee/vada pav * 8 vada pav = 1044.0 rupee",
+      "#### 1044.0"
+    ],
+    "adaptation_notes": "Replaced 'sandwiches' with 'vada pav', a popular Indian street food."
+  }
+}

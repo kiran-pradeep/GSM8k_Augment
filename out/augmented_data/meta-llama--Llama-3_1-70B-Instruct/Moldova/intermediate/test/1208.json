@@ -1,0 +1,107 @@
+{
+  "index": 1208,
+  "split": "test",
+  "original": {
+    "question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at $72, what is her profit?",
+    "answer": "Trinity sells magazines at 11/8*$72=$<<11/8*72=99>>99.\nIf she bought the magazines at $72, she makes a profit of $99-$72=$27\n#### 27"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "buying_price",
+      "value": 72,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "selling_price",
+      "value": 99,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 27,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"buying_price\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"selling_price\", \"value\": 99, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 27, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "buying_price",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 1196.64,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "selling_price",
+        "original_value": 99,
+        "original_unit": "dollar",
+        "converted_value": 1645.38,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "profit",
+        "original_value": 27,
+        "original_unit": "dollar",
+        "converted_value": 448.74,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at ${buying_price}, what is her profit?",
+    "templatized_answer": [
+      "Trinity sells magazines at 11/8*${buying_price}=${selling_price}.",
+      "If she bought the magazines at ${buying_price}, she makes a profit of ${selling_price}-${buying_price}=${profit}"
+    ],
+    "factual_assignment": {
+      "buying_price": 72,
+      "selling_price": 99,
+      "profit": 27
+    }
+  },
+  "merged_assignment": {
+    "buying_price": 1196.64,
+    "selling_price": 1645.38,
+    "profit": 448.74
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    buying_price = 1196.64\n    selling_price = (11/8) * buying_price\n    profit = selling_price - buying_price\n\n    return {\n        \"buying_price\": round(buying_price, 2),\n        \"selling_price\": round(selling_price, 2),\n        \"profit\": round(profit, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "buying_price": 1196.64,
+      "selling_price": 1645.38,
+      "profit": 448.74
+    }
+  },
+  "final": {
+    "question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at 1196.64 leu, what is her profit?",
+    "answer_lines": [
+      "Trinity sells magazines at 11/8*1196.64=1645.38 leu.",
+      "If she bought the magazines at 1196.64 leu, she makes a profit of 1645.38-1196.64=448.74 leu",
+      "#### 448.74"
+    ],
+    "final_scalar": 448.74,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bought the magazines at 1196.64 lei, what is her profit?",
+    "adapted_answer": [
+      "Trinity sells magazines at 11/8*1196.64=1645.38 lei.",
+      "If she bought the magazines at 1196.64 lei, she makes a profit of 1645.38-1196.64=448.74 lei"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei', as 'lei' is the correct plural form of the Moldovan currency."
+  }
+}

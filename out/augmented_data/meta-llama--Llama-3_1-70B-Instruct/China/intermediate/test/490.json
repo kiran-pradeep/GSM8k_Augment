@@ -1,0 +1,125 @@
+{
+  "index": 490,
+  "split": "test",
+  "original": {
+    "question": "An 8-year old child wants to buy a toy car which costs $12. He already has $4 savings. How many days will it take him to save the remaining amount of money if he promises to save $2 daily from his allowance?",
+    "answer": "The boy still needs $12 - $4 = $<<12-4=8>>8.\nIf he saves $2 per day then it will take him $8 / $2/day = <<8/2=4>>4 days to save the remaining amount.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "toy_car_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "child_savings",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_allowance",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_savings",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"toy_car_cost\",\n    \"value\": 12.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"child_savings\",\n    \"value\": 4.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"daily_allowance\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"remaining_savings\",\n    \"value\": 8.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "toy_car_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 85.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "child_savings",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "daily_allowance",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "remaining_savings",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 8.0,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An 8-year old child wants to buy a toy car which costs ${toy_car_cost}. He already has ${child_savings} savings. How many days will it take him to save the remaining amount of money if he promises to save ${daily_allowance} daily from his allowance?",
+    "templatized_answer": [
+      "The boy still needs ${toy_car_cost} - ${child_savings} = ${remaining_savings}.",
+      "If he saves ${daily_allowance} per day then it will take him ${remaining_savings} / ${daily_allowance}/day = {remaining_savings}/{daily_allowance} days to save the remaining amount.",
+      "#### {remaining_savings}/{daily_allowance}"
+    ],
+    "factual_assignment": {
+      "toy_car_cost": 12.0,
+      "child_savings": 4.0,
+      "daily_allowance": 2.0,
+      "remaining_savings": 8.0
+    }
+  },
+  "merged_assignment": {
+    "toy_car_cost": 85.56,
+    "child_savings": 28.52,
+    "daily_allowance": 14.26,
+    "remaining_savings": 8.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    toy_car_cost = 85.56\n    child_savings = 28.52\n    daily_allowance = 14.26\n\n    remaining_savings = toy_car_cost - child_savings\n    days_to_save = remaining_savings / daily_allowance\n\n    return {\n        \"toy_car_cost\": round(toy_car_cost, 2),\n        \"child_savings\": round(child_savings, 2),\n        \"daily_allowance\": round(daily_allowance, 2),\n        \"remaining_savings\": round(remaining_savings, 2),\n        \"days_to_save\": round(days_to_save, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "toy_car_cost": 85.56,
+      "child_savings": 28.52,
+      "daily_allowance": 14.26,
+      "remaining_savings": 57.04,
+      "days_to_save": 4.0
+    }
+  },
+  "final": {
+    "question": "An 8-year old child wants to buy a toy car which costs 85.56 renminbi. He already has 28.52 renminbi savings. How many days will it take him to save the remaining amount of money if he promises to save 14.26 renminbi daily from his allowance?",
+    "answer_lines": [
+      "The boy still needs 85.56 - 28.52 = 57.04 renminbi.",
+      "If he saves 14.26 renminbi per day then it will take him 57.04 / 14.26/day = 4 days to save the remaining amount.",
+      "#### 4"
+    ],
+    "final_scalar": 4.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "An 8-year old child wants to buy a toy car which costs 85.56 renminbi. He already has 28.52 renminbi savings. How many days will it take him to save the remaining amount of money if he promises to save 14.26 renminbi daily from his allowance?",
+    "adapted_answer": [
+      "The boy still needs 85.56 - 28.52 = 57.04 renminbi.",
+      "If he saves 14.26 renminbi per day then it will take him 57.04 / 14.26/day = 4 days to save the remaining amount."
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

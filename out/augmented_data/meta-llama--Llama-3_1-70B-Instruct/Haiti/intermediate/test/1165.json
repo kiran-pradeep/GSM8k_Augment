@@ -1,0 +1,121 @@
+{
+  "index": 1165,
+  "split": "test",
+  "original": {
+    "question": "John collects garbage from 3 different apartment complexes.  The first two have 200 apartments each and the last one is 60% bigger than the other two combined.  He collects garbage 3 times a week from each place and he gets paid $.40 per collection for each apartment.  How much money does he make in a week?",
+    "answer": "The first two complexes have 200+200=<<200+200=400>>400 apartments\nThe third one has 400*.6=<<400*.6=240>>240 more apartments than those 2 combined\nSo in total, it has 400+240=<<400+240=640>>640 apartments\nSo he goes to 640+400=<<640+400=1040>>1040 apartments each time\nThat means he visits 1040*3=<<1040*3=3120>>3120 apartments every week\nSo he makes 3120*$0.4=$<<3120*0.4=1248>>1248 every week\n#### 1248"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "collection_payment",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 1248,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"collection_payment\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 1248, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "collection_payment",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 52.32,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 1248,
+        "original_unit": "dollar",
+        "converted_value": 163250.88,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John collects garbage from 3 different apartment complexes.  The first two have {apartments_in_first_two_complexes} apartments each and the last one is {percentage_bigger} bigger than the other two combined.  He collects garbage {collections_per_week} times a week from each place and he gets paid ${collection_payment} per collection for each apartment.  How much money does he make in a week?",
+    "templatized_answer": [
+      "The first two complexes have {apartments_in_first_two_complexes}+{apartments_in_first_two_complexes}={apartments_in_first_two_complexes*2} apartments",
+      "The third one has {apartments_in_first_two_complexes*2}*{percentage_bigger}={apartments_in_first_two_complexes*2*percentage_bigger} more apartments than those 2 combined",
+      "So in total, it has {apartments_in_first_two_complexes*2}+{apartments_in_first_two_complexes*2*percentage_bigger}={apartments_in_first_two_complexes*2*(1+percentage_bigger)} apartments",
+      "So he goes to {apartments_in_first_two_complexes*2*(1+percentage_bigger)}+{apartments_in_first_two_complexes*2}={apartments_in_first_two_complexes*2*(2+percentage_bigger)} apartments each time",
+      "That means he visits {apartments_in_first_two_complexes*2*(2+percentage_bigger)}*{collections_per_week}={apartments_in_first_two_complexes*2*(2+percentage_bigger)*collections_per_week} apartments every week",
+      "So he makes {apartments_in_first_two_complexes*2*(2+percentage_bigger)*collections_per_week}*${collection_payment}=${apartments_in_first_two_complexes*2*(2+percentage_bigger)*collections_per_week*collection_payment} every week",
+      "#### {weekly_earnings}"
+    ],
+    "factual_assignment": {
+      "apartments_in_first_two_complexes": 200,
+      "percentage_bigger": 0.6,
+      "collections_per_week": 3,
+      "collection_payment": 0.4,
+      "weekly_earnings": 1248
+    }
+  },
+  "merged_assignment": {
+    "apartments_in_first_two_complexes": 200,
+    "percentage_bigger": 0.6,
+    "collections_per_week": 3,
+    "collection_payment": 52.32,
+    "weekly_earnings": 163250.88
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apartments_in_first_two_complexes = 200\n    percentage_bigger = 0.6\n    collections_per_week = 3\n    collection_payment = 52.32\n\n    total_apartments_first_two_complexes = apartments_in_first_two_complexes * 2\n    additional_apartments_third_complex = total_apartments_first_two_complexes * percentage_bigger\n    total_apartments_third_complex = total_apartments_first_two_complexes + additional_apartments_third_complex\n    total_apartments_all_complexes = total_apartments_first_two_complexes + total_apartments_third_complex\n    total_collections_per_week = total_apartments_all_complexes * collections_per_week\n    weekly_earnings = total_collections_per_week * collection_payment\n\n    return {\n        \"apartments_in_first_two_complexes\": apartments_in_first_two_complexes,\n        \"apartments_in_first_two_complexes*2\": total_apartments_first_two_complexes,\n        \"percentage_bigger\": round(percentage_bigger * 100, 2),\n        \"apartments_in_first_two_complexes*2*percentage_bigger\": round(additional_apartments_third_complex, 2),\n        \"apartments_in_first_two_complexes*2*(1+percentage_bigger)\": round(total_apartments_third_complex, 2),\n        \"apartments_in_first_two_complexes*2*(2+percentage_bigger)\": round(total_apartments_all_complexes, 2),\n        \"collections_per_week\": collections_per_week,\n        \"apartments_in_first_two_complexes*2*(2+percentage_bigger)*collections_per_week\": round(total_collections_per_week, 2),\n        \"collection_payment\": round(collection_payment, 2),\n        \"apartments_in_first_two_complexes*2*(2+percentage_bigger)*collections_per_week*collection_payment\": round(weekly_earnings, 2),\n        \"weekly_earnings\": round(weekly_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "apartments_in_first_two_complexes": 200,
+      "apartments_in_first_two_complexes*2": 400,
+      "percentage_bigger": 60.0,
+      "apartments_in_first_two_complexes*2*percentage_bigger": 240.0,
+      "apartments_in_first_two_complexes*2*(1+percentage_bigger)": 640.0,
+      "apartments_in_first_two_complexes*2*(2+percentage_bigger)": 1040.0,
+      "collections_per_week": 3,
+      "apartments_in_first_two_complexes*2*(2+percentage_bigger)*collections_per_week": 3120.0,
+      "collection_payment": 52.32,
+      "apartments_in_first_two_complexes*2*(2+percentage_bigger)*collections_per_week*collection_payment": 163238.4,
+      "weekly_earnings": 163238.4
+    }
+  },
+  "final": {
+    "question": "John collects garbage from 3 different apartment complexes.  The first two have 200 apartments each and the last one is 60.0% bigger than the other two combined.  He collects garbage 3 times a week from each place and he gets paid 52.32 gourde per collection for each apartment.  How much money does he make in a week?",
+    "answer_lines": [
+      "The first two complexes have 200+200=400 apartments",
+      "The third one has 400*60.0=240 more apartments than those 2 combined",
+      "So in total, it has 400+240=640 apartments",
+      "So he goes to 640+400=1040 apartments each time",
+      "That means he visits 1040*3=3120 apartments every week",
+      "So he makes 3120*52.32=163238.4 gourde every week",
+      "#### 163238.4"
+    ],
+    "final_scalar": 163238.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ti-Manno collects garbage from 3 different apartment complexes.  The first two have 200 apartments each and the last one is 60.0% bigger than the other two combined.  He collects garbage 3 times a week from each place and he gets paid 52.32 gourde per collection for each apartment.  How much money does he make in a week?",
+    "adapted_answer": [
+      "The first two complexes have 200+200=400 apartments",
+      "The third one has 400*60.0=240 more apartments than those 2 combined",
+      "So in total, it has 400+240=640 apartments",
+      "So he goes to 640+400=1040 apartments each time",
+      "That means he visits 1040*3=3120 apartments every week",
+      "So he makes 3120*52.32=163238.4 gourde every week",
+      "#### 163238.4"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Ti-Manno', a common Haitian name."
+  }
+}

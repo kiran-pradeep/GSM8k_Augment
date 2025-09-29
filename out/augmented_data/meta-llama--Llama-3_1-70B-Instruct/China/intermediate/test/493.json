@@ -1,0 +1,135 @@
+{
+  "index": 493,
+  "split": "test",
+  "original": {
+    "question": "Heather's razors come 4 to a pack and cost $4.00 a pack.  They are currently on sale for buy one get one free.  She also has a $2.00 coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "answer": "Buy one get one free means she gets 2 packs for the price of 1 and she has a $2.00 coupon, so the razors will cost her $4-$2 = $2.00\nEach pack has 4 razors and she buys 2 packs for a total of 4*2 = <<4*2=8>>8 razors\nThe razors cost $2.00 and she bought 8 so that means each razor costs $2.00/8 = $<<2/8=0.25>>0.25 each\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Heather",
+      "dollars"
+    ],
+    "notes": "The name 'Heather' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pack_cost",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "coupon_value",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "razor_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * list(conversions[original_unit].values())[0], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"pack_cost\",\n    \"value\": 4.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"coupon_value\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_cost\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"razor_cost\",\n    \"value\": 0.25,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pack_cost",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "coupon_value",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "razor_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Heather's razors come {razors_per_pack} to a pack and cost ${pack_cost} a pack.  They are currently on sale for buy one get one free.  She also has a ${coupon_value} coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "templatized_answer": [
+      "Buy one get one free means she gets 2 packs for the price of 1 and she has a ${coupon_value} coupon, so the razors will cost her ${pack_cost}-${coupon_value} = ${total_cost}",
+      "Each pack has {razors_per_pack} razors and she buys 2 packs for a total of {razors_per_pack}*2 = {razors_per_pack}*2 razors",
+      "The razors cost ${total_cost} and she bought {razors_per_pack}*2 so that means each razor costs ${total_cost}/({razors_per_pack}*2) = ${razor_cost} each",
+      "#### {razor_cost_in_cents}"
+    ],
+    "factual_assignment": {
+      "pack_cost": 4.0,
+      "coupon_value": 2.0,
+      "total_cost": 2.0,
+      "razor_cost": 0.25,
+      "razors_per_pack": 4,
+      "razor_cost_in_cents": 25
+    }
+  },
+  "merged_assignment": {
+    "pack_cost": 28.52,
+    "coupon_value": 14.26,
+    "total_cost": 14.26,
+    "razor_cost": 1.78,
+    "razors_per_pack": 4,
+    "razor_cost_in_cents": 25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pack_cost = 28.52\n    coupon_value = 14.26\n    razors_per_pack = 4\n\n    total_cost = pack_cost - coupon_value\n    total_cost = round(total_cost, 2)\n\n    razors_bought = razors_per_pack * 2\n    razor_cost = total_cost / razors_bought\n    razor_cost = round(razor_cost, 2)\n\n    razor_cost_in_cents = int(razor_cost * 100)\n\n    return {\n        \"pack_cost\": pack_cost,\n        \"coupon_value\": coupon_value,\n        \"total_cost\": total_cost,\n        \"razor_cost\": razor_cost,\n        \"razors_per_pack\": razors_per_pack,\n        \"razor_cost_in_cents\": razor_cost_in_cents\n    }\n",
+    "results": {
+      "pack_cost": 28.52,
+      "coupon_value": 14.26,
+      "total_cost": 14.26,
+      "razor_cost": 1.78,
+      "razors_per_pack": 4,
+      "razor_cost_in_cents": 178
+    }
+  },
+  "final": {
+    "question": "Heather's razors come 4 to a pack and cost 28.52 renminbi a pack.  They are currently on sale for buy one get one free.  She also has a 14.26 renminbi coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "answer_lines": [
+      "Buy one get one free means she gets 2 packs for the price of 1 and she has a 14.26 renminbi coupon, so the razors will cost her 28.52-14.26 = 14.26 renminbi",
+      "Each pack has 4 razors and she buys 2 packs for a total of 4*2 = 8 razors",
+      "The razors cost 14.26 renminbi and she bought 8 so that means each razor costs 14.26/8 = 1.78 renminbi each",
+      "#### 178"
+    ],
+    "final_scalar": 178,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling's razors come 4 to a pack and cost 28.52 renminbi a pack.  They are currently on sale for buy one get one free.  She also has a 14.26 renminbi coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "adapted_answer": [
+      "Buy one get one free means she gets 2 packs for the price of 1 and she has a 14.26 renminbi coupon, so the razors will cost her 28.52-14.26 = 14.26 renminbi",
+      "Each pack has 4 razors and she buys 2 packs for a total of 4*2 = 8 razors",
+      "The razors cost 14.26 renminbi and she bought 8 so that means each razor costs 14.26/8 = 1.78 renminbi each",
+      "#### 178"
+    ],
+    "adaptation_notes": "Replaced 'Heather' with 'Ling' to give the name a Chinese context."
+  }
+}

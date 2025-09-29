@@ -1,0 +1,128 @@
+{
+  "index": 473,
+  "split": "test",
+  "original": {
+    "question": "Benny saw a 10-foot shark with 2 6-inch remoras attached to it. What percentage of the shark's body length is the combined length of the remoras?",
+    "answer": "First, find the combined length of the remoras in inches: 6 inches/remora * 2 remoras = <<6*2=12>>12 inches\nThen divide that number by 12 to convert it to feet: 12 inches / 12 inches/foot = <<1=1>>1 foot\nThen divide the combined remora length in feet by the shark's length and multiply by 100% to express the answer as a percentage: 1 foot / 10 feet * 100% = 10%\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "feet",
+      "inches"
+    ],
+    "notes": "The question contains units (feet, inches) that are not commonly used in Moldova, which uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shark_length",
+      "value": 10.0,
+      "unit": "foot",
+      "context": "question"
+    },
+    {
+      "variable": "remora_length",
+      "value": 6.0,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "combined_remora_length_inches",
+      "value": 12.0,
+      "unit": "inch",
+      "context": "answer"
+    },
+    {
+      "variable": "combined_remora_length_feet",
+      "value": 1.0,
+      "unit": "foot",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollar': {'to': 'leu', 'rate': 16.62},\n        'pound': {'to': 'kilogram', 'rate': 0.453592},\n        'ounce': {'to': 'gram', 'rate': 28.3495},\n        'mile': {'to': 'kilometer', 'rate': 1.60934},\n        'foot': {'to': 'meter', 'rate': 0.3048},\n        'gallon': {'to': 'liter', 'rate': 3.78541},\n        'cup': {'to': 'milliliter', 'rate': 236.588},\n        'inch': {'to': 'meter', 'rate': 0.0254}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n        context = metric['context']\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit]['to']\n            converted_value = round(original_value * conversions[original_unit]['rate'], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shark_length\", \"value\": 10.0, \"unit\": \"foot\", \"context\": \"question\"},\n    {\"variable\": \"remora_length\", \"value\": 6.0, \"unit\": \"inch\", \"context\": \"question\"},\n    {\"variable\": \"combined_remora_length_inches\", \"value\": 12.0, \"unit\": \"inch\", \"context\": \"answer\"},\n    {\"variable\": \"combined_remora_length_feet\", \"value\": 1.0, \"unit\": \"foot\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shark_length",
+        "original_value": 10.0,
+        "original_unit": "foot",
+        "converted_value": 3.05,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "remora_length",
+        "original_value": 6.0,
+        "original_unit": "inch",
+        "converted_value": 0.15,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "combined_remora_length_inches",
+        "original_value": 12.0,
+        "original_unit": "inch",
+        "converted_value": 0.3,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "combined_remora_length_feet",
+        "original_value": 1.0,
+        "original_unit": "foot",
+        "converted_value": 0.3,
+        "converted_unit": "meter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Benny saw a {shark_length}-foot shark with 2 {remora_length}-inch remoras attached to it. What percentage of the shark's body length is the combined length of the remoras?",
+    "templatized_answer": [
+      "First, find the combined length of the remoras in inches: {remora_length} inches/remora * 2 remoras = {combined_remora_length_inches} inches",
+      "Then divide that number by 12 to convert it to feet: {combined_remora_length_inches} inches / 12 inches/foot = {combined_remora_length_feet} foot",
+      "Then divide the combined remora length in feet by the shark's length and multiply by 100% to express the answer as a percentage: {combined_remora_length_feet} foot / {shark_length} feet * 100% = {percentage_answer}%"
+    ],
+    "factual_assignment": {
+      "shark_length": 10.0,
+      "remora_length": 6.0,
+      "combined_remora_length_inches": 12.0,
+      "combined_remora_length_feet": 1.0,
+      "percentage_answer": 10.0
+    }
+  },
+  "merged_assignment": {
+    "shark_length": 3.05,
+    "remora_length": 0.15,
+    "combined_remora_length_inches": 0.3,
+    "combined_remora_length_feet": 0.3,
+    "percentage_answer": 10.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    shark_length = 3.05\n    remora_length = 0.15\n\n    combined_remora_length_inches = remora_length * 2\n    combined_remora_length_feet = combined_remora_length_inches / 12\n    percentage_answer = (combined_remora_length_feet / shark_length) * 100\n\n    return {\n        \"shark_length\": shark_length,\n        \"remora_length\": remora_length,\n        \"combined_remora_length_inches\": round(combined_remora_length_inches, 2),\n        \"combined_remora_length_feet\": round(combined_remora_length_feet, 2),\n        \"percentage_answer\": round(percentage_answer, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "shark_length": 3.05,
+      "remora_length": 0.15,
+      "combined_remora_length_inches": 0.3,
+      "combined_remora_length_feet": 0.02,
+      "percentage_answer": 0.82
+    }
+  },
+  "final": {
+    "question": "Benny saw a 3.05-meter shark with 2 0.15-meter remoras attached to it. What percentage of the shark's body length is the combined length of the remoras?",
+    "answer_lines": [
+      "First, find the combined length of the remoras in meters: 0.15 meters/remora * 2 remoras = 0.3 meters",
+      "Then divide the combined remora length in meters by the shark's length and multiply by 100% to express the answer as a percentage: 0.3 meters / 3.05 meters * 100% = 0.82%",
+      "#### 0.82"
+    ],
+    "final_scalar": 0.82,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion saw a 3.05-meter sturgeon with 2 0.15-meter lampreys attached to it. What percentage of the sturgeon's body length is the combined length of the lampreys?",
+    "adapted_answer": [
+      "First, find the combined length of the lampreys in meters: 0.15 meters/lamprey * 2 lampreys = 0.3 meters",
+      "Then divide the combined lamprey length in meters by the sturgeon's length and multiply by 100% to express the answer as a percentage: 0.3 meters / 3.05 meters * 100% = 0.82%"
+    ],
+    "adaptation_notes": "Replaced 'Benny' with 'Ion', 'shark' with 'sturgeon', and 'remoras' with 'lampreys' to provide a Moldovan context."
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "index": 569,
+  "split": "test",
+  "original": {
+    "question": "Liam and Mitchell own competing lemonade stands across the street from one another. When Liam bragged that he had made $63 one weekend, Mitchell laughed and told Liam he had sold 21 lemonades at $4 apiece the same weekend. How many more dollars did Mitchell make selling lemonade that weekend than Liam?",
+    "answer": "Mitchell made 21 * 4 = $<<21*4=84>>84 selling lemonade.\nThus, Mitchell made 84 - 63 = $<<84-63=21>>21 more selling lemonade that weekend than Liam.\n#### 21"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Liam",
+      "Mitchell",
+      "dollars",
+      "lemonade"
+    ],
+    "notes": "The names Liam and Mitchell are Western, dollars is a non-Chinese currency unit, and lemonade is a Western drink."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "liam_earnings",
+      "value": 63,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mitchell_price",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mitchell_earnings",
+      "value": 84,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "earnings_difference",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and unit not in [\"renminbi\", \"kilogram\", \"gram\", \"kilometer\", \"meter\", \"liter\", \"milliliter\"]:\n            converted_value = round(value * conversions[unit][list(conversions[unit].keys())[0]], 2)\n            converted_unit = list(conversions[unit].keys())[0]\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"liam_earnings\",\n    \"value\": 63,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"mitchell_price\",\n    \"value\": 4,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"mitchell_earnings\",\n    \"value\": 84,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"earnings_difference\",\n    \"value\": 21,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "liam_earnings",
+        "original_value": 63,
+        "original_unit": "dollar",
+        "converted_value": 449.19,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "mitchell_price",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "mitchell_earnings",
+        "original_value": 84,
+        "original_unit": "dollar",
+        "converted_value": 598.92,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "earnings_difference",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 149.73,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Liam and Mitchell own competing lemonade stands across the street from one another. When Liam bragged that he had made ${liam_earnings} one weekend, Mitchell laughed and told Liam he had sold {mitchell_lemonades} lemonades at ${mitchell_price} apiece the same weekend. How many more dollars did Mitchell make selling lemonade that weekend than Liam?",
+    "templatized_answer": [
+      "Mitchell made {mitchell_lemonades} * {mitchell_price} = ${mitchell_lemonades * mitchell_price} selling lemonade.",
+      "Thus, Mitchell made {mitchell_lemonades * mitchell_price} - {liam_earnings} = ${mitchell_lemonades * mitchell_price - liam_earnings} more selling lemonade that weekend than Liam.",
+      "#### {mitchell_lemonades * mitchell_price - liam_earnings}"
+    ],
+    "factual_assignment": {
+      "liam_earnings": 63,
+      "mitchell_price": 4,
+      "mitchell_lemonades": 21
+    }
+  },
+  "merged_assignment": {
+    "liam_earnings": 449.19,
+    "mitchell_price": 28.52,
+    "mitchell_lemonades": 21
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    liam_earnings = 449.19\n    mitchell_price = 28.52\n    mitchell_lemonades = 21\n\n    mitchell_earnings = mitchell_lemonades * mitchell_price\n    earnings_difference = mitchell_earnings - liam_earnings\n\n    return {\n        \"liam_earnings\": round(liam_earnings, 2),\n        \"mitchell_price\": round(mitchell_price, 2),\n        \"mitchell_lemonades\": mitchell_lemonades,\n        \"mitchell_earnings\": round(mitchell_earnings, 2),\n        \"earnings_difference\": round(earnings_difference, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "liam_earnings": 449.19,
+      "mitchell_price": 28.52,
+      "mitchell_lemonades": 21,
+      "mitchell_earnings": 598.92,
+      "earnings_difference": 149.73
+    }
+  },
+  "final": {
+    "question": "Liam and Mitchell own competing lemonade stands across the street from one another. When Liam bragged that he had made 449.19 renminbi one weekend, Mitchell laughed and told Liam he had sold 21 lemonades at 28.52 renminbi apiece the same weekend. How many more renminbi did Mitchell make selling lemonade that weekend than Liam?",
+    "answer_lines": [
+      "Mitchell made 21 * 28.52 = 598.92 renminbi selling lemonade.",
+      "Thus, Mitchell made 598.92 - 449.19 = 149.73 renminbi more selling lemonade that weekend than Liam.",
+      "#### 149.73"
+    ],
+    "final_scalar": 149.73,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang and Li own competing sugarcane juice stands across the street from one another. When Wang bragged that he had made 449.19 renminbi one weekend, Li laughed and told Wang he had sold 21 sugarcane juices at 28.52 renminbi apiece the same weekend. How many more renminbi did Li make selling sugarcane juice that weekend than Wang?",
+    "adapted_answer": [
+      "Li made 21 * 28.52 = 598.92 renminbi selling sugarcane juice.",
+      "Thus, Li made 598.92 - 449.19 = 149.73 renminbi more selling sugarcane juice that weekend than Wang.",
+      "#### 149.73"
+    ],
+    "adaptation_notes": "Replaced 'Liam' with 'Wang', 'Mitchell' with 'Li', and 'lemonade' with 'sugarcane juice' to give the text a Chinese context."
+  }
+}

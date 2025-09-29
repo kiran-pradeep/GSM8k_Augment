@@ -1,0 +1,156 @@
+{
+  "index": 264,
+  "split": "test",
+  "original": {
+    "question": "Carmen has $100, Samantha has $25 more than Carmen, and Daisy has $50 more than Samantha. How much do all three girls have combined?",
+    "answer": "Samantha has $100+$25 = $<<100+25=125>>125.\nDaisy has $125+$50 = $<<125+50=175>>175.\nThe total amount of money that the three girls have is $175+$125+$100 = $<<175+125+100=400>>400.\n#### 400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Carmen",
+      "Samantha",
+      "Daisy",
+      "dollars"
+    ],
+    "notes": "The names are Western and the unit of currency is dollars, commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "carmen_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "samantha_money",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daisy_money",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "samantha_total",
+      "value": 125,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "daisy_total",
+      "value": 175,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_money",
+      "value": 400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"carmen_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"samantha_money\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daisy_money\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"samantha_total\", \"value\": 125, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"daisy_total\", \"value\": 175, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_money\", \"value\": 400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "carmen_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 8700,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "samantha_money",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 2175,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "daisy_money",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 4350,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "samantha_total",
+        "original_value": 125,
+        "original_unit": "dollar",
+        "converted_value": 10875,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "daisy_total",
+        "original_value": 175,
+        "original_unit": "dollar",
+        "converted_value": 15225,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 400,
+        "original_unit": "dollar",
+        "converted_value": 34800,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carmen has ${carmen_money}, Samantha has ${samantha_money} more than Carmen, and Daisy has ${daisy_money} more than Samantha. How much do all three girls have combined?",
+    "templatized_answer": [
+      "Samantha has ${carmen_money}+${samantha_money} = ${carmen_money}+${samantha_money}.",
+      "Daisy has ${carmen_money}+${samantha_money}+${daisy_money} = ${carmen_money}+${samantha_money}+${daisy_money}.",
+      "The total amount of money that the three girls have is ${carmen_money}+${carmen_money}+${samantha_money}+${daisy_money}+${carmen_money} = ${carmen_money}+${carmen_money}+${samantha_money}+${daisy_money}+${carmen_money}.",
+      "#### {carmen_money}+{carmen_money}+{samantha_money}+{daisy_money}+{carmen_money}"
+    ],
+    "factual_assignment": {
+      "carmen_money": 100,
+      "samantha_money": 25,
+      "daisy_money": 50
+    }
+  },
+  "merged_assignment": {
+    "carmen_money": 8700,
+    "samantha_money": 2175,
+    "daisy_money": 4350
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    carmen_money = 8700\n    samantha_money = 2175\n    daisy_money = 4350\n\n    samantha_total = carmen_money + samantha_money\n    daisy_total = carmen_money + samantha_money + daisy_money\n    total_money = carmen_money + samantha_total + daisy_total\n\n    return {\n        \"carmen_money\": carmen_money,\n        \"samantha_money\": samantha_money,\n        \"daisy_money\": daisy_money,\n        \"carmen_money+samantha_money\": samantha_total,\n        \"carmen_money+samantha_money+daisy_money\": daisy_total,\n        \"carmen_money+carmen_money+samantha_money+daisy_money+carmen_money\": total_money\n    }\n",
+    "results": {
+      "carmen_money": 8700,
+      "samantha_money": 2175,
+      "daisy_money": 4350,
+      "carmen_money+samantha_money": 10875,
+      "carmen_money+samantha_money+daisy_money": 15225,
+      "carmen_money+carmen_money+samantha_money+daisy_money+carmen_money": 34800
+    }
+  },
+  "final": {
+    "question": "Carmen has 8700, Samantha has 2175 more than Carmen, and Daisy has 4350 more than Samantha. How much do all three girls have combined?",
+    "answer_lines": [
+      "Samantha has 8700+2175 = 10875.",
+      "Daisy has 10875+4350 = 15225.",
+      "The total amount of money that the three girls have is 15225+10875+8700 = 34800.",
+      "#### 34800"
+    ],
+    "final_scalar": 34800,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rukmini has 8700, Nalini has 2175 more than Rukmini, and Diya has 4350 more than Nalini. How much do all three girls have combined?",
+    "adapted_answer": [
+      "Nalini has 8700+2175 = 10875.",
+      "Diya has 10875+4350 = 15225.",
+      "The total amount of money that the three girls have is 15225+10875+8700 = 34800."
+    ],
+    "adaptation_notes": "Replaced names with Indian equivalents: Carmen -> Rukmini, Samantha -> Nalini, Daisy -> Diya."
+  }
+}

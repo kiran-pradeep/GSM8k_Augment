@@ -1,0 +1,126 @@
+{
+  "index": 781,
+  "split": "test",
+  "original": {
+    "question": "Four friends ordered four pizzas for a total of 64 dollars. If two of the pizzas cost 30 dollars, how much did each of the other two pizzas cost if they cost the same amount?",
+    "answer": "The other two pizzas cost 64-30 = <<64-30=34>>34 dollars.\nEach of the other two pizzas cost 34/2 = <<34/2=17>>17 dollars each.\n#### 17"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "pizzas"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in the United States, and 'pizzas' which is a type of food originating from Italy."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_cost",
+      "value": 64.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "two_pizzas_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "other_two_pizzas_cost",
+      "value": 34.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "each_other_pizza_cost",
+      "value": 17.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_cost\", \"value\": 64.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"two_pizzas_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"other_two_pizzas_cost\", \"value\": 34.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"each_other_pizza_cost\", \"value\": 17.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_cost",
+        "original_value": 64.0,
+        "original_unit": "dollar",
+        "converted_value": 8371.84,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "two_pizzas_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 3924.3,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "other_two_pizzas_cost",
+        "original_value": 34.0,
+        "original_unit": "dollar",
+        "converted_value": 4447.54,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "each_other_pizza_cost",
+        "original_value": 17.0,
+        "original_unit": "dollar",
+        "converted_value": 2223.77,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Four friends ordered four pizzas for a total of {total_cost} dollars. If two of the pizzas cost {two_pizzas_cost} dollars, how much did each of the other two pizzas cost if they cost the same amount?",
+    "templatized_answer": [
+      "The other two pizzas cost {total_cost}-{two_pizzas_cost} = {other_two_pizzas_cost} dollars.",
+      "Each of the other two pizzas cost {other_two_pizzas_cost}/2 = {each_other_pizza_cost} dollars each.",
+      "#### {each_other_pizza_cost}"
+    ],
+    "factual_assignment": {
+      "total_cost": 64.0,
+      "two_pizzas_cost": 30.0,
+      "other_two_pizzas_cost": 34.0,
+      "each_other_pizza_cost": 17.0
+    }
+  },
+  "merged_assignment": {
+    "total_cost": 8371.84,
+    "two_pizzas_cost": 3924.3,
+    "other_two_pizzas_cost": 4447.54,
+    "each_other_pizza_cost": 2223.77
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_cost = 8371.84\n    two_pizzas_cost = 3924.3\n    other_two_pizzas_cost = total_cost - two_pizzas_cost\n    each_other_pizza_cost = other_two_pizzas_cost / 2\n\n    return {\n        \"total_cost\": round(total_cost, 2),\n        \"two_pizzas_cost\": round(two_pizzas_cost, 2),\n        \"other_two_pizzas_cost\": round(other_two_pizzas_cost, 2),\n        \"each_other_pizza_cost\": round(each_other_pizza_cost, 2)\n    }\n",
+    "results": {
+      "total_cost": 8371.84,
+      "two_pizzas_cost": 3924.3,
+      "other_two_pizzas_cost": 4447.54,
+      "each_other_pizza_cost": 2223.77
+    }
+  },
+  "final": {
+    "question": "Four friends ordered four pizzas for a total of 8371.84 gourde. If two of the pizzas cost 3924.3 gourde, how much did each of the other two pizzas cost if they cost the same amount?",
+    "answer_lines": [
+      "The other two pizzas cost 8371.84-3924.3 = 4447.54 gourde.",
+      "Each of the other two pizzas cost 4447.54/2 = 2223.77 gourde each.",
+      "#### 2223.77"
+    ],
+    "final_scalar": 2223.77,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Four friends ordered four akara for a total of 8371.84 gourde. If two of the akara cost 3924.3 gourde, how much did each of the other two akara cost if they cost the same amount?",
+    "adapted_answer": [
+      "The other two akara cost 8371.84-3924.3 = 4447.54 gourde.",
+      "Each of the other two akara cost 4447.54/2 = 2223.77 gourde each.",
+      "#### 2223.77"
+    ],
+    "adaptation_notes": "Replaced 'pizzas' with 'akara', a traditional Haitian food."
+  }
+}

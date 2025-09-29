@@ -1,0 +1,116 @@
+{
+  "index": 862,
+  "split": "test",
+  "original": {
+    "question": "Every hour, Paige can bake 2 banana bread loaves in the oven.  Each banana bread loaf is cut into 8 slices and wrapped individually for sale.  Each slice is sold for 50 cents for a fundraiser.  If she baked from 1:00 PM - 6:00 PM straight, and sold all the slices, how much did she raise in dollars?",
+    "answer": "From 1pm - 6pm, there are 6 - 1 = <<6-1=5>>5 hours.\nIn 5 hours, Paige baked 5 x 2 = <<5*2=10>>10 banana bread loaves.\nWhen they are sliced, there are 10 x 8 = <<10*8=80>>80 banana bread slices.\nBy selling all the slices, Paige has raised 80 x 0.50 = $<<80*0.50=40>>40.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Paige",
+      "banana bread",
+      "dollars"
+    ],
+    "notes": "The name Paige and the use of dollars are culturally specific to Western regions, and banana bread is a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "slice_price",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fundraiser_earnings",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"slice_price\",\n    \"value\": 0.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"fundraiser_earnings\",\n    \"value\": 40,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "slice_price",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "fundraiser_earnings",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Every hour, Paige can bake {loaves_per_hour} banana bread loaves in the oven.  Each banana bread loaf is cut into {slices_per_loaf} slices and wrapped individually for sale.  Each slice is sold for {slice_price} dollars for a fundraiser.  If she baked from 1:00 PM - 6:00 PM straight, and sold all the slices, how much did she raise in dollars?",
+    "templatized_answer": [
+      "From 1pm - 6pm, there are 6 - 1 = {total_hours} hours.",
+      "In {total_hours} hours, Paige baked {total_hours} x {loaves_per_hour} = {total_loaves} banana bread loaves.",
+      "When they are sliced, there are {total_loaves} x {slices_per_loaf} = {total_slices} banana bread slices.",
+      "By selling all the slices, Paige has raised {total_slices} x {slice_price} = ${fundraiser_earnings}.",
+      "#### {fundraiser_earnings}"
+    ],
+    "factual_assignment": {
+      "loaves_per_hour": 2,
+      "slices_per_loaf": 8,
+      "slice_price": 0.5,
+      "total_hours": 5,
+      "total_loaves": 10,
+      "total_slices": 80,
+      "fundraiser_earnings": 40
+    }
+  },
+  "merged_assignment": {
+    "loaves_per_hour": 2,
+    "slices_per_loaf": 8,
+    "slice_price": 3.56,
+    "total_hours": 5,
+    "total_loaves": 10,
+    "total_slices": 80,
+    "fundraiser_earnings": 285.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    loaves_per_hour = 2\n    slices_per_loaf = 8\n    slice_price = 3.56\n    start_hour = 1\n    end_hour = 6\n\n    total_hours = end_hour - start_hour\n    total_loaves = total_hours * loaves_per_hour\n    total_slices = total_loaves * slices_per_loaf\n    fundraiser_earnings = round(total_slices * slice_price, 2)\n\n    return {\n        \"loaves_per_hour\": loaves_per_hour,\n        \"slices_per_loaf\": slices_per_loaf,\n        \"slice_price\": slice_price,\n        \"total_hours\": total_hours,\n        \"total_loaves\": total_loaves,\n        \"total_slices\": total_slices,\n        \"fundraiser_earnings\": fundraiser_earnings\n    }\n",
+    "results": {
+      "loaves_per_hour": 2,
+      "slices_per_loaf": 8,
+      "slice_price": 3.56,
+      "total_hours": 5,
+      "total_loaves": 10,
+      "total_slices": 80,
+      "fundraiser_earnings": 284.8
+    }
+  },
+  "final": {
+    "question": "Every hour, Paige can bake 2 banana bread loaves in the oven.  Each banana bread loaf is cut into 8 slices and wrapped individually for sale.  Each slice is sold for 3.56 renminbi for a fundraiser.  If she baked from 1:00 PM - 6:00 PM straight, and sold all the slices, how much did she raise in renminbi?",
+    "answer_lines": [
+      "From 1pm - 6pm, there are 6 - 1 = 5 hours.",
+      "In 5 hours, Paige baked 5 x 2 = 10 banana bread loaves.",
+      "When they are sliced, there are 10 x 8 = 80 banana bread slices.",
+      "By selling all the slices, Paige has raised 80 x 3.56 = 284.8 renminbi.",
+      "#### 284.8"
+    ],
+    "final_scalar": 284.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Every hour, Meixi can bake 2 mantou loaves in the oven.  Each mantou loaf is cut into 8 slices and wrapped individually for sale.  Each slice is sold for 3.56 renminbi for a fundraiser.  If she baked from 1:00 PM - 6:00 PM straight, and sold all the slices, how much did she raise in renminbi?",
+    "adapted_answer": [
+      "From 1pm - 6pm, there are 6 - 1 = 5 hours.",
+      "In 5 hours, Meixi baked 5 x 2 = 10 mantou loaves.",
+      "When they are sliced, there are 10 x 8 = 80 mantou slices.",
+      "By selling all the slices, Meixi has raised 80 x 3.56 = 284.8 renminbi.",
+      "#### 284.8"
+    ],
+    "adaptation_notes": "Replaced 'Paige' with 'Meixi' (a Chinese name), and 'banana bread' with 'mantou' (a type of Chinese steamed bun)."
+  }
+}

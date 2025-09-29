@@ -1,0 +1,129 @@
+{
+  "index": 711,
+  "split": "test",
+  "original": {
+    "question": "The ice cream parlor was offering a deal, buy 2 scoops of ice cream, get 1 scoop free.  Each scoop cost $1.50.  If Erin had  $6.00, how many scoops of ice cream should she buy?",
+    "answer": "Each scoop cost $1.50. If she buys 2, she gets one free. So it will cost her 2 * 1.50 = $<<2*1.50=3.00>>3.00 for thee scoops total.\nIf you break it down, 3 scoops of ice cream cost $3.00 so 3/3 = $<<3/3=1.00>>1.00 per scoop\nErin has $6.00 and each scoop ends up costing $1.00 each then 6/1 = <<6/1=6>>6 scoops total\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "ice cream"
+    ],
+    "notes": "The text contains 'dollars' as a unit of currency commonly used in the US and 'ice cream' as a food item popular in Western cultures."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "scoop_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "erin_money",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "three_scoops_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "effective_scoop_cost",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"scoop_cost\",\n    \"value\": 1.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"erin_money\",\n    \"value\": 6.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"three_scoops_cost\",\n    \"value\": 3.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"effective_scoop_cost\",\n    \"value\": 1.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "scoop_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 10.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "erin_money",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "three_scoops_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "effective_scoop_cost",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The ice cream parlor was offering a deal, buy 2 scoops of ice cream, get 1 scoop free.  Each scoop cost ${scoop_cost}.  If Erin had  ${erin_money}, how many scoops of ice cream should she buy?",
+    "templatized_answer": [
+      "Each scoop cost ${scoop_cost}. If she buys 2, she gets one free. So it will cost her 2 * {scoop_cost} = ${three_scoops_cost} for three scoops total.",
+      "If you break it down, 3 scoops of ice cream cost ${three_scoops_cost} so 3/3 = ${effective_scoop_cost} per scoop",
+      "Erin has ${erin_money} and each scoop ends up costing ${effective_scoop_cost} each then {erin_money}/{effective_scoop_cost} = {erin_money} scoops total"
+    ],
+    "factual_assignment": {
+      "scoop_cost": 1.5,
+      "erin_money": 6.0,
+      "three_scoops_cost": 3.0,
+      "effective_scoop_cost": 1.0
+    }
+  },
+  "merged_assignment": {
+    "scoop_cost": 10.7,
+    "erin_money": 42.78,
+    "three_scoops_cost": 21.39,
+    "effective_scoop_cost": 7.13
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    scoop_cost = 10.7\n    erin_money = 42.78\n\n    three_scoops_cost = round(2 * scoop_cost, 2)\n    effective_scoop_cost = round(three_scoops_cost / 3, 2)\n    total_scoops = round(erin_money / effective_scoop_cost, 2)\n\n    return {\n        \"scoop_cost\": scoop_cost,\n        \"erin_money\": erin_money,\n        \"three_scoops_cost\": three_scoops_cost,\n        \"effective_scoop_cost\": effective_scoop_cost,\n        \"erin_money\": erin_money,\n        \"total_scoops\": total_scoops\n    }\n",
+    "results": {
+      "scoop_cost": 10.7,
+      "erin_money": 42.78,
+      "three_scoops_cost": 21.4,
+      "effective_scoop_cost": 7.13,
+      "total_scoops": 6.0
+    }
+  },
+  "final": {
+    "question": "The ice cream parlor was offering a deal, buy 2 scoops of ice cream, get 1 scoop free.  Each scoop cost 10.7 renminbi.  If Erin had  42.78 renminbi, how many scoops of ice cream should she buy?",
+    "answer_lines": [
+      "Each scoop cost 10.7 renminbi. If she buys 2, she gets one free. So it will cost her 2 * 10.7 = 21.4 renminbi for three scoops total.",
+      "If you break it down, 3 scoops of ice cream cost 21.4 renminbi so 3/3 = 7.13 renminbi per scoop",
+      "Erin has 42.78 renminbi and each scoop ends up costing 7.13 renminbi each then 42.78/7.13 = 6.0 scoops total",
+      "#### 6.0"
+    ],
+    "final_scalar": 6.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The jianbing stall was offering a deal, buy 2 pieces of jianbing, get 1 piece free.  Each piece cost 10.7 renminbi.  If Erin had  42.78 renminbi, how many pieces of jianbing should she buy?",
+    "adapted_answer": [
+      "Each piece cost 10.7 renminbi. If she buys 2, she gets one free. So it will cost her 2 * 10.7 = 21.4 renminbi for three pieces total.",
+      "If you break it down, 3 pieces of jianbing cost 21.4 renminbi so 3/3 = 7.13 renminbi per piece",
+      "Erin has 42.78 renminbi and each piece ends up costing 7.13 renminbi each then 42.78/7.13 = 6.0 pieces total",
+      "#### 6.0"
+    ],
+    "adaptation_notes": "Replaced 'ice cream parlor' with 'jianbing stall' and 'ice cream' with 'jianbing' to adapt to Chinese context."
+  }
+}

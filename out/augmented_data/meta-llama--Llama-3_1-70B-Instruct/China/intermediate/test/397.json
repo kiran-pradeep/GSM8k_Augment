@@ -1,0 +1,126 @@
+{
+  "index": 397,
+  "split": "test",
+  "original": {
+    "question": "Mark has $50 in his bank account. He earns $10 per day at his work. If he wants to buy a bike that costs $300, how many days does Mark have to save his money?",
+    "answer": "Mike has $50 in his bank account, so the amount he needs to save to reach the bike goal is $300 - $50 = $250\nHe earns $10 per day, so $250 / $10/day = <<250/10=25>>25 days\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_savings",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bike_cost",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "savings_needed",
+      "value": 250.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_savings\",\n    \"value\": 50.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"daily_earnings\",\n    \"value\": 10.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"bike_cost\",\n    \"value\": 300.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"savings_needed\",\n    \"value\": 250.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_savings",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 356.5,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bike_cost",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "savings_needed",
+        "original_value": 250.0,
+        "original_unit": "dollar",
+        "converted_value": 250.0,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark has ${initial_savings} in his bank account. He earns ${daily_earnings} per day at his work. If he wants to buy a bike that costs ${bike_cost}, how many days does Mark have to save his money?",
+    "templatized_answer": [
+      "Mark has ${initial_savings} in his bank account, so the amount he needs to save to reach the bike goal is ${bike_cost} - ${initial_savings} = ${savings_needed}",
+      "He earns ${daily_earnings} per day, so ${savings_needed} / ${daily_earnings}/day = ${savings_needed} / ${daily_earnings} days",
+      "#### {savings_needed} / {daily_earnings}"
+    ],
+    "factual_assignment": {
+      "initial_savings": 50.0,
+      "daily_earnings": 10.0,
+      "bike_cost": 300.0,
+      "savings_needed": 250.0
+    }
+  },
+  "merged_assignment": {
+    "initial_savings": 356.5,
+    "daily_earnings": 71.3,
+    "bike_cost": 2139.0,
+    "savings_needed": 250.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_savings = 356.5\n    daily_earnings = 71.3\n    bike_cost = 2139.0\n\n    savings_needed = bike_cost - initial_savings\n    savings_needed = round(savings_needed, 2)\n\n    days_to_save = savings_needed / daily_earnings\n    days_to_save = round(days_to_save, 2)\n\n    return {\n        \"initial_savings\": initial_savings,\n        \"daily_earnings\": daily_earnings,\n        \"bike_cost\": bike_cost,\n        \"savings_needed\": savings_needed,\n        \"days_to_save\": days_to_save\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_savings": 356.5,
+      "daily_earnings": 71.3,
+      "bike_cost": 2139.0,
+      "savings_needed": 1782.5,
+      "days_to_save": 25.0
+    }
+  },
+  "final": {
+    "question": "Mark has 356.5 renminbi in his bank account. He earns 71.3 renminbi per day at his work. If he wants to buy a bike that costs 2139.0 renminbi, how many days does Mark have to save his money?",
+    "answer_lines": [
+      "Mark has 356.5 renminbi in his bank account, so the amount he needs to save to reach the bike goal is 2139.0 renminbi - 356.5 renminbi = 1782.5 renminbi",
+      "He earns 71.3 renminbi per day, so 1782.5 renminbi / 71.3 renminbi/day = 25.0 days",
+      "#### 25.0"
+    ],
+    "final_scalar": 25.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mark has 356.5 renminbi in his bank account. He earns 71.3 renminbi per day at his work. If he wants to buy a bike that costs 2139.0 renminbi, how many days does Mark have to save his money?",
+    "adapted_answer": [
+      "Mark has 356.5 renminbi in his bank account, so the amount he needs to save to reach the bike goal is 2139.0 renminbi - 356.5 renminbi = 1782.5 renminbi",
+      "He earns 71.3 renminbi per day, so 1782.5 renminbi / 71.3 renminbi/day = 25.0 days",
+      "#### 25.0"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "index": 877,
+  "split": "test",
+  "original": {
+    "question": "To make a profit of $2000, Isaias has to sell the chickens he planned to take to the market from his farm at $50 per chicken. If Isaias has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "answer": "Isaias plans to sell 3/5*300 = <<3/5*300=180>>180 chickens from his farm.\nTo make his profit, Isaias sells all the chicken he took to the market for $50*180 = $<<50*180=9000>>9000\nThe price at which Isaias bought the chicken is $9000-$2000 = $<<9000-2000=7000>>7000.\n#### 7000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Isaias",
+      "dollars"
+    ],
+    "notes": "The name 'Isaias' is not typically Haitian and 'dollars' is a unit of currency not native to Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "profit",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "chicken_price",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_sales",
+      "value": 9000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "purchase_price",
+      "value": 7000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"profit\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"chicken_price\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_sales\", \"value\": 9000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"purchase_price\", \"value\": 7000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "profit",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 261620.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "chicken_price",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 6540.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_sales",
+        "original_value": 9000.0,
+        "original_unit": "dollar",
+        "converted_value": 1177290.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "purchase_price",
+        "original_value": 7000.0,
+        "original_unit": "dollar",
+        "converted_value": 915670.0,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To make a profit of ${profit}, Isaias has to sell the chickens he planned to take to the market from his farm at ${chicken_price} per chicken. If Isaias has {number_of_chickens} chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "templatized_answer": [
+      "Isaias plans to sell 3/5*{number_of_chickens} = {number_of_chickens_to_sell} chickens from his farm.",
+      "To make his profit, Isaias sells all the chicken he took to the market for ${chicken_price}*{number_of_chickens_to_sell} = ${total_sales}",
+      "The price at which Isaias bought the chicken is ${total_sales}-${profit} = ${purchase_price}.",
+      "#### ${purchase_price}"
+    ],
+    "factual_assignment": {
+      "profit": 2000.0,
+      "chicken_price": 50.0,
+      "total_sales": 9000.0,
+      "purchase_price": 7000.0,
+      "number_of_chickens": 300,
+      "number_of_chickens_to_sell": 180
+    }
+  },
+  "merged_assignment": {
+    "profit": 261620.0,
+    "chicken_price": 6540.5,
+    "total_sales": 1177290.0,
+    "purchase_price": 915670.0,
+    "number_of_chickens": 300,
+    "number_of_chickens_to_sell": 180
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"profit\": 261620.0,\n        \"chicken_price\": 6540.5,\n        \"total_sales\": 1177290.0,\n        \"purchase_price\": 915670.0,\n        \"number_of_chickens\": 300,\n        \"number_of_chickens_to_sell\": 180\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"number_of_chickens_to_sell\"] = factual_assignment[\"number_of_chickens\"] * 3 / 5\n    recomputed_values[\"total_sales\"] = factual_assignment[\"chicken_price\"] * recomputed_values[\"number_of_chickens_to_sell\"]\n    recomputed_values[\"purchase_price\"] = recomputed_values[\"total_sales\"] - factual_assignment[\"profit\"]\n\n    recomputed_values[\"profit\"] = factual_assignment[\"profit\"]\n    recomputed_values[\"chicken_price\"] = factual_assignment[\"chicken_price\"]\n    recomputed_values[\"number_of_chickens\"] = factual_assignment[\"number_of_chickens\"]\n\n    recomputed_values[\"total_sales\"] = round(recomputed_values[\"total_sales\"], 2)\n    recomputed_values[\"purchase_price\"] = round(recomputed_values[\"purchase_price\"], 2)\n\n    return recomputed_values\n",
+    "results": {
+      "number_of_chickens_to_sell": 180.0,
+      "total_sales": 1177290.0,
+      "purchase_price": 915670.0,
+      "profit": 261620.0,
+      "chicken_price": 6540.5,
+      "number_of_chickens": 300
+    }
+  },
+  "final": {
+    "question": "To make a profit of 261620 gourde, Isaias has to sell the chickens he planned to take to the market from his farm at 6540.5 gourde per chicken. If Isaias has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "answer_lines": [
+      "Isaias plans to sell 3/5*300 = 180 chickens from his farm.",
+      "To make his profit, Isaias sells all the chicken he took to the market for 6540.5*180 = 1177290 gourde",
+      "The price at which Isaias bought the chicken is 1177290-261620 = 915670 gourde.",
+      "#### 915670"
+    ],
+    "final_scalar": 915670,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To make a profit of 261620 gourde, Dieudonné has to sell the chickens he planned to take to the market from his farm at 6540.5 gourde per chicken. If Dieudonné has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Dieudonné buy the chicken he took to the market for sale?",
+    "adapted_answer": [
+      "Dieudonné plans to sell 3/5*300 = 180 chickens from his farm.",
+      "To make his profit, Dieudonné sells all the chicken he took to the market for 6540.5*180 = 1177290 gourde",
+      "The price at which Dieudonné bought the chicken is 1177290-261620 = 915670 gourde.",
+      "#### 915670"
+    ],
+    "adaptation_notes": "Replaced 'Isaias' with 'Dieudonné', a common Haitian name."
+  }
+}

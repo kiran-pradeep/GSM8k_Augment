@@ -1,0 +1,111 @@
+{
+  "index": 758,
+  "split": "test",
+  "original": {
+    "question": "A bag has a 5% discount. If it is marked $140, how much will you pay after the discount?",
+    "answer": "The discount amounts to $140 x 5/100 = $<<140*5/100=7>>7.\nHence, you will pay $140 - $7 = $<<140-7=133>>133 for the discounted bag.\n#### 133"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, not in China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "original_price",
+      "value": 140.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount_amount",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discounted_price",
+      "value": 133.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"original_price\",\n    \"value\": 140.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"discount_amount\",\n    \"value\": 7.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"discounted_price\",\n    \"value\": 133.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "original_price",
+        "original_value": 140.0,
+        "original_unit": "dollar",
+        "converted_value": 998.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "discount_amount",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 49.91,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "discounted_price",
+        "original_value": 133.0,
+        "original_unit": "dollar",
+        "converted_value": 948.29,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A bag has a {discount_percentage}% discount. If it is marked ${original_price}, how much will you pay after the discount?",
+    "templatized_answer": [
+      "The discount amounts to ${original_price} x {discount_percentage}/100 = ${discount_amount}.",
+      "Hence, you will pay ${original_price} - ${discount_amount} = ${discounted_price} for the discounted bag.",
+      "#### {discounted_price}"
+    ],
+    "factual_assignment": {
+      "original_price": 140.0,
+      "discount_amount": 7.0,
+      "discounted_price": 133.0,
+      "discount_percentage": 5.0
+    }
+  },
+  "merged_assignment": {
+    "original_price": 998.2,
+    "discount_amount": 49.91,
+    "discounted_price": 948.29,
+    "discount_percentage": 5.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    discount_percentage = 5.0\n    original_price = 998.2\n\n    discount_amount = original_price * discount_percentage / 100\n    discounted_price = original_price - discount_amount\n\n    return {\n        \"discount_percentage\": discount_percentage,\n        \"original_price\": original_price,\n        \"discount_amount\": round(discount_amount, 2),\n        \"discounted_price\": round(discounted_price, 2)\n    }\n",
+    "results": {
+      "discount_percentage": 5.0,
+      "original_price": 998.2,
+      "discount_amount": 49.91,
+      "discounted_price": 948.29
+    }
+  },
+  "final": {
+    "question": "A bag has a 5% discount. If it is marked 998.2 renminbi, how much will you pay after the discount?",
+    "answer_lines": [
+      "The discount amounts to 998.2 renminbi x 5/100 = 49.91 renminbi.",
+      "Hence, you will pay 998.2 renminbi - 49.91 renminbi = 948.29 renminbi for the discounted bag.",
+      "#### 948.29"
+    ],
+    "final_scalar": 948.29,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A bag has a 5% discount. If it is marked 998.2 renminbi, how much will you pay after the discount?",
+    "adapted_answer": [
+      "The discount amounts to 998.2 renminbi x 5/100 = 49.91 renminbi.",
+      "Hence, you will pay 998.2 renminbi - 49.91 renminbi = 948.29 renminbi for the discounted bag."
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

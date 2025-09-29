@@ -1,0 +1,128 @@
+{
+  "index": 490,
+  "split": "test",
+  "original": {
+    "question": "An 8-year old child wants to buy a toy car which costs $12. He already has $4 savings. How many days will it take him to save the remaining amount of money if he promises to save $2 daily from his allowance?",
+    "answer": "The boy still needs $12 - $4 = $<<12-4=8>>8.\nIf he saves $2 per day then it will take him $8 / $2/day = <<8/2=4>>4 days to save the remaining amount.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The use of dollars as a unit of currency is not specific to Moldova, which uses the Moldovan leu."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "toy_car_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "child_savings",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_allowance",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_amount",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"toy_car_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"child_savings\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_allowance\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_amount\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "toy_car_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 199.44,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "child_savings",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 66.48,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "daily_allowance",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "remaining_amount",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 132.96,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An 8-year old child wants to buy a toy car which costs ${toy_car_cost}. He already has ${child_savings} savings. How many days will it take him to save the remaining amount of money if he promises to save ${daily_allowance} daily from his allowance?",
+    "templatized_answer": [
+      "The boy still needs ${toy_car_cost} - ${child_savings} = ${remaining_amount}.",
+      "If he saves ${daily_allowance} per day then it will take him ${remaining_amount} / ${daily_allowance}/day = {days_to_save} days to save the remaining amount.",
+      "#### {days_to_save}"
+    ],
+    "factual_assignment": {
+      "toy_car_cost": 12.0,
+      "child_savings": 4.0,
+      "daily_allowance": 2.0,
+      "remaining_amount": 8.0,
+      "days_to_save": 4
+    }
+  },
+  "merged_assignment": {
+    "toy_car_cost": 199.44,
+    "child_savings": 66.48,
+    "daily_allowance": 33.24,
+    "remaining_amount": 132.96,
+    "days_to_save": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    toy_car_cost = 199.44\n    child_savings = 66.48\n    daily_allowance = 33.24\n\n    remaining_amount = toy_car_cost - child_savings\n    days_to_save = remaining_amount / daily_allowance\n\n    return {\n        \"toy_car_cost\": round(toy_car_cost, 2),\n        \"child_savings\": round(child_savings, 2),\n        \"daily_allowance\": round(daily_allowance, 2),\n        \"remaining_amount\": round(remaining_amount, 2),\n        \"days_to_save\": round(days_to_save)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "toy_car_cost": 199.44,
+      "child_savings": 66.48,
+      "daily_allowance": 33.24,
+      "remaining_amount": 132.96,
+      "days_to_save": 4
+    }
+  },
+  "final": {
+    "question": "An 8-year old child wants to buy a toy car which costs 199.44 leu. He already has 66.48 leu savings. How many days will it take him to save the remaining amount of money if he promises to save 33.24 leu daily from his allowance?",
+    "answer_lines": [
+      "The boy still needs 199.44 leu - 66.48 leu = 132.96 leu.",
+      "If he saves 33.24 leu per day then it will take him 132.96 leu / 33.24 leu/day = 4 days to save the remaining amount.",
+      "#### 4"
+    ],
+    "final_scalar": 4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "An 8-year old child wants to buy a toy car which costs 199.44 lei. He already has 66.48 lei savings. How many days will it take him to save the remaining amount of money if he promises to save 33.24 lei daily from his allowance?",
+    "adapted_answer": [
+      "The boy still needs 199.44 lei - 66.48 lei = 132.96 lei.",
+      "If he saves 33.24 lei per day then it will take him 132.96 lei / 33.24 lei/day = 4 days to save the remaining amount.",
+      "#### 4"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' to match Moldovan currency."
+  }
+}

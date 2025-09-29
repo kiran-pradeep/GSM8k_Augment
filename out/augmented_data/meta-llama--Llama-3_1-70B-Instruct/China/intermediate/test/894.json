@@ -1,0 +1,171 @@
+{
+  "index": 894,
+  "split": "test",
+  "original": {
+    "question": "Last month, Tasha made $80 from selling lemonade and mowing lawns. The first week, she mowed Kamala's lawn thrice as many times as she did Joe's. The following week, she mowed Alba's lawn five times as she did Joe's. If Joe paid Tasha $6 for her work, how much did she make from lemonade sales?",
+    "answer": "At Kamala's Tasha made three times what she made mowing Joe's lawn, which gives 3 * 6 = <<3*6=18>>18 dollars\nSince the lawn mowing sessions at Alba's were 5 times those at Joe's Tasha also made 5 * 6 = <<5*6=30>>30 dollars.\nAdding up all the money earned from lawn mowing gives 6 + 18 + 30 = <<6+18+30=54>>54 dollars\nSubtracting the lawn mowing money from the total amount gives us 80 - 54 = <<80-54=26>>26 dollars\nTasha therefore made 26 dollars selling lemonade.\n#### 26"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Kamala",
+      "Joe",
+      "Alba",
+      "Tasha",
+      "lemonade"
+    ],
+    "notes": "The text contains names and units that are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_earnings",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "joe_payment",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "kamala_earnings",
+      "value": 18,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "alba_earnings",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_lawn_mowing",
+      "value": 54,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "lemonade_sales",
+      "value": 26,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(metric):\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = list(conversions[unit].items())[0]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        return {\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        }\n\n    return [convert(metric) for metric in metrics]\n\nmetrics = [\n    {\"variable\": \"total_earnings\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"joe_payment\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"kamala_earnings\", \"value\": 18, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"alba_earnings\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_lawn_mowing\", \"value\": 54, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"lemonade_sales\", \"value\": 26, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_earnings",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "joe_payment",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "kamala_earnings",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 128.34,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "alba_earnings",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_lawn_mowing",
+        "original_value": 54,
+        "original_unit": "dollar",
+        "converted_value": 385.02,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lemonade_sales",
+        "original_value": 26,
+        "original_unit": "dollar",
+        "converted_value": 185.38,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Last month, Tasha made ${total_earnings} from selling lemonade and mowing lawns. The first week, she mowed Kamala's lawn thrice as many times as she did Joe's. The following week, she mowed Alba's lawn five times as she did Joe's. If Joe paid Tasha ${joe_payment} for her work, how much did she make from lemonade sales?",
+    "templatized_answer": [
+      "At Kamala's Tasha made three times what she made mowing Joe's lawn, which gives 3 * {joe_payment} = {kamala_earnings} dollars",
+      "Since the lawn mowing sessions at Alba's were 5 times those at Joe's Tasha also made 5 * {joe_payment} = {alba_earnings} dollars.",
+      "Adding up all the money earned from lawn mowing gives {joe_payment} + {kamala_earnings} + {alba_earnings} = {total_lawn_mowing} dollars",
+      "Subtracting the lawn mowing money from the total amount gives us {total_earnings} - {total_lawn_mowing} = {lemonade_sales} dollars",
+      "Tasha therefore made {lemonade_sales} dollars selling lemonade.",
+      "#### {lemonade_sales}"
+    ],
+    "factual_assignment": {
+      "total_earnings": 80,
+      "joe_payment": 6,
+      "kamala_earnings": 18,
+      "alba_earnings": 30,
+      "total_lawn_mowing": 54,
+      "lemonade_sales": 26
+    }
+  },
+  "merged_assignment": {
+    "total_earnings": 570.4,
+    "joe_payment": 42.78,
+    "kamala_earnings": 128.34,
+    "alba_earnings": 213.9,
+    "total_lawn_mowing": 385.02,
+    "lemonade_sales": 185.38
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_earnings = 570.4\n    joe_payment = 42.78\n    kamala_earnings = 3 * joe_payment\n    alba_earnings = 5 * joe_payment\n    total_lawn_mowing = joe_payment + kamala_earnings + alba_earnings\n    lemonade_sales = total_earnings - total_lawn_mowing\n\n    return {\n        \"total_earnings\": round(total_earnings, 2),\n        \"joe_payment\": round(joe_payment, 2),\n        \"kamala_earnings\": round(kamala_earnings, 2),\n        \"alba_earnings\": round(alba_earnings, 2),\n        \"total_lawn_mowing\": round(total_lawn_mowing, 2),\n        \"lemonade_sales\": round(lemonade_sales, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_earnings": 570.4,
+      "joe_payment": 42.78,
+      "kamala_earnings": 128.34,
+      "alba_earnings": 213.9,
+      "total_lawn_mowing": 385.02,
+      "lemonade_sales": 185.38
+    }
+  },
+  "final": {
+    "question": "Last month, Tasha made 570.4 renminbi from selling lemonade and mowing lawns. The first week, she mowed Kamala's lawn thrice as many times as she did Joe's. The following week, she mowed Alba's lawn five times as she did Joe's. If Joe paid Tasha 42.78 renminbi for her work, how much did she make from lemonade sales?",
+    "answer_lines": [
+      "At Kamala's Tasha made three times what she made mowing Joe's lawn, which gives 3 * 42.78 = 128.34 renminbi",
+      "Since the lawn mowing sessions at Alba's were 5 times those at Joe's Tasha also made 5 * 42.78 = 213.9 renminbi.",
+      "Adding up all the money earned from lawn mowing gives 42.78 + 128.34 + 213.9 = 385.02 renminbi",
+      "Subtracting the lawn mowing money from the total amount gives us 570.4 - 385.02 = 185.38 renminbi",
+      "Tasha therefore made 185.38 renminbi selling lemonade.",
+      "#### 185.38"
+    ],
+    "final_scalar": 185.38,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Last month, Meixi made 570.4 renminbi from selling chrysanthemum tea and mowing lawns. The first week, she mowed Lianhua's lawn thrice as many times as she did Jian's. The following week, she mowed Yulan's lawn five times as she did Jian's. If Jian paid Meixi 42.78 renminbi for her work, how much did she make from chrysanthemum tea sales?",
+    "adapted_answer": [
+      "At Lianhua's Meixi made three times what she made mowing Jian's lawn, which gives 3 * 42.78 = 128.34 renminbi",
+      "Since the lawn mowing sessions at Yulan's were 5 times those at Jian's Meixi also made 5 * 42.78 = 213.9 renminbi.",
+      "Adding up all the money earned from lawn mowing gives 42.78 + 128.34 + 213.9 = 385.02 renminbi",
+      "Subtracting the lawn mowing money from the total amount gives us 570.4 - 385.02 = 185.38 renminbi",
+      "Meixi therefore made 185.38 renminbi selling chrysanthemum tea.",
+      "#### 185.38"
+    ],
+    "adaptation_notes": "Replaced Tasha with Meixi, Kamala with Lianhua, Joe with Jian, Alba with Yulan, and lemonade with chrysanthemum tea."
+  }
+}

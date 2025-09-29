@@ -1,0 +1,172 @@
+{
+  "index": 63,
+  "split": "test",
+  "original": {
+    "question": "Aleena subscribed to a streaming service that charges her $140 per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "answer": "A year has twelve months, so a half of the year is 12/2 = <<12/2=6>>6 months,\nFor the first six months, the streaming service charged her a total of 6*140 = $<<6*140=840>>840\nFor the next half of the year, the streaming service company charged her 10/100*140 = $<<10/100*140=14>>14 less\nShe paid $140-$14 = $<<140-14=126>>126 each month for the remaining half of the year,\nIn total, she paid 126*6 = $<<126*6=756>>756 for the other half of the year for the streaming service.\nThe total amount of money she paid at the end of the year is $840+$756 = $<<840+756=1596>>1596\n#### 1596"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Aleena",
+      "dollars"
+    ],
+    "notes": "Aleena is a name commonly found in Western cultures, and 'dollars' is a unit of currency primarily associated with the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_charge",
+      "value": 140.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_half_total",
+      "value": 840.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_half_monthly",
+      "value": 126.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_half_total",
+      "value": 756.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_yearly",
+      "value": 1596.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_charge\", \"value\": 140.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_half_total\", \"value\": 840.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_half_monthly\", \"value\": 126.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_half_total\", \"value\": 756.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_yearly\", \"value\": 1596.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_charge",
+        "original_value": 140.0,
+        "original_unit": "dollar",
+        "converted_value": 39459.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "first_half_total",
+        "original_value": 840.0,
+        "original_unit": "dollar",
+        "converted_value": 236754.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "discount",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 3945.9,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_half_monthly",
+        "original_value": 126.0,
+        "original_unit": "dollar",
+        "converted_value": 35513.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_half_total",
+        "original_value": 756.0,
+        "original_unit": "dollar",
+        "converted_value": 213078.6,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_yearly",
+        "original_value": 1596.0,
+        "original_unit": "dollar",
+        "converted_value": 449832.6,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aleena subscribed to a streaming service that charges her ${monthly_charge} per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "templatized_answer": [
+      "A year has twelve months, so a half of the year is 12/2 = {months_in_half_year} months,",
+      "For the first six months, the streaming service charged her a total of {months_in_half_year}*{monthly_charge} = ${first_half_total}",
+      "For the next half of the year, the streaming service company charged her 10/100*{monthly_charge} = ${discount} less",
+      "She paid ${monthly_charge}-${discount} = ${second_half_monthly} each month for the remaining half of the year,",
+      "In total, she paid {second_half_monthly}*{months_in_half_year} = ${second_half_total} for the other half of the year for the streaming service.",
+      "The total amount of money she paid at the end of the year is ${first_half_total}+${second_half_total} = ${total_yearly}"
+    ],
+    "factual_assignment": {
+      "monthly_charge": 140.0,
+      "first_half_total": 840.0,
+      "discount": 14.0,
+      "second_half_monthly": 126.0,
+      "second_half_total": 756.0,
+      "total_yearly": 1596.0,
+      "months_in_half_year": 6
+    }
+  },
+  "merged_assignment": {
+    "monthly_charge": 39459.0,
+    "first_half_total": 236754.0,
+    "discount": 3945.9,
+    "second_half_monthly": 35513.1,
+    "second_half_total": 213078.6,
+    "total_yearly": 449832.6,
+    "months_in_half_year": 6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_charge = 39459.0\n    months_in_half_year = 6\n\n    first_half_total = months_in_half_year * monthly_charge\n    discount = (10/100) * monthly_charge\n    second_half_monthly = monthly_charge - discount\n    second_half_total = second_half_monthly * months_in_half_year\n    total_yearly = first_half_total + second_half_total\n\n    return {\n        \"monthly_charge\": round(monthly_charge, 2),\n        \"months_in_half_year\": months_in_half_year,\n        \"first_half_total\": round(first_half_total, 2),\n        \"discount\": round(discount, 2),\n        \"second_half_monthly\": round(second_half_monthly, 2),\n        \"second_half_total\": round(second_half_total, 2),\n        \"total_yearly\": round(total_yearly, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "monthly_charge": 39459.0,
+      "months_in_half_year": 6,
+      "first_half_total": 236754.0,
+      "discount": 3945.9,
+      "second_half_monthly": 35513.1,
+      "second_half_total": 213078.6,
+      "total_yearly": 449832.6
+    }
+  },
+  "final": {
+    "question": "Aleena subscribed to a streaming service that charges her 39459 rupee per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "answer_lines": [
+      "A year has twelve months, so a half of the year is 12/2 = 6 months,",
+      "For the first six months, the streaming service charged her a total of 6*39459 = 236754 rupee",
+      "For the next half of the year, the streaming service company charged her 10/100*39459 = 3945.9 rupee less",
+      "She paid 39459-3945.9 = 35513.1 rupee each month for the remaining half of the year,",
+      "In total, she paid 35513.1*6 = 213078.6 rupee for the other half of the year for the streaming service.",
+      "The total amount of money she paid at the end of the year is 236754+213078.6 = 449832.6 rupee",
+      "#### 449832.6"
+    ],
+    "final_scalar": 449832.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha subscribed to a streaming service that charges her 39459 rupee per month. If the streaming company charged her the initial amount for the first half of the year and then charged her 10% less money on the other half of the year, calculate the total amount she had paid for the streaming service by the end of the year.",
+    "adapted_answer": [
+      "A year has twelve months, so a half of the year is 12/2 = 6 months,",
+      "For the first six months, the streaming service charged her a total of 6*39459 = 236754 rupee",
+      "For the next half of the year, the streaming service company charged her 10/100*39459 = 3945.9 rupee less",
+      "She paid 39459-3945.9 = 35513.1 rupee each month for the remaining half of the year,",
+      "In total, she paid 35513.1*6 = 213078.6 rupee for the other half of the year for the streaming service.",
+      "The total amount of money she paid at the end of the year is 236754+213078.6 = 449832.6 rupee",
+      "#### 449832.6"
+    ],
+    "adaptation_notes": "Replaced the name 'Aleena' with 'Ayesha' to give it a Pakistani context."
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "index": 1075,
+  "split": "test",
+  "original": {
+    "question": "Jenny goes to the florist to buy some flowers. Roses cost $2 each and $15 for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "answer": "Jenny has $25 because 5 x 5 = <<5*5=25>>25\nShe buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = <<15-12-3=0>>0\nShe spends $6 on the single roses because 3 x 2 = <<3*2=6>>6\nShe spends $21 on roses because 15 + 6 = <<15+6=21>>21\nShe gets $4 in change because 25 - 21 = <<25-21=4>>4\nShe gets 16 quarters because 4 x 4 = <<4*4=16>>16\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jenny",
+      "dollars",
+      "quarters"
+    ],
+    "notes": "The name 'Jenny' and the use of US currency units 'dollars' and 'quarters' indicate a non-Chinese cultural context."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cash",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rose_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dozen_rose_cost",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "single_rose_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_rose_cost",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cash\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rose_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"dozen_rose_cost\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"single_rose_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_rose_cost\", \"value\": 21, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cash",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 178.25,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "rose_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "dozen_rose_cost",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "single_rose_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_rose_cost",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 149.73,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "change",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jenny goes to the florist to buy some flowers. Roses cost ${rose_cost} each and ${dozen_rose_cost} for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "templatized_answer": [
+      "Jenny has ${initial_cash} because 5 x 5 = {initial_cash}",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends ${single_rose_cost} on the single roses because 3 x {rose_cost} = {single_rose_cost}",
+      "She spends ${total_rose_cost} on roses because {dozen_rose_cost} + {single_rose_cost} = {total_rose_cost}",
+      "She gets ${change} in change because {initial_cash} - {total_rose_cost} = {change}",
+      "She gets {change} x 4 = {change_in_quarters} quarters because 1 dollar = 4 quarters",
+      "#### {change_in_quarters}"
+    ],
+    "factual_assignment": {
+      "initial_cash": 25,
+      "rose_cost": 2,
+      "dozen_rose_cost": 15,
+      "single_rose_cost": 6,
+      "total_rose_cost": 21,
+      "change": 4,
+      "change_in_quarters": 16
+    }
+  },
+  "merged_assignment": {
+    "initial_cash": 178.25,
+    "rose_cost": 14.26,
+    "dozen_rose_cost": 106.95,
+    "single_rose_cost": 42.78,
+    "total_rose_cost": 149.73,
+    "change": 28.52,
+    "change_in_quarters": 16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cash = 25.00\n    rose_cost = 1.42\n    dozen_rose_cost = 8.99\n\n    single_rose_cost = round(3 * rose_cost, 2)\n    total_rose_cost = round(dozen_rose_cost + single_rose_cost, 2)\n    change = round(initial_cash - total_rose_cost, 2)\n    change_in_quarters = round(change * 4)\n\n    return {\n        \"initial_cash\": initial_cash,\n        \"rose_cost\": rose_cost,\n        \"dozen_rose_cost\": dozen_rose_cost,\n        \"single_rose_cost\": single_rose_cost,\n        \"total_rose_cost\": total_rose_cost,\n        \"change\": change,\n        \"change_in_quarters\": change_in_quarters\n    }\n",
+    "results": {
+      "initial_cash": 25.0,
+      "rose_cost": 1.42,
+      "dozen_rose_cost": 8.99,
+      "single_rose_cost": 4.26,
+      "total_rose_cost": 13.25,
+      "change": 11.75,
+      "change_in_quarters": 47
+    }
+  },
+  "final": {
+    "question": "Jenny goes to the florist to buy some flowers. Roses cost 1.42 renminbi each and 8.99 renminbi for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "answer_lines": [
+      "Jenny has 25.0 renminbi because 5 x 5 = 25.0",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends 4.26 renminbi on the single roses because 3 x 1.42 = 4.26",
+      "She spends 13.25 renminbi on roses because 8.99 + 4.26 = 13.25",
+      "She gets 11.75 renminbi in change because 25.0 - 13.25 = 11.75",
+      "She gets 47 quarters because 11.75 x 4 = 47",
+      "#### 47"
+    ],
+    "final_scalar": 47,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mei goes to the florist to buy some flowers. Roses cost 1.42 renminbi each and 8.99 renminbi for a dozen. If she bought 15 roses and arrived with five 10 yuan bills and they only have jiao coins for change, how many jiao coins does she leave with?",
+    "adapted_answer": [
+      "Mei has 50.0 renminbi because 5 x 10 = 50.0",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends 4.26 renminbi on the single roses because 3 x 1.42 = 4.26",
+      "She spends 13.25 renminbi on roses because 8.99 + 4.26 = 13.25",
+      "She gets 36.75 renminbi in change because 50.0 - 13.25 = 36.75",
+      "She gets 147 jiao coins because 36.75 x 4 = 147"
+    ],
+    "adaptation_notes": "Replaced 'Jenny' with 'Mei', 'dollars' with 'yuan', and 'quarters' with 'jiao coins'. Adjusted the initial amount to 50 renminbi to maintain the same calculation results."
+  }
+}

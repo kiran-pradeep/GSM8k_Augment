@@ -1,0 +1,83 @@
+{
+  "index": 1010,
+  "split": "test",
+  "original": {
+    "question": "Bethany can run 10 laps on the track in one hour.  Trey can run 4 more laps than Bethany.  Shaelyn can run half as many laps as Trey.  Quinn can run 2 fewer laps than Shaelyn.  How many more laps can Bethany run compared to Quinn?",
+    "answer": "Trey can run 10 + 4 = <<10+4=14>>14 laps in one hour.\nShaelyn can run 14 / 2 = <<14/2=7>>7 laps in one hour.\nQuinn can run 7 - 2 = <<7-2=5>>5 laps.\nBethany can run 10 - 5 = <<10-5=5>>5 more laps compared to Quinn.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bethany",
+      "Trey",
+      "Shaelyn",
+      "Quinn"
+    ],
+    "notes": "Names are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 87, 'unit': 'rupees'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit]['factor'], 2)\n            converted_unit = conversions[unit]['unit']\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Bethany can run {bethany_laps} laps on the track in one hour.  Trey can run {trey_laps_difference} more laps than Bethany.  Shaelyn can run half as many laps as Trey.  Quinn can run {quinn_laps_difference} fewer laps than Shaelyn.  How many more laps can Bethany run compared to Quinn?",
+    "templatized_answer": [
+      "Trey can run {bethany_laps} + {trey_laps_difference} = {bethany_laps} + {trey_laps_difference} laps in one hour.",
+      "Shaelyn can run ({bethany_laps} + {trey_laps_difference}) / 2 = ({bethany_laps} + {trey_laps_difference}) / 2 laps in one hour.",
+      "Quinn can run ({bethany_laps} + {trey_laps_difference}) / 2 - {quinn_laps_difference} = ({bethany_laps} + {trey_laps_difference}) / 2 - {quinn_laps_difference} laps.",
+      "Bethany can run {bethany_laps} - (({bethany_laps} + {trey_laps_difference}) / 2 - {quinn_laps_difference}) = {bethany_laps} - (({bethany_laps} + {trey_laps_difference}) / 2 - {quinn_laps_difference}) more laps compared to Quinn.",
+      "#### {bethany_quinn_laps_difference}"
+    ],
+    "factual_assignment": {
+      "bethany_laps": 10,
+      "trey_laps_difference": 4,
+      "quinn_laps_difference": 2,
+      "bethany_quinn_laps_difference": 5
+    }
+  },
+  "merged_assignment": {
+    "bethany_laps": 10,
+    "trey_laps_difference": 4,
+    "quinn_laps_difference": 2,
+    "bethany_quinn_laps_difference": 5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bethany_laps = 10\n    trey_laps_difference = 4\n    quinn_laps_difference = 2\n\n    trey_laps = bethany_laps + trey_laps_difference\n    shaelyn_laps = (bethany_laps + trey_laps_difference) / 2\n    quinn_laps = shaelyn_laps - quinn_laps_difference\n    bethany_quinn_laps_difference = bethany_laps - quinn_laps\n\n    return {\n        \"bethany_laps\": bethany_laps,\n        \"trey_laps_difference\": trey_laps_difference,\n        \"quinn_laps_difference\": quinn_laps_difference,\n        \"bethany_quinn_laps_difference\": round(bethany_quinn_laps_difference, 2),\n        \"trey_laps\": round(trey_laps, 2),\n        \"shaelyn_laps\": round(shaelyn_laps, 2),\n        \"quinn_laps\": round(quinn_laps, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "bethany_laps": 10,
+      "trey_laps_difference": 4,
+      "quinn_laps_difference": 2,
+      "bethany_quinn_laps_difference": 5.0,
+      "trey_laps": 14,
+      "shaelyn_laps": 7.0,
+      "quinn_laps": 5.0
+    }
+  },
+  "final": {
+    "question": "Bethany can run 10 laps on the track in one hour.  Trey can run 4 more laps than Bethany.  Shaelyn can run half as many laps as Trey.  Quinn can run 2 fewer laps than Shaelyn.  How many more laps can Bethany run compared to Quinn?",
+    "answer_lines": [
+      "Trey can run 10 + 4 = 14 laps in one hour.",
+      "Shaelyn can run (10 + 4) / 2 = 7 laps in one hour.",
+      "Quinn can run (10 + 4) / 2 - 2 = 5 laps.",
+      "Bethany can run 10 - ((10 + 4) / 2 - 2) = 5 more laps compared to Quinn.",
+      "#### 5.0"
+    ],
+    "final_scalar": 5.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aaradhya can run 10 laps on the track in one hour.  Kunal can run 4 more laps than Aaradhya.  Kiara can run half as many laps as Kunal.  Vivaan can run 2 fewer laps than Kiara.  How many more laps can Aaradhya run compared to Vivaan?",
+    "adapted_answer": [
+      "Kunal can run 10 + 4 = 14 laps in one hour.",
+      "Kiara can run (10 + 4) / 2 = 7 laps in one hour.",
+      "Vivaan can run (10 + 4) / 2 - 2 = 5 laps.",
+      "Aaradhya can run 10 - ((10 + 4) / 2 - 2) = 5 more laps compared to Vivaan.",
+      "#### 5.0"
+    ],
+    "adaptation_notes": "Replaced names with Indian equivalents: Bethany -> Aaradhya, Trey -> Kunal, Shaelyn -> Kiara, Quinn -> Vivaan."
+  }
+}

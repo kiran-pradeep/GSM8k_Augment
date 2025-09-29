@@ -1,0 +1,113 @@
+{
+  "index": 816,
+  "split": "test",
+  "original": {
+    "question": "John goes to the market and buys 3 goats for $500 each and 2 cows for $1500 each.  How much money did he spend?",
+    "answer": "The goats cost 3*500=$<<3*500=1500>>1500\nThe cows cost 2*1500=$<<2*1500=3000>>3000\nSo in total he spends 1500+3000=$<<1500+3000=4500>>4500\n#### 4500"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "Name 'John' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "goat_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cow_cost",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 4500.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"goat_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cow_cost\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 4500.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "goat_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 43500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cow_cost",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 130500.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 4500.0,
+        "original_unit": "dollar",
+        "converted_value": 391500.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John goes to the market and buys 3 goats for ${goat_cost} each and 2 cows for ${cow_cost} each. How much money did he spend?",
+    "templatized_answer": [
+      "The goats cost 3*{goat_cost}=${3*goat_cost}",
+      "The cows cost 2*{cow_cost}=${2*cow_cost}",
+      "So in total he spends {3*goat_cost}+{2*cow_cost}=${3*goat_cost+2*cow_cost}",
+      "#### {3*goat_cost+2*cow_cost}"
+    ],
+    "factual_assignment": {
+      "goat_cost": 500.0,
+      "cow_cost": 1500.0
+    }
+  },
+  "merged_assignment": {
+    "goat_cost": 43500.0,
+    "cow_cost": 130500.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    goat_cost = 43500.0\n    cow_cost = 130500.0\n\n    goat_cost_total = 3 * goat_cost\n    cow_cost_total = 2 * cow_cost\n    total_cost = goat_cost_total + cow_cost_total\n\n    return {\n        \"{goat_cost}\": goat_cost,\n        \"{cow_cost}\": cow_cost,\n        \"{3*goat_cost}\": goat_cost_total,\n        \"{2*cow_cost}\": cow_cost_total,\n        \"{3*goat_cost+2*cow_cost}\": total_cost,\n    }\n",
+    "results": {
+      "{goat_cost}": 43500.0,
+      "{cow_cost}": 130500.0,
+      "{3*goat_cost}": 130500.0,
+      "{2*cow_cost}": 261000.0,
+      "{3*goat_cost+2*cow_cost}": 391500.0
+    }
+  },
+  "final": {
+    "question": "John goes to the market and buys 3 goats for 43500 rupees each and 2 cows for 130500 rupees each. How much money did he spend?",
+    "answer_lines": [
+      "The goats cost 3*43500=130500 rupees",
+      "The cows cost 2*130500=261000 rupees",
+      "So in total he spends 130500+261000=391500 rupees",
+      "#### 391500"
+    ],
+    "final_scalar": 391500,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan goes to the market and buys 3 goats for 43500 rupees each and 2 cows for 130500 rupees each. How much money did he spend?",
+    "adapted_answer": [
+      "The goats cost 3*43500=130500 rupees",
+      "The cows cost 2*130500=261000 rupees",
+      "So in total he spends 130500+261000=391500 rupees",
+      "#### 391500"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Rohan' to give the name an Indian context."
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "index": 400,
+  "split": "test",
+  "original": {
+    "question": "A glass of milk is 8 ounces of milk.  John drinks 2 glasses of milk.  If milk has 3 calories per ounce how many calories did he consume?",
+    "answer": "He drank 8*2=<<8*2=16>>16 ounces of milk\nSo he drank 16*3=<<16*3=48>>48 calories of milk\n#### 48"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "ounces",
+      "glasses of milk"
+    ],
+    "notes": "The name 'John' is Western, and 'ounces' and 'glasses of milk' are units and food items commonly associated with Western culture."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 7.13, 'unit': 'renminbi'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit]['factor'], 2)\n            converted_unit = conversions[unit]['unit']\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "A glass of milk is {milk_volume} ounces of milk.  John drinks {glasses_of_milk} glasses of milk.  If milk has {calories_per_ounce} calories per ounce how many calories did he consume?",
+    "templatized_answer": [
+      "He drank {milk_volume}*{glasses_of_milk}={milk_volume}*{glasses_of_milk} ounces of milk",
+      "So he drank ({milk_volume}*{glasses_of_milk})*{calories_per_ounce}=({milk_volume}*{glasses_of_milk})*{calories_per_ounce} calories of milk",
+      "#### ({milk_volume}*{glasses_of_milk})*{calories_per_ounce}"
+    ],
+    "factual_assignment": {
+      "milk_volume": 8,
+      "glasses_of_milk": 2,
+      "calories_per_ounce": 3
+    }
+  },
+  "merged_assignment": {
+    "milk_volume": 8,
+    "glasses_of_milk": 2,
+    "calories_per_ounce": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"milk_volume\": 8,\n        \"glasses_of_milk\": 2,\n        \"calories_per_ounce\": 3\n    }\n\n    recomputed_values = {}\n\n    # Recompute each variable as in the original reasoning\n    recomputed_values[\"milk_volume\"] = factual_assignment[\"milk_volume\"]\n    recomputed_values[\"glasses_of_milk\"] = factual_assignment[\"glasses_of_milk\"]\n    recomputed_values[\"calories_per_ounce\"] = factual_assignment[\"calories_per_ounce\"]\n\n    recomputed_values[\"milk_volume*glasses_of_milk\"] = round(recomputed_values[\"milk_volume\"] * recomputed_values[\"glasses_of_milk\"], 2)\n    recomputed_values[\"(milk_volume*glasses_of_milk)*calories_per_ounce\"] = round(recomputed_values[\"milk_volume*glasses_of_milk\"] * recomputed_values[\"calories_per_ounce\"], 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "milk_volume": 8,
+      "glasses_of_milk": 2,
+      "calories_per_ounce": 3,
+      "milk_volume*glasses_of_milk": 16,
+      "(milk_volume*glasses_of_milk)*calories_per_ounce": 48
+    }
+  },
+  "final": {
+    "question": "A glass of milk is 8 grams of milk.  John drinks 2 glasses of milk.  If milk has 3 calories per gram how many calories did he consume?",
+    "answer_lines": [
+      "He drank 8*2=16 grams of milk",
+      "So he drank 16*3=48 calories of milk",
+      "#### 48"
+    ],
+    "final_scalar": 48,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A glass of milk is 8 grams of milk.  Wang drinks 2 glasses of milk.  If milk has 3 calories per gram how many calories did he consume?",
+    "adapted_answer": [
+      "He drank 8*2=16 grams of milk",
+      "So he drank 16*3=48 calories of milk",
+      "#### 48"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang' to give the name a Chinese context."
+  }
+}

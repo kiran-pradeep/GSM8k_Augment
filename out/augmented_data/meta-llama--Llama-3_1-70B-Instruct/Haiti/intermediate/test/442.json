@@ -1,0 +1,94 @@
+{
+  "index": 442,
+  "split": "test",
+  "original": {
+    "question": "When Marcus wakes up, his house is 40 degrees. He spends 3 hours baking, and every hour the oven is on it raises the house's temperature by 5 degrees. Then Marcus opens a window for 30 minutes, and the house cools down 2 degrees for every 10 minutes the window is open. What is the house's final temperature?",
+    "answer": "First find the total temperature increase from the oven: 3 hours * 5 degrees/hour = <<3*5=15>>15 degrees\nThen add that amount to the starting temperature: 15 degrees + 40 degrees = <<15+40=55>>55 degrees\nThen divide the time the window is open by 10 minutes to find how many 2-degree temperature decreases there are: 30 minutes / 10 minutes = <<30/10=3>>3\nThen multiply the number of decreases by the amount of each decrease: 3 * 2 degrees = <<3*2=6>>6 degrees\nThen subtract that amount from the house's temperature after baking to find the final temperature: 55 degrees - 6 degrees = <<55-6=49>>49 degrees\n#### 49"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Marcus",
+      "degrees"
+    ],
+    "notes": "Marcus is a culturally specific name and degrees is a unit of temperature commonly used in the US."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 130.81, 'unit': 'gourde'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "When Marcus wakes up, his house is {initial_temperature} degrees. He spends {baking_hours} hours baking, and every hour the oven is on it raises the house's temperature by {temperature_increase_per_hour} degrees. Then Marcus opens a window for {window_open_minutes} minutes, and the house cools down {cooling_per_time_unit} degrees for every {time_unit_minutes} minutes the window is open. What is the house's final temperature?",
+    "templatized_answer": [
+      "First find the total temperature increase from the oven: {baking_hours} hours * {temperature_increase_per_hour} degrees/hour = {baking_hours} * {temperature_increase_per_hour} degrees",
+      "Then add that amount to the starting temperature: {baking_hours} * {temperature_increase_per_hour} degrees + {initial_temperature} degrees = {baking_hours} * {temperature_increase_per_hour} + {initial_temperature} degrees",
+      "Then divide the time the window is open by {time_unit_minutes} minutes to find how many {cooling_per_time_unit}-degree temperature decreases there are: {window_open_minutes} minutes / {time_unit_minutes} minutes = {window_open_minutes} / {time_unit_minutes}",
+      "Then multiply the number of decreases by the amount of each decrease: ({window_open_minutes} / {time_unit_minutes}) * {cooling_per_time_unit} degrees = ({window_open_minutes} / {time_unit_minutes}) * {cooling_per_time_unit} degrees",
+      "Then subtract that amount from the house's temperature after baking to find the final temperature: ({baking_hours} * {temperature_increase_per_hour} + {initial_temperature}) degrees - ({window_open_minutes} / {time_unit_minutes}) * {cooling_per_time_unit} degrees = ({baking_hours} * {temperature_increase_per_hour} + {initial_temperature}) - ({window_open_minutes} / {time_unit_minutes}) * {cooling_per_time_unit} degrees",
+      "#### {final_temperature}"
+    ],
+    "factual_assignment": {
+      "initial_temperature": 40,
+      "baking_hours": 3,
+      "temperature_increase_per_hour": 5,
+      "window_open_minutes": 30,
+      "cooling_per_time_unit": 2,
+      "time_unit_minutes": 10,
+      "final_temperature": 49
+    }
+  },
+  "merged_assignment": {
+    "initial_temperature": 40,
+    "baking_hours": 3,
+    "temperature_increase_per_hour": 5,
+    "window_open_minutes": 30,
+    "cooling_per_time_unit": 2,
+    "time_unit_minutes": 10,
+    "final_temperature": 49
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_temperature = 40\n    baking_hours = 3\n    temperature_increase_per_hour = 5\n    window_open_minutes = 30\n    cooling_per_time_unit = 2\n    time_unit_minutes = 10\n\n    baking_hours_temperature_increase = baking_hours * temperature_increase_per_hour\n    temperature_after_baking = baking_hours_temperature_increase + initial_temperature\n    window_open_time_units = window_open_minutes / time_unit_minutes\n    cooling_amount = window_open_time_units * cooling_per_time_unit\n    final_temperature = temperature_after_baking - cooling_amount\n\n    return {\n        \"initial_temperature\": initial_temperature,\n        \"baking_hours\": baking_hours,\n        \"temperature_increase_per_hour\": temperature_increase_per_hour,\n        \"window_open_minutes\": window_open_minutes,\n        \"cooling_per_time_unit\": cooling_per_time_unit,\n        \"time_unit_minutes\": time_unit_minutes,\n        \"baking_hours_temperature_increase\": baking_hours_temperature_increase,\n        \"temperature_after_baking\": temperature_after_baking,\n        \"window_open_time_units\": round(window_open_time_units, 2),\n        \"cooling_amount\": cooling_amount,\n        \"final_temperature\": round(final_temperature, 2)\n    }\n",
+    "results": {
+      "initial_temperature": 40,
+      "baking_hours": 3,
+      "temperature_increase_per_hour": 5,
+      "window_open_minutes": 30,
+      "cooling_per_time_unit": 2,
+      "time_unit_minutes": 10,
+      "baking_hours_temperature_increase": 15,
+      "temperature_after_baking": 55,
+      "window_open_time_units": 3.0,
+      "cooling_amount": 6.0,
+      "final_temperature": 49.0
+    }
+  },
+  "final": {
+    "question": "When Marcus wakes up, his house is 40 degrees. He spends 3 hours baking, and every hour the oven is on it raises the house's temperature by 5 degrees. Then Marcus opens a window for 30 minutes, and the house cools down 2 degrees for every 10 minutes the window is open. What is the house's final temperature?",
+    "answer_lines": [
+      "First find the total temperature increase from the oven: 3 hours * 5 degrees/hour = 15 degrees",
+      "Then add that amount to the starting temperature: 15 degrees + 40 degrees = 55 degrees",
+      "Then divide the time the window is open by 10 minutes to find how many 2-degree temperature decreases there are: 30 minutes / 10 minutes = 3.0",
+      "Then multiply the number of decreases by the amount of each decrease: 3.0 * 2 degrees = 6.0 degrees",
+      "Then subtract that amount from the house's temperature after baking to find the final temperature: 55 degrees - 6.0 degrees = 49.0 degrees",
+      "#### 49.0"
+    ],
+    "final_scalar": 49.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "When Makenson wakes up, his house is 40 degrees. He spends 3 hours baking, and every hour the oven is on it raises the house's temperature by 5 degrees. Then Makenson opens a window for 30 minutes, and the house cools down 2 degrees for every 10 minutes the window is open. What is the house's final temperature?",
+    "adapted_answer": [
+      "First find the total temperature increase from the oven: 3 hours * 5 degrees/hour = 15 degrees",
+      "Then add that amount to the starting temperature: 15 degrees + 40 degrees = 55 degrees",
+      "Then divide the time the window is open by 10 minutes to find how many 2-degree temperature decreases there are: 30 minutes / 10 minutes = 3.0",
+      "Then multiply the number of decreases by the amount of each decrease: 3.0 * 2 degrees = 6.0 degrees",
+      "Then subtract that amount from the house's temperature after baking to find the final temperature: 55 degrees - 6.0 degrees = 49.0 degrees",
+      "#### 49.0"
+    ],
+    "adaptation_notes": "Replaced 'Marcus' with 'Makenson', a common Haitian name."
+  }
+}

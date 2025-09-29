@@ -1,0 +1,151 @@
+{
+  "index": 919,
+  "split": "test",
+  "original": {
+    "question": "To raise money for their class fund, each of the 30 students from one class sold lollipops that cost $0.8 per lollypop. On average, each student sold 10 lollipops. If they bought the lollipops for $0.5 each, how much money was the class able to raise from the profit of selling lollipops?",
+    "answer": "The class got $0.8 - $0.5 = $<<0.8-0.5=0.3>>0.3 profit from each lollipop.\nSo each student raised $0.3 x 10 = $<<0.3*10=3>>3 from selling 10 lollipops.\nTherefore, they were able to raise a total of $3 x 30 = $<<3*30=90>>90.\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "lollipops"
+    ],
+    "notes": "The text contains units (dollars) and food items (lollipops) that are not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lollypop_cost",
+      "value": 0.8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollypop_purchase_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollypop_profit",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "student_lollypop_profit",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_class_profit",
+      "value": 90,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"lollypop_cost\",\n    \"value\": 0.8,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lollypop_purchase_cost\",\n    \"value\": 0.5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lollypop_profit\",\n    \"value\": 0.3,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"student_lollypop_profit\",\n    \"value\": 3,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_class_profit\",\n    \"value\": 90,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lollypop_cost",
+        "original_value": 0.8,
+        "original_unit": "dollar",
+        "converted_value": 5.7,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lollypop_purchase_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 3.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lollypop_profit",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 2.14,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "student_lollypop_profit",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_class_profit",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 641.7,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To raise money for their class fund, each of the {number_of_students} students from one class sold lollipops that cost ${lollypop_cost} per lollypop. On average, each student sold {number_of_lollipops_per_student} lollipops. If they bought the lollipops for ${lollypop_purchase_cost} each, how much money was the class able to raise from the profit of selling lollipops?",
+    "templatized_answer": [
+      "The class got ${lollypop_cost} - ${lollypop_purchase_cost} = ${lollypop_profit} profit from each lollipop.",
+      "So each student raised ${lollypop_profit} x {number_of_lollipops_per_student} = ${student_lollypop_profit} from selling {number_of_lollipops_per_student} lollipops.",
+      "Therefore, they were able to raise a total of ${student_lollypop_profit} x {number_of_students} = ${total_class_profit}.",
+      "#### {total_class_profit}"
+    ],
+    "factual_assignment": {
+      "number_of_students": 30,
+      "lollypop_cost": 0.8,
+      "number_of_lollipops_per_student": 10,
+      "lollypop_purchase_cost": 0.5,
+      "lollypop_profit": 0.3,
+      "student_lollypop_profit": 3,
+      "total_class_profit": 90
+    }
+  },
+  "merged_assignment": {
+    "number_of_students": 30,
+    "lollypop_cost": 5.7,
+    "number_of_lollipops_per_student": 10,
+    "lollypop_purchase_cost": 3.56,
+    "lollypop_profit": 2.14,
+    "student_lollypop_profit": 21.39,
+    "total_class_profit": 641.7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_students = 30\n    lollypop_cost = 5.7\n    number_of_lollipops_per_student = 10\n    lollypop_purchase_cost = 3.56\n\n    lollypop_profit = round(lollypop_cost - lollypop_purchase_cost, 2)\n    student_lollypop_profit = round(lollypop_profit * number_of_lollipops_per_student, 2)\n    total_class_profit = round(student_lollypop_profit * number_of_students, 2)\n\n    return {\n        \"number_of_students\": number_of_students,\n        \"lollypop_cost\": lollypop_cost,\n        \"number_of_lollipops_per_student\": number_of_lollipops_per_student,\n        \"lollypop_purchase_cost\": lollypop_purchase_cost,\n        \"lollypop_profit\": lollypop_profit,\n        \"student_lollypop_profit\": student_lollypop_profit,\n        \"total_class_profit\": total_class_profit\n    }\n",
+    "results": {
+      "number_of_students": 30,
+      "lollypop_cost": 5.7,
+      "number_of_lollipops_per_student": 10,
+      "lollypop_purchase_cost": 3.56,
+      "lollypop_profit": 2.14,
+      "student_lollypop_profit": 21.4,
+      "total_class_profit": 642.0
+    }
+  },
+  "final": {
+    "question": "To raise money for their class fund, each of the 30 students from one class sold lollipops that cost 5.7 renminbi per lollypop. On average, each student sold 10 lollipops. If they bought the lollipops for 3.56 renminbi each, how much money was the class able to raise from the profit of selling lollipops?",
+    "answer_lines": [
+      "The class got 5.7 - 3.56 = 2.14 profit from each lollipop.",
+      "So each student raised 2.14 x 10 = 21.4 from selling 10 lollipops.",
+      "Therefore, they were able to raise a total of 21.4 x 30 = 642.0.",
+      "#### 642.0"
+    ],
+    "final_scalar": 642.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To raise money for their class fund, each of the 30 students from one class sold tang hu lu (candied fruits) that cost 5.7 renminbi per tang hu lu. On average, each student sold 10 tang hu lu. If they bought the tang hu lu for 3.56 renminbi each, how much money was the class able to raise from the profit of selling tang hu lu?",
+    "adapted_answer": [
+      "The class got 5.7 - 3.56 = 2.14 profit from each tang hu lu.",
+      "So each student raised 2.14 x 10 = 21.4 from selling 10 tang hu lu.",
+      "Therefore, they were able to raise a total of 21.4 x 30 = 642.0.",
+      "#### 642.0"
+    ],
+    "adaptation_notes": "Replaced 'lollipops' with 'tang hu lu' (candied fruits), a traditional Chinese candy."
+  }
+}

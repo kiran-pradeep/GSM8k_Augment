@@ -1,0 +1,158 @@
+{
+  "index": 796,
+  "split": "test",
+  "original": {
+    "question": "A company's HR hires 20 new employees every month to add to its total workforce. If the company's initial employee number is 200, and each employee is paid a $4000 salary per month, calculate the total amount of money the company pays to its employees after three months?",
+    "answer": "If each month the company hire 20 new employees, the total number of employees in the company in the first month is 200 employees + 20 employees = <<200+20=220>>220 employees\nIf each employee is paid $4000 per month, the total amount of money paid by the employee to its workers in the first month is 220 employees * $4000/employee = $<<220*4000=880000>>880000\nIn the second month, 20 more workers are hired, bringing the total number of employees to 220 employees + 20 employees = 240 employees\nThe company pays a total of 240 employees * $4000/employee = $<<240*4000=960000>>960000 in wages for its employees in the second month.\nWhen an additional 20 workers are hired in the third month, the total number of workers become 240 employees + 20 employees = <<240+20=260>>260 employees\nIn total, the company 260 employees * $4000/employee = $<<260*4000=1040000>>1040000 in wages on the third month.\nThe total amount of money the company pays to all its employees in the three months is $1040000 + $960000 + $880000 = <<1040000+960000+880000=2880000>>2880000\n#### 2880000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not the standard unit of currency in India (rupees)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_salary",
+      "value": 4000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_month_payment",
+      "value": 880000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_month_payment",
+      "value": 960000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "third_month_payment",
+      "value": 1040000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_payment",
+      "value": 2880000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = original_value * conversions[original_unit][\"factor\"]\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": round(original_value, 2),\n            \"original_unit\": original_unit,\n            \"converted_value\": round(converted_value, 2),\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_salary\", \"value\": 4000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_month_payment\", \"value\": 880000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_month_payment\", \"value\": 960000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"third_month_payment\", \"value\": 1040000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_payment\", \"value\": 2880000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_salary",
+        "original_value": 4000.0,
+        "original_unit": "dollar",
+        "converted_value": 348000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "first_month_payment",
+        "original_value": 880000.0,
+        "original_unit": "dollar",
+        "converted_value": 76560000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_month_payment",
+        "original_value": 960000.0,
+        "original_unit": "dollar",
+        "converted_value": 83520000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "third_month_payment",
+        "original_value": 1040000.0,
+        "original_unit": "dollar",
+        "converted_value": 90480000.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_payment",
+        "original_value": 2880000.0,
+        "original_unit": "dollar",
+        "converted_value": 250560000.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company's HR hires {new_employees_per_month} new employees every month to add to its total workforce. If the company's initial employee number is {initial_employees}, and each employee is paid a ${monthly_salary} salary per month, calculate the total amount of money the company pays to its employees after three months?",
+    "templatized_answer": [
+      "If each month the company hire {new_employees_per_month} new employees, the total number of employees in the company in the first month is {initial_employees} employees + {new_employees_per_month} employees = {initial_employees} + {new_employees_per_month} employees",
+      "If each employee is paid ${monthly_salary} per month, the total amount of money paid by the employee to its workers in the first month is {initial_employees} + {new_employees_per_month} employees * ${monthly_salary}/employee = ${monthly_salary} * ({initial_employees} + {new_employees_per_month})",
+      "In the second month, {new_employees_per_month} more workers are hired, bringing the total number of employees to {initial_employees} + {new_employees_per_month} employees + {new_employees_per_month} employees = {initial_employees} + {new_employees_per_month} * 2 employees",
+      "The company pays a total of {initial_employees} + {new_employees_per_month} * 2 employees * ${monthly_salary}/employee = ${monthly_salary} * ({initial_employees} + {new_employees_per_month} * 2) in wages for its employees in the second month.",
+      "When an additional {new_employees_per_month} workers are hired in the third month, the total number of workers become {initial_employees} + {new_employees_per_month} * 2 employees + {new_employees_per_month} employees = {initial_employees} + {new_employees_per_month} * 3 employees",
+      "In total, the company {initial_employees} + {new_employees_per_month} * 3 employees * ${monthly_salary}/employee = ${monthly_salary} * ({initial_employees} + {new_employees_per_month} * 3) in wages on the third month.",
+      "The total amount of money the company pays to all its employees in the three months is ${monthly_salary} * ({initial_employees} + {new_employees_per_month}) + ${monthly_salary} * ({initial_employees} + {new_employees_per_month} * 2) + ${monthly_salary} * ({initial_employees} + {new_employees_per_month} * 3) = ${monthly_salary} * ({initial_employees} * 3 + {new_employees_per_month} * (1 + 2 + 3))",
+      "#### ${monthly_salary} * ({initial_employees} * 3 + {new_employees_per_month} * 6)"
+    ],
+    "factual_assignment": {
+      "monthly_salary": 4000.0,
+      "new_employees_per_month": 20,
+      "initial_employees": 200
+    }
+  },
+  "merged_assignment": {
+    "monthly_salary": 348000.0,
+    "new_employees_per_month": 20,
+    "initial_employees": 200
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_salary = 348000.0\n    new_employees_per_month = 20\n    initial_employees = 200\n\n    total_employees_first_month = initial_employees + new_employees_per_month\n    total_salary_first_month = monthly_salary * total_employees_first_month\n\n    total_employees_second_month = initial_employees + new_employees_per_month * 2\n    total_salary_second_month = monthly_salary * total_employees_second_month\n\n    total_employees_third_month = initial_employees + new_employees_per_month * 3\n    total_salary_third_month = monthly_salary * total_employees_third_month\n\n    total_salary_three_months = total_salary_first_month + total_salary_second_month + total_salary_third_month\n\n    return {\n        \"new_employees_per_month\": new_employees_per_month,\n        \"initial_employees\": initial_employees,\n        \"monthly_salary\": monthly_salary,\n        \"initial_employees + new_employees_per_month\": total_employees_first_month,\n        \"monthly_salary * (initial_employees + new_employees_per_month)\": round(total_salary_first_month, 2),\n        \"initial_employees + new_employees_per_month * 2\": total_employees_second_month,\n        \"monthly_salary * (initial_employees + new_employees_per_month * 2)\": round(total_salary_second_month, 2),\n        \"initial_employees + new_employees_per_month * 3\": total_employees_third_month,\n        \"monthly_salary * (initial_employees + new_employees_per_month * 3)\": round(total_salary_third_month, 2),\n        \"monthly_salary * (initial_employees * 3 + new_employees_per_month * (1 + 2 + 3))\": round(total_salary_three_months, 2),\n        \"monthly_salary * (initial_employees * 3 + new_employees_per_month * 6)\": round(total_salary_three_months, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "new_employees_per_month": 20,
+      "initial_employees": 200,
+      "monthly_salary": 348000.0,
+      "initial_employees + new_employees_per_month": 220,
+      "monthly_salary * (initial_employees + new_employees_per_month)": 76560000.0,
+      "initial_employees + new_employees_per_month * 2": 240,
+      "monthly_salary * (initial_employees + new_employees_per_month * 2)": 83520000.0,
+      "initial_employees + new_employees_per_month * 3": 260,
+      "monthly_salary * (initial_employees + new_employees_per_month * 3)": 90480000.0,
+      "monthly_salary * (initial_employees * 3 + new_employees_per_month * (1 + 2 + 3))": 250560000.0,
+      "monthly_salary * (initial_employees * 3 + new_employees_per_month * 6)": 250560000.0
+    }
+  },
+  "final": {
+    "question": "A company's HR hires 20 new employees every month to add to its total workforce. If the company's initial employee number is 200, and each employee is paid a 348000 rupees salary per month, calculate the total amount of money the company pays to its employees after three months?",
+    "answer_lines": [
+      "If each month the company hire 20 new employees, the total number of employees in the company in the first month is 200 employees + 20 employees = 220 employees",
+      "If each employee is paid 348000 rupees per month, the total amount of money paid by the employee to its workers in the first month is 220 employees * 348000 rupees/employee = 348000 * 220 = 76560000 rupees",
+      "In the second month, 20 more workers are hired, bringing the total number of employees to 220 employees + 20 employees = 240 employees",
+      "The company pays a total of 240 employees * 348000 rupees/employee = 348000 * 240 = 83520000 rupees in wages for its employees in the second month.",
+      "When an additional 20 workers are hired in the third month, the total number of workers become 240 employees + 20 employees = 260 employees",
+      "In total, the company 260 employees * 348000 rupees/employee = 348000 * 260 = 90480000 rupees in wages on the third month.",
+      "The total amount of money the company pays to all its employees in the three months is 348000 * 220 + 348000 * 240 + 348000 * 260 = 348000 * (200 * 3 + 20 * 6) = 250560000 rupees",
+      "#### 250560000"
+    ],
+    "final_scalar": 250560000,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company's HR hires 20 new employees every month to add to its total workforce. If the company's initial employee number is 200, and each employee is paid a 348000 rupees salary per month, calculate the total amount of money the company pays to its employees after three months?",
+    "adapted_answer": [
+      "If each month the company hire 20 new employees, the total number of employees in the company in the first month is 200 employees + 20 employees = 220 employees",
+      "If each employee is paid 348000 rupees per month, the total amount of money paid by the employee to its workers in the first month is 220 employees * 348000 rupees/employee = 348000 * 220 = 76560000 rupees",
+      "In the second month, 20 more workers are hired, bringing the total number of employees to 220 employees + 20 employees = 240 employees",
+      "The company pays a total of 240 employees * 348000 rupees/employee = 348000 * 240 = 83520000 rupees in wages for its employees in the second month.",
+      "When an additional 20 workers are hired in the third month, the total number of workers become 240 employees + 20 employees = 260 employees",
+      "In total, the company 260 employees * 348000 rupees/employee = 348000 * 260 = 90480000 rupees in wages on the third month.",
+      "The total amount of money the company pays to all its employees in the three months is 348000 * 220 + 348000 * 240 + 348000 * 260 = 348000 * (200 * 3 + 20 * 6) = 250560000 rupees",
+      "#### 250560000"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

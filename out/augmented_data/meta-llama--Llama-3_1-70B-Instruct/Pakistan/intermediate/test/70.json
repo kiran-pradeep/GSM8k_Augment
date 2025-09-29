@@ -1,0 +1,115 @@
+{
+  "index": 70,
+  "split": "test",
+  "original": {
+    "question": "Judy teaches 5 dance classes, every day, on the weekdays and 8 classes on Saturday.  If each class has 15 students and she charges $15.00 per student, how much money does she make in 1 week?",
+    "answer": "She teaches 5 dance classes 5 days a week so that's 5*5 = <<5*5=25>>25 classes\nShe teaches 25 classes during the week and 8 classes on Saturday for a total of 25+8 = <<25+8=33>>33 classes\nThere are 15 students in each of the 33 classes so there are 15*33 = <<15*33=495>>495 students\nEach student pays $15.00 per class and there are 495 students so Judy makes 15*495 = $<<15*495=7425>>7,425\n#### 7425"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Judy",
+      "dollars"
+    ],
+    "notes": "Name 'Judy' and unit 'dollars' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "class_charge",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 7425.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"class_charge\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 7425.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "class_charge",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 4227.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 7425.0,
+        "original_unit": "dollar",
+        "converted_value": 2092736.25,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Judy teaches {number_of_classes_per_day} dance classes, every day, on the weekdays and {number_of_classes_on_saturday} classes on Saturday.  If each class has {number_of_students_per_class} students and she charges ${class_charge} per student, how much money does she make in 1 week?",
+    "templatized_answer": [
+      "She teaches {number_of_classes_per_day} dance classes {number_of_days_per_week} days a week so that's {number_of_classes_per_day}*{number_of_days_per_week} = {number_of_classes_per_day}*{number_of_days_per_week} classes",
+      "She teaches {number_of_classes_per_day}*{number_of_days_per_week} classes during the week and {number_of_classes_on_saturday} classes on Saturday for a total of {number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday} = {number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday} classes",
+      "There are {number_of_students_per_class} students in each of the {number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday} classes so there are {number_of_students_per_class}*({number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday}) = {number_of_students_per_class}*({number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday}) students",
+      "Each student pays ${class_charge} per class and there are {number_of_students_per_class}*({number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday}) students so Judy makes {class_charge}*{number_of_students_per_class}*({number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday}) = ${class_charge}*{number_of_students_per_class}*({number_of_classes_per_day}*{number_of_days_per_week}+{number_of_classes_on_saturday})",
+      "#### {weekly_earnings}"
+    ],
+    "factual_assignment": {
+      "number_of_classes_per_day": 5,
+      "number_of_classes_on_saturday": 8,
+      "number_of_students_per_class": 15,
+      "class_charge": 15.0,
+      "number_of_days_per_week": 5,
+      "weekly_earnings": 7425.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_classes_per_day": 5,
+    "number_of_classes_on_saturday": 8,
+    "number_of_students_per_class": 15,
+    "class_charge": 4227.75,
+    "number_of_days_per_week": 5,
+    "weekly_earnings": 2092736.25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_classes_per_day = 5\n    number_of_classes_on_saturday = 8\n    number_of_students_per_class = 15\n    class_charge = 4227.75\n    number_of_days_per_week = 5\n\n    total_classes_per_week = number_of_classes_per_day * number_of_days_per_week\n    total_classes_per_week_with_saturday = total_classes_per_week + number_of_classes_on_saturday\n    total_students_per_week = number_of_students_per_class * total_classes_per_week_with_saturday\n    weekly_earnings = round(class_charge * total_students_per_week, 2)\n\n    return {\n        \"number_of_classes_per_day\": number_of_classes_per_day,\n        \"number_of_classes_on_saturday\": number_of_classes_on_saturday,\n        \"number_of_students_per_class\": number_of_students_per_class,\n        \"class_charge\": class_charge,\n        \"number_of_days_per_week\": number_of_days_per_week,\n        \"total_classes_per_week\": total_classes_per_week,\n        \"total_classes_per_week_with_saturday\": total_classes_per_week_with_saturday,\n        \"total_students_per_week\": total_students_per_week,\n        \"weekly_earnings\": weekly_earnings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_classes_per_day": 5,
+      "number_of_classes_on_saturday": 8,
+      "number_of_students_per_class": 15,
+      "class_charge": 4227.75,
+      "number_of_days_per_week": 5,
+      "total_classes_per_week": 25,
+      "total_classes_per_week_with_saturday": 33,
+      "total_students_per_week": 495,
+      "weekly_earnings": 2092736.25
+    }
+  },
+  "final": {
+    "question": "Judy teaches 5 dance classes, every day, on the weekdays and 8 classes on Saturday.  If each class has 15 students and she charges 4227.75 rupee per student, how much money does she make in 1 week?",
+    "answer_lines": [
+      "She teaches 5 dance classes 5 days a week so that's 5*5 = 25 classes",
+      "She teaches 25 classes during the week and 8 classes on Saturday for a total of 25+8 = 33 classes",
+      "There are 15 students in each of the 33 classes so there are 15*33 = 495 students",
+      "Each student pays 4227.75 rupee per class and there are 495 students so Judy makes 4227.75*495 = 2092736.25",
+      "#### 2092736.25"
+    ],
+    "final_scalar": 2092736.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha teaches 5 dance classes, every day, on the weekdays and 8 classes on Saturday.  If each class has 15 students and she charges 4227.75 rupee per student, how much money does she make in 1 week?",
+    "adapted_answer": [
+      "She teaches 5 dance classes 5 days a week so that's 5*5 = 25 classes",
+      "She teaches 25 classes during the week and 8 classes on Saturday for a total of 25+8 = 33 classes",
+      "There are 15 students in each of the 33 classes so there are 15*33 = 495 students",
+      "Each student pays 4227.75 rupee per class and there are 495 students so Ayesha makes 4227.75*495 = 2092736.25",
+      "#### 2092736.25"
+    ],
+    "adaptation_notes": "Replaced 'Judy' with 'Ayesha' to give the name a Pakistani context."
+  }
+}

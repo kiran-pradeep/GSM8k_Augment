@@ -1,0 +1,127 @@
+{
+  "index": 1180,
+  "split": "test",
+  "original": {
+    "question": "A company sold 4000 gallons of milk in jars to Mr. Marcellus' store at the cost of $3.5 per gallon. However, Mr. Marcellus later realized 2/5 of the amount of milk he purchased had passed the expiry date and could not be sold. He returned the sour milk to the company and ordered a refund. Calculate how much he got in refunds.",
+    "answer": "If he purchased 4000 gallons, the number of gallons expired is 2/5 * 4000 gallons = <<2/5*4000=1600>>1600 gallons.\nIf each gallon costs $3.5, and he returned 1600 gallons for refund, the total amount he got from the refund is $3.5/gallon * 1600 gallons = $<<3.5*1600=5600>>5600\n#### 5600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mr. Marcellus",
+      "gallons",
+      "dollars"
+    ],
+    "notes": "The name 'Mr. Marcellus' and units 'gallons' and 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "milk_cost",
+      "value": 3.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_refund",
+      "value": 5600,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "milk_purchased",
+      "value": 4000,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "milk_expired",
+      "value": 1600,
+      "unit": "gallon",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"milk_cost\", \"value\": 3.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_refund\", \"value\": 5600, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"milk_purchased\", \"value\": 4000, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"milk_expired\", \"value\": 1600, \"unit\": \"gallon\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "milk_cost",
+        "original_value": 3.5,
+        "original_unit": "dollar",
+        "converted_value": 24.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_refund",
+        "original_value": 5600,
+        "original_unit": "dollar",
+        "converted_value": 39928.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "milk_purchased",
+        "original_value": 4000,
+        "original_unit": "gallon",
+        "converted_value": 15141.64,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "milk_expired",
+        "original_value": 1600,
+        "original_unit": "gallon",
+        "converted_value": 6056.66,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company sold {milk_purchased} gallons of milk in jars to Mr. Marcellus' store at the cost of ${milk_cost} per gallon. However, Mr. Marcellus later realized 2/5 of the amount of milk he purchased had passed the expiry date and could not be sold. He returned the sour milk to the company and ordered a refund. Calculate how much he got in refunds.",
+    "templatized_answer": [
+      "If he purchased {milk_purchased} gallons, the number of gallons expired is 2/5 * {milk_purchased} gallons = {milk_expired} gallons.",
+      "If each gallon costs ${milk_cost}, and he returned {milk_expired} gallons for refund, the total amount he got from the refund is ${milk_cost}/gallon * {milk_expired} gallons = ${total_refund}",
+      "#### {total_refund}"
+    ],
+    "factual_assignment": {
+      "milk_purchased": 4000,
+      "milk_cost": 3.5,
+      "total_refund": 5600,
+      "milk_expired": 1600
+    }
+  },
+  "merged_assignment": {
+    "milk_purchased": 15141.64,
+    "milk_cost": 24.95,
+    "total_refund": 39928.0,
+    "milk_expired": 6056.66
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    milk_purchased = 15141.64\n    milk_cost = 24.95\n\n    # Recompute milk_expired\n    milk_expired = (2/5) * milk_purchased\n\n    # Recompute total_refund\n    total_refund = milk_cost * milk_expired\n\n    # Round to 2 decimal places where appropriate\n    milk_expired = round(milk_expired, 2)\n    total_refund = round(total_refund, 2)\n\n    return {\n        \"milk_purchased\": milk_purchased,\n        \"milk_cost\": milk_cost,\n        \"milk_expired\": milk_expired,\n        \"total_refund\": total_refund\n    }\n",
+    "results": {
+      "milk_purchased": 15141.64,
+      "milk_cost": 24.95,
+      "milk_expired": 6056.66,
+      "total_refund": 151113.57
+    }
+  },
+  "final": {
+    "question": "A company sold 15141.64 liters of milk in jars to Mr. Marcellus' store at the cost of 24.95 renminbi per liter. However, Mr. Marcellus later realized 2/5 of the amount of milk he purchased had passed the expiry date and could not be sold. He returned the sour milk to the company and ordered a refund. Calculate how much he got in refunds.",
+    "answer_lines": [
+      "If he purchased 15141.64 liters, the number of liters expired is 2/5 * 15141.64 liters = 6056.66 liters.",
+      "If each liter costs 24.95 renminbi, and he returned 6056.66 liters for refund, the total amount he got from the refund is 24.95 renminbi/liter * 6056.66 liters = 151113.57 renminbi",
+      "#### 151113.57"
+    ],
+    "final_scalar": 151113.57,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company sold 15141.64 liters of milk in jars to Mr. Ma's store at the cost of 24.95 renminbi per liter. However, Mr. Ma later realized 2/5 of the amount of milk he purchased had passed the expiry date and could not be sold. He returned the sour milk to the company and ordered a refund. Calculate how much he got in refunds.",
+    "adapted_answer": [
+      "If he purchased 15141.64 liters, the number of liters expired is 2/5 * 15141.64 liters = 6056.66 liters.",
+      "If each liter costs 24.95 renminbi, and he returned 6056.66 liters for refund, the total amount he got from the refund is 24.95 renminbi/liter * 6056.66 liters = 151113.57 renminbi",
+      "#### 151113.57"
+    ],
+    "adaptation_notes": "Replaced 'Mr. Marcellus' with 'Mr. Ma' to give the name a Chinese context."
+  }
+}

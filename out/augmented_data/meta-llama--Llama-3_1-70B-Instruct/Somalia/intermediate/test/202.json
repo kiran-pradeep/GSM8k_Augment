@@ -1,0 +1,88 @@
+{
+  "index": 202,
+  "split": "test",
+  "original": {
+    "question": "Josie grows grapes on her 10-acre farm.  Each acre produces 5 tons of grapes per year, and each ton of grapes makes 2 barrels of wine.  How many barrels of wine does her farm produce per year?",
+    "answer": "If each acre produces 5 tons of grapes per year, then her ten-acre farm produces 10*5=<<10*5=50>>50 tons of grapes per year.\nIf each ton of grapes makes 2 barrels of wine, then 50 tons makes 2*50=<<50*2=100>>100 barrels of wine per year.\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Josie",
+      "acres",
+      "tons",
+      "barrels"
+    ],
+    "notes": "The name Josie is culturally specific to Western regions, and the units acres, tons, and barrels are commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "farm_size",
+      "value": 10,
+      "unit": "acre",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"farm_size\",\n        \"value\": 10,\n        \"unit\": \"acre\",\n        \"context\": \"question\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "farm_size",
+        "original_value": 10,
+        "original_unit": "acre",
+        "converted_value": 10,
+        "converted_unit": "acre"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Josie grows grapes on her {farm_size}-acre farm.  Each acre produces {tons_per_acre} tons of grapes per year, and each ton of grapes makes {barrels_per_ton} barrels of wine.  How many barrels of wine does her farm produce per year?",
+    "templatized_answer": [
+      "If each acre produces {tons_per_acre} tons of grapes per year, then her {farm_size}-acre farm produces {farm_size}*{tons_per_acre}={farm_size}*{tons_per_acre} tons of grapes per year.",
+      "If each ton of grapes makes {barrels_per_ton} barrels of wine, then {farm_size}*{tons_per_acre} tons makes {barrels_per_ton}*{farm_size}*{tons_per_acre}={barrels_per_ton}*{farm_size}*{tons_per_acre} barrels of wine per year.",
+      "#### {barrels_per_ton}*{farm_size}*{tons_per_acre}"
+    ],
+    "factual_assignment": {
+      "farm_size": 10,
+      "tons_per_acre": 5,
+      "barrels_per_ton": 2
+    }
+  },
+  "merged_assignment": {
+    "farm_size": 10,
+    "tons_per_acre": 5,
+    "barrels_per_ton": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"farm_size\": 10,\n        \"tons_per_acre\": 5,\n        \"barrels_per_ton\": 2\n    }\n\n    recomputed_values = {}\n\n    # Recompute intermediate steps\n    tons_per_year = factual_assignment[\"farm_size\"] * factual_assignment[\"tons_per_acre\"]\n    barrels_per_year = factual_assignment[\"barrels_per_ton\"] * tons_per_year\n\n    # Store recomputed values\n    recomputed_values[\"farm_size\"] = factual_assignment[\"farm_size\"]\n    recomputed_values[\"tons_per_acre\"] = factual_assignment[\"tons_per_acre\"]\n    recomputed_values[\"barrels_per_ton\"] = factual_assignment[\"barrels_per_ton\"]\n    recomputed_values[\"farm_size\"] = factual_assignment[\"farm_size\"]\n    recomputed_values[\"farm_size*tons_per_acre\"] = tons_per_year\n    recomputed_values[\"barrels_per_ton*farm_size*tons_per_acre\"] = barrels_per_year\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "farm_size": 10,
+      "tons_per_acre": 5,
+      "barrels_per_ton": 2,
+      "farm_size*tons_per_acre": 50,
+      "barrels_per_ton*farm_size*tons_per_acre": 100
+    }
+  },
+  "final": {
+    "question": "Josie grows grapes on her 10-acre farm.  Each acre produces 5 tons of grapes per year, and each ton of grapes makes 2 barrels of wine.  How many barrels of wine does her farm produce per year?",
+    "answer_lines": [
+      "If each acre produces 5 tons of grapes per year, then her 10-acre farm produces 10*5=50 tons of grapes per year.",
+      "If each ton of grapes makes 2 barrels of wine, then 50 tons makes 2*50=100 barrels of wine per year.",
+      "#### 100"
+    ],
+    "final_scalar": 100,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Amina grows muus on her 10-acre farm.  Each acre produces 5 tons of muus per year, and each ton of muus makes 2 barrels of wine.  How many barrels of wine does her farm produce per year?",
+    "adapted_answer": [
+      "If each acre produces 5 tons of muus per year, then her 10-acre farm produces 10*5=50 tons of muus per year.",
+      "If each ton of muus makes 2 barrels of wine, then 50 tons makes 2*50=100 barrels of wine per year.",
+      "#### 100"
+    ],
+    "adaptation_notes": "Replaced 'Josie' with 'Amina' (a Somali name) and 'grapes' with 'muus' (a Somali word for a type of fruit, used here as a substitute for grapes)."
+  }
+}

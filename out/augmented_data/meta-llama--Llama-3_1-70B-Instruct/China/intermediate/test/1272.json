@@ -1,0 +1,155 @@
+{
+  "index": 1272,
+  "split": "test",
+  "original": {
+    "question": "Helen went on a trip through Germany. She booked a hotel for 3 nights and rode the bus 7 times during that trip. One night at the hotel was a cost of $80, and every bus trip was 10% of the price of one night at the hotel. How much did Helen pay for the hotel and bus travels during that trip?",
+    "answer": "Helen has spent 3 nights at the hotel, so she needed to pay 3 * 80 = $<<3*80=240>>240 for them.\nOne bus trip was the cost of 80 * 10/100 = $<<80*10/100=8>>8.\nHelen rode the bus 7 times, so she paid 7 * 8 = $<<7*8=56>>56 for that.\nIn total, Helen paid 240 + 56 = $<<240+56=296>>296 in total.\n#### 296"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Helen",
+      "Germany",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name, a European country, and a non-Chinese currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hotel_night_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bus_trip_cost",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "hotel_total_cost",
+      "value": 240,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "bus_total_cost",
+      "value": 56,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 296,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hotel_night_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bus_trip_cost\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"hotel_total_cost\", \"value\": 240, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"bus_total_cost\", \"value\": 56, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 296, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hotel_night_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bus_trip_cost",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hotel_total_cost",
+        "original_value": 240,
+        "original_unit": "dollar",
+        "converted_value": 1711.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bus_total_cost",
+        "original_value": 56,
+        "original_unit": "dollar",
+        "converted_value": 399.28,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 296,
+        "original_unit": "dollar",
+        "converted_value": 2110.48,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Helen went on a trip through Germany. She booked a hotel for {hotel_nights} nights and rode the bus {bus_trips} times during that trip. One night at the hotel was a cost of ${hotel_night_cost}, and every bus trip was 10% of the price of one night at the hotel. How much did Helen pay for the hotel and bus travels during that trip?",
+    "templatized_answer": [
+      "Helen has spent {hotel_nights} nights at the hotel, so she needed to pay {hotel_nights} * {hotel_night_cost} = ${hotel_total_cost} for them.",
+      "One bus trip was the cost of {hotel_night_cost} * 10/100 = ${bus_trip_cost}.",
+      "Helen rode the bus {bus_trips} times, so she paid {bus_trips} * {bus_trip_cost} = ${bus_total_cost} for that.",
+      "In total, Helen paid {hotel_total_cost} + {bus_total_cost} = ${total_cost} in total.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "hotel_nights": 3,
+      "bus_trips": 7,
+      "hotel_night_cost": 80,
+      "bus_trip_cost": 8,
+      "hotel_total_cost": 240,
+      "bus_total_cost": 56,
+      "total_cost": 296
+    }
+  },
+  "merged_assignment": {
+    "hotel_nights": 3,
+    "bus_trips": 7,
+    "hotel_night_cost": 570.4,
+    "bus_trip_cost": 57.04,
+    "hotel_total_cost": 1711.2,
+    "bus_total_cost": 399.28,
+    "total_cost": 2110.48
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hotel_nights = 3\n    bus_trips = 7\n    hotel_night_cost = 570.4\n\n    hotel_total_cost = hotel_nights * hotel_night_cost\n    bus_trip_cost = hotel_night_cost * 10/100\n    bus_total_cost = bus_trips * bus_trip_cost\n    total_cost = hotel_total_cost + bus_total_cost\n\n    return {\n        \"hotel_nights\": hotel_nights,\n        \"bus_trips\": bus_trips,\n        \"hotel_night_cost\": round(hotel_night_cost, 2),\n        \"bus_trip_cost\": round(bus_trip_cost, 2),\n        \"hotel_total_cost\": round(hotel_total_cost, 2),\n        \"bus_total_cost\": round(bus_total_cost, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "hotel_nights": 3,
+      "bus_trips": 7,
+      "hotel_night_cost": 570.4,
+      "bus_trip_cost": 57.04,
+      "hotel_total_cost": 1711.2,
+      "bus_total_cost": 399.28,
+      "total_cost": 2110.48
+    }
+  },
+  "final": {
+    "question": "Helen went on a trip through Germany. She booked a hotel for 3 nights and rode the bus 7 times during that trip. One night at the hotel was a cost of 570.4 renminbi, and every bus trip was 10% of the price of one night at the hotel. How much did Helen pay for the hotel and bus travels during that trip?",
+    "answer_lines": [
+      "Helen has spent 3 nights at the hotel, so she needed to pay 3 * 570.4 = 1711.2 renminbi for them.",
+      "One bus trip was the cost of 570.4 * 10/100 = 57.04 renminbi.",
+      "Helen rode the bus 7 times, so she paid 7 * 57.04 = 399.28 renminbi for that.",
+      "In total, Helen paid 1711.2 + 399.28 = 2110.48 renminbi in total.",
+      "#### 2110.48"
+    ],
+    "final_scalar": 2110.48,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Li Ming went on a trip through China. She booked a hotel for 3 nights and rode the bus 7 times during that trip. One night at the hotel was a cost of 570.4 renminbi, and every bus trip was 10% of the price of one night at the hotel. How much did Li Ming pay for the hotel and bus travels during that trip?",
+    "adapted_answer": [
+      "Li Ming has spent 3 nights at the hotel, so she needed to pay 3 * 570.4 = 1711.2 renminbi for them.",
+      "One bus trip was the cost of 570.4 * 10/100 = 57.04 renminbi.",
+      "Li Ming rode the bus 7 times, so she paid 7 * 57.04 = 399.28 renminbi for that.",
+      "In total, Li Ming paid 1711.2 + 399.28 = 2110.48 renminbi in total.",
+      "#### 2110.48"
+    ],
+    "adaptation_notes": "Replaced 'Helen' with 'Li Ming' and 'Germany' with 'China'."
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "index": 1075,
+  "split": "test",
+  "original": {
+    "question": "Jenny goes to the florist to buy some flowers. Roses cost $2 each and $15 for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "answer": "Jenny has $25 because 5 x 5 = <<5*5=25>>25\nShe buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = <<15-12-3=0>>0\nShe spends $6 on the single roses because 3 x 2 = <<3*2=6>>6\nShe spends $21 on roses because 15 + 6 = <<15+6=21>>21\nShe gets $4 in change because 25 - 21 = <<25-21=4>>4\nShe gets 16 quarters because 4 x 4 = <<4*4=16>>16\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jenny",
+      "dollars",
+      "quarters"
+    ],
+    "notes": "The name 'Jenny' and the use of US currency units 'dollars' and 'quarters' are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "rose_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dozen_rose_cost",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jenny_money",
+      "value": 25,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "single_rose_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_rose_cost",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"rose_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"dozen_rose_cost\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jenny_money\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"single_rose_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_rose_cost\", \"value\": 21, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "rose_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 33.24,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "dozen_rose_cost",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 249.3,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "jenny_money",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 415.5,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "single_rose_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 99.72,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_rose_cost",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 349.02,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "change",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 66.48,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jenny goes to the florist to buy some flowers. Roses cost ${rose_cost} each and ${dozen_rose_cost} for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "templatized_answer": [
+      "Jenny has ${jenny_money} because 5 x 5 = {jenny_money}",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends ${single_rose_cost} on the single roses because 3 x {rose_cost} = {single_rose_cost}",
+      "She spends ${total_rose_cost} on roses because {dozen_rose_cost} + {single_rose_cost} = {total_rose_cost}",
+      "She gets ${change} in change because {jenny_money} - {total_rose_cost} = {change}",
+      "She gets {change} x 4 = {change_in_quarters} quarters because 1 dollar = 4 quarters",
+      "#### {change_in_quarters}"
+    ],
+    "factual_assignment": {
+      "rose_cost": 2,
+      "dozen_rose_cost": 15,
+      "jenny_money": 25,
+      "single_rose_cost": 6,
+      "total_rose_cost": 21,
+      "change": 4,
+      "change_in_quarters": 16
+    }
+  },
+  "merged_assignment": {
+    "rose_cost": 33.24,
+    "dozen_rose_cost": 249.3,
+    "jenny_money": 415.5,
+    "single_rose_cost": 99.72,
+    "total_rose_cost": 349.02,
+    "change": 66.48,
+    "change_in_quarters": 16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    rose_cost = 33.24\n    dozen_rose_cost = 249.3\n    jenny_money = 415.5\n\n    single_rose_cost = round(3 * rose_cost, 2)\n    total_rose_cost = round(dozen_rose_cost + single_rose_cost, 2)\n    change = round(jenny_money - total_rose_cost, 2)\n    change_in_quarters = round(change * 4)\n\n    return {\n        \"rose_cost\": rose_cost,\n        \"dozen_rose_cost\": dozen_rose_cost,\n        \"jenny_money\": jenny_money,\n        \"single_rose_cost\": single_rose_cost,\n        \"total_rose_cost\": total_rose_cost,\n        \"change\": change,\n        \"change_in_quarters\": change_in_quarters\n    }\n",
+    "results": {
+      "rose_cost": 33.24,
+      "dozen_rose_cost": 249.3,
+      "jenny_money": 415.5,
+      "single_rose_cost": 99.72,
+      "total_rose_cost": 349.02,
+      "change": 66.48,
+      "change_in_quarters": 266
+    }
+  },
+  "final": {
+    "question": "Jenny goes to the florist to buy some flowers. Roses cost 33.24 leu each and 249.3 leu for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "answer_lines": [
+      "Jenny has 415.5 leu because 5 x 5 = 25",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends 99.72 leu on the single roses because 3 x 33.24 = 99.72",
+      "She spends 349.02 leu on roses because 249.3 + 99.72 = 349.02",
+      "She gets 66.48 leu in change because 415.5 - 349.02 = 66.48",
+      "She gets 66.48 x 4 = 265.92 quarters because 1 leu = 4 quarters",
+      "#### 266"
+    ],
+    "final_scalar": 266,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Natalia goes to the florist to buy some flowers. Roses cost 33.24 lei each and 249.3 lei for a dozen. If she bought 15 roses and arrived with five 50 lei bills and they only have 50 bani coins for change, how many 50 bani coins does she leave with?",
+    "adapted_answer": [
+      "Natalia has 250 lei because 5 x 50 = 250",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends 99.72 lei on the single roses because 3 x 33.24 = 99.72",
+      "She spends 349.02 lei on roses because 249.3 + 99.72 = 349.02",
+      "She gets 66.48 lei in change because 250 - 349.02 is not possible, so she must have had more money, 415.5 lei, 415.5 - 349.02 = 66.48",
+      "She gets 66.48 x 2 = 132.96 50 bani coins because 1 lei = 2 50 bani coins",
+      "#### 133"
+    ],
+    "adaptation_notes": "Replaced 'Jenny' with 'Natalia', 'dollars' with 'lei', 'quarters' with '50 bani coins', and 'leu' with 'lei'. Also, adjusted the initial amount of money to match the Moldovan currency and the number of coins in the final answer."
+  }
+}

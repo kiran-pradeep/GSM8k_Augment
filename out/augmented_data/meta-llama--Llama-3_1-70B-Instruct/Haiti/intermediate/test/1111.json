@@ -1,0 +1,188 @@
+{
+  "index": 1111,
+  "split": "test",
+  "original": {
+    "question": "There are currently 3 red balls, 11 blue balls, and 25 green balls in the store. Red balls cost $9, Blue balls cost $5 and green balls cost $3. How much will the store have received after all the balls are sold?",
+    "answer": "For the red balls, 3 balls * $9/ball = $<<3*9=27>>27.\nFor the blue balls, 11 balls * $5/ball = $<<11*5=55>>55.\nFor the green balls, 25 balls * $3/ball = $<<25*3=75>>75.\nFor all balls, $27 + $55 + $75 = $<<27+55+75=157>>157.\n#### 157"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "red_ball_cost",
+      "value": 9,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "blue_ball_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "green_ball_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "red_ball_revenue",
+      "value": 27,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "blue_ball_revenue",
+      "value": 55,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "green_ball_revenue",
+      "value": 75,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 157,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"red_ball_cost\", \"value\": 9, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"blue_ball_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"green_ball_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"red_ball_revenue\", \"value\": 27, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"blue_ball_revenue\", \"value\": 55, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"green_ball_revenue\", \"value\": 75, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_revenue\", \"value\": 157, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "red_ball_cost",
+        "original_value": 9,
+        "original_unit": "dollar",
+        "converted_value": 1177.29,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "blue_ball_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 654.05,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "green_ball_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 392.43,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "red_ball_revenue",
+        "original_value": 27,
+        "original_unit": "dollar",
+        "converted_value": 3531.87,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "blue_ball_revenue",
+        "original_value": 55,
+        "original_unit": "dollar",
+        "converted_value": 7194.55,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "green_ball_revenue",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 9810.75,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 157,
+        "original_unit": "dollar",
+        "converted_value": 20537.17,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "There are currently {number_of_red_balls} red balls, {number_of_blue_balls} blue balls, and {number_of_green_balls} green balls in the store. Red balls cost ${red_ball_cost}, Blue balls cost ${blue_ball_cost} and green balls cost ${green_ball_cost}. How much will the store have received after all the balls are sold?",
+    "templatized_answer": [
+      "For the red balls, {number_of_red_balls} balls * ${red_ball_cost}/ball = ${red_ball_revenue}.",
+      "For the blue balls, {number_of_blue_balls} balls * ${blue_ball_cost}/ball = ${blue_ball_revenue}.",
+      "For the green balls, {number_of_green_balls} balls * ${green_ball_cost}/ball = ${green_ball_revenue}.",
+      "For all balls, ${red_ball_revenue} + ${blue_ball_revenue} + ${green_ball_revenue} = ${total_revenue}.",
+      "#### {total_revenue}"
+    ],
+    "factual_assignment": {
+      "number_of_red_balls": 3,
+      "number_of_blue_balls": 11,
+      "number_of_green_balls": 25,
+      "red_ball_cost": 9,
+      "blue_ball_cost": 5,
+      "green_ball_cost": 3,
+      "red_ball_revenue": 27,
+      "blue_ball_revenue": 55,
+      "green_ball_revenue": 75,
+      "total_revenue": 157
+    }
+  },
+  "merged_assignment": {
+    "number_of_red_balls": 3,
+    "number_of_blue_balls": 11,
+    "number_of_green_balls": 25,
+    "red_ball_cost": 1177.29,
+    "blue_ball_cost": 654.05,
+    "green_ball_cost": 392.43,
+    "red_ball_revenue": 3531.87,
+    "blue_ball_revenue": 7194.55,
+    "green_ball_revenue": 9810.75,
+    "total_revenue": 20537.17
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"number_of_red_balls\": 3,\n        \"number_of_blue_balls\": 11,\n        \"number_of_green_balls\": 25,\n        \"red_ball_cost\": 1177.29,\n        \"blue_ball_cost\": 654.05,\n        \"green_ball_cost\": 392.43,\n    }\n\n    recomputed_values = {\n        \"number_of_red_balls\": factual_assignment[\"number_of_red_balls\"],\n        \"number_of_blue_balls\": factual_assignment[\"number_of_blue_balls\"],\n        \"number_of_green_balls\": factual_assignment[\"number_of_green_balls\"],\n        \"red_ball_cost\": factual_assignment[\"red_ball_cost\"],\n        \"blue_ball_cost\": factual_assignment[\"blue_ball_cost\"],\n        \"green_ball_cost\": factual_assignment[\"green_ball_cost\"],\n        \"red_ball_revenue\": round(factual_assignment[\"number_of_red_balls\"] * factual_assignment[\"red_ball_cost\"], 2),\n        \"blue_ball_revenue\": round(factual_assignment[\"number_of_blue_balls\"] * factual_assignment[\"blue_ball_cost\"], 2),\n        \"green_ball_revenue\": round(factual_assignment[\"number_of_green_balls\"] * factual_assignment[\"green_ball_cost\"], 2),\n        \"total_revenue\": round(\n            factual_assignment[\"number_of_red_balls\"] * factual_assignment[\"red_ball_cost\"]\n            + factual_assignment[\"number_of_blue_balls\"] * factual_assignment[\"blue_ball_cost\"]\n            + factual_assignment[\"number_of_green_balls\"] * factual_assignment[\"green_ball_cost\"],\n            2,\n        ),\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "number_of_red_balls": 3,
+      "number_of_blue_balls": 11,
+      "number_of_green_balls": 25,
+      "red_ball_cost": 1177.29,
+      "blue_ball_cost": 654.05,
+      "green_ball_cost": 392.43,
+      "red_ball_revenue": 3531.87,
+      "blue_ball_revenue": 7194.55,
+      "green_ball_revenue": 9810.75,
+      "total_revenue": 20537.17
+    }
+  },
+  "final": {
+    "question": "There are currently 3 red balls, 11 blue balls, and 25 green balls in the store. Red balls cost 1177.29 gourde, Blue balls cost 654.05 gourde and green balls cost 392.43 gourde. How much will the store have received after all the balls are sold?",
+    "answer_lines": [
+      "For the red balls, 3 balls * 1177.29 gourde/ball = 3531.87 gourde.",
+      "For the blue balls, 11 balls * 654.05 gourde/ball = 7194.55 gourde.",
+      "For the green balls, 25 balls * 392.43 gourde/ball = 9810.75 gourde.",
+      "For all balls, 3531.87 gourde + 7194.55 gourde + 9810.75 gourde = 20537.17 gourde.",
+      "#### 20537.17"
+    ],
+    "final_scalar": 20537.17,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "There are currently 3 red balls, 11 blue balls, and 25 green balls in the store. Red balls cost 1177.29 gourde, Blue balls cost 654.05 gourde and green balls cost 392.43 gourde. How much will the store have received after all the balls are sold?",
+    "adapted_answer": [
+      "For the red balls, 3 balls * 1177.29 gourde/ball = 3531.87 gourde.",
+      "For the blue balls, 11 balls * 654.05 gourde/ball = 7194.55 gourde.",
+      "For the green balls, 25 balls * 392.43 gourde/ball = 9810.75 gourde.",
+      "For all balls, 3531.87 gourde + 7194.55 gourde + 9810.75 gourde = 20537.17 gourde.",
+      "#### 20537.17"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

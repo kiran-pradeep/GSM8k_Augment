@@ -1,0 +1,174 @@
+{
+  "index": 685,
+  "split": "test",
+  "original": {
+    "question": "Catherine goes to the grocery store. She buys 1 kilo of apples for $4, 2 kilos of bananas for $2 per kilo, and 2 kilos of oranges for $3 per kilo. How many dollars does she pay in total?",
+    "answer": "1 kilo of apples costs $<<1*4=4>>4.\n2 kilos of bananas costs 2 * 2 = $<<2*2=4>>4.\n2 kilos of oranges costs 2 * 3 = $<<2*3=6>>6.\nShe pays 4 + 4 + 6= $<<4+4+6=14>>14 in total.\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Catherine",
+      "dollars",
+      "apples",
+      "bananas",
+      "oranges"
+    ],
+    "notes": "The name 'Catherine' and the use of 'dollars' are culturally specific to regions other than Pakistan. Although apples, bananas, and oranges are widely available, they are not typically associated with traditional Pakistani cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apple_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "banana_cost_per_kilo",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "orange_cost_per_kilo",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "apple_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "banana_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "orange_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 14,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apple_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"banana_cost_per_kilo\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"orange_cost_per_kilo\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"apple_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"banana_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"orange_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 14, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apple_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "banana_cost_per_kilo",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 563.7,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "orange_cost_per_kilo",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 845.55,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "apple_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "banana_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 1127.4,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "orange_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 1691.1,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 14,
+        "original_unit": "dollar",
+        "converted_value": 3945.9,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Catherine goes to the grocery store. She buys 1 kilo of apples for ${apple_cost}, 2 kilos of bananas for ${banana_cost_per_kilo} per kilo, and 2 kilos of oranges for ${orange_cost_per_kilo} per kilo. How many dollars does she pay in total?",
+    "templatized_answer": [
+      "1 kilo of apples costs ${apple_cost}.",
+      "2 kilos of bananas costs 2 * {banana_cost_per_kilo} = ${2*{banana_cost_per_kilo}}.",
+      "2 kilos of oranges costs 2 * {orange_cost_per_kilo} = ${2*{orange_cost_per_kilo}}.",
+      "She pays {apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}} = ${{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}}.",
+      "#### ${{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}}"
+    ],
+    "factual_assignment": {
+      "apple_cost": 4,
+      "banana_cost_per_kilo": 2,
+      "orange_cost_per_kilo": 3
+    }
+  },
+  "merged_assignment": {
+    "apple_cost": 1127.4,
+    "banana_cost_per_kilo": 563.7,
+    "orange_cost_per_kilo": 845.55
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apple_cost = 1127.4\n    banana_cost_per_kilo = 563.7\n    orange_cost_per_kilo = 845.55\n\n    banana_cost = 2 * banana_cost_per_kilo\n    orange_cost = 2 * orange_cost_per_kilo\n    total_cost = apple_cost + banana_cost + orange_cost\n\n    return {\n        \"apple_cost\": round(apple_cost, 2),\n        \"banana_cost_per_kilo\": round(banana_cost_per_kilo, 2),\n        \"orange_cost_per_kilo\": round(orange_cost_per_kilo, 2),\n        \"2*{banana_cost_per_kilo}\": round(banana_cost, 2),\n        \"2*{orange_cost_per_kilo}\": round(orange_cost, 2),\n        \"{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}\": round(total_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "apple_cost": 1127.4,
+      "banana_cost_per_kilo": 563.7,
+      "orange_cost_per_kilo": 845.55,
+      "2*{banana_cost_per_kilo}": 1127.4,
+      "2*{orange_cost_per_kilo}": 1691.1,
+      "{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}": 3945.9
+    }
+  },
+  "final": {
+    "question": "Catherine goes to the grocery store. She buys 1 kilo of apples for 1127.4 rupee, 2 kilos of bananas for 563.7 rupee per kilo, and 2 kilos of oranges for 845.55 rupee per kilo. How many rupees does she pay in total?",
+    "answer_lines": [
+      "1 kilo of apples costs 1127.4 rupee.",
+      "2 kilos of bananas costs 2 * 563.7 = 1127.4 rupee.",
+      "2 kilos of oranges costs 2 * 845.55 = 1691.1 rupee.",
+      "She pays 1127.4 + 1127.4 + 1691.1 = 3945.9 rupee.",
+      "#### 3945.9"
+    ],
+    "final_scalar": 3945.9,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha goes to the grocery store. She buys 1 kilo of guavas for 1127.4 rupee, 2 kilos of mangoes for 563.7 rupee per kilo, and 2 kilos of kinnows for 845.55 rupee per kilo. How many rupees does she pay in total?",
+    "adapted_answer": [
+      "1 kilo of guavas costs 1127.4 rupee.",
+      "2 kilos of mangoes costs 2 * 563.7 = 1127.4 rupee.",
+      "2 kilos of kinnows costs 2 * 845.55 = 1691.1 rupee.",
+      "She pays 1127.4 + 1127.4 + 1691.1 = 3945.9 rupee.",
+      "#### 3945.9"
+    ],
+    "adaptation_notes": "Replaced Catherine with Ayesha, apples with guavas, bananas with mangoes, and oranges with kinnows to give the text a Pakistani context."
+  }
+}

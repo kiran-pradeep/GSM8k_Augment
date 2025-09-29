@@ -1,0 +1,121 @@
+{
+  "index": 1313,
+  "split": "test",
+  "original": {
+    "question": "A fruit vendor bought 50 watermelons for $80. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer": "The fruit vendor's profit for the 50 watermelons was $80 x 25/100 = $<<80*25/100=20>>20.\nSo, he was able to sell them all for $80 + $20 = $<<80+20=100>>100.\nThus, the vendor sold each watermelon for $100/$50 = $<<100/50=2>>2 each.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "profit",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_selling_price",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "watermelon_selling_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"profit\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_selling_price\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"watermelon_selling_price\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 22548.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "profit",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 5637.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_selling_price",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 28185.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "watermelon_selling_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 563.7,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A fruit vendor bought 50 watermelons for ${initial_cost}. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "templatized_answer": [
+      "The fruit vendor's profit for the 50 watermelons was ${initial_cost} x 25/100 = ${initial_cost} * 25/100.",
+      "So, he was able to sell them all for ${initial_cost} + ${initial_cost} * 25/100.",
+      "Thus, the vendor sold each watermelon for (${initial_cost} + ${initial_cost} * 25/100)/50."
+    ],
+    "factual_assignment": {
+      "initial_cost": 80
+    }
+  },
+  "merged_assignment": {
+    "initial_cost": 22548.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cost = 22548.0\n    profit = initial_cost * 25 / 100\n    total_selling_price = initial_cost + profit\n    selling_price_per_watermelon = total_selling_price / 50\n\n    return {\n        \"initial_cost\": initial_cost,\n        \"initial_cost * 25/100\": round(profit, 2),\n        \"initial_cost + initial_cost * 25/100\": round(total_selling_price, 2),\n        \"(initial_cost + initial_cost * 25/100)/50\": round(selling_price_per_watermelon, 2)\n    }\n",
+    "results": {
+      "initial_cost": 22548.0,
+      "initial_cost * 25/100": 5637.0,
+      "initial_cost + initial_cost * 25/100": 28185.0,
+      "(initial_cost + initial_cost * 25/100)/50": 563.7
+    }
+  },
+  "final": {
+    "question": "A fruit vendor bought 50 watermelons for 22548.0. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer_lines": [
+      "The fruit vendor's profit for the 50 watermelons was 22548.0 x 25/100 = 22548.0 * 25/100 = 5637.0.",
+      "So, he was able to sell them all for 22548.0 + 5637.0 = 28185.0.",
+      "Thus, the vendor sold each watermelon for (22548.0 + 5637.0)/50 = 563.7.",
+      "#### 563.7"
+    ],
+    "final_scalar": 563.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A fruit vendor bought 50 watermelons for 22548.0 rupees. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "adapted_answer": [
+      "The fruit vendor's profit for the 50 watermelons was 22548.0 x 25/100 = 22548.0 * 25/100 = 5637.0.",
+      "So, he was able to sell them all for 22548.0 + 5637.0 = 28185.0.",
+      "Thus, the vendor sold each watermelon for (22548.0 + 5637.0)/50 = 563.7.",
+      "#### 563.7"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' to give the question a Pakistani context."
+  }
+}

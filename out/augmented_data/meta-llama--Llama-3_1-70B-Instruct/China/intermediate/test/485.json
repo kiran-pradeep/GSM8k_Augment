@@ -1,0 +1,109 @@
+{
+  "index": 485,
+  "split": "test",
+  "original": {
+    "question": "Jillian's handbag cost $20 less than 3 times as much as her shoes cost. If her shoes cost $80, how much did her bag cost?",
+    "answer": "First triple the cost of the shoes: $80 * 3 = $<<80*3=240>>240\nThen subtract $20 to find the cost of the handbag: $240 - $20 = $<<240-20=220>>220\n#### 220"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jillian",
+      "dollars"
+    ],
+    "notes": "The name 'Jillian' is a Western name and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shoes_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "handbag_cost",
+      "value": 220,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cost_difference",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shoes_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"handbag_cost\", \"value\": 220, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cost_difference\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shoes_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "handbag_cost",
+        "original_value": 220,
+        "original_unit": "dollar",
+        "converted_value": 1568.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "cost_difference",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jillian's handbag cost ${cost_difference} less than 3 times as much as her shoes cost. If her shoes cost ${shoes_cost}, how much did her bag cost?",
+    "templatized_answer": [
+      "First triple the cost of the shoes: ${shoes_cost} * 3 = ${3*shoes_cost}",
+      "Then subtract ${cost_difference} to find the cost of the handbag: ${3*shoes_cost} - ${cost_difference} = ${3*shoes_cost-cost_difference}",
+      "#### {3*shoes_cost-cost_difference}"
+    ],
+    "factual_assignment": {
+      "shoes_cost": 80,
+      "cost_difference": 20
+    }
+  },
+  "merged_assignment": {
+    "shoes_cost": 570.4,
+    "cost_difference": 142.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"shoes_cost\": 570.4,\n        \"cost_difference\": 142.6\n    }\n\n    recomputed_values = {\n        \"shoes_cost\": factual_assignment[\"shoes_cost\"],\n        \"cost_difference\": factual_assignment[\"cost_difference\"],\n        \"3*shoes_cost\": factual_assignment[\"shoes_cost\"] * 3,\n        \"3*shoes_cost-cost_difference\": factual_assignment[\"shoes_cost\"] * 3 - factual_assignment[\"cost_difference\"]\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "shoes_cost": 570.4,
+      "cost_difference": 142.6,
+      "3*shoes_cost": 1711.1999999999998,
+      "3*shoes_cost-cost_difference": 1568.6
+    }
+  },
+  "final": {
+    "question": "Jillian's handbag cost 142.6 renminbi less than 3 times as much as her shoes cost. If her shoes cost 570.4 renminbi, how much did her bag cost?",
+    "answer_lines": [
+      "First triple the cost of the shoes: 570.4 renminbi * 3 = 1711.2 renminbi",
+      "Then subtract 142.6 renminbi to find the cost of the handbag: 1711.2 renminbi - 142.6 renminbi = 1568.6 renminbi",
+      "#### 1568.6"
+    ],
+    "final_scalar": 1568.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ling's handbag cost 142.6 renminbi less than 3 times as much as her shoes cost. If her shoes cost 570.4 renminbi, how much did her bag cost?",
+    "adapted_answer": [
+      "First triple the cost of the shoes: 570.4 renminbi * 3 = 1711.2 renminbi",
+      "Then subtract 142.6 renminbi to find the cost of the handbag: 1711.2 renminbi - 142.6 renminbi = 1568.6 renminbi",
+      "#### 1568.6"
+    ],
+    "adaptation_notes": "Replaced 'Jillian' with 'Ling' to give the name a Chinese context."
+  }
+}

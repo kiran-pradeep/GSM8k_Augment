@@ -1,0 +1,173 @@
+{
+  "index": 1230,
+  "split": "test",
+  "original": {
+    "question": "Charlie is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is $80 per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Charlie has 4 1-hour lessons at his standard rate and 2 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in dollars?",
+    "answer": "4 1-hour lessons at his standard rate cost 4*$80=$<<4*80=320>>320.\nReducing the rate by 25% for veterans means he takes $80/4=$<<80/4=20>>20 off his standard fee.\nThus, for veterans, he charges the reduced rate of $80-$20=$<<80-20=60>>60 per hour,\nThus, 2 1-hour lessons with veterans cost 2*$60=$<<2*60=120>>120.\nAll together, Charlie will make $320+$120=$<<320+120=440>>440 for the day.\n#### 440"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Charlie",
+      "dollars"
+    ],
+    "notes": "The name 'Charlie' and the unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "standard_fee",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "veteran_discount",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "reduced_rate",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "standard_lessons_earnings",
+      "value": 320,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "veteran_lessons_earnings",
+      "value": 120,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 440,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"standard_fee\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"veteran_discount\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"reduced_rate\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"standard_lessons_earnings\", \"value\": 320, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"veteran_lessons_earnings\", \"value\": 120, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 440, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "standard_fee",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 570.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "veteran_discount",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "reduced_rate",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "standard_lessons_earnings",
+        "original_value": 320,
+        "original_unit": "dollar",
+        "converted_value": 2281.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "veteran_lessons_earnings",
+        "original_value": 120,
+        "original_unit": "dollar",
+        "converted_value": 855.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 440,
+        "original_unit": "dollar",
+        "converted_value": 3137.2,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Charlie is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is ${standard_fee} per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Charlie has {standard_lessons} 1-hour lessons at his standard rate and {veteran_lessons} 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in dollars?",
+    "templatized_answer": [
+      "{standard_lessons} 1-hour lessons at his standard rate cost {standard_lessons}*${standard_fee}=${standard_lessons_earnings}.",
+      "Reducing the rate by 25% for veterans means he takes ${standard_fee}/4=${veteran_discount} off his standard fee.",
+      "Thus, for veterans, he charges the reduced rate of ${standard_fee}-${veteran_discount}=${reduced_rate} per hour,",
+      "Thus, {veteran_lessons} 1-hour lessons with veterans cost {veteran_lessons}*${reduced_rate}=${veteran_lessons_earnings}.",
+      "All together, Charlie will make ${standard_lessons_earnings}+${veteran_lessons_earnings}=${total_earnings} for the day.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "standard_fee": 80,
+      "standard_lessons": 4,
+      "veteran_lessons": 2,
+      "veteran_discount": 20,
+      "reduced_rate": 60,
+      "standard_lessons_earnings": 320,
+      "veteran_lessons_earnings": 120,
+      "total_earnings": 440
+    }
+  },
+  "merged_assignment": {
+    "standard_fee": 570.4,
+    "standard_lessons": 4,
+    "veteran_lessons": 2,
+    "veteran_discount": 142.6,
+    "reduced_rate": 427.8,
+    "standard_lessons_earnings": 2281.6,
+    "veteran_lessons_earnings": 855.6,
+    "total_earnings": 3137.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    standard_fee = 570.4\n    standard_lessons = 4\n    veteran_lessons = 2\n\n    standard_lessons_earnings = round(standard_fee * standard_lessons, 2)\n    veteran_discount = round(standard_fee / 4, 2)\n    reduced_rate = round(standard_fee - veteran_discount, 2)\n    veteran_lessons_earnings = round(veteran_lessons * reduced_rate, 2)\n    total_earnings = round(standard_lessons_earnings + veteran_lessons_earnings, 2)\n\n    return {\n        \"standard_fee\": standard_fee,\n        \"standard_lessons\": standard_lessons,\n        \"veteran_lessons\": veteran_lessons,\n        \"veteran_discount\": veteran_discount,\n        \"reduced_rate\": reduced_rate,\n        \"standard_lessons_earnings\": standard_lessons_earnings,\n        \"veteran_lessons_earnings\": veteran_lessons_earnings,\n        \"total_earnings\": total_earnings\n    }\n",
+    "results": {
+      "standard_fee": 570.4,
+      "standard_lessons": 4,
+      "veteran_lessons": 2,
+      "veteran_discount": 142.6,
+      "reduced_rate": 427.8,
+      "standard_lessons_earnings": 2281.6,
+      "veteran_lessons_earnings": 855.6,
+      "total_earnings": 3137.2
+    }
+  },
+  "final": {
+    "question": "Charlie is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is 570.4 renminbi per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Charlie has 4 1-hour lessons at his standard rate and 2 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in renminbi?",
+    "answer_lines": [
+      "4 1-hour lessons at his standard rate cost 4*570.4=2281.6.",
+      "Reducing the rate by 25% for veterans means he takes 570.4/4=142.6 off his standard fee.",
+      "Thus, for veterans, he charges the reduced rate of 570.4-142.6=427.8 per hour,",
+      "Thus, 2 1-hour lessons with veterans cost 2*427.8=855.6.",
+      "All together, Charlie will make 2281.6+855.6=3137.2 for the day.",
+      "#### 3137.2"
+    ],
+    "final_scalar": 3137.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang Wei is a tennis pro.  He spends most of the day teaching others lessons on how to improve their game.  His standard fee is 570.4 renminbi per hour for lessons, but he reduces his rate by 25% when he is giving lessons to a veteran.   If today Wang Wei has 4 1-hour lessons at his standard rate and 2 1-hour lessons with a veteran, what is the total amount of money he will make for the day, in renminbi?",
+    "adapted_answer": [
+      "4 1-hour lessons at his standard rate cost 4*570.4=2281.6.",
+      "Reducing the rate by 25% for veterans means he takes 570.4/4=142.6 off his standard fee.",
+      "Thus, for veterans, he charges the reduced rate of 570.4-142.6=427.8 per hour,",
+      "Thus, 2 1-hour lessons with veterans cost 2*427.8=855.6.",
+      "All together, Wang Wei will make 2281.6+855.6=3137.2 for the day.",
+      "#### 3137.2"
+    ],
+    "adaptation_notes": "Replaced 'Charlie' with 'Wang Wei' to give the name a Chinese context."
+  }
+}

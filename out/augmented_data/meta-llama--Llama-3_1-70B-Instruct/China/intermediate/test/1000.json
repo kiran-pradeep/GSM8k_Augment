@@ -1,0 +1,94 @@
+{
+  "index": 1000,
+  "split": "test",
+  "original": {
+    "question": "Doctor Jones is scheduling his time for Monday. He is spending nine hours at the clinic where he works that day. He has to do rounds to check on inpatients staying at the clinic, which takes twenty minutes per inpatient, and he has ten appointments, which take thirty minutes each. How many hours will Doctor Jones have left to update his records if he has 9 inpatients at the clinic?",
+    "answer": "Doctor Jones has 9 inpatients, so his rounds will take 9 * 20 = <<9*20=180>>180 minutes.\nHe has ten appointments, which will take 10 * 30 = <<10*30=300>>300 minutes.\nThe rounds and appointments will take 180 + 300 = <<180+300=480>>480 minutes total.\nAn hour is 60 minutes, so rounds and appointments will take 480 / 60 = <<480/60=8>>8 hours.\nDoctor Jones will have 9 - 8 = <<9-8=1>>1 hour left to update his records.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Doctor Jones"
+    ],
+    "notes": "The name 'Doctor Jones' is culturally specific to Western regions."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 7.13, 'unit': 'renminbi'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit]['factor'], 2)\n            converted_unit = conversions[unit]['unit']\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "Doctor Jones is scheduling his time for Monday. He is spending {hours_at_clinic} hours at the clinic where he works that day. He has to do rounds to check on {number_of_inpatients} inpatients staying at the clinic, which takes {minutes_per_inpatient} minutes per inpatient, and he has {number_of_appointments} appointments, which take {minutes_per_appointment} minutes each. How many hours will Doctor Jones have left to update his records if he has {number_of_inpatients} inpatients at the clinic?",
+    "templatized_answer": [
+      "Doctor Jones has {number_of_inpatients} inpatients, so his rounds will take {number_of_inpatients} * {minutes_per_inpatient} = {number_of_inpatients} * {minutes_per_inpatient} minutes.",
+      "He has {number_of_appointments} appointments, which will take {number_of_appointments} * {minutes_per_appointment} = {number_of_appointments} * {minutes_per_appointment} minutes.",
+      "The rounds and appointments will take {number_of_inpatients} * {minutes_per_inpatient} + {number_of_appointments} * {minutes_per_appointment} = {number_of_inpatients} * {minutes_per_inpatient} + {number_of_appointments} * {minutes_per_appointment} minutes total.",
+      "An hour is {minutes_in_an_hour} minutes, so rounds and appointments will take ({number_of_inpatients} * {minutes_per_inpatient} + {number_of_appointments} * {minutes_per_appointment}) / {minutes_in_an_hour} = ({number_of_inpatients} * {minutes_per_inpatient} + {number_of_appointments} * {minutes_per_appointment}) / {minutes_in_an_hour} hours.",
+      "Doctor Jones will have {hours_at_clinic} - ({number_of_inpatients} * {minutes_per_inpatient} + {number_of_appointments} * {minutes_per_appointment}) / {minutes_in_an_hour} = {hours_at_clinic} - ({number_of_inpatients} * {minutes_per_inpatient} + {number_of_appointments} * {minutes_per_appointment}) / {minutes_in_an_hour} hours left to update his records.",
+      "#### {hours_left}"
+    ],
+    "factual_assignment": {
+      "hours_at_clinic": 9,
+      "number_of_inpatients": 9,
+      "minutes_per_inpatient": 20,
+      "number_of_appointments": 10,
+      "minutes_per_appointment": 30,
+      "minutes_in_an_hour": 60,
+      "hours_left": 1
+    }
+  },
+  "merged_assignment": {
+    "hours_at_clinic": 9,
+    "number_of_inpatients": 9,
+    "minutes_per_inpatient": 20,
+    "number_of_appointments": 10,
+    "minutes_per_appointment": 30,
+    "minutes_in_an_hour": 60,
+    "hours_left": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hours_at_clinic = 9\n    number_of_inpatients = 9\n    minutes_per_inpatient = 20\n    number_of_appointments = 10\n    minutes_per_appointment = 30\n    minutes_in_an_hour = 60\n\n    minutes_for_inpatients = number_of_inpatients * minutes_per_inpatient\n    minutes_for_appointments = number_of_appointments * minutes_per_appointment\n    total_minutes = minutes_for_inpatients + minutes_for_appointments\n    total_hours = total_minutes / minutes_in_an_hour\n    hours_left = round(hours_at_clinic - total_hours, 2)\n\n    return {\n        \"hours_at_clinic\": hours_at_clinic,\n        \"number_of_inpatients\": number_of_inpatients,\n        \"minutes_per_inpatient\": minutes_per_inpatient,\n        \"number_of_appointments\": number_of_appointments,\n        \"minutes_per_appointment\": minutes_per_appointment,\n        \"minutes_in_an_hour\": minutes_in_an_hour,\n        \"hours_left\": hours_left,\n        \"number_of_inpatients * minutes_per_inpatient\": minutes_for_inpatients,\n        \"number_of_appointments * minutes_per_appointment\": minutes_for_appointments,\n        \"number_of_inpatients * minutes_per_inpatient + number_of_appointments * minutes_per_appointment\": total_minutes,\n        \"(number_of_inpatients * minutes_per_inpatient + number_of_appointments * minutes_per_appointment) / minutes_in_an_hour\": total_hours,\n        \"hours_at_clinic - (number_of_inpatients * minutes_per_inpatient + number_of_appointments * minutes_per_appointment) / minutes_in_an_hour\": hours_left\n    }\n",
+    "results": {
+      "hours_at_clinic": 9,
+      "number_of_inpatients": 9,
+      "minutes_per_inpatient": 20,
+      "number_of_appointments": 10,
+      "minutes_per_appointment": 30,
+      "minutes_in_an_hour": 60,
+      "hours_left": 1.0,
+      "number_of_inpatients * minutes_per_inpatient": 180,
+      "number_of_appointments * minutes_per_appointment": 300,
+      "number_of_inpatients * minutes_per_inpatient + number_of_appointments * minutes_per_appointment": 480,
+      "(number_of_inpatients * minutes_per_inpatient + number_of_appointments * minutes_per_appointment) / minutes_in_an_hour": 8.0,
+      "hours_at_clinic - (number_of_inpatients * minutes_per_inpatient + number_of_appointments * minutes_per_appointment) / minutes_in_an_hour": 1.0
+    }
+  },
+  "final": {
+    "question": "Doctor Jones is scheduling his time for Monday. He is spending 9 hours at the clinic where he works that day. He has to do rounds to check on 9 inpatients staying at the clinic, which takes 20 minutes per inpatient, and he has 10 appointments, which take 30 minutes each. How many hours will Doctor Jones have left to update his records if he has 9 inpatients at the clinic?",
+    "answer_lines": [
+      "Doctor Jones has 9 inpatients, so his rounds will take 9 * 20 = 180 minutes.",
+      "He has 10 appointments, which will take 10 * 30 = 300 minutes.",
+      "The rounds and appointments will take 180 + 300 = 480 minutes total.",
+      "An hour is 60 minutes, so rounds and appointments will take 480 / 60 = 8 hours.",
+      "Doctor Jones will have 9 - 8 = 1 hour left to update his records.",
+      "#### 1.0"
+    ],
+    "final_scalar": 1.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Doctor Li is scheduling his time for Monday. He is spending 9 hours at the clinic where he works that day. He has to do rounds to check on 9 inpatients staying at the clinic, which takes 20 minutes per inpatient, and he has 10 appointments, which take 30 minutes each. How many hours will Doctor Li have left to update his records if he has 9 inpatients at the clinic?",
+    "adapted_answer": [
+      "Doctor Li has 9 inpatients, so his rounds will take 9 * 20 = 180 minutes.",
+      "He has 10 appointments, which will take 10 * 30 = 300 minutes.",
+      "The rounds and appointments will take 180 + 300 = 480 minutes total.",
+      "An hour is 60 minutes, so rounds and appointments will take 480 / 60 = 8 hours.",
+      "Doctor Li will have 9 - 8 = 1 hour left to update his records.",
+      "#### 1.0"
+    ],
+    "adaptation_notes": "Replaced 'Doctor Jones' with 'Doctor Li' to give the name a Chinese context."
+  }
+}

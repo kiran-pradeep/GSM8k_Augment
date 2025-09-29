@@ -1,0 +1,155 @@
+{
+  "index": 689,
+  "split": "test",
+  "original": {
+    "question": "Manolo bought five lollipops and four candies that cost $3.20. If each lollipop costs $0.40, how much will 10 lollipops and 10 candies cost him?",
+    "answer": "Five lollipops cost $0.4 x 5 = $<<0.4*5=2>>2.\nSo four candies cost $3.20 - $2 = $1.20.\nThus, each candy costs $1.20/4 = $<<1.20/4=0.30>>0.30.\nTen lollipops cost $0.4 x 10 = $<<0.4*10=4>>4.\nTen candies cost $0.30 x 10 = $<<0.30*10=3>>3.\nHence, 10 lollipops and 10 candies will cost $4 + $3 = $7.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "lollipops",
+      "Manolo"
+    ],
+    "notes": "The text contains the name 'Manolo', which is of Spanish origin, 'dollars' as a unit of currency, and 'lollipops', a type of candy not specific to Haitian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 3.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollipop_cost",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_cost",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 3.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollipop_cost\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_cost\", \"value\": 0.3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 3.2,
+        "original_unit": "dollar",
+        "converted_value": 418.59,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "lollipop_cost",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 52.32,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "candy_cost",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 39.24,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 915.67,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Manolo bought {initial_lollipops} lollipops and {initial_candies} candies that cost ${initial_cost}. If each lollipop costs ${lollipop_cost}, how much will {total_lollipops} lollipops and {total_candies} candies cost him?",
+    "templatized_answer": [
+      "{initial_lollipops} lollipops cost ${lollipop_cost} x {initial_lollipops} = ${lollipop_cost * initial_lollipops}.",
+      "So {initial_candies} candies cost ${initial_cost} - ${lollipop_cost * initial_lollipops} = ${initial_cost - lollipop_cost * initial_lollipops}.",
+      "Thus, each candy costs ${initial_cost - lollipop_cost * initial_lollipops}/{initial_candies} = ${candy_cost}.",
+      "{total_lollipops} lollipops cost ${lollipop_cost} x {total_lollipops} = ${lollipop_cost * total_lollipops}.",
+      "{total_candies} candies cost ${candy_cost} x {total_candies} = ${candy_cost * total_candies}.",
+      "Hence, {total_lollipops} lollipops and {total_candies} candies will cost ${lollipop_cost * total_lollipops} + ${candy_cost * total_candies} = ${lollipop_cost * total_lollipops + candy_cost * total_candies}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "initial_lollipops": 5,
+      "initial_candies": 4,
+      "initial_cost": 3.2,
+      "lollipop_cost": 0.4,
+      "candy_cost": 0.3,
+      "total_lollipops": 10,
+      "total_candies": 10,
+      "total_cost": 7
+    }
+  },
+  "merged_assignment": {
+    "initial_lollipops": 5,
+    "initial_candies": 4,
+    "initial_cost": 418.59,
+    "lollipop_cost": 52.32,
+    "candy_cost": 39.24,
+    "total_lollipops": 10,
+    "total_candies": 10,
+    "total_cost": 915.67
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_lollipops = 5\n    initial_candies = 4\n    initial_cost = 418.59\n    lollipop_cost = 52.32\n    total_lollipops = 10\n    total_candies = 10\n\n    lollipop_total_cost = round(lollipop_cost * initial_lollipops, 2)\n    candy_total_cost = round(initial_cost - lollipop_total_cost, 2)\n    candy_cost = round(candy_total_cost / initial_candies, 2)\n    total_lollipops_cost = round(lollipop_cost * total_lollipops, 2)\n    total_candies_cost = round(candy_cost * total_candies, 2)\n    total_cost = round(total_lollipops_cost + total_candies_cost, 2)\n\n    return {\n        \"initial_lollipops\": initial_lollipops,\n        \"initial_candies\": initial_candies,\n        \"initial_cost\": initial_cost,\n        \"lollipop_cost\": lollipop_cost,\n        \"candy_cost\": candy_cost,\n        \"total_lollipops\": total_lollipops,\n        \"total_candies\": total_candies,\n        \"total_cost\": total_cost,\n        \"lollipop_total_cost\": lollipop_total_cost,\n        \"candy_total_cost\": candy_total_cost,\n        \"total_lollipops_cost\": total_lollipops_cost,\n        \"total_candies_cost\": total_candies_cost\n    }\n",
+    "results": {
+      "initial_lollipops": 5,
+      "initial_candies": 4,
+      "initial_cost": 418.59,
+      "lollipop_cost": 52.32,
+      "candy_cost": 39.25,
+      "total_lollipops": 10,
+      "total_candies": 10,
+      "total_cost": 915.7,
+      "lollipop_total_cost": 261.6,
+      "candy_total_cost": 156.99,
+      "total_lollipops_cost": 523.2,
+      "total_candies_cost": 392.5
+    }
+  },
+  "final": {
+    "question": "Manolo bought 5 lollipops and 4 candies that cost 418.59 gourde. If each lollipop costs 52.32 gourde, how much will 10 lollipops and 10 candies cost him?",
+    "answer_lines": [
+      "5 lollipops cost 52.32 gourde x 5 = 261.6 gourde.",
+      "So 4 candies cost 418.59 gourde - 261.6 gourde = 156.99 gourde.",
+      "Thus, each candy costs 156.99 gourde/4 = 39.25 gourde.",
+      "10 lollipops cost 52.32 gourde x 10 = 523.2 gourde.",
+      "10 candies cost 39.25 gourde x 10 = 392.5 gourde.",
+      "Hence, 10 lollipops and 10 candies will cost 523.2 gourde + 392.5 gourde = 915.7 gourde.",
+      "#### 915.7"
+    ],
+    "final_scalar": 915.7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Makenson bought 5 dous and 4 tablet that cost 418.59 gourde. If each dous costs 52.32 gourde, how much will 10 dous and 10 tablet cost him?",
+    "adapted_answer": [
+      "5 dous cost 52.32 gourde x 5 = 261.6 gourde.",
+      "So 4 tablet cost 418.59 gourde - 261.6 gourde = 156.99 gourde.",
+      "Thus, each tablet costs 156.99 gourde/4 = 39.25 gourde.",
+      "10 dous cost 52.32 gourde x 10 = 523.2 gourde.",
+      "10 tablet cost 39.25 gourde x 10 = 392.5 gourde.",
+      "Hence, 10 dous and 10 tablet will cost 523.2 gourde + 392.5 gourde = 915.7 gourde.",
+      "#### 915.7"
+    ],
+    "adaptation_notes": "Replaced 'Manolo' with 'Makenson', 'lollipops' with 'dous', and 'candies' with 'tablet' to give the text a Haitian context."
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "index": 598,
+  "split": "test",
+  "original": {
+    "question": "Colby wants to buy some gumballs that cost a nickel each. If he has 8 quarters, 6 dimes, 14 nickels, and 15 pennies, how many can he buy?",
+    "answer": "He has $2 in quarters because 8 times .25 equals <<8*.25=2>>2.\nHe has $.6 in dimes because 6 times .1 equals <<6*.1=.6>>.6\nHe has $.7 in nickels because 14 times .05 equals .7\nHe has $.15 in pennies because 15 times .01 equals <<15*.01=.15>>.15\nHe has $3.65 because 2 plus .6 plus .7 plus .15 equals $<<2+.6+.7+.15=3.45>>3.45\nHe can buy 69 gum balls because 3.65 divided by .05 equals 69\n#### 69"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Colby",
+      "quarters",
+      "dimes",
+      "nickels",
+      "pennies",
+      "dollars",
+      "gumballs"
+    ],
+    "notes": "The text contains culturally specific entities such as US currency units and a Western name."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "dime_value",
+      "value": 0.6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "nickel_value",
+      "value": 0.7,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "penny_value",
+      "value": 0.15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_money",
+      "value": 3.45,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gumball_cost",
+      "value": 0.05,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gumball_cost",
+      "value": 0.05,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * list(conversions[original_unit].values())[0], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"quarter_value\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"dime_value\", \"value\": 0.6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"nickel_value\", \"value\": 0.7, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"penny_value\", \"value\": 0.15, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_money\", \"value\": 3.45, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gumball_cost\", \"value\": 0.05, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gumball_cost\", \"value\": 0.05, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "dime_value",
+        "original_value": 0.6,
+        "original_unit": "dollar",
+        "converted_value": 4.28,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "nickel_value",
+        "original_value": 0.7,
+        "original_unit": "dollar",
+        "converted_value": 4.99,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "penny_value",
+        "original_value": 0.15,
+        "original_unit": "dollar",
+        "converted_value": 1.07,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 3.45,
+        "original_unit": "dollar",
+        "converted_value": 24.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "gumball_cost",
+        "original_value": 0.05,
+        "original_unit": "dollar",
+        "converted_value": 0.36,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "gumball_cost",
+        "original_value": 0.05,
+        "original_unit": "dollar",
+        "converted_value": 0.36,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Colby wants to buy some gumballs that cost a nickel each. If he has {quarters} quarters, {dimes} dimes, {nickels} nickels, and {pennies} pennies, how many can he buy?",
+    "templatized_answer": [
+      "He has ${quarter_value} in quarters because {quarters} times {quarter_value_per_coin} equals {quarter_value}.",
+      "He has ${dime_value} in dimes because {dimes} times {dime_value_per_coin} equals {dime_value}.",
+      "He has ${nickel_value} in nickels because {nickels} times {gumball_cost} equals {nickel_value}.",
+      "He has ${penny_value} in pennies because {pennies} times {penny_value_per_coin} equals {penny_value}.",
+      "He has ${total_money} because {quarter_value} plus {dime_value} plus {nickel_value} plus {penny_value} equals ${total_money}.",
+      "He can buy {gumballs} gum balls because {total_money} divided by {gumball_cost} equals {gumballs}"
+    ],
+    "factual_assignment": {
+      "quarters": 8,
+      "dimes": 6,
+      "nickels": 14,
+      "pennies": 15,
+      "quarter_value": 2,
+      "quarter_value_per_coin": 0.25,
+      "dime_value": 0.6,
+      "dime_value_per_coin": 0.1,
+      "nickel_value": 0.7,
+      "gumball_cost": 0.05,
+      "penny_value": 0.15,
+      "penny_value_per_coin": 0.01,
+      "total_money": 3.45,
+      "gumballs": 69
+    }
+  },
+  "merged_assignment": {
+    "quarters": 8,
+    "dimes": 6,
+    "nickels": 14,
+    "pennies": 15,
+    "quarter_value": 14.26,
+    "quarter_value_per_coin": 0.25,
+    "dime_value": 4.28,
+    "dime_value_per_coin": 0.1,
+    "nickel_value": 4.99,
+    "gumball_cost": 0.36,
+    "penny_value": 1.07,
+    "penny_value_per_coin": 0.01,
+    "total_money": 24.6,
+    "gumballs": 69
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Define the given values\n    quarters = 8\n    dimes = 6\n    nickels = 14\n    pennies = 15\n    gumball_cost = 0.36  # in yuan, equivalent to 0.05 USD or 5 cents\n\n    # Recompute the values\n    quarter_value_per_coin = 0.25 * 7.16  # convert USD to CNY\n    quarter_value = quarters * quarter_value_per_coin\n    dime_value_per_coin = 0.1 * 7.16  # convert USD to CNY\n    dime_value = dimes * dime_value_per_coin\n    nickel_value = nickels * gumball_cost\n    penny_value_per_coin = 0.01 * 7.16  # convert USD to CNY\n    penny_value = pennies * penny_value_per_coin\n    total_money = quarter_value + dime_value + nickel_value + penny_value\n    gumballs = total_money / gumball_cost\n\n    # Round to 2 decimal places where appropriate\n    quarter_value = round(quarter_value, 2)\n    dime_value = round(dime_value, 2)\n    nickel_value = round(nickel_value, 2)\n    penny_value = round(penny_value, 2)\n    total_money = round(total_money, 2)\n    gumballs = round(gumballs)\n\n    # Return the recomputed values\n    return {\n        \"quarters\": quarters,\n        \"dimes\": dimes,\n        \"nickels\": nickels,\n        \"pennies\": pennies,\n        \"quarter_value\": quarter_value,\n        \"quarter_value_per_coin\": quarter_value_per_coin,\n        \"dime_value\": dime_value,\n        \"dime_value_per_coin\": dime_value_per_coin,\n        \"nickel_value\": nickel_value,\n        \"gumball_cost\": gumball_cost,\n        \"penny_value\": penny_value,\n        \"penny_value_per_coin\": penny_value_per_coin,\n        \"total_money\": total_money,\n        \"gumballs\": gumballs\n    }\n\nprint(recompute())\n",
+    "results": {
+      "quarters": 8,
+      "dimes": 6,
+      "nickels": 14,
+      "pennies": 15,
+      "quarter_value": 14.32,
+      "quarter_value_per_coin": 1.79,
+      "dime_value": 4.3,
+      "dime_value_per_coin": 0.7160000000000001,
+      "nickel_value": 5.04,
+      "gumball_cost": 0.36,
+      "penny_value": 1.07,
+      "penny_value_per_coin": 0.0716,
+      "total_money": 24.73,
+      "gumballs": 69
+    }
+  },
+  "final": {
+    "question": "Colby wants to buy some gumballs that cost 0.36 renminbi each. If he has 8 quarters, 6 dimes, 14 nickels, and 15 pennies, how many can he buy?",
+    "answer_lines": [
+      "He has 14.32 renminbi in quarters because 8 times 1.79 equals 14.32.",
+      "He has 4.3 renminbi in dimes because 6 times 0.716 equals 4.3.",
+      "He has 5.04 renminbi in nickels because 14 times 0.36 equals 5.04.",
+      "He has 1.07 renminbi in pennies because 15 times 0.0716 equals 1.07.",
+      "He has 24.73 renminbi because 14.32 plus 4.3 plus 5.04 plus 1.07 equals 24.73.",
+      "He can buy 68.972 renminbi gum balls because 24.73 divided by 0.36 equals 68.72",
+      "#### 69"
+    ],
+    "final_scalar": 69,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang wants to buy some gumballs that cost 0.36 renminbi each. If he has 8 jiao, 6 fen, 14 wu jiao, and 15 fen, how many can he buy?",
+    "adapted_answer": [
+      "He has 14.32 renminbi in jiao because 8 times 1.79 equals 14.32.",
+      "He has 4.3 renminbi in fen because 6 times 0.716 equals 4.3.",
+      "He has 5.04 renminbi in wu jiao because 14 times 0.36 equals 5.04.",
+      "He has 1.07 renminbi in fen because 15 times 0.0716 equals 1.07.",
+      "He has 24.73 renminbi because 14.32 plus 4.3 plus 5.04 plus 1.07 equals 24.73.",
+      "He can buy 68.972 renminbi gum balls because 24.73 divided by 0.36 equals 68.72",
+      "#### 69"
+    ],
+    "adaptation_notes": "Replaced Colby with Wang, quarters with jiao, dimes with fen, nickels with wu jiao, and pennies with fen to adapt the text to a Chinese context."
+  }
+}

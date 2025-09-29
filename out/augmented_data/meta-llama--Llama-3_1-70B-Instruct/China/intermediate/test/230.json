@@ -1,0 +1,165 @@
+{
+  "index": 230,
+  "split": "test",
+  "original": {
+    "question": "Mark buys a fleet of 12 cars for his company.  Each car sells for $20,000.  He pays 10% tax on the cars and then another $1000 for registration on each of them.  How much does he pay for everything?",
+    "answer": "The cars cost 20000*12=$<<20000*12=240000>>240,000\nSo the tax came out to 240,000*.1=$<<240000*.1=24000>>24,000\nSo the cars cost 240,000+24,000=$<<240000+24000=264000>>264,000\nRegistration cost another 12*1000=<<12*1000=12000>>12,000\nSo his total cost is 264,000+12,000=$<<264000+12000=276000>>276,000\n#### 276,000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "car_price",
+      "value": 20000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tax_amount",
+      "value": 24000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "car_total_cost",
+      "value": 264000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "registration_cost",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_registration_cost",
+      "value": 12000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 276000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * conversions[unit][converted_unit]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"car_price\",\n    \"value\": 20000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"tax_amount\",\n    \"value\": 24000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"car_total_cost\",\n    \"value\": 264000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"registration_cost\",\n    \"value\": 1000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_registration_cost\",\n    \"value\": 12000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_cost\",\n    \"value\": 276000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "car_price",
+        "original_value": 20000.0,
+        "original_unit": "dollar",
+        "converted_value": 142600.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "tax_amount",
+        "original_value": 24000.0,
+        "original_unit": "dollar",
+        "converted_value": 171120.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "car_total_cost",
+        "original_value": 264000.0,
+        "original_unit": "dollar",
+        "converted_value": 1882320.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "registration_cost",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 7130.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_registration_cost",
+        "original_value": 12000.0,
+        "original_unit": "dollar",
+        "converted_value": 85560.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 276000.0,
+        "original_unit": "dollar",
+        "converted_value": 1967880.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark buys a fleet of {number_of_cars} cars for his company.  Each car sells for ${car_price}.  He pays {tax_percentage}% tax on the cars and then another ${registration_cost} for registration on each of them.  How much does he pay for everything?",
+    "templatized_answer": [
+      "The cars cost {car_price}*{number_of_cars}=${car_price}*{number_of_cars}",
+      "So the tax came out to {car_price}*{number_of_cars}*{tax_percentage}=${car_price}*{number_of_cars}*{tax_percentage}",
+      "So the cars cost {car_price}*{number_of_cars}+{car_price}*{number_of_cars}*{tax_percentage}={car_price}*{number_of_cars}+{car_price}*{number_of_cars}*{tax_percentage}",
+      "Registration cost another {number_of_cars}*{registration_cost}={number_of_cars}*{registration_cost}",
+      "So his total cost is {car_price}*{number_of_cars}+{car_price}*{number_of_cars}*{tax_percentage}+{number_of_cars}*{registration_cost}={car_price}*{number_of_cars}+{car_price}*{number_of_cars}*{tax_percentage}+{number_of_cars}*{registration_cost}",
+      "#### {car_price}*{number_of_cars}+{car_price}*{number_of_cars}*{tax_percentage}+{number_of_cars}*{registration_cost}"
+    ],
+    "factual_assignment": {
+      "car_price": 20000.0,
+      "number_of_cars": 12,
+      "tax_percentage": 0.1,
+      "registration_cost": 1000.0
+    }
+  },
+  "merged_assignment": {
+    "car_price": 142600.0,
+    "number_of_cars": 12,
+    "tax_percentage": 0.1,
+    "registration_cost": 7130.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    car_price = 142600.0\n    number_of_cars = 12\n    tax_percentage = 0.1\n    registration_cost = 7130.0\n\n    car_price_times_number_of_cars = car_price * number_of_cars\n    tax_cost = car_price * number_of_cars * tax_percentage\n    car_price_plus_tax = car_price_times_number_of_cars + tax_cost\n    registration_total = number_of_cars * registration_cost\n    total_cost = car_price_plus_tax + registration_total\n\n    return {\n        \"car_price\": car_price,\n        \"number_of_cars\": number_of_cars,\n        \"tax_percentage\": tax_percentage,\n        \"registration_cost\": registration_cost,\n        \"car_price*number_of_cars\": round(car_price_times_number_of_cars, 2),\n        \"car_price*number_of_cars*tax_percentage\": round(tax_cost, 2),\n        \"car_price*number_of_cars+car_price*number_of_cars*tax_percentage\": round(car_price_plus_tax, 2),\n        \"number_of_cars*registration_cost\": round(registration_total, 2),\n        \"car_price*number_of_cars+car_price*number_of_cars*tax_percentage+number_of_cars*registration_cost\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "car_price": 142600.0,
+      "number_of_cars": 12,
+      "tax_percentage": 0.1,
+      "registration_cost": 7130.0,
+      "car_price*number_of_cars": 1711200.0,
+      "car_price*number_of_cars*tax_percentage": 171120.0,
+      "car_price*number_of_cars+car_price*number_of_cars*tax_percentage": 1882320.0,
+      "number_of_cars*registration_cost": 85560.0,
+      "car_price*number_of_cars+car_price*number_of_cars*tax_percentage+number_of_cars*registration_cost": 1967880.0
+    }
+  },
+  "final": {
+    "question": "Mark buys a fleet of 12 cars for his company.  Each car sells for 142600 renminbi.  He pays 0.1% tax on the cars and then another 7130 renminbi for registration on each of them.  How much does he pay for everything?",
+    "answer_lines": [
+      "The cars cost 142600*12=1711200 renminbi",
+      "So the tax came out to 1711200*0.1=171120 renminbi",
+      "So the cars cost 1711200+171120=1882320 renminbi",
+      "Registration cost another 12*7130=85560 renminbi",
+      "So his total cost is 1882320+85560=1967880 renminbi",
+      "#### 1967880"
+    ],
+    "final_scalar": 1967880,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mark buys a fleet of 12 cars for his company.  Each car sells for 142600 renminbi.  He pays 0.1% tax on the cars and then another 7130 renminbi for registration on each of them.  How much does he pay for everything?",
+    "adapted_answer": [
+      "The cars cost 142600*12=1711200 renminbi",
+      "So the tax came out to 1711200*0.1=171120 renminbi",
+      "So the cars cost 1711200+171120=1882320 renminbi",
+      "Registration cost another 12*7130=85560 renminbi",
+      "So his total cost is 1882320+85560=1967880 renminbi",
+      "#### 1967880"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "index": 1197,
+  "split": "test",
+  "original": {
+    "question": "John buys 10 bottles of scotch for a total cost of $600.  He also buys twice as many bottles of cognac that cost 50% more per bottle.  How much does he spend on everything?",
+    "answer": "The scotch cost $600/10=$<<600/10=60>>60 each\nHe bought 10*2=<<10*2=20>>20 bottles of cognac\nEach bottle cost .5*60=$<<.5*60=30>>30 more than the scotch\nSo they cost $60+$30=$<<60+30=90>>90\nThat means he spent $90*20=$<<90*20=1800>>1800 on the cognac\nSo he spent a total of $600+$1800=$<<600+1800=2400>>2400\n#### 2400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars",
+      "scotch",
+      "cognac"
+    ],
+    "notes": "The text contains a non-Haitian name, a unit of currency commonly used in the US, and references to scotch and cognac, which are types of liquor not typically associated with Haitian culture."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "scotch_cost",
+      "value": 600.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "scotch_cost_per_bottle",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cognac_cost_per_bottle",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cognac_cost",
+      "value": 1800.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 2400.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"scotch_cost\", \"value\": 600.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"scotch_cost_per_bottle\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cognac_cost_per_bottle\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cognac_cost\", \"value\": 1800.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 2400.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "scotch_cost",
+        "original_value": 600.0,
+        "original_unit": "dollar",
+        "converted_value": 78486.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "scotch_cost_per_bottle",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 7848.6,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "cognac_cost_per_bottle",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 3924.3,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "cognac_cost",
+        "original_value": 1800.0,
+        "original_unit": "dollar",
+        "converted_value": 235458.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 2400.0,
+        "original_unit": "dollar",
+        "converted_value": 313944.0,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John buys {number_of_bottles_of_scotch} bottles of scotch for a total cost of ${scotch_cost}.  He also buys twice as many bottles of cognac that cost 50% more per bottle.  How much does he spend on everything?",
+    "templatized_answer": [
+      "The scotch cost ${scotch_cost}/{number_of_bottles_of_scotch}=${scotch_cost_per_bottle} each",
+      "He bought {number_of_bottles_of_scotch}*2={number_of_bottles_of_cognac} bottles of cognac",
+      "Each bottle cost .5*{scotch_cost_per_bottle}=${cognac_cost_per_bottle} more than the scotch",
+      "So they cost ${scotch_cost_per_bottle}+${cognac_cost_per_bottle}=${cognac_cost_per_bottle_plus_scotch} ",
+      "That means he spent ${cognac_cost_per_bottle_plus_scotch}*{number_of_bottles_of_cognac}=${cognac_cost} on the cognac",
+      "So he spent a total of ${scotch_cost}+${cognac_cost}=${total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "scotch_cost": 600.0,
+      "scotch_cost_per_bottle": 60.0,
+      "cognac_cost_per_bottle": 30.0,
+      "cognac_cost": 1800.0,
+      "total_cost": 2400.0,
+      "number_of_bottles_of_scotch": 10,
+      "number_of_bottles_of_cognac": 20,
+      "cognac_cost_per_bottle_plus_scotch": 90
+    }
+  },
+  "merged_assignment": {
+    "scotch_cost": 78486.0,
+    "scotch_cost_per_bottle": 7848.6,
+    "cognac_cost_per_bottle": 3924.3,
+    "cognac_cost": 235458.0,
+    "total_cost": 313944.0,
+    "number_of_bottles_of_scotch": 10,
+    "number_of_bottles_of_cognac": 20,
+    "cognac_cost_per_bottle_plus_scotch": 90
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    scotch_cost = 78486.0\n    number_of_bottles_of_scotch = 10\n    scotch_cost_per_bottle = round(scotch_cost / number_of_bottles_of_scotch, 2)\n    number_of_bottles_of_cognac = number_of_bottles_of_scotch * 2\n    cognac_cost_per_bottle_plus_scotch = scotch_cost_per_bottle\n    cognac_cost_per_bottle = round(cognac_cost_per_bottle_plus_scotch * 0.5, 2)\n    cognac_cost = round(cognac_cost_per_bottle_plus_scotch * number_of_bottles_of_cognac, 2)\n    total_cost = round(scotch_cost + cognac_cost, 2)\n    return {\n        \"scotch_cost\": scotch_cost,\n        \"scotch_cost_per_bottle\": scotch_cost_per_bottle,\n        \"cognac_cost_per_bottle\": cognac_cost_per_bottle,\n        \"cognac_cost\": cognac_cost,\n        \"total_cost\": total_cost,\n        \"number_of_bottles_of_scotch\": number_of_bottles_of_scotch,\n        \"number_of_bottles_of_cognac\": number_of_bottles_of_cognac,\n        \"cognac_cost_per_bottle_plus_scotch\": cognac_cost_per_bottle_plus_scotch\n    }\n",
+    "results": {
+      "scotch_cost": 78486.0,
+      "scotch_cost_per_bottle": 7848.6,
+      "cognac_cost_per_bottle": 3924.3,
+      "cognac_cost": 156972.0,
+      "total_cost": 235458.0,
+      "number_of_bottles_of_scotch": 10,
+      "number_of_bottles_of_cognac": 20,
+      "cognac_cost_per_bottle_plus_scotch": 7848.6
+    }
+  },
+  "final": {
+    "question": "John buys 10 bottles of scotch for a total cost of 78486 gourde.  He also buys twice as many bottles of cognac that cost 50% more per bottle.  How much does he spend on everything?",
+    "answer_lines": [
+      "The scotch cost 78486/10=7848.6 gourde each",
+      "He bought 10*2=20 bottles of cognac",
+      "Each bottle cost .5*7848.6=3924.3 gourde more than the scotch",
+      "So they cost 7848.6+3924.3=11772.9 gourde",
+      "That means he spent 11772.9*20=235458 gourde on the cognac",
+      "So he spent a total of 78486+235458=313944 gourde",
+      "#### 313944"
+    ],
+    "final_scalar": 313944,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jean buys 10 bottles of rhum for a total cost of 78486 gourde.  He also buys twice as many bottles of kleren that cost 50% more per bottle.  How much does he spend on everything?",
+    "adapted_answer": [
+      "The rhum cost 78486/10=7848.6 gourde each",
+      "He bought 10*2=20 bottles of kleren",
+      "Each bottle cost .5*7848.6=3924.3 gourde more than the rhum",
+      "So they cost 7848.6+3924.3=11772.9 gourde",
+      "That means he spent 11772.9*20=235458 gourde on the kleren",
+      "So he spent a total of 78486+235458=313944 gourde",
+      "#### 313944"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Jean', 'scotch' with 'rhum', and 'cognac' with 'kleren' to give the text a Haitian context."
+  }
+}

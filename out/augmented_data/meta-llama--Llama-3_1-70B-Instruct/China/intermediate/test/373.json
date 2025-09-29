@@ -1,0 +1,109 @@
+{
+  "index": 373,
+  "split": "test",
+  "original": {
+    "question": "A company bought $400000 worth of equipment from a retailer business, but pieces of equipment worth 40% of the total number were faulty. If they returned the faulty pieces of equipment to the seller, calculate the total amount of money spent on functioning pieces of equipment.",
+    "answer": "If 40% worth of the pieces of equipment bought were faulty and were returned, the amount of money they were bought for is 40/100*$400000 = $<<40/100*400000=160000>>160000\nSince the faulty pieces of equipment were worth $400000, the functioning equipment was worth $400000-$160000 = $<<400000-160000=240000>>240000\n#### 240000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "equipment_cost",
+      "value": 400000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "faulty_equipment_cost",
+      "value": 160000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "functioning_equipment_cost",
+      "value": 240000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"equipment_cost\", \"value\": 400000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"faulty_equipment_cost\", \"value\": 160000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"functioning_equipment_cost\", \"value\": 240000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "equipment_cost",
+        "original_value": 400000.0,
+        "original_unit": "dollar",
+        "converted_value": 2852000.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "faulty_equipment_cost",
+        "original_value": 160000.0,
+        "original_unit": "dollar",
+        "converted_value": 1140800.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "functioning_equipment_cost",
+        "original_value": 240000.0,
+        "original_unit": "dollar",
+        "converted_value": 1711200.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company bought ${equipment_cost} worth of equipment from a retailer business, but pieces of equipment worth 40% of the total number were faulty. If they returned the faulty pieces of equipment to the seller, calculate the total amount of money spent on functioning pieces of equipment.",
+    "templatized_answer": [
+      "If 40% worth of the pieces of equipment bought were faulty and were returned, the amount of money they were bought for is 40/100*${equipment_cost} = ${faulty_equipment_cost}",
+      "Since the faulty pieces of equipment were worth ${faulty_equipment_cost}, the functioning equipment was worth ${equipment_cost}-${faulty_equipment_cost} = ${functioning_equipment_cost}",
+      "#### ${functioning_equipment_cost}"
+    ],
+    "factual_assignment": {
+      "equipment_cost": 400000.0,
+      "faulty_equipment_cost": 160000.0,
+      "functioning_equipment_cost": 240000.0
+    }
+  },
+  "merged_assignment": {
+    "equipment_cost": 2852000.0,
+    "faulty_equipment_cost": 1140800.0,
+    "functioning_equipment_cost": 1711200.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    equipment_cost = 2852000.0\n    faulty_equipment_cost = round(equipment_cost * 0.4, 2)\n    functioning_equipment_cost = round(equipment_cost - faulty_equipment_cost, 2)\n    \n    return {\n        \"equipment_cost\": equipment_cost,\n        \"faulty_equipment_cost\": faulty_equipment_cost,\n        \"functioning_equipment_cost\": functioning_equipment_cost\n    }\n",
+    "results": {
+      "equipment_cost": 2852000.0,
+      "faulty_equipment_cost": 1140800.0,
+      "functioning_equipment_cost": 1711200.0
+    }
+  },
+  "final": {
+    "question": "A company bought 2852000 renminbi worth of equipment from a retailer business, but pieces of equipment worth 40% of the total number were faulty. If they returned the faulty pieces of equipment to the seller, calculate the total amount of money spent on functioning pieces of equipment.",
+    "answer_lines": [
+      "If 40% worth of the pieces of equipment bought were faulty and were returned, the amount of money they were bought for is 40/100*2852000 = 1140800",
+      "Since the faulty pieces of equipment were worth 1140800, the functioning equipment was worth 2852000-1140800 = 1711200",
+      "#### 1711200"
+    ],
+    "final_scalar": 1711200,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company bought 2852000 renminbi worth of equipment from a retailer business, but pieces of equipment worth 40% of the total number were faulty. If they returned the faulty pieces of equipment to the seller, calculate the total amount of money spent on functioning pieces of equipment.",
+    "adapted_answer": [
+      "If 40% worth of the pieces of equipment bought were faulty and were returned, the amount of money they were bought for is 40/100*2852000 = 1140800",
+      "Since the faulty pieces of equipment were worth 1140800, the functioning equipment was worth 2852000-1140800 = 1711200",
+      "#### 1711200"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "index": 58,
+  "split": "test",
+  "original": {
+    "question": "Stephen placed an online order for groceries.  His final bill came to $40.00.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him $3.00 in delivery fees.  Stephen also added a $4.00 tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "answer": "He spent $40.00 on groceries but they charged him a 25% fee so that's 40*.25 = $10.00\nThere is also a $3.00 delivery fee and a $4.00 tip for an extra $3 + $4 = $<<3+4=7.00>>7.00 in fees\nHis groceries were $40.00, there's a $10.00 fee plus another $7.00 in delivery/tip fees for a final total of $40 + $10 + $7 = $<<40+10+7=57.00>>57.00\n#### 57"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_bill",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "delivery_fee",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tip",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fee_percentage",
+      "value": 25.0,
+      "unit": "percent",
+      "context": "question"
+    },
+    {
+      "variable": "vendor_fee",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extra_fees",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_total",
+      "value": 57.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"percent\": {\"unit\": \"percent\", \"factor\": 1}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = original_value * conversions[original_unit][\"factor\"]\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_bill\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"delivery_fee\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tip\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fee_percentage\", \"value\": 25.0, \"unit\": \"percent\", \"context\": \"question\"},\n    {\"variable\": \"vendor_fee\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extra_fees\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_total\", \"value\": 57.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_bill",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "delivery_fee",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "tip",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "fee_percentage",
+        "original_value": 25.0,
+        "original_unit": "percent",
+        "converted_value": 25.0,
+        "converted_unit": "percent"
+      },
+      {
+        "variable": "vendor_fee",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "extra_fees",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 49.91,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "final_total",
+        "original_value": 57.0,
+        "original_unit": "dollar",
+        "converted_value": 406.41,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Stephen placed an online order for groceries.  His final bill came to ${initial_bill}.  Because this was through a delivery vendor, they tacked on a {fee_percentage}% fee to his final total and charged him ${delivery_fee} in delivery fees.  Stephen also added a ${tip} tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "templatized_answer": [
+      "He spent ${initial_bill} on groceries but they charged him a {fee_percentage}% fee so that's {initial_bill} * ({fee_percentage} / 100) = ${initial_bill * (fee_percentage / 100)}",
+      "There is also a ${delivery_fee} delivery fee and a ${tip} tip for an extra ${delivery_fee} + ${tip} = ${delivery_fee + tip} in fees",
+      "His groceries were ${initial_bill}, there's a ${initial_bill * (fee_percentage / 100)} fee plus another ${delivery_fee + tip} in delivery/tip fees for a final total of ${initial_bill} + ${initial_bill * (fee_percentage / 100)} + ${delivery_fee + tip} = ${initial_bill + (initial_bill * (fee_percentage / 100)) + delivery_fee + tip}",
+      "#### {initial_bill + (initial_bill * (fee_percentage / 100)) + delivery_fee + tip}"
+    ],
+    "factual_assignment": {
+      "initial_bill": 40.0,
+      "delivery_fee": 3.0,
+      "tip": 4.0,
+      "fee_percentage": 25.0
+    }
+  },
+  "merged_assignment": {
+    "initial_bill": 285.2,
+    "delivery_fee": 21.39,
+    "tip": 28.52,
+    "fee_percentage": 25.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_bill = 285.2\n    delivery_fee = 21.39\n    tip = 28.52\n    fee_percentage = 25.0\n\n    fee_amount = round(initial_bill * (fee_percentage / 100), 2)\n    extra_fees = round(delivery_fee + tip, 2)\n    total_bill = round(initial_bill + fee_amount + delivery_fee + tip, 2)\n\n    return {\n        \"initial_bill\": initial_bill,\n        \"delivery_fee\": delivery_fee,\n        \"tip\": tip,\n        \"fee_percentage\": fee_percentage,\n        \"initial_bill * (fee_percentage / 100)\": fee_amount,\n        \"delivery_fee + tip\": extra_fees,\n        \"initial_bill + (initial_bill * (fee_percentage / 100)) + delivery_fee + tip\": total_bill\n    }\n",
+    "results": {
+      "initial_bill": 285.2,
+      "delivery_fee": 21.39,
+      "tip": 28.52,
+      "fee_percentage": 25.0,
+      "initial_bill * (fee_percentage / 100)": 71.3,
+      "delivery_fee + tip": 49.91,
+      "initial_bill + (initial_bill * (fee_percentage / 100)) + delivery_fee + tip": 406.41
+    }
+  },
+  "final": {
+    "question": "Stephen placed an online order for groceries.  His final bill came to 285.2 renminbi.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him 21.39 renminbi in delivery fees.  Stephen also added a 28.52 renminbi tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "answer_lines": [
+      "He spent 285.2 renminbi on groceries but they charged him a 25% fee so that's 285.2 * (25 / 100) = 71.3 renminbi",
+      "There is also a 21.39 renminbi delivery fee and a 28.52 renminbi tip for an extra 21.39 + 28.52 = 49.91 renminbi in fees",
+      "His groceries were 285.2 renminbi, there's a 71.3 renminbi fee plus another 49.91 renminbi in delivery/tip fees for a final total of 285.2 + 71.3 + 49.91 = 406.41 renminbi",
+      "#### 406.41"
+    ],
+    "final_scalar": 406.41,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Stephen placed an online order for groceries.  His final bill came to 285.2 renminbi.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him 21.39 renminbi in delivery fees.  Stephen also added a 28.52 renminbi tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "adapted_answer": [
+      "He spent 285.2 renminbi on groceries but they charged him a 25% fee so that's 285.2 * (25 / 100) = 71.3 renminbi",
+      "There is also a 21.39 renminbi delivery fee and a 28.52 renminbi tip for an extra 21.39 + 28.52 = 49.91 renminbi in fees",
+      "His groceries were 285.2 renminbi, there's a 71.3 renminbi fee plus another 49.91 renminbi in delivery/tip fees for a final total of 285.2 + 71.3 + 49.91 = 406.41 renminbi",
+      "#### 406.41"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

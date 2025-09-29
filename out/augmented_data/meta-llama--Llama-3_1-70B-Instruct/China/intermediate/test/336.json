@@ -1,0 +1,176 @@
+{
+  "index": 336,
+  "split": "test",
+  "original": {
+    "question": "Maria buys 8 shares of a stock for $8 each. The stock price increases 50% the first year Maria holds it, then decreases 25% in the second year. What is the final value of all Maria's shares?",
+    "answer": "First find the initial total value of Maria's purchase: 8 shares * $8/share = $<<8*8=64>>64\nThen find the amount of the first price increase: $64 * .5 = $<<64*.5=32>>32\nAdd that amount to the initial value to find the value after the first year: $64 + $32 = $<<64+32=96>>96\nThen multiply that amount by 25% to find the amount of the decrease in the second year: $96 * 25% = $<<96*25*.01=24>>24\nThen subtract that amount from the value after the first year to find the final value: $96 - $24 = $<<96-24=72>>72\n#### 72"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Maria",
+      "dollars"
+    ],
+    "notes": "The name 'Maria' is culturally specific to Western regions and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_share_price",
+      "value": 8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "initial_total_value",
+      "value": 64,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "first_price_increase",
+      "value": 32,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "value_after_first_year",
+      "value": 96,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_year_decrease",
+      "value": 24,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_value",
+      "value": 72,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_unit = list(conversions[metric[\"unit\"]].keys())[0]\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][converted_unit], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_share_price\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"initial_total_value\", \"value\": 64, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"first_price_increase\", \"value\": 32, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"value_after_first_year\", \"value\": 96, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_year_decrease\", \"value\": 24, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_value\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_share_price",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 57.04,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "initial_total_value",
+        "original_value": 64,
+        "original_unit": "dollar",
+        "converted_value": 456.32,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "first_price_increase",
+        "original_value": 32,
+        "original_unit": "dollar",
+        "converted_value": 228.16,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "value_after_first_year",
+        "original_value": 96,
+        "original_unit": "dollar",
+        "converted_value": 684.48,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "second_year_decrease",
+        "original_value": 24,
+        "original_unit": "dollar",
+        "converted_value": 171.12,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "final_value",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 513.36,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Maria buys {number_of_shares} shares of a stock for ${initial_share_price} each. The stock price increases {first_year_increase_percentage}% the first year Maria holds it, then decreases {second_year_decrease_percentage}% in the second year. What is the final value of all Maria's shares?",
+    "templatized_answer": [
+      "First find the initial total value of Maria's purchase: {number_of_shares} shares * ${initial_share_price}/share = ${initial_total_value}",
+      "Then find the amount of the first price increase: ${initial_total_value} * {first_year_increase_percentage}% = ${first_price_increase}",
+      "Add that amount to the initial value to find the value after the first year: ${initial_total_value} + ${first_price_increase} = ${value_after_first_year}",
+      "Then multiply that amount by {second_year_decrease_percentage}% to find the amount of the decrease in the second year: ${value_after_first_year} * {second_year_decrease_percentage}% = ${second_year_decrease}",
+      "Then subtract that amount from the value after the first year to find the final value: ${value_after_first_year} - ${second_year_decrease} = ${final_value}",
+      "#### {final_value}"
+    ],
+    "factual_assignment": {
+      "number_of_shares": 8,
+      "initial_share_price": 8,
+      "first_year_increase_percentage": 50,
+      "second_year_decrease_percentage": 25,
+      "initial_total_value": 64,
+      "first_price_increase": 32,
+      "value_after_first_year": 96,
+      "second_year_decrease": 24,
+      "final_value": 72
+    }
+  },
+  "merged_assignment": {
+    "number_of_shares": 8,
+    "initial_share_price": 57.04,
+    "first_year_increase_percentage": 50,
+    "second_year_decrease_percentage": 25,
+    "initial_total_value": 456.32,
+    "first_price_increase": 228.16,
+    "value_after_first_year": 684.48,
+    "second_year_decrease": 171.12,
+    "final_value": 513.36
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_shares = 8\n    initial_share_price = 57.04\n    first_year_increase_percentage = 50 / 100\n    second_year_decrease_percentage = 25 / 100\n\n    initial_total_value = number_of_shares * initial_share_price\n    first_price_increase = initial_total_value * first_year_increase_percentage\n    value_after_first_year = initial_total_value + first_price_increase\n    second_year_decrease = value_after_first_year * second_year_decrease_percentage\n    final_value = value_after_first_year - second_year_decrease\n\n    return {\n        \"number_of_shares\": number_of_shares,\n        \"initial_share_price\": round(initial_share_price, 2),\n        \"first_year_increase_percentage\": round(first_year_increase_percentage * 100, 2),\n        \"second_year_decrease_percentage\": round(second_year_decrease_percentage * 100, 2),\n        \"initial_total_value\": round(initial_total_value, 2),\n        \"first_price_increase\": round(first_price_increase, 2),\n        \"value_after_first_year\": round(value_after_first_year, 2),\n        \"second_year_decrease\": round(second_year_decrease, 2),\n        \"final_value\": round(final_value, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_shares": 8,
+      "initial_share_price": 57.04,
+      "first_year_increase_percentage": 50.0,
+      "second_year_decrease_percentage": 25.0,
+      "initial_total_value": 456.32,
+      "first_price_increase": 228.16,
+      "value_after_first_year": 684.48,
+      "second_year_decrease": 171.12,
+      "final_value": 513.36
+    }
+  },
+  "final": {
+    "question": "Maria buys 8 shares of a stock for 57.04 renminbi each. The stock price increases 50.0% the first year Maria holds it, then decreases 25.0% in the second year. What is the final value of all Maria's shares?",
+    "answer_lines": [
+      "First find the initial total value of Maria's purchase: 8 shares * 57.04 renminbi/share = 456.32 renminbi",
+      "Then find the amount of the first price increase: 456.32 renminbi * 50.0% = 228.16 renminbi",
+      "Add that amount to the initial value to find the value after the first year: 456.32 renminbi + 228.16 renminbi = 684.48 renminbi",
+      "Then multiply that amount by 25.0% to find the amount of the decrease in the second year: 684.48 renminbi * 25.0% = 171.12 renminbi",
+      "Then subtract that amount from the value after the first year to find the final value: 684.48 renminbi - 171.12 renminbi = 513.36 renminbi",
+      "#### 513.36"
+    ],
+    "final_scalar": 513.36,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mei buys 8 shares of a stock for 57.04 renminbi each. The stock price increases 50.0% the first year Mei holds it, then decreases 25.0% in the second year. What is the final value of all Mei's shares?",
+    "adapted_answer": [
+      "First find the initial total value of Mei's purchase: 8 shares * 57.04 renminbi/share = 456.32 renminbi",
+      "Then find the amount of the first price increase: 456.32 renminbi * 50.0% = 228.16 renminbi",
+      "Add that amount to the initial value to find the value after the first year: 456.32 renminbi + 228.16 renminbi = 684.48 renminbi",
+      "Then multiply that amount by 25.0% to find the amount of the decrease in the second year: 684.48 renminbi * 25.0% = 171.12 renminbi",
+      "Then subtract that amount from the value after the first year to find the final value: 684.48 renminbi - 171.12 renminbi = 513.36 renminbi",
+      "#### 513.36"
+    ],
+    "adaptation_notes": "Replaced 'Maria' with 'Mei' to give the name a Chinese context."
+  }
+}

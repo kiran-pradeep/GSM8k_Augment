@@ -1,0 +1,135 @@
+{
+  "index": 1269,
+  "split": "test",
+  "original": {
+    "question": "Elvis starts driving from his house and travels west for 5 hours. Then he turns around and travels east for 8 hours. If he was driving at an average speed of 18mph for both parts of the journey, how far is he from his house now?",
+    "answer": "During the first part of the journey he travels west for 5 hours at a speed of 18mph so he covered a distance of 5*18 = <<5*18=90>>90 miles\nThen he travels east at the same speed for 8 hours so he covered a distance of 8*18 = <<8*18=144>>144 miles\nHis distance from his house now is the difference between his east and west movements which is 144-90 = <<144-90=54>>54 miles\n#### 54"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Elvis",
+      "miles"
+    ],
+    "notes": "Elvis is a culturally specific name and miles is a unit of measurement commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_speed",
+      "value": 18.0,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "west_distance",
+      "value": 90.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "east_distance",
+      "value": 144.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "final_distance",
+      "value": 54.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mph\": {\"unit\": \"km/h\", \"factor\": 1.60934},\n        \"mile\": {\"unit\": \"km\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kg\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"g\", \"factor\": 28.3495},\n        \"gallon\": {\"unit\": \"L\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"mL\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"CNY\", \"factor\": 7.13},\n        \"foot\": {\"unit\": \"m\", \"factor\": 0.3048},\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"],\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"],\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_speed\", \"value\": 18.0, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"west_distance\", \"value\": 90.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"east_distance\", \"value\": 144.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"final_distance\", \"value\": 54.0, \"unit\": \"mile\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_speed",
+        "original_value": 18.0,
+        "original_unit": "mph",
+        "converted_value": 28.97,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "west_distance",
+        "original_value": 90.0,
+        "original_unit": "mile",
+        "converted_value": 144.84,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "east_distance",
+        "original_value": 144.0,
+        "original_unit": "mile",
+        "converted_value": 231.74,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "final_distance",
+        "original_value": 54.0,
+        "original_unit": "mile",
+        "converted_value": 86.9,
+        "converted_unit": "km"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Elvis starts driving from his house and travels west for {west_time} hours. Then he turns around and travels east for {east_time} hours. If he was driving at an average speed of {initial_speed}mph for both parts of the journey, how far is he from his house now?",
+    "templatized_answer": [
+      "During the first part of the journey he travels west for {west_time} hours at a speed of {initial_speed}mph so he covered a distance of {west_time}*{initial_speed} = {west_distance} miles",
+      "Then he travels east at the same speed for {east_time} hours so he covered a distance of {east_time}*{initial_speed} = {east_distance} miles",
+      "His distance from his house now is the difference between his east and west movements which is {east_distance}-{west_distance} = {final_distance} miles",
+      "#### {final_distance}"
+    ],
+    "factual_assignment": {
+      "west_time": 5,
+      "east_time": 8,
+      "initial_speed": 18.0,
+      "west_distance": 90.0,
+      "east_distance": 144.0,
+      "final_distance": 54.0
+    }
+  },
+  "merged_assignment": {
+    "west_time": 5,
+    "east_time": 8,
+    "initial_speed": 28.97,
+    "west_distance": 144.84,
+    "east_distance": 231.74,
+    "final_distance": 86.9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_speed = 28.97  # mph\n    west_time = 5  # hours\n    east_time = 8  # hours\n\n    west_distance = round(west_time * initial_speed, 2)\n    east_distance = round(east_time * initial_speed, 2)\n    final_distance = round(east_distance - west_distance, 2)\n\n    return {\n        \"west_time\": west_time,\n        \"east_time\": east_time,\n        \"initial_speed\": initial_speed,\n        \"west_distance\": west_distance,\n        \"east_distance\": east_distance,\n        \"final_distance\": final_distance\n    }\n",
+    "results": {
+      "west_time": 5,
+      "east_time": 8,
+      "initial_speed": 28.97,
+      "west_distance": 144.85,
+      "east_distance": 231.76,
+      "final_distance": 86.91
+    }
+  },
+  "final": {
+    "question": "Elvis starts driving from his house and travels west for 5 hours. Then he turns around and travels east for 8 hours. If he was driving at an average speed of 28.97km/h for both parts of the journey, how far is he from his house now?",
+    "answer_lines": [
+      "During the first part of the journey he travels west for 5 hours at a speed of 28.97km/h so he covered a distance of 5*28.97 = 144.85 kilometers",
+      "Then he travels east at the same speed for 8 hours so he covered a distance of 8*28.97 = 231.76 kilometers",
+      "His distance from his house now is the difference between his east and west movements which is 231.76-144.85 = 86.91 kilometers",
+      "#### 86.91"
+    ],
+    "final_scalar": 86.91,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "王张开车自家去西舍行动五小时。續一发车这个时借、你得起车舍行动六小时。如果你在两个流动之中的循远速度都是々28.97km/h。你当前近是家的这一距身这不这不。",
+    "adapted_answer": [
+      "第一流动之中、王张开车自家去西舍行动五小时。你在一个流动之中的循远速度是々28.97km/h。你在一个流动之中这一距身是五*28.97 = 144.85 八里線。",
+      "續一发车舍行动六小时。你在一个流动之中的循远速度是々28.97km/h。你在一个流动之中这东距身是六*28.97 = 231.76 八里線。",
+      "你当前近是家的这一距身是东距身和西距身的三值。三值是々231.76-144.85 = 86.91 八里線。",
+      "#### 86.91"
+    ],
+    "adaptation_notes": "更换为中文、你张张丽王张"
+  }
+}

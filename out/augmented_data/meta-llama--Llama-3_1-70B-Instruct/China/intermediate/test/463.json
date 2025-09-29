@@ -1,0 +1,110 @@
+{
+  "index": 463,
+  "split": "test",
+  "original": {
+    "question": "Ashley's pizza delivery costs $15. What is the total amount that Ashley should give the delivery man if she wants to give a tip that is equal to 1/5 of the amount she ordered?",
+    "answer": "The tip that Ashley wants to give amounts to $15 x 1/5 = $<<15*1/5=3>>3.\nHence, she will give a total of $15 + $3 = $<<15+3=18>>18 to the delivery man.\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ashley",
+      "dollars",
+      "pizza"
+    ],
+    "notes": "The name Ashley and the use of dollars are culturally specific to Western regions, and pizza is a food item commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pizza_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tip_amount",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_payment",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pizza_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tip_amount\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_payment\", \"value\": 18.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pizza_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "tip_amount",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_payment",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 128.34,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ashley's pizza delivery costs ${pizza_cost}. What is the total amount that Ashley should give the delivery man if she wants to give a tip that is equal to 1/5 of the amount she ordered?",
+    "templatized_answer": [
+      "The tip that Ashley wants to give amounts to ${pizza_cost} x 1/5 = ${pizza_cost * 1/5}.",
+      "Hence, she will give a total of ${pizza_cost} + ${pizza_cost * 1/5} = ${pizza_cost + pizza_cost * 1/5} to the delivery man.",
+      "#### {total_payment}"
+    ],
+    "factual_assignment": {
+      "pizza_cost": 15.0,
+      "total_payment": 18.0
+    }
+  },
+  "merged_assignment": {
+    "pizza_cost": 106.95,
+    "total_payment": 128.34
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pizza_cost = 106.95\n    tip = pizza_cost * 1/5\n    total_payment = pizza_cost + tip\n    return {\n        \"pizza_cost\": pizza_cost,\n        \"pizza_cost * 1/5\": round(tip, 2),\n        \"pizza_cost + pizza_cost * 1/5\": round(total_payment, 2),\n        \"total_payment\": round(total_payment, 2)\n    }\n",
+    "results": {
+      "pizza_cost": 106.95,
+      "pizza_cost * 1/5": 21.39,
+      "pizza_cost + pizza_cost * 1/5": 128.34,
+      "total_payment": 128.34
+    }
+  },
+  "final": {
+    "question": "Ashley's pizza delivery costs 106.95 renminbi. What is the total amount that Ashley should give the delivery man if she wants to give a tip that is equal to 1/5 of the amount she ordered?",
+    "answer_lines": [
+      "The tip that Ashley wants to give amounts to 106.95 renminbi x 1/5 = 21.39 renminbi.",
+      "Hence, she will give a total of 106.95 renminbi + 21.39 renminbi = 128.34 renminbi to the delivery man.",
+      "#### 128.34"
+    ],
+    "final_scalar": 128.34,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Xiaoyu's jiaozi delivery costs 106.95 renminbi. What is the total amount that Xiaoyu should give the delivery man if she wants to give a tip that is equal to 1/5 of the amount she ordered?",
+    "adapted_answer": [
+      "The tip that Xiaoyu wants to give amounts to 106.95 renminbi x 1/5 = 21.39 renminbi.",
+      "Hence, she will give a total of 106.95 renminbi + 21.39 renminbi = 128.34 renminbi to the delivery man.",
+      "#### 128.34"
+    ],
+    "adaptation_notes": "Replaced 'Ashley' with 'Xiaoyu' (a common Chinese name) and 'pizza' with 'jiaozi' (a traditional Chinese food)."
+  }
+}

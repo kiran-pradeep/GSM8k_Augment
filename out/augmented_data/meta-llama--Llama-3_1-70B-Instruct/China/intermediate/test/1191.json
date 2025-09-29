@@ -1,0 +1,150 @@
+{
+  "index": 1191,
+  "split": "test",
+  "original": {
+    "question": "May is getting her hair cut and colored. It costs $40 for the color and $30 per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "answer": "She had 2 inches cut because 10-8=<<10-8=2>>2\nIt cost $60 for the cut because 2 x 30 =<<2*30=60>>60\nIt cost $100 total because 40+60=<<40+60=100>>100\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not in China where the yuan is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hair_color_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hair_cut_cost_per_inch",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hair_cut_length",
+      "value": 2,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "hair_cut_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"inch\": {\"centimeter\": 2.54},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            conversion_rate = list(conversions[original_unit].values())[0]\n            converted_value = round(original_value * conversion_rate, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hair_color_cost\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hair_cut_cost_per_inch\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hair_cut_length\", \"value\": 2, \"unit\": \"inch\", \"context\": \"question\"},\n    {\"variable\": \"hair_cut_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hair_color_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hair_cut_cost_per_inch",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 213.9,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "hair_cut_length",
+        "original_value": 2,
+        "original_unit": "inch",
+        "converted_value": 5.08,
+        "converted_unit": "centimeter"
+      },
+      {
+        "variable": "hair_cut_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 427.8,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 713.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "May is getting her hair cut and colored. It costs ${hair_color_cost} for the color and ${hair_cut_cost_per_inch} per inch of haircut. If her hair started at {initial_hair_length} inches and ended at {final_hair_length}, how much did her cut and color cost?",
+    "templatized_answer": [
+      "She had {hair_cut_length} inches cut because {initial_hair_length}-{final_hair_length}={hair_cut_length}",
+      "It cost ${hair_cut_cost} for the cut because {hair_cut_length} x {hair_cut_cost_per_inch}={hair_cut_cost}",
+      "It cost ${total_cost} total because {hair_color_cost}+{hair_cut_cost}={total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "hair_color_cost": 40,
+      "hair_cut_cost_per_inch": 30,
+      "hair_cut_length": 2,
+      "hair_cut_cost": 60,
+      "total_cost": 100,
+      "initial_hair_length": 10,
+      "final_hair_length": 8
+    }
+  },
+  "merged_assignment": {
+    "hair_color_cost": 285.2,
+    "hair_cut_cost_per_inch": 213.9,
+    "hair_cut_length": 5.08,
+    "hair_cut_cost": 427.8,
+    "total_cost": 713.0,
+    "initial_hair_length": 10,
+    "final_hair_length": 8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hair_color_cost = 285.2\n    hair_cut_cost_per_inch = 213.9\n    initial_hair_length = 10\n    final_hair_length = 8\n\n    hair_cut_length = initial_hair_length - final_hair_length\n    hair_cut_cost = round(hair_cut_length * hair_cut_cost_per_inch, 2)\n    total_cost = round(hair_color_cost + hair_cut_cost, 2)\n\n    return {\n        \"hair_color_cost\": hair_color_cost,\n        \"hair_cut_cost_per_inch\": hair_cut_cost_per_inch,\n        \"hair_cut_length\": hair_cut_length,\n        \"hair_cut_cost\": hair_cut_cost,\n        \"total_cost\": total_cost,\n        \"initial_hair_length\": initial_hair_length,\n        \"final_hair_length\": final_hair_length\n    }\n",
+    "results": {
+      "hair_color_cost": 285.2,
+      "hair_cut_cost_per_inch": 213.9,
+      "hair_cut_length": 2,
+      "hair_cut_cost": 427.8,
+      "total_cost": 713.0,
+      "initial_hair_length": 10,
+      "final_hair_length": 8
+    }
+  },
+  "final": {
+    "question": "May is getting her hair cut and colored. It costs 285.2 renminbi for the color and 213.9 renminbi per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "answer_lines": [
+      "She had 2 inches cut because 10-8=2",
+      "It cost 427.8 renminbi for the cut because 2 x 213.9=427.8",
+      "It cost 713.0 renminbi total because 285.2+427.8=713.0",
+      "#### 713.0"
+    ],
+    "final_scalar": 713.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "May is getting her hair cut and colored. It costs 285.2 renminbi for the color and 213.9 renminbi per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "adapted_answer": [
+      "She had 2 inches cut because 10-8=2",
+      "It cost 427.8 renminbi for the cut because 2 x 213.9=427.8",
+      "It cost 713.0 renminbi total because 285.2+427.8=713.0",
+      "#### 713.0"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

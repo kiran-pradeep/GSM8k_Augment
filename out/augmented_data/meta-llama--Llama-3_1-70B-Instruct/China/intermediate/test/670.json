@@ -1,0 +1,145 @@
+{
+  "index": 670,
+  "split": "test",
+  "original": {
+    "question": "Robert had 3 pounds of candy, Cindy had 5 pounds of candy, and Aaron had 4 pounds of candy after Halloween. If they decide to pool and share their candy equally with each other, how much candy would each of them have?",
+    "answer": "Robert had 3 pounds of candy, Cindy had 5 pounds of candy, and Aaron had 4 pounds of candy which equals 3 + 5 + 4 = <<3+5+4=12>>12 pounds of candy\nSince there are three of them (Robert, Cindy, and Aaron), they divide the candy into 3 equal portions. 12/3 = <<12/3=4>>4 pounds of candy\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Robert",
+      "Cindy",
+      "Aaron",
+      "pounds",
+      "Halloween"
+    ],
+    "notes": "The names Robert, Cindy, and Aaron are Western names, pounds is a unit of measurement commonly used in Western countries, and Halloween is a Western holiday."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "robert_candy",
+      "value": 3,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "cindy_candy",
+      "value": 5,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "aaron_candy",
+      "value": 4,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "total_candy",
+      "value": 12,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "shared_candy",
+      "value": 4,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"renminbi\", 7.13),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"robert_candy\", \"value\": 3, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"cindy_candy\", \"value\": 5, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"aaron_candy\", \"value\": 4, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"total_candy\", \"value\": 12, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"shared_candy\", \"value\": 4, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "robert_candy",
+        "original_value": 3,
+        "original_unit": "pound",
+        "converted_value": 1.36,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "cindy_candy",
+        "original_value": 5,
+        "original_unit": "pound",
+        "converted_value": 2.27,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "aaron_candy",
+        "original_value": 4,
+        "original_unit": "pound",
+        "converted_value": 1.81,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "total_candy",
+        "original_value": 12,
+        "original_unit": "pound",
+        "converted_value": 5.44,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "shared_candy",
+        "original_value": 4,
+        "original_unit": "pound",
+        "converted_value": 1.81,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Robert had {robert_candy} pounds of candy, Cindy had {cindy_candy} pounds of candy, and Aaron had {aaron_candy} pounds of candy after Halloween. If they decide to pool and share their candy equally with each other, how much candy would each of them have?",
+    "templatized_answer": [
+      "Robert had {robert_candy} pounds of candy, Cindy had {cindy_candy} pounds of candy, and Aaron had {aaron_candy} pounds of candy which equals {robert_candy} + {cindy_candy} + {aaron_candy} = {total_candy} pounds of candy",
+      "Since there are three of them (Robert, Cindy, and Aaron), they divide the candy into 3 equal portions. {total_candy}/3 = {shared_candy} pounds of candy",
+      "#### {shared_candy}"
+    ],
+    "factual_assignment": {
+      "robert_candy": 3,
+      "cindy_candy": 5,
+      "aaron_candy": 4,
+      "total_candy": 12,
+      "shared_candy": 4
+    }
+  },
+  "merged_assignment": {
+    "robert_candy": 1.36,
+    "cindy_candy": 2.27,
+    "aaron_candy": 1.81,
+    "total_candy": 5.44,
+    "shared_candy": 1.81
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    robert_candy = 1.36\n    cindy_candy = 2.27\n    aaron_candy = 1.81\n\n    total_candy = robert_candy + cindy_candy + aaron_candy\n    shared_candy = round(total_candy / 3, 2)\n\n    return {\n        \"robert_candy\": robert_candy,\n        \"cindy_candy\": cindy_candy,\n        \"aaron_candy\": aaron_candy,\n        \"total_candy\": round(total_candy, 2),\n        \"shared_candy\": shared_candy\n    }\n\nprint(recompute())\n",
+    "results": {
+      "robert_candy": 1.36,
+      "cindy_candy": 2.27,
+      "aaron_candy": 1.81,
+      "total_candy": 5.44,
+      "shared_candy": 1.81
+    }
+  },
+  "final": {
+    "question": "Robert had 1.36 kilograms of candy, Cindy had 2.27 kilograms of candy, and Aaron had 1.81 kilograms of candy after Halloween. If they decide to pool and share their candy equally with each other, how much candy would each of them have?",
+    "answer_lines": [
+      "Robert had 1.36 kilograms of candy, Cindy had 2.27 kilograms of candy, and Aaron had 1.81 kilograms of candy which equals 1.36 + 2.27 + 1.81 = 5.44 kilograms of candy",
+      "Since there are three of them (Robert, Cindy, and Aaron), they divide the candy into 3 equal portions. 5.44/3 = 1.81 kilograms of candy",
+      "#### 1.81"
+    ],
+    "final_scalar": 1.81,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Liu had 1.36 kilograms of candy, Mei had 2.27 kilograms of candy, and Jian had 1.81 kilograms of candy after the Mid-Autumn Festival. If they decide to pool and share their candy equally with each other, how much candy would each of them have?",
+    "adapted_answer": [
+      "Liu had 1.36 kilograms of candy, Mei had 2.27 kilograms of candy, and Jian had 1.81 kilograms of candy which equals 1.36 + 2.27 + 1.81 = 5.44 kilograms of candy",
+      "Since there are three of them (Liu, Mei, and Jian), they divide the candy into 3 equal portions. 5.44/3 = 1.81 kilograms of candy",
+      "#### 1.81"
+    ],
+    "adaptation_notes": "Replaced names with Chinese equivalents (Robert -> Liu, Cindy -> Mei, Aaron -> Jian) and replaced 'Halloween' with 'Mid-Autumn Festival' to give the text a Chinese context."
+  }
+}

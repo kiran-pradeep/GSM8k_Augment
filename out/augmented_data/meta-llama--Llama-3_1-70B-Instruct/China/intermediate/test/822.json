@@ -1,0 +1,138 @@
+{
+  "index": 822,
+  "split": "test",
+  "original": {
+    "question": "John does 30 cycles of work a day.  Each cycle has 5 different tasks and each task pays $1.20.  How much does he make if he works a full 7 day week?",
+    "answer": "Each cycle pays 5*$1.2=$<<5*1.2=6>>6\nThat means he earns $6*30=$<<6*30=180>>180 a day\nSo he makes $180*7=$<<180*7=1260>>1260 a week\n#### 1260"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is a Western name and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "task_pay",
+      "value": 1.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cycle_pay",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 180.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 1260.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"task_pay\",\n    \"value\": 1.2,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"cycle_pay\",\n    \"value\": 6.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"daily_earnings\",\n    \"value\": 180.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"weekly_earnings\",\n    \"value\": 1260.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "task_pay",
+        "original_value": 1.2,
+        "original_unit": "dollar",
+        "converted_value": 8.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "cycle_pay",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 180.0,
+        "original_unit": "dollar",
+        "converted_value": 1283.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 1260.0,
+        "original_unit": "dollar",
+        "converted_value": 8983.8,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John does {cycles_per_day} cycles of work a day.  Each cycle has {tasks_per_cycle} different tasks and each task pays ${task_pay}.  How much does he make if he works a full {days_per_week} day week?",
+    "templatized_answer": [
+      "Each cycle pays {tasks_per_cycle}*${task_pay}=${cycle_pay}",
+      "That means he earns ${cycle_pay}*{cycles_per_day}=${daily_earnings} a day",
+      "So he makes ${daily_earnings}*{days_per_week}=${weekly_earnings} a week",
+      "#### {weekly_earnings}"
+    ],
+    "factual_assignment": {
+      "task_pay": 1.2,
+      "cycle_pay": 6.0,
+      "daily_earnings": 180.0,
+      "weekly_earnings": 1260.0,
+      "cycles_per_day": 30,
+      "tasks_per_cycle": 5,
+      "days_per_week": 7
+    }
+  },
+  "merged_assignment": {
+    "task_pay": 8.56,
+    "cycle_pay": 42.78,
+    "daily_earnings": 1283.4,
+    "weekly_earnings": 8983.8,
+    "cycles_per_day": 30,
+    "tasks_per_cycle": 5,
+    "days_per_week": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    task_pay = 8.56\n    tasks_per_cycle = 5\n    cycles_per_day = 30\n    days_per_week = 7\n\n    cycle_pay = round(tasks_per_cycle * task_pay, 2)\n    daily_earnings = round(cycle_pay * cycles_per_day, 2)\n    weekly_earnings = round(daily_earnings * days_per_week, 2)\n\n    return {\n        \"task_pay\": task_pay,\n        \"cycle_pay\": cycle_pay,\n        \"daily_earnings\": daily_earnings,\n        \"weekly_earnings\": weekly_earnings,\n        \"cycles_per_day\": cycles_per_day,\n        \"tasks_per_cycle\": tasks_per_cycle,\n        \"days_per_week\": days_per_week\n    }\n\nprint(recompute())\n",
+    "results": {
+      "task_pay": 8.56,
+      "cycle_pay": 42.8,
+      "daily_earnings": 1284.0,
+      "weekly_earnings": 8988.0,
+      "cycles_per_day": 30,
+      "tasks_per_cycle": 5,
+      "days_per_week": 7
+    }
+  },
+  "final": {
+    "question": "John does 30 cycles of work a day.  Each cycle has 5 different tasks and each task pays 8.56 renminbi.  How much does he make if he works a full 7 day week?",
+    "answer_lines": [
+      "Each cycle pays 5*8.56=42.8 renminbi",
+      "That means he earns 42.8*30=1284 renminbi a day",
+      "So he makes 1284*7=8988 renminbi a week",
+      "#### 8988"
+    ],
+    "final_scalar": 8988,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang does 30 cycles of work a day.  Each cycle has 5 different tasks and each task pays 8.56 renminbi.  How much does he make if he works a full 7 day week?",
+    "adapted_answer": [
+      "Each cycle pays 5*8.56=42.8 renminbi",
+      "That means he earns 42.8*30=1284 renminbi a day",
+      "So he makes 1284*7=8988 renminbi a week",
+      "#### 8988"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang' to give the name a Chinese context."
+  }
+}

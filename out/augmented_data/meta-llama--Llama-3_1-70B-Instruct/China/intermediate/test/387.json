@@ -1,0 +1,150 @@
+{
+  "index": 387,
+  "split": "test",
+  "original": {
+    "question": "An eraser costs $2 and a pencil costs $3. How much do 6 erasers and 8 pencils cost?",
+    "answer": "Six erasers cost $2/eraser x 6 erasers = $<<2*6=12>>12.\nEight pencils cost $3/pencil x 8 pencils = $<<3*8=24>>24.\nSo, 6 erasers and 8 pencils cost $12 + $24 = $36.\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "eraser_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pencil_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "six_erasers_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "eight_pencils_cost",
+      "value": 24,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 36,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"eraser_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pencil_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"six_erasers_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"eight_pencils_cost\", \"value\": 24, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 36, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "eraser_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "pencil_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "six_erasers_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 85.56,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "eight_pencils_cost",
+        "original_value": 24,
+        "original_unit": "dollar",
+        "converted_value": 171.12,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 36,
+        "original_unit": "dollar",
+        "converted_value": 256.68,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An eraser costs ${eraser_cost} and a pencil costs ${pencil_cost}. How much do {num_erasers} erasers and {num_pencils} pencils cost?",
+    "templatized_answer": [
+      "{num_erasers} erasers cost ${eraser_cost}/eraser x {num_erasers} erasers = ${six_erasers_cost}.",
+      "{num_pencils} pencils cost ${pencil_cost}/pencil x {num_pencils} pencils = ${eight_pencils_cost}.",
+      "So, {num_erasers} erasers and {num_pencils} pencils cost ${six_erasers_cost} + ${eight_pencils_cost} = ${total_cost}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "eraser_cost": 2,
+      "pencil_cost": 3,
+      "six_erasers_cost": 12,
+      "eight_pencils_cost": 24,
+      "total_cost": 36,
+      "num_erasers": 6,
+      "num_pencils": 8
+    }
+  },
+  "merged_assignment": {
+    "eraser_cost": 14.26,
+    "pencil_cost": 21.39,
+    "six_erasers_cost": 85.56,
+    "eight_pencils_cost": 171.12,
+    "total_cost": 256.68,
+    "num_erasers": 6,
+    "num_pencils": 8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    eraser_cost = 14.26\n    pencil_cost = 21.39\n    num_erasers = 6\n    num_pencils = 8\n\n    six_erasers_cost = round(eraser_cost * num_erasers, 2)\n    eight_pencils_cost = round(pencil_cost * num_pencils, 2)\n    total_cost = round(six_erasers_cost + eight_pencils_cost, 2)\n\n    return {\n        \"eraser_cost\": eraser_cost,\n        \"pencil_cost\": pencil_cost,\n        \"six_erasers_cost\": six_erasers_cost,\n        \"eight_pencils_cost\": eight_pencils_cost,\n        \"total_cost\": total_cost,\n        \"num_erasers\": num_erasers,\n        \"num_pencils\": num_pencils\n    }\n\nprint(recompute())\n",
+    "results": {
+      "eraser_cost": 14.26,
+      "pencil_cost": 21.39,
+      "six_erasers_cost": 85.56,
+      "eight_pencils_cost": 171.12,
+      "total_cost": 256.68,
+      "num_erasers": 6,
+      "num_pencils": 8
+    }
+  },
+  "final": {
+    "question": "An eraser costs 14.26 renminbi and a pencil costs 21.39 renminbi. How much do 6 erasers and 8 pencils cost?",
+    "answer_lines": [
+      "6 erasers cost 14.26 renminbi/eraser x 6 erasers = 85.56 renminbi.",
+      "8 pencils cost 21.39 renminbi/pencil x 8 pencils = 171.12 renminbi.",
+      "So, 6 erasers and 8 pencils cost 85.56 renminbi + 171.12 renminbi = 256.68 renminbi.",
+      "#### 256.68"
+    ],
+    "final_scalar": 256.68,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "An eraser costs 14.26 renminbi and a pencil costs 21.39 renminbi. How much do 6 erasers and 8 pencils cost?",
+    "adapted_answer": [
+      "6 erasers cost 14.26 renminbi/eraser x 6 erasers = 85.56 renminbi.",
+      "8 pencils cost 21.39 renminbi/pencil x 8 pencils = 171.12 renminbi.",
+      "So, 6 erasers and 8 pencils cost 85.56 renminbi + 171.12 renminbi = 256.68 renminbi.",
+      "#### 256.68"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

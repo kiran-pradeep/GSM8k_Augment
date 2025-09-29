@@ -1,0 +1,136 @@
+{
+  "index": 1243,
+  "split": "test",
+  "original": {
+    "question": "Archie buys beef jerky that comes 30 sticks to a bag and costs $18.00 per bag.  If Archie buys 1 bag while they're $3.00 off a bag, how much will each stick of jerky cost in cents?",
+    "answer": "The bags are $18.00 with a $3.00 coupon so each bag is 18-3 = $<<18-3=15.00>>15.00\nThe bag has 30 sticks of jerky and costs $15.00 so each stick will cost 15/30 = $0.50\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Archie",
+      "dollars",
+      "beef jerky"
+    ],
+    "notes": "The name Archie and the use of dollars are culturally specific to Western regions, and beef jerky is a food item not commonly associated with Pakistani cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bag_cost",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "coupon_discount",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discounted_bag_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "stick_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    converted_metrics = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        converted_metrics.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return converted_metrics\n\nmetrics = [\n    {\"variable\": \"bag_cost\", \"value\": 18.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"coupon_discount\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discounted_bag_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"stick_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bag_cost",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 5073.3,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "coupon_discount",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 845.55,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "discounted_bag_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 4227.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "stick_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 140.93,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Archie buys beef jerky that comes {sticks_per_bag} sticks to a bag and costs ${bag_cost} per bag.  If Archie buys 1 bag while they're ${coupon_discount} off a bag, how much will each stick of jerky cost in cents?",
+    "templatized_answer": [
+      "The bags are ${bag_cost} with a ${coupon_discount} coupon so each bag is {bag_cost}-{coupon_discount} = ${discounted_bag_cost}",
+      "The bag has {sticks_per_bag} sticks of jerky and costs ${discounted_bag_cost} so each stick will cost {discounted_bag_cost}/{sticks_per_bag} = ${stick_cost}",
+      "To convert dollars to cents, multiply by 100: {stick_cost} * 100 = {stick_cost_in_cents}",
+      "#### {stick_cost_in_cents}"
+    ],
+    "factual_assignment": {
+      "bag_cost": 18.0,
+      "coupon_discount": 3.0,
+      "discounted_bag_cost": 15.0,
+      "stick_cost": 0.5,
+      "sticks_per_bag": 30,
+      "stick_cost_in_cents": 50
+    }
+  },
+  "merged_assignment": {
+    "bag_cost": 5073.3,
+    "coupon_discount": 845.55,
+    "discounted_bag_cost": 4227.75,
+    "stick_cost": 140.93,
+    "sticks_per_bag": 30,
+    "stick_cost_in_cents": 50
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bag_cost = 5073.3 / 100  # Convert to dollars\n    coupon_discount = 845.55 / 100  # Convert to dollars\n    discounted_bag_cost = bag_cost - coupon_discount\n    sticks_per_bag = 30\n    stick_cost = discounted_bag_cost / sticks_per_bag\n    stick_cost_in_cents = round(stick_cost * 100)\n\n    return {\n        \"bag_cost\": round(bag_cost, 2),\n        \"coupon_discount\": round(coupon_discount, 2),\n        \"discounted_bag_cost\": round(discounted_bag_cost, 2),\n        \"stick_cost\": round(stick_cost, 2),\n        \"sticks_per_bag\": sticks_per_bag,\n        \"stick_cost_in_cents\": stick_cost_in_cents\n    }\n",
+    "results": {
+      "bag_cost": 50.73,
+      "coupon_discount": 8.46,
+      "discounted_bag_cost": 42.28,
+      "stick_cost": 1.41,
+      "sticks_per_bag": 30,
+      "stick_cost_in_cents": 141
+    }
+  },
+  "final": {
+    "question": "Archie buys beef jerky that comes 30 sticks to a bag and costs 50.73 rupee per bag.  If Archie buys 1 bag while they're 8.46 rupee off a bag, how much will each stick of jerky cost in cents?",
+    "answer_lines": [
+      "The bags are 50.73 rupee with a 8.46 rupee coupon so each bag is 50.73-8.46 = 42.28 rupee",
+      "The bag has 30 sticks of jerky and costs 42.28 rupee so each stick will cost 42.28/30 = 1.41 rupee",
+      "To convert rupee to cents, multiply by 100/1.41: 1.41 * 100 = 141",
+      "#### 141"
+    ],
+    "final_scalar": 141,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ali buys kebab rolls that come 30 pieces to a pack and costs 50.73 rupee per pack.  If Ali buys 1 pack while they're 8.46 rupee off a pack, how much will each piece of kebab roll cost in cents?",
+    "adapted_answer": [
+      "The packs are 50.73 rupee with a 8.46 rupee coupon so each pack is 50.73-8.46 = 42.28 rupee",
+      "The pack has 30 pieces of kebab roll and costs 42.28 rupee so each piece will cost 42.28/30 = 1.41 rupee",
+      "To convert rupee to cents, multiply by 100/1.41: 1.41 * 100 = 141",
+      "#### 141"
+    ],
+    "adaptation_notes": "Replaced 'Archie' with 'Ali', 'beef jerky' with 'kebab rolls', and 'bag' with 'pack' to give the text a Pakistani context."
+  }
+}

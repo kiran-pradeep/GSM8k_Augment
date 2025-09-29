@@ -1,0 +1,182 @@
+{
+  "index": 333,
+  "split": "test",
+  "original": {
+    "question": "Robert wants to buy a bookshelf and a sofa and has received two offers. Furniture United's offer includes a $1,350 advance payment and 6 monthly installments of $350 each. Cozy Homes' offer includes a $1,100 advance payment and 9 monthly installments of $250 each. What is the cost difference between the two offers?",
+    "answer": "Furniture United's offer is 1,350 + (6 *350) = $<<1350+(6*350)=3450>>3,450\nCozy Homes's offer is 1,100 + (9 * 250) = $<<1100+9*250=3350>>3,350\nThe difference is 3,450 – 3,350 = $<<3450-3350=100>>100\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Haiti, which uses the Haitian gourde as its official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "furniture_united_advance",
+      "value": 1350.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "furniture_united_monthly",
+      "value": 350.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cozy_homes_advance",
+      "value": 1100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cozy_homes_monthly",
+      "value": 250.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "furniture_united_total",
+      "value": 3450.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cozy_homes_total",
+      "value": 3350.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cost_difference",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"furniture_united_advance\", \"value\": 1350.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"furniture_united_monthly\", \"value\": 350.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cozy_homes_advance\", \"value\": 1100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cozy_homes_monthly\", \"value\": 250.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"furniture_united_total\", \"value\": 3450.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cozy_homes_total\", \"value\": 3350.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cost_difference\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "furniture_united_advance",
+        "original_value": 1350.0,
+        "original_unit": "dollar",
+        "converted_value": 176593.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "furniture_united_monthly",
+        "original_value": 350.0,
+        "original_unit": "dollar",
+        "converted_value": 45783.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "cozy_homes_advance",
+        "original_value": 1100.0,
+        "original_unit": "dollar",
+        "converted_value": 143891.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "cozy_homes_monthly",
+        "original_value": 250.0,
+        "original_unit": "dollar",
+        "converted_value": 32702.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "furniture_united_total",
+        "original_value": 3450.0,
+        "original_unit": "dollar",
+        "converted_value": 451294.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "cozy_homes_total",
+        "original_value": 3350.0,
+        "original_unit": "dollar",
+        "converted_value": 438213.5,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "cost_difference",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 13081.0,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Robert wants to buy a bookshelf and a sofa and has received two offers. Furniture United's offer includes a ${furniture_united_advance} advance payment and {furniture_united_months} monthly installments of ${furniture_united_monthly} each. Cozy Homes' offer includes a ${cozy_homes_advance} advance payment and {cozy_homes_months} monthly installments of ${cozy_homes_monthly} each. What is the cost difference between the two offers?",
+    "templatized_answer": [
+      "Furniture United's offer is {furniture_united_advance} + ({furniture_united_months} *{furniture_united_monthly}) = ${furniture_united_total}",
+      "Cozy Homes's offer is {cozy_homes_advance} + ({cozy_homes_months} * {cozy_homes_monthly}) = ${cozy_homes_total}",
+      "The difference is {furniture_united_total} – {cozy_homes_total} = ${cost_difference}",
+      "#### {cost_difference}"
+    ],
+    "factual_assignment": {
+      "furniture_united_advance": 1350.0,
+      "furniture_united_monthly": 350.0,
+      "cozy_homes_advance": 1100.0,
+      "cozy_homes_monthly": 250.0,
+      "furniture_united_total": 3450.0,
+      "cozy_homes_total": 3350.0,
+      "cost_difference": 100.0,
+      "furniture_united_months": 6,
+      "cozy_homes_months": 9
+    }
+  },
+  "merged_assignment": {
+    "furniture_united_advance": 176593.5,
+    "furniture_united_monthly": 45783.5,
+    "cozy_homes_advance": 143891.0,
+    "cozy_homes_monthly": 32702.5,
+    "furniture_united_total": 451294.5,
+    "cozy_homes_total": 438213.5,
+    "cost_difference": 13081.0,
+    "furniture_united_months": 6,
+    "cozy_homes_months": 9
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    furniture_united_advance = 176593.5\n    furniture_united_monthly = 45783.5\n    cozy_homes_advance = 143891.0\n    cozy_homes_monthly = 32702.5\n    furniture_united_months = 6\n    cozy_homes_months = 9\n\n    furniture_united_total = furniture_united_advance + (furniture_united_months * furniture_united_monthly)\n    cozy_homes_total = cozy_homes_advance + (cozy_homes_months * cozy_homes_monthly)\n    cost_difference = furniture_united_total - cozy_homes_total\n\n    return {\n        \"furniture_united_advance\": round(furniture_united_advance, 2),\n        \"furniture_united_monthly\": round(furniture_united_monthly, 2),\n        \"cozy_homes_advance\": round(cozy_homes_advance, 2),\n        \"cozy_homes_monthly\": round(cozy_homes_monthly, 2),\n        \"furniture_united_total\": round(furniture_united_total, 2),\n        \"cozy_homes_total\": round(cozy_homes_total, 2),\n        \"cost_difference\": round(cost_difference, 2),\n        \"furniture_united_months\": furniture_united_months,\n        \"cozy_homes_months\": cozy_homes_months\n    }\n\nprint(recompute())\n",
+    "results": {
+      "furniture_united_advance": 176593.5,
+      "furniture_united_monthly": 45783.5,
+      "cozy_homes_advance": 143891.0,
+      "cozy_homes_monthly": 32702.5,
+      "furniture_united_total": 451294.5,
+      "cozy_homes_total": 438213.5,
+      "cost_difference": 13081.0,
+      "furniture_united_months": 6,
+      "cozy_homes_months": 9
+    }
+  },
+  "final": {
+    "question": "Robert wants to buy a bookshelf and a sofa and has received two offers. Furniture United's offer includes a 176593.5 gourde advance payment and 6 monthly installments of 45783.5 gourde each. Cozy Homes' offer includes a 143891.0 gourde advance payment and 9 monthly installments of 32702.5 gourde each. What is the cost difference between the two offers?",
+    "answer_lines": [
+      "Furniture United's offer is 176593.5 + (6 * 45783.5) = 451294.5",
+      "Cozy Homes's offer is 143891.0 + (9 * 32702.5) = 438213.5",
+      "The difference is 451294.5 – 438213.5 = 13081.0",
+      "#### 13081.0"
+    ],
+    "final_scalar": 13081.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Robert wants to buy a bookshelf and a sofa and has received two offers. Meubles en Bois' offer includes a 176593.5 gourde advance payment and 6 monthly installments of 45783.5 gourde each. Lakay Dezòd's offer includes a 143891.0 gourde advance payment and 9 monthly installments of 32702.5 gourde each. What is the cost difference between the two offers?",
+    "adapted_answer": [
+      "Meubles en Bois' offer is 176593.5 + (6 * 45783.5) = 451294.5",
+      "Lakay Dezòd's offer is 143891.0 + (9 * 32702.5) = 438213.5",
+      "The difference is 451294.5 – 438213.5 = 13081.0",
+      "#### 13081.0"
+    ],
+    "adaptation_notes": "Replaced 'Furniture United' with 'Meubles en Bois' and 'Cozy Homes' with 'Lakay Dezòd' to provide Haitian equivalents."
+  }
+}

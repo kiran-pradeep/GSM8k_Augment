@@ -1,0 +1,108 @@
+{
+  "index": 621,
+  "split": "test",
+  "original": {
+    "question": "John injured his back and needs to go to physical therapy.  He went to physical therapy for 6 weeks.  Each week he went twice for 2 hours at a time.  If the sessions cost $125 per hour how much did the physical therapy cost?",
+    "answer": "Each week he did 2*2=<<2*2=4>>4 hours of physical therapy\nSo it cost 4*125=$<<4*125=500>>500 per week\nThis means he spent 500*6=$<<500*6=3000>>3000\n#### 3000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "session_cost",
+      "value": 125.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 3000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"session_cost\", \"value\": 125.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 3000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "session_cost",
+        "original_value": 125.0,
+        "original_unit": "dollar",
+        "converted_value": 891.25,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 3000.0,
+        "original_unit": "dollar",
+        "converted_value": 21390.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John injured his back and needs to go to physical therapy.  He went to physical therapy for {number_of_weeks} weeks.  Each week he went {number_of_sessions_per_week} times for {session_duration} hours at a time.  If the sessions cost ${session_cost} per hour how much did the physical therapy cost?",
+    "templatized_answer": [
+      "Each week he did {number_of_sessions_per_week}*{session_duration}={number_of_sessions_per_week}*{session_duration} hours of physical therapy",
+      "So it cost {number_of_sessions_per_week}*{session_duration}*{session_cost}=${number_of_sessions_per_week}*{session_duration}*{session_cost} per week",
+      "This means he spent {number_of_sessions_per_week}*{session_duration}*{session_cost}*{number_of_weeks}=${number_of_sessions_per_week}*{session_duration}*{session_cost}*{number_of_weeks}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "session_cost": 125.0,
+      "total_cost": 3000.0,
+      "number_of_weeks": 6,
+      "number_of_sessions_per_week": 2,
+      "session_duration": 2
+    }
+  },
+  "merged_assignment": {
+    "session_cost": 891.25,
+    "total_cost": 21390.0,
+    "number_of_weeks": 6,
+    "number_of_sessions_per_week": 2,
+    "session_duration": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    session_cost = 891.25\n    number_of_weeks = 6\n    number_of_sessions_per_week = 2\n    session_duration = 2\n\n    hours_per_week = number_of_sessions_per_week * session_duration\n    cost_per_week = hours_per_week * session_cost\n    total_cost = cost_per_week * number_of_weeks\n\n    return {\n        \"number_of_weeks\": number_of_weeks,\n        \"number_of_sessions_per_week\": number_of_sessions_per_week,\n        \"session_duration\": session_duration,\n        \"session_cost\": session_cost,\n        \"hours_per_week\": round(hours_per_week, 2),\n        \"cost_per_week\": round(cost_per_week, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "number_of_weeks": 6,
+      "number_of_sessions_per_week": 2,
+      "session_duration": 2,
+      "session_cost": 891.25,
+      "hours_per_week": 4,
+      "cost_per_week": 3565.0,
+      "total_cost": 21390.0
+    }
+  },
+  "final": {
+    "question": "John injured his back and needs to go to physical therapy.  He went to physical therapy for 6 weeks.  Each week he went 2 times for 2 hours at a time.  If the sessions cost 891.25 renminbi per hour how much did the physical therapy cost?",
+    "answer_lines": [
+      "Each week he did 2*2=4 hours of physical therapy",
+      "So it cost 4*891.25=3565 renminbi per week",
+      "This means he spent 3565*6=21390 renminbi",
+      "#### 21390"
+    ],
+    "final_scalar": 21390.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang injured his back and needs to go to physical therapy.  He went to physical therapy for 6 weeks.  Each week he went 2 times for 2 hours at a time.  If the sessions cost 891.25 renminbi per hour how much did the physical therapy cost?",
+    "adapted_answer": [
+      "Each week he did 2*2=4 hours of physical therapy",
+      "So it cost 4*891.25=3565 renminbi per week",
+      "This means he spent 3565*6=21390 renminbi",
+      "#### 21390"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Wang' to give the name a Chinese context."
+  }
+}

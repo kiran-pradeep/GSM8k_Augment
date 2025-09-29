@@ -1,0 +1,104 @@
+{
+  "index": 609,
+  "split": "test",
+  "original": {
+    "question": "Juan wants to add croissants to his bakery menu.  It takes 1/4 pound of butter to make 1 dozen croissants.  He wants to start with making 4 dozen a day for a week.  How many pounds of butter will he need to make these croissants?",
+    "answer": "1/4 pound of butter makes 1 dozen croissants and he wants to make 4 dozen so that’s 4*.25 = <<4*.25=1>>1 pound of butter\nHe wants to add 4 dozen croissants a day to the menu for a total of 7 days so he needs 1*7 = 7 pounds of butter\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Juan",
+      "pounds",
+      "croissants"
+    ],
+    "notes": "The name 'Juan' is of Spanish origin, 'pounds' is a unit of measurement commonly used in Western countries, and 'croissants' are a type of pastry originating from France."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "butter_per_dozen",
+      "value": 0.25,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "total_butter_needed",
+      "value": 7,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"renminbi\", 7.13),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"butter_per_dozen\",\n        \"value\": 0.25,\n        \"unit\": \"pound\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"total_butter_needed\",\n        \"value\": 7,\n        \"unit\": \"pound\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "butter_per_dozen",
+        "original_value": 0.25,
+        "original_unit": "pound",
+        "converted_value": 0.11,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "total_butter_needed",
+        "original_value": 7,
+        "original_unit": "pound",
+        "converted_value": 3.18,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Juan wants to add croissants to his bakery menu.  It takes {butter_per_dozen} pound of butter to make 1 dozen croissants.  He wants to start with making {dozens_per_day} dozen a day for a week.  How many pounds of butter will he need to make these croissants?",
+    "templatized_answer": [
+      "{butter_per_dozen} pound of butter makes 1 dozen croissants and he wants to make {dozens_per_day} dozen so that’s {dozens_per_day}*{butter_per_dozen} = {butter_per_day} pound of butter",
+      "He wants to add {dozens_per_day} dozen croissants a day to the menu for a total of {days} days so he needs {butter_per_day}*{days} = {total_butter_needed} pounds of butter",
+      "#### {total_butter_needed}"
+    ],
+    "factual_assignment": {
+      "butter_per_dozen": 0.25,
+      "dozens_per_day": 4,
+      "butter_per_day": 1,
+      "days": 7,
+      "total_butter_needed": 7
+    }
+  },
+  "merged_assignment": {
+    "butter_per_dozen": 0.11,
+    "dozens_per_day": 4,
+    "butter_per_day": 1,
+    "days": 7,
+    "total_butter_needed": 3.18
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    butter_per_dozen = 0.11\n    dozens_per_day = 4\n    butter_per_day = round(dozens_per_day * butter_per_dozen, 2)\n    days = 7\n    total_butter_needed = round(butter_per_day * days, 2)\n    \n    return {\n        \"butter_per_dozen\": butter_per_dozen,\n        \"dozens_per_day\": dozens_per_day,\n        \"butter_per_day\": butter_per_day,\n        \"days\": days,\n        \"total_butter_needed\": total_butter_needed\n    }\n",
+    "results": {
+      "butter_per_dozen": 0.11,
+      "dozens_per_day": 4,
+      "butter_per_day": 0.44,
+      "days": 7,
+      "total_butter_needed": 3.08
+    }
+  },
+  "final": {
+    "question": "Juan wants to add croissants to his bakery menu.  It takes 0.11 kilogram of butter to make 1 dozen croissants.  He wants to start with making 4 dozen a day for a week.  How many kilograms of butter will he need to make these croissants?",
+    "answer_lines": [
+      "0.11 kilogram of butter makes 1 dozen croissants and he wants to make 4 dozen so that’s 4*0.11 = 0.44 kilogram of butter",
+      "He wants to add 4 dozen croissants a day to the menu for a total of 7 days so he needs 0.44*7 = 3.08 kilograms of butter",
+      "#### 3.08"
+    ],
+    "final_scalar": 3.08,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wang wants to add yóu tiáo (oil strips, a type of Chinese flaky pastry) to his bakery menu.  It takes 0.11 kilogram of butter to make 1 dozen yóu tiáo.  He wants to start with making 4 dozen a day for a week.  How many kilograms of butter will he need to make these yóu tiáo?",
+    "adapted_answer": [
+      "0.11 kilogram of butter makes 1 dozen yóu tiáo and he wants to make 4 dozen so that’s 4*0.11 = 0.44 kilogram of butter",
+      "He wants to add 4 dozen yóu tiáo a day to the menu for a total of 7 days so he needs 0.44*7 = 3.08 kilograms of butter",
+      "#### 3.08"
+    ],
+    "adaptation_notes": "Replaced 'Juan' with 'Wang' and 'croissants' with 'yóu tiáo' to give the text a Chinese context."
+  }
+}

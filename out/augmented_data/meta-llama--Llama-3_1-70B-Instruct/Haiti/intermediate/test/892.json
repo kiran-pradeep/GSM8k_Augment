@@ -1,0 +1,130 @@
+{
+  "index": 892,
+  "split": "test",
+  "original": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her $6, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays $11 for her goods?",
+    "answer": "Ellen's yogurt cost is half the price of the salad, so it's $6 / 2 = $<<6/2=3>>3.\nFor the two carrots Ellen needs to pay $11 - $6 - $3 = $<<11-6-3=2>>2.\nSo one carrot costs $2 / $2 = $<<2/2=1>>1.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "salad",
+      "yogurt",
+      "Ellen"
+    ],
+    "notes": "The text contains non-Haitian cultural entities, including a name (Ellen), units (dollars), and food items (salad, yogurt) not commonly associated with Haitian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "salad_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "yogurt_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "carrot_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"gourde\", \"factor\": 130.81},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"salad_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"yogurt_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"carrot_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "salad_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 784.86,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "yogurt_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 392.43,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 1438.91,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "carrot_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 130.81,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her ${salad_cost}, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays ${total_cost} for her goods?",
+    "templatized_answer": [
+      "Ellen's yogurt cost is half the price of the salad, so it's ${salad_cost} / 2 = ${salad_cost / 2}.",
+      "For the two carrots Ellen needs to pay ${total_cost} - ${salad_cost} - ${salad_cost / 2} = ${total_cost - salad_cost - (salad_cost / 2)}.",
+      "So one carrot costs (${total_cost - salad_cost - (salad_cost / 2)}) / 2 = ${carrot_cost}.",
+      "#### {carrot_cost}"
+    ],
+    "factual_assignment": {
+      "salad_cost": 6,
+      "total_cost": 11,
+      "carrot_cost": 1
+    }
+  },
+  "merged_assignment": {
+    "salad_cost": 784.86,
+    "total_cost": 1438.91,
+    "carrot_cost": 130.81
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    salad_cost = 784.86\n    total_cost = 1438.91\n\n    yogurt_cost = salad_cost / 2\n    total_carrot_cost = total_cost - salad_cost - yogurt_cost\n    carrot_cost = total_carrot_cost / 2\n\n    return {\n        \"salad_cost\": round(salad_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"carrot_cost\": round(carrot_cost, 2),\n        \"yogurt_cost\": round(yogurt_cost, 2),\n        \"total_carrot_cost\": round(total_carrot_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "salad_cost": 784.86,
+      "total_cost": 1438.91,
+      "carrot_cost": 130.81,
+      "yogurt_cost": 392.43,
+      "total_carrot_cost": 261.62
+    }
+  },
+  "final": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her 784.86 gourde, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays 1438.91 gourde for her goods?",
+    "answer_lines": [
+      "Ellen's yogurt cost is half the price of the salad, so it's 784.86 / 2 = 392.43.",
+      "For the two carrots Ellen needs to pay 1438.91 - 784.86 - 392.43 = 261.62.",
+      "So one carrot costs 261.62 / 2 = 130.81.",
+      "#### 130.81"
+    ],
+    "final_scalar": 130.81,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Nadine is on a diet. She eats two malangas, a salade de betterave, and a fromage every day. The salade de betterave costs her 784.86 gourde, while the fromage is half the price. How much does Nadine pay for one malanga every day when in total she pays 1438.91 gourde for her goods?",
+    "adapted_answer": [
+      "Nadine's fromage cost is half the price of the salade de betterave, so it's 784.86 / 2 = 392.43.",
+      "For the two malangas Nadine needs to pay 1438.91 - 784.86 - 392.43 = 261.62.",
+      "So one malanga costs 261.62 / 2 = 130.81.",
+      "#### 130.81"
+    ],
+    "adaptation_notes": "Replaced 'Ellen' with 'Nadine', 'carrots' with 'malangas', 'salad' with 'salade de betterave', and 'yogurt' with 'fromage' to give the text a Haitian context."
+  }
+}

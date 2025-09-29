@@ -1,0 +1,125 @@
+{
+  "index": 462,
+  "split": "test",
+  "original": {
+    "question": "Ali had $21. Leila gave him half of her $100. How much does Ali have now?",
+    "answer": "Leila gave 100/2 = $<<100/2=50>>50 to Ali.\nAli now has $21+ $50 = $<<21+50=71>>71.\n#### 71"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is used, which is not the official currency of Moldova (Moldovan leu)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 21.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "leila_money",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "leila_gift",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "ali_total",
+      "value": 71.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 21.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"leila_money\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"leila_gift\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"ali_total\", \"value\": 71.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 21.0,
+        "original_unit": "dollar",
+        "converted_value": 349.02,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "leila_money",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "leila_gift",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 831.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "ali_total",
+        "original_value": 71.0,
+        "original_unit": "dollar",
+        "converted_value": 1180.02,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ali had ${initial_money}. Leila gave him half of her ${leila_money}. How much does Ali have now?",
+    "templatized_answer": [
+      "Leila gave {leila_money}/2 = ${leila_gift} to Ali.",
+      "Ali now has ${initial_money} + ${leila_gift} = ${ali_total}.",
+      "#### {ali_total}"
+    ],
+    "factual_assignment": {
+      "initial_money": 21.0,
+      "leila_money": 100.0,
+      "leila_gift": 50.0,
+      "ali_total": 71.0
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 349.02,
+    "leila_money": 1662.0,
+    "leila_gift": 831.0,
+    "ali_total": 1180.02
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 349.02\n    leila_money = 1662.0\n    leila_gift = leila_money / 2\n    ali_total = initial_money + leila_gift\n\n    return {\n        \"initial_money\": round(initial_money, 2),\n        \"leila_money\": round(leila_money, 2),\n        \"leila_gift\": round(leila_gift, 2),\n        \"ali_total\": round(ali_total, 2)\n    }\n",
+    "results": {
+      "initial_money": 349.02,
+      "leila_money": 1662.0,
+      "leila_gift": 831.0,
+      "ali_total": 1180.02
+    }
+  },
+  "final": {
+    "question": "Ali had 349.02 leu. Leila gave him half of her 1662.0 leu. How much does Ali have now?",
+    "answer_lines": [
+      "Leila gave 1662.0/2 = 831.0 leu to Ali.",
+      "Ali now has 349.02 leu + 831.0 leu = 1180.02 leu.",
+      "#### 1180.02"
+    ],
+    "final_scalar": 1180.02,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ali had 349.02 lei. Leila gave him half of her 1662.0 lei. How much does Ali have now?",
+    "adapted_answer": [
+      "Leila gave 1662.0/2 = 831.0 lei to Ali.",
+      "Ali now has 349.02 lei + 831.0 lei = 1180.02 lei.",
+      "#### 1180.02"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei', as 'lei' is the correct plural form of the Moldovan currency."
+  }
+}

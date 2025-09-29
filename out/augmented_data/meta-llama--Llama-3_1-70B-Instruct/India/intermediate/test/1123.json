@@ -1,0 +1,130 @@
+{
+  "index": 1123,
+  "split": "test",
+  "original": {
+    "question": "Elijah has one dog that is one-fourth the weight of Kory’s dog and another dog that is half the weight of Kory’s dog. If Kory’s dog is 60 pounds, how much do Elijah and Kory’s dogs weigh altogether, in pounds?",
+    "answer": "Elijah’s first dog is 60 / 4 = <<60/4=15>>15 pounds\nElijah’s second dog is 60 / 2 = <<60/2=30>>30 pounds\nThe total weight of Elijah and Kory’s dogs is 15 + 30 + 60 = <<15+30+60=105>>105 pounds\n#### 105"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Elijah",
+      "Kory",
+      "pounds"
+    ],
+    "notes": "Names Elijah and Kory are Western names and pounds is a unit of weight commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "kory_dog_weight",
+      "value": 60,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "elijah_first_dog_weight",
+      "value": 15,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "elijah_second_dog_weight",
+      "value": 30,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "total_dog_weight",
+      "value": 105,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"rupee\", 87),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"kory_dog_weight\", \"value\": 60, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"elijah_first_dog_weight\", \"value\": 15, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"elijah_second_dog_weight\", \"value\": 30, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"total_dog_weight\", \"value\": 105, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "kory_dog_weight",
+        "original_value": 60,
+        "original_unit": "pound",
+        "converted_value": 27.22,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "elijah_first_dog_weight",
+        "original_value": 15,
+        "original_unit": "pound",
+        "converted_value": 6.8,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "elijah_second_dog_weight",
+        "original_value": 30,
+        "original_unit": "pound",
+        "converted_value": 13.61,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "total_dog_weight",
+        "original_value": 105,
+        "original_unit": "pound",
+        "converted_value": 47.63,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Elijah has one dog that is one-fourth the weight of Kory’s dog and another dog that is half the weight of Kory’s dog. If Kory’s dog is {kory_dog_weight} pounds, how much do Elijah and Kory’s dogs weigh altogether, in pounds?",
+    "templatized_answer": [
+      "Elijah’s first dog is {kory_dog_weight} / 4 = {elijah_first_dog_weight} pounds",
+      "Elijah’s second dog is {kory_dog_weight} / 2 = {elijah_second_dog_weight} pounds",
+      "The total weight of Elijah and Kory’s dogs is {elijah_first_dog_weight} + {elijah_second_dog_weight} + {kory_dog_weight} = {total_dog_weight} pounds",
+      "#### {total_dog_weight}"
+    ],
+    "factual_assignment": {
+      "kory_dog_weight": 60,
+      "elijah_first_dog_weight": 15,
+      "elijah_second_dog_weight": 30,
+      "total_dog_weight": 105
+    }
+  },
+  "merged_assignment": {
+    "kory_dog_weight": 27.22,
+    "elijah_first_dog_weight": 6.8,
+    "elijah_second_dog_weight": 13.61,
+    "total_dog_weight": 47.63
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"kory_dog_weight\": 27.22,\n        \"elijah_first_dog_weight\": 6.8,\n        \"elijah_second_dog_weight\": 13.61,\n        \"total_dog_weight\": 47.63\n    }\n\n    recomputed_values = {}\n\n    # Recompute kory_dog_weight\n    recomputed_values[\"kory_dog_weight\"] = factual_assignment[\"kory_dog_weight\"]\n\n    # Recompute elijah_first_dog_weight\n    recomputed_values[\"elijah_first_dog_weight\"] = round(recomputed_values[\"kory_dog_weight\"] / 4, 2)\n\n    # Recompute elijah_second_dog_weight\n    recomputed_values[\"elijah_second_dog_weight\"] = round(recomputed_values[\"kory_dog_weight\"] / 2, 2)\n\n    # Recompute total_dog_weight\n    recomputed_values[\"total_dog_weight\"] = round(recomputed_values[\"elijah_first_dog_weight\"] + recomputed_values[\"elijah_second_dog_weight\"] + recomputed_values[\"kory_dog_weight\"], 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "kory_dog_weight": 27.22,
+      "elijah_first_dog_weight": 6.8,
+      "elijah_second_dog_weight": 13.61,
+      "total_dog_weight": 47.63
+    }
+  },
+  "final": {
+    "question": "Elijah has one dog that is one-fourth the weight of Kory’s dog and another dog that is half the weight of Kory’s dog. If Kory’s dog is 27.22 kilograms, how much do Elijah and Kory’s dogs weigh altogether, in kilograms?",
+    "answer_lines": [
+      "Elijah’s first dog is 27.22 / 4 = 6.8 kilograms",
+      "Elijah’s second dog is 27.22 / 2 = 13.61 kilograms",
+      "The total weight of Elijah and Kory’s dogs is 6.8 + 13.61 + 27.22 = 47.63 kilograms",
+      "#### 47.63"
+    ],
+    "final_scalar": 47.63,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aarav has one dog that is one-fourth the weight of Kabir’s dog and another dog that is half the weight of Kabir’s dog. If Kabir’s dog is 27.22 kilograms, how much do Aarav and Kabir’s dogs weigh altogether, in kilograms?",
+    "adapted_answer": [
+      "Aarav’s first dog is 27.22 / 4 = 6.8 kilograms",
+      "Aarav’s second dog is 27.22 / 2 = 13.61 kilograms",
+      "The total weight of Aarav and Kabir’s dogs is 6.8 + 13.61 + 27.22 = 47.63 kilograms",
+      "#### 47.63"
+    ],
+    "adaptation_notes": "Replaced 'Elijah' with 'Aarav' and 'Kory' with 'Kabir' to provide an Indian context."
+  }
+}

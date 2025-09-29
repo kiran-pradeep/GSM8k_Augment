@@ -1,0 +1,120 @@
+{
+  "index": 935,
+  "split": "test",
+  "original": {
+    "question": "Fern is trying to decide between buying the Widgeteer 3000, which makes 60 widgets an hour, and the WidgetMaster 9000, which makes 45 widgets an hour. Each widget sells for $6. How much more money will Fern make from the Widgeteer 3000 vs. the WidgetMaster 9000 if it runs 24 hours a day for a month with 30 days?",
+    "answer": "First find how many more widgets the Widgeteer 3000 makes per hour: 60 widgets/hour - 45 widgets/hour = <<60-45=15>>15 widgets/hour\nThen multiply that difference by the number of hours in a day to find the daily difference: 15 widgets/hour * 24 hours/day = <<360=360>>360 widgets/day\nThen multiply the daily difference by the number of days in a month to find the monthly difference: 360 widgets/day * 30 days/month = <<360*30=10800>>10,800 widgets/month\nThen multiply that number by the cost per widget to find the total earnings difference: 10,800 widgets/month * $6/widget = $<<10800*6=64800>>64,800\n#### 64800"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not in China, where the yuan is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "widget_price",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "earnings_difference",
+      "value": 64800,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * conversions[unit][converted_unit]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"widget_price\",\n        \"value\": 6,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"earnings_difference\",\n        \"value\": 64800,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "widget_price",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "earnings_difference",
+        "original_value": 64800,
+        "original_unit": "dollar",
+        "converted_value": 462024.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Fern is trying to decide between buying the Widgeteer 3000, which makes {widgeteer_widgets_per_hour} widgets an hour, and the WidgetMaster 9000, which makes {widgetmaster_widgets_per_hour} widgets an hour. Each widget sells for ${widget_price}. How much more money will Fern make from the Widgeteer 3000 vs. the WidgetMaster 9000 if it runs {hours_per_day} hours a day for a month with {days_in_month} days?",
+    "templatized_answer": [
+      "First find how many more widgets the Widgeteer 3000 makes per hour: {widgeteer_widgets_per_hour} widgets/hour - {widgetmaster_widgets_per_hour} widgets/hour = {widgets_difference_per_hour} widgets/hour",
+      "Then multiply that difference by the number of hours in a day to find the daily difference: {widgets_difference_per_hour} widgets/hour * {hours_per_day} hours/day = {widgets_difference_per_day} widgets/day",
+      "Then multiply the daily difference by the number of days in a month to find the monthly difference: {widgets_difference_per_day} widgets/day * {days_in_month} days/month = {widgets_difference_per_month} widgets/month",
+      "Then multiply that number by the cost per widget to find the total earnings difference: {widgets_difference_per_month} widgets/month * ${widget_price}/widget = ${earnings_difference}",
+      "#### {earnings_difference}"
+    ],
+    "factual_assignment": {
+      "widgeteer_widgets_per_hour": 60,
+      "widgetmaster_widgets_per_hour": 45,
+      "widget_price": 6,
+      "hours_per_day": 24,
+      "days_in_month": 30,
+      "widgets_difference_per_hour": 15,
+      "widgets_difference_per_day": 360,
+      "widgets_difference_per_month": 10800,
+      "earnings_difference": 64800
+    }
+  },
+  "merged_assignment": {
+    "widgeteer_widgets_per_hour": 60,
+    "widgetmaster_widgets_per_hour": 45,
+    "widget_price": 42.78,
+    "hours_per_day": 24,
+    "days_in_month": 30,
+    "widgets_difference_per_hour": 15,
+    "widgets_difference_per_day": 360,
+    "widgets_difference_per_month": 10800,
+    "earnings_difference": 462024.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    widgeteer_widgets_per_hour = 60\n    widgetmaster_widgets_per_hour = 45\n    widget_price = 42.78\n    hours_per_day = 24\n    days_in_month = 30\n\n    widgets_difference_per_hour = widgeteer_widgets_per_hour - widgetmaster_widgets_per_hour\n    widgets_difference_per_day = widgets_difference_per_hour * hours_per_day\n    widgets_difference_per_month = widgets_difference_per_day * days_in_month\n    earnings_difference = round(widgets_difference_per_month * widget_price, 2)\n\n    return {\n        \"widgeteer_widgets_per_hour\": widgeteer_widgets_per_hour,\n        \"widgetmaster_widgets_per_hour\": widgetmaster_widgets_per_hour,\n        \"widget_price\": widget_price,\n        \"hours_per_day\": hours_per_day,\n        \"days_in_month\": days_in_month,\n        \"widgets_difference_per_hour\": widgets_difference_per_hour,\n        \"widgets_difference_per_day\": widgets_difference_per_day,\n        \"widgets_difference_per_month\": widgets_difference_per_month,\n        \"earnings_difference\": earnings_difference\n    }\n",
+    "results": {
+      "widgeteer_widgets_per_hour": 60,
+      "widgetmaster_widgets_per_hour": 45,
+      "widget_price": 42.78,
+      "hours_per_day": 24,
+      "days_in_month": 30,
+      "widgets_difference_per_hour": 15,
+      "widgets_difference_per_day": 360,
+      "widgets_difference_per_month": 10800,
+      "earnings_difference": 462024.0
+    }
+  },
+  "final": {
+    "question": "Fern is trying to decide between buying the Widgeteer 3000, which makes 60 widgets an hour, and the WidgetMaster 9000, which makes 45 widgets an hour. Each widget sells for 42.78 renminbi. How much more money will Fern make from the Widgeteer 3000 vs. the WidgetMaster 9000 if it runs 24 hours a day for a month with 30 days?",
+    "answer_lines": [
+      "First find how many more widgets the Widgeteer 3000 makes per hour: 60 widgets/hour - 45 widgets/hour = 15 widgets/hour",
+      "Then multiply that difference by the number of hours in a day to find the daily difference: 15 widgets/hour * 24 hours/day = 360 widgets/day",
+      "Then multiply the daily difference by the number of days in a month to find the monthly difference: 360 widgets/day * 30 days/month = 10800 widgets/month",
+      "Then multiply that number by the cost per widget to find the total earnings difference: 10800 widgets/month * 42.78 renminbi/widget = 462024.0 renminbi",
+      "#### 462024.0"
+    ],
+    "final_scalar": 462024.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Feng is trying to decide between buying the Shouhuaji 3000, which makes 60 widgets an hour, and the Shouhuaji 9000, which makes 45 widgets an hour. Each widget sells for 42.78 renminbi. How much more money will Feng make from the Shouhuaji 3000 vs. the Shouhuaji 9000 if it runs 24 hours a day for a month with 30 days?",
+    "adapted_answer": [
+      "First find how many more widgets the Shouhuaji 3000 makes per hour: 60 widgets/hour - 45 widgets/hour = 15 widgets/hour",
+      "Then multiply that difference by the number of hours in a day to find the daily difference: 15 widgets/hour * 24 hours/day = 360 widgets/day",
+      "Then multiply the daily difference by the number of days in a month to find the monthly difference: 360 widgets/day * 30 days/month = 10800 widgets/month",
+      "Then multiply that number by the cost per widget to find the total earnings difference: 10800 widgets/month * 42.78 renminbi/widget = 462024.0 renminbi",
+      "#### 462024.0"
+    ],
+    "adaptation_notes": "Replaced 'Fern' with 'Feng', 'Widgeteer 3000' with 'Shouhuaji 3000', and 'WidgetMaster 9000' with 'Shouhuaji 9000' to give the names a Chinese context."
+  }
+}

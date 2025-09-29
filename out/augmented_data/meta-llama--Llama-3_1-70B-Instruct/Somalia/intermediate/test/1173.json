@@ -1,0 +1,162 @@
+{
+  "index": 1173,
+  "split": "test",
+  "original": {
+    "question": "A regular box of 100 dishwasher pods costs $12. There's currently a special size box for the same price that has 20% more pods. How many dishwashing cycles with the new box can you run for $1 if you use 1 pod per cycle?",
+    "answer": "If the regular box has 100 pods and the special one has 20% more, then the new box has 100 * 20% = 20 more pods\nIf the new one has 20 more pods than the regular one, the new box has a total of 20+100 = <<20+100=120>>120 pods\nIf the cost of the regular box ($12) is the same as the new box, then the new box also costs $12\nIf the new box has 120 pods and the price for the box is $12, then each pod costs $12/120 = $<<12/120=0.10>>0.10\nIf 1 pod costs $0.10 and is used in 1 cycle, then each cycle costs = $<<1*0.10=0.10>>0.10\nIf 1 cycle costs $0.10, then for $1 I could run $1/$0.1 = 10 cycles\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusively in Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "box_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "box_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "pod_cost",
+      "value": 0.1,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cycle_cost",
+      "value": 0.1,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "budget",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions and metric[\"context\"] != \"question\":\n            conversion = conversions[original_unit]\n            converted_value = round(original_value * conversion[\"rate\"], 2)\n            converted_unit = conversion[\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"box_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"box_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"pod_cost\", \"value\": 0.1, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cycle_cost\", \"value\": 0.1, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"budget\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "box_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 12.0,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "box_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "pod_cost",
+        "original_value": 0.1,
+        "original_unit": "dollar",
+        "converted_value": 56.94,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "cycle_cost",
+        "original_value": 0.1,
+        "original_unit": "dollar",
+        "converted_value": 56.94,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "budget",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 569.38,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A regular box of {regular_pods} dishwasher pods costs ${box_cost}. There's currently a special size box for the same price that has 20% more pods. How many dishwashing cycles with the new box can you run for ${budget} if you use 1 pod per cycle?",
+    "templatized_answer": [
+      "If the regular box has {regular_pods} pods and the special one has 20% more, then the new box has {regular_pods} * 20% = {additional_pods} more pods",
+      "If the new one has {additional_pods} more pods than the regular one, the new box has a total of {additional_pods}+{regular_pods} = {new_pods} pods",
+      "If the cost of the regular box (${box_cost}) is the same as the new box, then the new box also costs ${box_cost}",
+      "If the new box has {new_pods} pods and the price for the box is ${box_cost}, then each pod costs ${box_cost}/{new_pods} = ${pod_cost}",
+      "If 1 pod costs ${pod_cost} and is used in 1 cycle, then each cycle costs = ${pod_cost}",
+      "If 1 cycle costs ${cycle_cost}, then for ${budget} I could run ${budget}/${cycle_cost} = {cycles} cycles",
+      "#### {cycles}"
+    ],
+    "factual_assignment": {
+      "box_cost": 12.0,
+      "budget": 1.0,
+      "regular_pods": 100,
+      "additional_pods": 20,
+      "new_pods": 120,
+      "pod_cost": 0.1,
+      "cycle_cost": 0.1,
+      "cycles": 10
+    }
+  },
+  "merged_assignment": {
+    "box_cost": 6832.56,
+    "budget": 569.38,
+    "regular_pods": 100,
+    "additional_pods": 20,
+    "new_pods": 120,
+    "pod_cost": 56.94,
+    "cycle_cost": 56.94,
+    "cycles": 10
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    box_cost = 6832.56\n    budget = 569.38\n    regular_pods = 100\n    additional_pods = regular_pods * 0.2\n    new_pods = regular_pods + additional_pods\n    pod_cost = box_cost / new_pods\n    cycle_cost = pod_cost\n    cycles = budget / cycle_cost\n\n    return {\n        \"box_cost\": round(box_cost, 2),\n        \"budget\": round(budget, 2),\n        \"regular_pods\": regular_pods,\n        \"additional_pods\": round(additional_pods, 2),\n        \"new_pods\": round(new_pods, 2),\n        \"pod_cost\": round(pod_cost, 2),\n        \"cycle_cost\": round(cycle_cost, 2),\n        \"cycles\": round(cycles, 2)\n    }\n",
+    "results": {
+      "box_cost": 6832.56,
+      "budget": 569.38,
+      "regular_pods": 100,
+      "additional_pods": 20.0,
+      "new_pods": 120.0,
+      "pod_cost": 56.94,
+      "cycle_cost": 56.94,
+      "cycles": 10.0
+    }
+  },
+  "final": {
+    "question": "A regular box of 100 dishwasher pods costs 6832.56 shilling. There's currently a special size box for the same price that has 20% more pods. How many dishwashing cycles with the new box can you run for 569.38 shilling if you use 1 pod per cycle?",
+    "answer_lines": [
+      "If the regular box has 100 pods and the special one has 20% more, then the new box has 100 * 20% = 20 more pods",
+      "If the new one has 20 more pods than the regular one, the new box has a total of 20+100 = 120 pods",
+      "If the cost of the regular box (6832.56 shilling) is the same as the new box, then the new box also costs 6832.56 shilling",
+      "If the new box has 120 pods and the price for the box is 6832.56 shilling, then each pod costs 6832.56/120 = 56.94 shilling",
+      "If 1 pod costs 56.94 shilling and is used in 1 cycle, then each cycle costs = 56.94 shilling",
+      "If 1 cycle costs 56.94 shilling, then for 569.38 shilling I could run 569.38/56.94 = 10 cycles",
+      "#### 10"
+    ],
+    "final_scalar": 10.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A regular box of 100 dishwasher pods costs 6832.56 shilling. There's currently a special size box for the same price that has 20% more pods. How many dishwashing cycles with the new box can you run for 569.38 shilling if you use 1 pod per cycle?",
+    "adapted_answer": [
+      "If the regular box has 100 pods and the special one has 20% more, then the new box has 100 * 20% = 20 more pods",
+      "If the new one has 20 more pods than the regular one, the new box has a total of 20+100 = 120 pods",
+      "If the cost of the regular box (6832.56 shilling) is the same as the new box, then the new box also costs 6832.56 shilling",
+      "If the new box has 120 pods and the price for the box is 6832.56 shilling, then each pod costs 6832.56/120 = 56.94 shilling",
+      "If 1 pod costs 56.94 shilling and is used in 1 cycle, then each cycle costs = 56.94 shilling",
+      "If 1 cycle costs 56.94 shilling, then for 569.38 shilling I could run 569.38/56.94 = 10 cycles",
+      "#### 10"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

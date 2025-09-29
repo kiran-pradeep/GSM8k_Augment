@@ -1,0 +1,129 @@
+{
+  "index": 847,
+  "split": "test",
+  "original": {
+    "question": "Brenda invested $300 into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "answer": "Three-quarters of $300 is (3/4)*$300 = $<<(3/4)*300=225>>225\nAfter 3 years, interest of $225*3 = $<<225*3=675>>675 has been accumulated\nShe now has a total of $300+$675 = $<<300+675=975>>975\n#### 975"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Brenda",
+      "dollars"
+    ],
+    "notes": "The name 'Brenda' is a Western name and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_investment",
+      "value": 300,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "interest_per_year",
+      "value": 225,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_interest",
+      "value": 675,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_after_3_years",
+      "value": 975,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] not in [\"renminbi\", \"kilogram\", \"gram\", \"kilometer\", \"meter\", \"liter\", \"milliliter\", \"minute\", \"hour\"]:\n            converted_value, converted_unit = convert(metric[\"value\"], metric[\"unit\"])\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_investment\",\n    \"value\": 300,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"interest_per_year\",\n    \"value\": 225,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_interest\",\n    \"value\": 675,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_after_3_years\",\n    \"value\": 975,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_investment",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 2139.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "interest_per_year",
+        "original_value": 225,
+        "original_unit": "dollar",
+        "converted_value": 1604.25,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_interest",
+        "original_value": 675,
+        "original_unit": "dollar",
+        "converted_value": 4812.75,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_after_3_years",
+        "original_value": 975,
+        "original_unit": "dollar",
+        "converted_value": 6951.75,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Brenda invested ${initial_investment} into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "templatized_answer": [
+      "Three-quarters of ${initial_investment} is (3/4)*${initial_investment} = ${interest_per_year}",
+      "After 3 years, interest of ${interest_per_year}*3 = ${total_interest} has been accumulated",
+      "She now has a total of ${initial_investment}+${total_interest} = ${total_after_3_years}",
+      "#### {total_after_3_years}"
+    ],
+    "factual_assignment": {
+      "initial_investment": 300,
+      "interest_per_year": 225,
+      "total_interest": 675,
+      "total_after_3_years": 975
+    }
+  },
+  "merged_assignment": {
+    "initial_investment": 2139.0,
+    "interest_per_year": 1604.25,
+    "total_interest": 4812.75,
+    "total_after_3_years": 6951.75
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_investment = 2139.0\n    interest_per_year = (3/4) * initial_investment\n    total_interest = interest_per_year * 3\n    total_after_3_years = initial_investment + total_interest\n\n    return {\n        \"initial_investment\": initial_investment,\n        \"interest_per_year\": round(interest_per_year, 2),\n        \"total_interest\": round(total_interest, 2),\n        \"total_after_3_years\": round(total_after_3_years, 2)\n    }\n",
+    "results": {
+      "initial_investment": 2139.0,
+      "interest_per_year": 1604.25,
+      "total_interest": 4812.75,
+      "total_after_3_years": 6951.75
+    }
+  },
+  "final": {
+    "question": "Brenda invested 2139.0 renminbi into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "answer_lines": [
+      "Three-quarters of 2139.0 renminbi is (3/4)*2139.0 = 1604.25 renminbi",
+      "After 3 years, interest of 1604.25 renminbi*3 = 4812.75 renminbi has been accumulated",
+      "She now has a total of 2139.0 renminbi+4812.75 renminbi = 6951.75 renminbi",
+      "#### 6951.75"
+    ],
+    "final_scalar": 6951.75,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mei invested 2139.0 renminbi into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "adapted_answer": [
+      "Three-quarters of 2139.0 renminbi is (3/4)*2139.0 = 1604.25 renminbi",
+      "After 3 years, interest of 1604.25 renminbi*3 = 4812.75 renminbi has been accumulated",
+      "She now has a total of 2139.0 renminbi+4812.75 renminbi = 6951.75 renminbi",
+      "#### 6951.75"
+    ],
+    "adaptation_notes": "Replaced 'Brenda' with 'Mei' to provide a Chinese equivalent."
+  }
+}

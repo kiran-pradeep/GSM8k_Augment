@@ -1,0 +1,132 @@
+{
+  "index": 1286,
+  "split": "test",
+  "original": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in cents does James have?",
+    "answer": "First figure out how much the nickels are worth: 2 * 5 cents = <<2*5=10>>10 cents\nThen figure out how much the dimes are worth: 7 * 10 cents = <<7*10=70>>70 cents\nFinally, add the value of the nickels, dimes and quarter: 25 cents + 10 cents + 70 cents = <<25+10+70=105>>105 cents\n#### 105"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "quarter",
+      "nickels",
+      "dimes",
+      "cents"
+    ],
+    "notes": "The text contains culturally specific entities including a Western name and US currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 25.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "nickel_value",
+      "value": 5.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "dime_value",
+      "value": 10.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "total_value",
+      "value": 105.0,
+      "unit": "cent",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"cent\": {\"unit\": \"renminbi\", \"factor\": 7.13 / 100},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"quarter_value\", \"value\": 25.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"nickel_value\", \"value\": 5.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"dime_value\", \"value\": 10.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"total_value\", \"value\": 105.0, \"unit\": \"cent\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 25.0,
+        "original_unit": "cent",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "nickel_value",
+        "original_value": 5.0,
+        "original_unit": "cent",
+        "converted_value": 0.36,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "dime_value",
+        "original_value": 10.0,
+        "original_unit": "cent",
+        "converted_value": 0.71,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_value",
+        "original_value": 105.0,
+        "original_unit": "cent",
+        "converted_value": 7.49,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in cents does James have?",
+    "templatized_answer": [
+      "First figure out how much the nickels are worth: 2 * {nickel_value} cents = {2*nickel_value} cents",
+      "Then figure out how much the dimes are worth: 7 * {dime_value} cents = {7*dime_value} cents",
+      "Finally, add the value of the nickels, dimes and quarter: {quarter_value} cents + {2*nickel_value} cents + {7*dime_value} cents = {quarter_value+2*nickel_value+7*dime_value} cents",
+      "#### {quarter_value+2*nickel_value+7*dime_value}"
+    ],
+    "factual_assignment": {
+      "quarter_value": 25.0,
+      "nickel_value": 5.0,
+      "dime_value": 10.0
+    }
+  },
+  "merged_assignment": {
+    "quarter_value": 1.78,
+    "nickel_value": 0.36,
+    "dime_value": 0.71
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    quarter_value = 1.78\n    nickel_value = 0.36\n    dime_value = 0.71\n\n    two_nickel_value = 2 * nickel_value\n    seven_dime_value = 7 * dime_value\n    total_value = quarter_value + two_nickel_value + seven_dime_value\n\n    return {\n        \"quarter_value\": round(quarter_value, 2),\n        \"nickel_value\": round(nickel_value, 2),\n        \"dime_value\": round(dime_value, 2),\n        \"2*nickel_value\": round(two_nickel_value, 2),\n        \"7*dime_value\": round(seven_dime_value, 2),\n        \"quarter_value+2*nickel_value+7*dime_value\": round(total_value, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "quarter_value": 1.78,
+      "nickel_value": 0.36,
+      "dime_value": 0.71,
+      "2*nickel_value": 0.72,
+      "7*dime_value": 4.97,
+      "quarter_value+2*nickel_value+7*dime_value": 7.47
+    }
+  },
+  "final": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in renminbi does James have?",
+    "answer_lines": [
+      "First figure out how much the nickels are worth: 2 * 0.36 renminbi = 0.72 renminbi",
+      "Then figure out how much the dimes are worth: 7 * 0.71 renminbi = 4.97 renminbi",
+      "Finally, add the value of the nickels, dimes and quarter: 1.78 renminbi + 0.72 renminbi + 4.97 renminbi = 7.47 renminbi",
+      "#### 7.47"
+    ],
+    "final_scalar": 7.47,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "李张喜歡检某商品机的金币探币之了值金。一天当不见到一个五幣币、二个五幣币和七十五幣币。李张気你有多少金吗？",
+    "adapted_answer": [
+      "第一步计算五幣币的值金、二 * 0.36 人民币 = 0.72 人民币",
+      "第二步计算五幣币的值金、七 * 0.71 人民币 = 4.97 人民币",
+      "本自计算五幣币和五幣币和五幣币的值金、 1.78 人民币 + 0.72 人民币 + 4.97 人民币 = 7.47 人民币",
+      "#### 7.47"
+    ],
+    "adaptation_notes": "Replaced ‘James’ with 李张, ‘quarter’ with 五幣币, ‘nickels’ with 五幣币, ‘dimes’ with 五幣币, and ‘renminbi’ with 人民币."
+  }
+}

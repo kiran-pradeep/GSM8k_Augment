@@ -1,0 +1,130 @@
+{
+  "index": 842,
+  "split": "test",
+  "original": {
+    "question": "While on vacation in Bali, Thea bought a hat from a craftsman worth $70. If she gave the craftsman four $20 bills, how much change did she get?",
+    "answer": "If she gave the craftsman four $20 bills, the total amount of money she gave to the craftsman is 4*$20 = $<<4*20=80>>80.\nSince the hat was worth $70, the craftsman gave her change equal to $80-$70=$10\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Thea",
+      "Bali",
+      "dollars"
+    ],
+    "notes": "Thea is a Western name, Bali is a location in Indonesia, and dollars is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hat_cost",
+      "value": 70.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bill_value",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_bills",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n        converted_value = value\n        converted_unit = unit\n\n        if unit in conversions and context == \"question\":\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n\n        if converted_unit == \"renminbi\":\n            converted_value = round(converted_value, 2)\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"hat_cost\",\n    \"value\": 70.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"bill_value\",\n    \"value\": 20.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_bills\",\n    \"value\": 80.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"change\",\n    \"value\": 10.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hat_cost",
+        "original_value": 70.0,
+        "original_unit": "dollar",
+        "converted_value": 499.1,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bill_value",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_bills",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 80.0,
+        "converted_unit": "dollar"
+      },
+      {
+        "variable": "change",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 10.0,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "While on vacation in Bali, Thea bought a hat from a craftsman worth ${hat_cost}. If she gave the craftsman four ${bill_value} bills, how much change did she get?",
+    "templatized_answer": [
+      "If she gave the craftsman four ${bill_value} bills, the total amount of money she gave to the craftsman is {total_bills_given}*${bill_value} = ${total_bills_given}*{bill_value}.",
+      "Since the hat was worth ${hat_cost}, the craftsman gave her change equal to ${total_bills_given}*{bill_value}-${hat_cost}=${change}",
+      "#### {change}"
+    ],
+    "factual_assignment": {
+      "hat_cost": 70.0,
+      "bill_value": 20.0,
+      "total_bills_given": 4,
+      "change": 10.0,
+      "total_bills": 80.0
+    }
+  },
+  "merged_assignment": {
+    "hat_cost": 499.1,
+    "bill_value": 142.6,
+    "total_bills_given": 4,
+    "change": 10.0,
+    "total_bills": 80.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hat_cost = 499.1\n    bill_value = 142.6\n    total_bills_given = 4\n\n    total_bills = total_bills_given * bill_value\n    change = total_bills - hat_cost\n\n    return {\n        \"hat_cost\": round(hat_cost, 2),\n        \"bill_value\": round(bill_value, 2),\n        \"total_bills_given\": total_bills_given,\n        \"total_bills\": round(total_bills, 2),\n        \"change\": round(change, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hat_cost": 499.1,
+      "bill_value": 142.6,
+      "total_bills_given": 4,
+      "total_bills": 570.4,
+      "change": 71.3
+    }
+  },
+  "final": {
+    "question": "While on vacation in Bali, Thea bought a hat from a craftsman worth 499.1 renminbi. If she gave the craftsman four 142.6 renminbi bills, how much change did she get?",
+    "answer_lines": [
+      "If she gave the craftsman four 142.6 renminbi bills, the total amount of money she gave to the craftsman is 4*142.6 renminbi = 570.4 renminbi.",
+      "Since the hat was worth 499.1 renminbi, the craftsman gave her change equal to 570.4 renminbi-499.1 renminbi=71.3 renminbi",
+      "#### 71.3"
+    ],
+    "final_scalar": 71.3,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "While on vacation in Hainan, Xiaoying bought a hat from a craftsman worth 499.1 renminbi. If she gave the craftsman four 142.6 renminbi bills, how much change did she get?",
+    "adapted_answer": [
+      "If she gave the craftsman four 142.6 renminbi bills, the total amount of money she gave to the craftsman is 4*142.6 renminbi = 570.4 renminbi.",
+      "Since the hat was worth 499.1 renminbi, the craftsman gave her change equal to 570.4 renminbi-499.1 renminbi=71.3 renminbi",
+      "#### 71.3"
+    ],
+    "adaptation_notes": "Replaced 'Thea' with 'Xiaoying' (Chinese name) and 'Bali' with 'Hainan' (Chinese location)."
+  }
+}

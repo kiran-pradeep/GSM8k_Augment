@@ -1,0 +1,113 @@
+{
+  "index": 962,
+  "split": "test",
+  "original": {
+    "question": "Jen decides to travel to 3 different countries.  He has to pay $400 for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "answer": "He pays 400*.5=$<<400*.5=200>>200 more for tickets than supplies\nThat means the tickets cost 400+200=$<<400+200=600>>600\nSo it cost 600+400=$<<600+400=1000>>1000 in total.\n#### 1000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "travel_supplies_cost",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "travel_tickets_cost",
+      "value": 600.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_travel_cost",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            converted_value = round(original_value * conversions[original_unit][converted_unit], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"travel_supplies_cost\",\n    \"value\": 400.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"travel_tickets_cost\",\n    \"value\": 600.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_travel_cost\",\n    \"value\": 1000.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "travel_supplies_cost",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 2852.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "travel_tickets_cost",
+        "original_value": 600.0,
+        "original_unit": "dollar",
+        "converted_value": 4278.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_travel_cost",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 7130.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jen decides to travel to 3 different countries.  He has to pay ${travel_supplies_cost} for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "templatized_answer": [
+      "He pays {travel_supplies_cost}*.5=${{travel_supplies_cost}*.5} more for tickets than supplies",
+      "That means the tickets cost {travel_supplies_cost}+{travel_supplies_cost}*.5=${travel_tickets_cost}",
+      "So it cost {travel_tickets_cost}+{travel_supplies_cost}=${total_travel_cost} in total.",
+      "#### {total_travel_cost}"
+    ],
+    "factual_assignment": {
+      "travel_supplies_cost": 400.0,
+      "travel_tickets_cost": 600.0,
+      "total_travel_cost": 1000.0
+    }
+  },
+  "merged_assignment": {
+    "travel_supplies_cost": 2852.0,
+    "travel_tickets_cost": 4278.0,
+    "total_travel_cost": 7130.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    travel_supplies_cost = 2852.0\n    travel_tickets_cost = travel_supplies_cost * 1.5\n    total_travel_cost = travel_tickets_cost + travel_supplies_cost\n\n    return {\n        \"travel_supplies_cost\": travel_supplies_cost,\n        \"travel_tickets_cost\": travel_tickets_cost,\n        \"total_travel_cost\": total_travel_cost,\n        \"travel_supplies_cost*.5\": round(travel_supplies_cost * 0.5, 2)\n    }\n",
+    "results": {
+      "travel_supplies_cost": 2852.0,
+      "travel_tickets_cost": 4278.0,
+      "total_travel_cost": 7130.0,
+      "travel_supplies_cost*.5": 1426.0
+    }
+  },
+  "final": {
+    "question": "Jen decides to travel to 3 different countries.  He has to pay 2852 renminbi for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "answer_lines": [
+      "He pays 2852*.5=1426 more for tickets than supplies",
+      "That means the tickets cost 2852+1426=4278",
+      "So it cost 4278+2852=7130 in total.",
+      "#### 7130"
+    ],
+    "final_scalar": 7130.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jen decides to travel to 3 different provinces.  He has to pay 2852 renminbi for the supplies he needs, in total.  The tickets for travel cost, in total, 50% more than the supplies.  How much does travel cost?",
+    "adapted_answer": [
+      "He pays 2852*.5=1426 more for tickets than supplies",
+      "That means the tickets cost 2852+1426=4278",
+      "So it cost 4278+2852=7130 in total.",
+      "#### 7130"
+    ],
+    "adaptation_notes": "Replaced 'countries' with 'provinces' to adapt to Chinese context."
+  }
+}

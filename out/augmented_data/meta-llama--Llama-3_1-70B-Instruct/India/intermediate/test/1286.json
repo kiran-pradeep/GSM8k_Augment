@@ -1,0 +1,167 @@
+{
+  "index": 1286,
+  "split": "test",
+  "original": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in cents does James have?",
+    "answer": "First figure out how much the nickels are worth: 2 * 5 cents = <<2*5=10>>10 cents\nThen figure out how much the dimes are worth: 7 * 10 cents = <<7*10=70>>70 cents\nFinally, add the value of the nickels, dimes and quarter: 25 cents + 10 cents + 70 cents = <<25+10+70=105>>105 cents\n#### 105"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "quarter",
+      "nickels",
+      "dimes",
+      "cents"
+    ],
+    "notes": "The question contains culturally specific entities such as a Western name (James) and US currency denominations (quarter, nickels, dimes)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 25.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "nickel_value",
+      "value": 5.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "dime_value",
+      "value": 10.0,
+      "unit": "cent",
+      "context": "question"
+    },
+    {
+      "variable": "nickels_total",
+      "value": 10.0,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "dimes_total",
+      "value": 70.0,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "total_amount",
+      "value": 105.0,
+      "unit": "cent",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'cent': {'to': 'rupees', 'factor': 87 / 100},\n        'pound': {'to': 'kilogram', 'factor': 0.453592},\n        'ounce': {'to': 'gram', 'factor': 28.3495},\n        'mile': {'to': 'kilometer', 'factor': 1.60934},\n        'foot': {'to': 'meter', 'factor': 0.3048},\n        'gallon': {'to': 'liter', 'factor': 3.78541},\n        'cup': {'to': 'milliliter', 'factor': 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric['value']\n        original_unit = metric['unit']\n        variable = metric['variable']\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit]['to']\n            converted_value = original_value * conversions[original_unit]['factor']\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"quarter_value\", \"value\": 25.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"nickel_value\", \"value\": 5.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"dime_value\", \"value\": 10.0, \"unit\": \"cent\", \"context\": \"question\"},\n    {\"variable\": \"nickels_total\", \"value\": 10.0, \"unit\": \"cent\", \"context\": \"answer\"},\n    {\"variable\": \"dimes_total\", \"value\": 70.0, \"unit\": \"cent\", \"context\": \"answer\"},\n    {\"variable\": \"total_amount\", \"value\": 105.0, \"unit\": \"cent\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 25.0,
+        "original_unit": "cent",
+        "converted_value": 21.75,
+        "converted_unit": "rupees"
+      },
+      {
+        "variable": "nickel_value",
+        "original_value": 5.0,
+        "original_unit": "cent",
+        "converted_value": 4.35,
+        "converted_unit": "rupees"
+      },
+      {
+        "variable": "dime_value",
+        "original_value": 10.0,
+        "original_unit": "cent",
+        "converted_value": 8.7,
+        "converted_unit": "rupees"
+      },
+      {
+        "variable": "nickels_total",
+        "original_value": 10.0,
+        "original_unit": "cent",
+        "converted_value": 8.7,
+        "converted_unit": "rupees"
+      },
+      {
+        "variable": "dimes_total",
+        "original_value": 70.0,
+        "original_unit": "cent",
+        "converted_value": 60.9,
+        "converted_unit": "rupees"
+      },
+      {
+        "variable": "total_amount",
+        "original_value": 105.0,
+        "original_unit": "cent",
+        "converted_value": 91.35,
+        "converted_unit": "rupees"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and {number_of_dimes} dimes. How much money in cents does James have?",
+    "templatized_answer": [
+      "First figure out how much the nickels are worth: 2 * {nickel_value} cents = {nickels_total} cents",
+      "Then figure out how much the dimes are worth: {number_of_dimes} * {dime_value} cents = {dimes_total} cents",
+      "Finally, add the value of the nickels, dimes and quarter: {quarter_value} cents + {nickels_total} cents + {dimes_total} cents = {total_amount} cents",
+      "#### {total_amount}"
+    ],
+    "factual_assignment": {
+      "quarter_value": 25,
+      "nickel_value": 5,
+      "dime_value": 10,
+      "nickels_total": 10,
+      "dimes_total": 70,
+      "total_amount": 105,
+      "number_of_dimes": 7
+    }
+  },
+  "merged_assignment": {
+    "quarter_value": 21.75,
+    "nickel_value": 4.35,
+    "dime_value": 8.7,
+    "nickels_total": 8.7,
+    "dimes_total": 60.9,
+    "total_amount": 91.35,
+    "number_of_dimes": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    quarter_value = 21.75\n    nickel_value = 4.35\n    dime_value = 8.7\n    number_of_dimes = 7\n\n    # Recompute intermediate steps\n    nickels_total = 2 * nickel_value\n    dimes_total = number_of_dimes * dime_value\n    total_amount = quarter_value + nickels_total + dimes_total\n\n    # Round to 2 decimal places where appropriate\n    nickels_total = round(nickels_total, 2)\n    dimes_total = round(dimes_total, 2)\n    total_amount = round(total_amount, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"quarter_value\": quarter_value,\n        \"nickel_value\": nickel_value,\n        \"dime_value\": dime_value,\n        \"nickels_total\": nickels_total,\n        \"dimes_total\": dimes_total,\n        \"total_amount\": total_amount,\n        \"number_of_dimes\": number_of_dimes\n    }\n\nprint(recompute())\n",
+    "results": {
+      "quarter_value": 21.75,
+      "nickel_value": 4.35,
+      "dime_value": 8.7,
+      "nickels_total": 8.7,
+      "dimes_total": 60.9,
+      "total_amount": 91.35,
+      "number_of_dimes": 7
+    }
+  },
+  "final": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in rupees does James have?",
+    "answer_lines": [
+      "First figure out how much the nickels are worth: 2 * 4.35 rupees = 8.7 rupees",
+      "Then figure out how much the dimes are worth: 7 * 8.7 rupees = 60.9 rupees",
+      "Finally, add the value of the nickels, dimes and quarter: 21.75 rupees + 8.7 rupees + 60.9 rupees = 91.35 rupees",
+      "#### 91.35"
+    ],
+    "final_scalar": 91.35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan likes to check the coin return of the vending machine for change. One day he finds a 10-rupee coin, two 5-rupee coins, and 7 10-rupee coins. How much money in rupees does Rohan have?",
+    "adapted_answer": [
+      "First figure out how much the 5-rupee coins are worth: 2 * 4.35 rupees = 8.7 rupees",
+      "Then figure out how much the 10-rupee coins are worth: 7 * 8.7 rupees = 60.9 rupees",
+      "Finally, add the value of the 5-rupee coins, 10-rupee coins and 10-rupee coin: 21.75 rupees + 8.7 rupees + 60.9 rupees = 91.35 rupees",
+      "#### 91.35"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Rohan', 'quarter' with '10-rupee coin', 'nickels' with '5-rupee coins', and 'dimes' with '10-rupee coins'."
+  }
+}

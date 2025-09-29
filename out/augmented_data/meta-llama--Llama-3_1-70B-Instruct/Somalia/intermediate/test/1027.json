@@ -1,0 +1,125 @@
+{
+  "index": 1027,
+  "split": "test",
+  "original": {
+    "question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for $3, the second with 4 sandwiches for $6, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "answer": "So the price for 1 sandwich is $3 / 2 sandwiches = $<<3/2=1.5>>1.5/sandwich\nNow the price for the package with 8 sandwiches would be $1.5/sandwich * 8 sandwiches = $<<1.5*8=12>>12\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "sandwiches"
+    ],
+    "notes": "The text contains a unit of currency (dollars) and a food item (sandwiches) that are not specific to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "package1_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "package2_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sandwich_price",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "package3_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"rate\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"to\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"package1_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"package2_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sandwich_price\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"package3_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "package1_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 1708.14,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "package2_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 3416.28,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "sandwich_price",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 854.07,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "package3_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 6832.56,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for ${package1_cost}, the second with 4 sandwiches for ${package2_cost}, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "templatized_answer": [
+      "So the price for 1 sandwich is ${package1_cost} / 2 sandwiches = ${sandwich_price}/sandwich",
+      "Now the price for the package with 8 sandwiches would be ${sandwich_price}/sandwich * 8 sandwiches = ${package3_cost}"
+    ],
+    "factual_assignment": {
+      "package1_cost": 3,
+      "package2_cost": 6,
+      "sandwich_price": 1.5,
+      "package3_cost": 12
+    }
+  },
+  "merged_assignment": {
+    "package1_cost": 1708.14,
+    "package2_cost": 3416.28,
+    "sandwich_price": 854.07,
+    "package3_cost": 6832.56
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    package1_cost = 1708.14\n    package2_cost = 3416.28\n\n    sandwich_price = package1_cost / 2\n    package3_cost = sandwich_price * 8\n\n    return {\n        \"package1_cost\": round(package1_cost, 2),\n        \"package2_cost\": round(package2_cost, 2),\n        \"sandwich_price\": round(sandwich_price, 2),\n        \"package3_cost\": round(package3_cost, 2)\n    }\n",
+    "results": {
+      "package1_cost": 1708.14,
+      "package2_cost": 3416.28,
+      "sandwich_price": 854.07,
+      "package3_cost": 6832.56
+    }
+  },
+  "final": {
+    "question": "A store offers sandwiches in 3 different package sizes: the first package with 2 sandwiches for 1708.14 shilling, the second with 4 sandwiches for 3416.28 shilling, and a third with 8 sandwiches, but the price is not indicated. Knowing that the prices are proportional, how much will the package with 8 sandwiches cost?",
+    "answer_lines": [
+      "So the price for 1 sandwich is 1708.14 shilling / 2 sandwiches = 854.07 shilling/sandwich",
+      "Now the price for the package with 8 sandwiches would be 854.07 shilling/sandwich * 8 sandwiches = 6832.56 shilling",
+      "#### 6832.56"
+    ],
+    "final_scalar": 6832.56,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Dukaan ayaa bixisa muuqaalada sabaaxda ah oo ka imanaya 3 nooc oo kala duwan: muuqaalada koowaad waxaa la iibinayaa 2 muuqaalada 1708.14 shilin, labaad waxaa la iibinayaa 4 muuqaalada 3416.28 shilin, iyo saddexaad waxaa la iibinayaa 8 muuqaalada, laakiin qiimaha ma aha. Waxaad ogtahay in qiimaha ay tahay kuwa muhiimka ah, qiimaha muuqaalada 8 muuqaalada ayaa ku weyn tahay?",
+    "adapted_answer": [
+      "Qiimaha muuqaalada 1 waa 1708.14 shilin / 2 muuqaalada = 854.07 shilin/muuqaalada",
+      "Haddii aad doonaysid qiimaha muuqaalada 8 muuqaalada, waxaad noqonaysid 854.07 shilin/muuqaalada * 8 muuqaalada = 6832.56 shilin",
+      "#### 6832.56"
+    ],
+    "adaptation_notes": "Replaced 'sandwiches' with 'muuqaalada' (Somali for 'sandwiches') and 'store' with 'dukaan' (Somali for 'store')."
+  }
+}

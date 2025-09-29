@@ -1,0 +1,124 @@
+{
+  "index": 1259,
+  "split": "test",
+  "original": {
+    "question": "Derrick has a bakery that makes 10 dozen doughnuts every day, selling at $2 per doughnut. How much money does Derrick make in June if he sells all the doughnuts?",
+    "answer": "A dozen doughnuts have 12 doughnuts, and if Derrick makes 10 dozen in a day, the total number of doughnuts he makes is 10*12 = <<10*12=120>>120 doughnuts.\nSince each doughnut sells at $2 per piece, Derrick makes 120*$2 = $<<120*2=240>>240 per day from selling his doughnuts.\nIn June, with 30 days, after making and selling the doughnuts every day, Derrick makes $240*30 = $<<30*240=7200>>7200\n#### 7200"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Derrick",
+      "doughnuts",
+      "dollars",
+      "June"
+    ],
+    "notes": "The text contains a Western name, a Western food item, a Western currency, and a month name that is commonly used in the Western calendar."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "doughnut_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_revenue",
+      "value": 240,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_revenue",
+      "value": 7200,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_unit = list(conversions[metric[\"unit\"]].keys())[0]\n            converted_value = round(metric[\"value\"] * list(conversions[metric[\"unit\"]].values())[0], 2)\n        else:\n            converted_unit = metric[\"unit\"]\n            converted_value = metric[\"value\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": metric[\"value\"],\n            \"original_unit\": metric[\"unit\"],\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"doughnut_price\",\n    \"value\": 2,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"daily_revenue\",\n    \"value\": 240,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"monthly_revenue\",\n    \"value\": 7200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "doughnut_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "daily_revenue",
+        "original_value": 240,
+        "original_unit": "dollar",
+        "converted_value": 1711.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_revenue",
+        "original_value": 7200,
+        "original_unit": "dollar",
+        "converted_value": 51336.0,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Derrick has a bakery that makes {dozens_of_doughnuts} dozen doughnuts every day, selling at ${doughnut_price} per doughnut. How much money does Derrick make in June if he sells all the doughnuts?",
+    "templatized_answer": [
+      "A dozen doughnuts have {doughnuts_per_dozen} doughnuts, and if Derrick makes {dozens_of_doughnuts} dozen in a day, the total number of doughnuts he makes is {dozens_of_doughnuts}*{doughnuts_per_dozen} = {dozens_of_doughnuts}*{doughnuts_per_dozen} doughnuts.",
+      "Since each doughnut sells at ${doughnut_price} per piece, Derrick makes {dozens_of_doughnuts}*{doughnuts_per_dozen}*${doughnut_price} = ${daily_revenue} per day from selling his doughnuts.",
+      "In June, with {days_in_month} days, after making and selling the doughnuts every day, Derrick makes ${daily_revenue}*{days_in_month} = ${monthly_revenue}"
+    ],
+    "factual_assignment": {
+      "dozens_of_doughnuts": 10,
+      "doughnut_price": 2,
+      "doughnuts_per_dozen": 12,
+      "daily_revenue": 240,
+      "monthly_revenue": 7200,
+      "days_in_month": 30
+    }
+  },
+  "merged_assignment": {
+    "dozens_of_doughnuts": 10,
+    "doughnut_price": 14.26,
+    "doughnuts_per_dozen": 12,
+    "daily_revenue": 1711.2,
+    "monthly_revenue": 51336.0,
+    "days_in_month": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    dozens_of_doughnuts = 10\n    doughnut_price = 14.26\n    doughnuts_per_dozen = 12\n    days_in_month = 30\n\n    daily_doughnuts = dozens_of_doughnuts * doughnuts_per_dozen\n    daily_revenue = daily_doughnuts * doughnut_price\n    monthly_revenue = daily_revenue * days_in_month\n\n    return {\n        \"dozens_of_doughnuts\": dozens_of_doughnuts,\n        \"doughnut_price\": round(doughnut_price, 2),\n        \"doughnuts_per_dozen\": doughnuts_per_dozen,\n        \"daily_doughnuts\": daily_doughnuts,\n        \"daily_revenue\": round(daily_revenue, 2),\n        \"monthly_revenue\": round(monthly_revenue, 2),\n        \"days_in_month\": days_in_month\n    }\n\nprint(recompute())\n",
+    "results": {
+      "dozens_of_doughnuts": 10,
+      "doughnut_price": 14.26,
+      "doughnuts_per_dozen": 12,
+      "daily_doughnuts": 120,
+      "daily_revenue": 1711.2,
+      "monthly_revenue": 51336.0,
+      "days_in_month": 30
+    }
+  },
+  "final": {
+    "question": "Derrick has a bakery that makes 10 dozen doughnuts every day, selling at 14.26 renminbi per doughnut. How much money does Derrick make in June if he sells all the doughnuts?",
+    "answer_lines": [
+      "A dozen doughnuts have 12 doughnuts, and if Derrick makes 10 dozen in a day, the total number of doughnuts he makes is 10*12 = 120 doughnuts.",
+      "Since each doughnut sells at 14.26 renminbi per piece, Derrick makes 120*14.26 = 1711.2 renminbi per day from selling his doughnuts.",
+      "In June, with 30 days, after making and selling the doughnuts every day, Derrick makes 1711.2*30 = 51336.0 renminbi",
+      "#### 51336.0"
+    ],
+    "final_scalar": 51336.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "王希有一従点糖店，每日制一十十点糖，卖买价为一个14.26万己币元。为什么王希在六月所收的金额？",
+    "adapted_answer": [
+      "一十点糖有十十十点糖，王希每日制一十十点糖，创不过为10*12 = 120点糖。",
+      "如果每个点糖卖买价为14.26万己币元，王希每日制一十点糖后，收的金额为120*14.26 = 1711.2万己币元。",
+      "在六月，有十十日，王希每日制一十点糖，后收的金额为1711.2*30 = 51336.0万己币元",
+      "#### 51336.0"
+    ],
+    "adaptation_notes": "Replaced ‘Derrick’ with 王希, ‘doughnuts’ with 点糖, ‘renminbi’ with 万己币元, and ‘June’ with 六月."
+  }
+}

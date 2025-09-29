@@ -1,0 +1,131 @@
+{
+  "index": 892,
+  "split": "test",
+  "original": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her $6, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays $11 for her goods?",
+    "answer": "Ellen's yogurt cost is half the price of the salad, so it's $6 / 2 = $<<6/2=3>>3.\nFor the two carrots Ellen needs to pay $11 - $6 - $3 = $<<11-6-3=2>>2.\nSo one carrot costs $2 / $2 = $<<2/2=1>>1.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ellen",
+      "dollars",
+      "yogurt",
+      "carrots",
+      "salad"
+    ],
+    "notes": "The text contains a Western name, a non-Chinese unit of currency, and Western food items."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "salad_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "yogurt_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "carrot_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"salad_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"yogurt_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"carrot_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "salad_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "yogurt_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 21.39,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 78.43,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "carrot_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her ${salad_cost}, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays ${total_cost} for her goods?",
+    "templatized_answer": [
+      "Ellen's yogurt cost is half the price of the salad, so it's ${salad_cost} / 2 = ${salad_cost / 2}.",
+      "For the two carrots Ellen needs to pay ${total_cost} - ${salad_cost} - ${salad_cost / 2} = ${total_cost - salad_cost - (salad_cost / 2)}.",
+      "So one carrot costs (${total_cost - salad_cost - (salad_cost / 2)}) / 2 = ${carrot_cost}.",
+      "#### {carrot_cost}"
+    ],
+    "factual_assignment": {
+      "salad_cost": 6,
+      "total_cost": 11,
+      "carrot_cost": 1
+    }
+  },
+  "merged_assignment": {
+    "salad_cost": 42.78,
+    "total_cost": 78.43,
+    "carrot_cost": 7.13
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    salad_cost = 42.78\n    total_cost = 78.43\n\n    yogurt_cost = salad_cost / 2\n    total_carrot_cost = total_cost - salad_cost - yogurt_cost\n    carrot_cost = total_carrot_cost / 2\n\n    return {\n        \"salad_cost\": round(salad_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"carrot_cost\": round(carrot_cost, 2),\n        \"yogurt_cost\": round(yogurt_cost, 2),\n        \"total_carrot_cost\": round(total_carrot_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "salad_cost": 42.78,
+      "total_cost": 78.43,
+      "carrot_cost": 7.13,
+      "yogurt_cost": 21.39,
+      "total_carrot_cost": 14.26
+    }
+  },
+  "final": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her 42.78 renminbi, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays 78.43 renminbi for her goods?",
+    "answer_lines": [
+      "Ellen's yogurt cost is half the price of the salad, so it's 42.78 / 2 = 21.39.",
+      "For the two carrots Ellen needs to pay 78.43 - 42.78 - 21.39 = 14.26.",
+      "So one carrot costs 14.26 / 2 = 7.13.",
+      "#### 7.13"
+    ],
+    "final_scalar": 7.13,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "李娜是在过一个轻值的轻三个粉射，一个蓮料和一个蛋门。蓮料的价值是42.78万元，蛋门的价值是蓮料的一个半。李娜一天三个轻商应费值78.43万元，一个粉射的价值是什么？",
+    "adapted_answer": [
+      "李娜的蛋门价值是蓮料的一个半，所以价值是42.78 / 2 = 21.39。",
+      "二个粉射李娜需要代金的价值是78.43 - 42.78 - 21.39 = 14.26。",
+      "一个粉射的价值是14.26 / 2 = 7.13。",
+      "#### 7.13"
+    ],
+    "adaptation_notes": "Replaced Ellen with 李娜, carrots with 粉射, salad with 蓮料, yogurt with 蛋门, and renminbi with 万元."
+  }
+}

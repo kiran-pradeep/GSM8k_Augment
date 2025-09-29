@@ -1,0 +1,163 @@
+{
+  "index": 1139,
+  "split": "test",
+  "original": {
+    "question": "Russell orders his favorite bagels online.  Each pack of bagels costs $10.00 and has 9 bagels in the pack.  If he orders 4 packs of bagels, he will receive a 10% discount.  After ordering 4 bags, how much will each single bagel cost?",
+    "answer": "He orders 4 packs of bagels and each pack costs $10.00 so that's 4*10 = $<<4*10=40.00>>40.00\nHe orders 4 packs at $40.00 and receives a 10% discount so his discount is 40*.10 = $4.00\nThe bagels cost $40.00 and he has a $4.00 discount making his total 40-4 = $<<40-4=36.00>>36.00\nEach pack of bagels has 9 bagels per pack and he orders 4 packs so that's 9*4 = <<9*4=36>>36 bagels\nHis order total was $36.00 and there are 36 bagels so each bagel costs 36/36 = $<<36/36=1.00>>1.00\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Russell",
+      "bagels",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name, a type of food commonly associated with Western cuisine, and a unit of currency used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pack_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "order_total",
+      "value": 36.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "bagel_cost",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pack_cost\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"order_total\", \"value\": 36.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"bagel_cost\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pack_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 285.2,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "discount",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "order_total",
+        "original_value": 36.0,
+        "original_unit": "dollar",
+        "converted_value": 256.68,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "bagel_cost",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Russell orders his favorite bagels online.  Each pack of bagels costs ${pack_cost} and has {bagels_per_pack} bagels in the pack.  If he orders {number_of_packs} packs of bagels, he will receive a {discount_percentage}% discount.  After ordering {number_of_packs} bags, how much will each single bagel cost?",
+    "templatized_answer": [
+      "He orders {number_of_packs} packs of bagels and each pack costs ${pack_cost} so that's {number_of_packs}*{pack_cost} = ${total_cost}",
+      "He orders {number_of_packs} packs at ${total_cost} and receives a {discount_percentage}% discount so his discount is {total_cost}*{discount_percentage}/100 = ${discount}",
+      "The bagels cost ${total_cost} and he has a ${discount} discount making his total {total_cost}-{discount} = ${order_total}",
+      "Each pack of bagels has {bagels_per_pack} bagels per pack and he orders {number_of_packs} packs so that's {bagels_per_pack}*{number_of_packs} = {total_bagels} bagels",
+      "His order total was ${order_total} and there are {total_bagels} bagels so each bagel costs {order_total}/{total_bagels} = ${bagel_cost}"
+    ],
+    "factual_assignment": {
+      "pack_cost": 10.0,
+      "bagels_per_pack": 9,
+      "number_of_packs": 4,
+      "discount_percentage": 10,
+      "total_cost": 40.0,
+      "discount": 4.0,
+      "order_total": 36.0,
+      "total_bagels": 36,
+      "bagel_cost": 1.0
+    }
+  },
+  "merged_assignment": {
+    "pack_cost": 71.3,
+    "bagels_per_pack": 9,
+    "number_of_packs": 4,
+    "discount_percentage": 10,
+    "total_cost": 285.2,
+    "discount": 28.52,
+    "order_total": 256.68,
+    "total_bagels": 36,
+    "bagel_cost": 7.13
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pack_cost = 71.3\n    bagels_per_pack = 9\n    number_of_packs = 4\n    discount_percentage = 10\n\n    total_cost = round(pack_cost * number_of_packs, 2)\n    discount = round(total_cost * discount_percentage / 100, 2)\n    order_total = round(total_cost - discount, 2)\n    total_bagels = bagels_per_pack * number_of_packs\n    bagel_cost = round(order_total / total_bagels, 2)\n\n    return {\n        \"pack_cost\": pack_cost,\n        \"bagels_per_pack\": bagels_per_pack,\n        \"number_of_packs\": number_of_packs,\n        \"discount_percentage\": discount_percentage,\n        \"total_cost\": total_cost,\n        \"discount\": discount,\n        \"order_total\": order_total,\n        \"total_bagels\": total_bagels,\n        \"bagel_cost\": bagel_cost\n    }\n",
+    "results": {
+      "pack_cost": 71.3,
+      "bagels_per_pack": 9,
+      "number_of_packs": 4,
+      "discount_percentage": 10,
+      "total_cost": 285.2,
+      "discount": 28.52,
+      "order_total": 256.68,
+      "total_bagels": 36,
+      "bagel_cost": 7.13
+    }
+  },
+  "final": {
+    "question": "Russell orders his favorite bagels online.  Each pack of bagels costs 71.3 renminbi and has 9 bagels in the pack.  If he orders 4 packs of bagels, he will receive a 10% discount.  After ordering 4 bags, how much will each single bagel cost?",
+    "answer_lines": [
+      "He orders 4 packs of bagels and each pack costs 71.3 renminbi so that's 4*71.3 = 285.2 renminbi",
+      "He orders 4 packs at 285.2 renminbi and receives a 10% discount so his discount is 285.2*10/100 = 28.52 renminbi",
+      "The bagels cost 285.2 renminbi and he has a 28.52 renminbi discount making his total 285.2-28.52 = 256.68 renminbi",
+      "Each pack of bagels has 9 bagels per pack and he orders 4 packs so that's 9*4 = 36 bagels",
+      "His order total was 256.68 renminbi and there are 36 bagels so each bagel costs 256.68/36 = 7.13 renminbi",
+      "#### 7.13"
+    ],
+    "final_scalar": 7.13,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Liu orders his favorite mantou online.  Each pack of mantou costs 71.3 renminbi and has 9 mantou in the pack.  If he orders 4 packs of mantou, he will receive a 10% discount.  After ordering 4 bags, how much will each single mantou cost?",
+    "adapted_answer": [
+      "He orders 4 packs of mantou and each pack costs 71.3 renminbi so that's 4*71.3 = 285.2 renminbi",
+      "He orders 4 packs at 285.2 renminbi and receives a 10% discount so his discount is 285.2*10/100 = 28.52 renminbi",
+      "The mantou cost 285.2 renminbi and he has a 28.52 renminbi discount making his total 285.2-28.52 = 256.68 renminbi",
+      "Each pack of mantou has 9 mantou per pack and he orders 4 packs so that's 9*4 = 36 mantou",
+      "His order total was 256.68 renminbi and there are 36 mantou so each mantou costs 256.68/36 = 7.13 renminbi",
+      "#### 7.13"
+    ],
+    "adaptation_notes": "Replaced 'Russell' with 'Liu', 'bagels' with 'mantou', and 'bags' with 'packs' to give the text a Chinese context."
+  }
+}

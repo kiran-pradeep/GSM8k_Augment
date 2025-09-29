@@ -1,0 +1,148 @@
+{
+  "index": 358,
+  "split": "test",
+  "original": {
+    "question": "Marisa gets $5 as pocket money every day from her parents. She buys 4 lollipops worth 25 cents each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "answer": "If each lollipop costs 25 cents, 4 lollipops cost 4 * 25 cents = <<4*25=100>>100 cents\nSince 100 cents = $1 she spends $1 everyday.\nHer savings everyday is $5 - $1 = $<<5-1=4>>4\nIf she saves $4 every day for 5 days, she will have $4 * 5 = $<<4*5=20>>20\n#### 20"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "lollipops"
+    ],
+    "notes": "The use of dollars as currency and lollipops as a food item are culturally specific to regions other than Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_allowance",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollipop_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_lollipop_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_savings",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_savings",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_allowance\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollipop_cost\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_lollipop_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_savings\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_savings\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_allowance",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "lollipop_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 4.16,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_lollipop_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 16.62,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "daily_savings",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 66.48,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_savings",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Marisa gets ${daily_allowance} as pocket money every day from her parents. She buys 4 lollipops worth {lollipop_cost} dollars each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "templatized_answer": [
+      "If each lollipop costs {lollipop_cost} dollars, 4 lollipops cost 4 * {lollipop_cost} dollars = $1",
+      "Since 4 lollipops cost $1, she spends $1 every day.",
+      "Her savings every day is ${daily_allowance} - $1 = ${daily_savings}",
+      "If she saves ${daily_savings} every day for 5 days, she will have ${daily_savings} * 5 = $",
+      "#### {total_savings}"
+    ],
+    "factual_assignment": {
+      "daily_allowance": 5,
+      "lollipop_cost": 0.25,
+      "total_lollipop_cost": 1,
+      "daily_savings": 4,
+      "total_savings": 20
+    }
+  },
+  "merged_assignment": {
+    "daily_allowance": 83.1,
+    "lollipop_cost": 4.16,
+    "total_lollipop_cost": 16.62,
+    "daily_savings": 66.48,
+    "total_savings": 332.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_allowance = 83.1\n    lollipop_cost = 4.16\n    total_lollipop_cost = round(4 * lollipop_cost, 2)\n    daily_savings = round(daily_allowance - total_lollipop_cost, 2)\n    total_savings = round(daily_savings * 5, 2)\n\n    return {\n        \"daily_allowance\": daily_allowance,\n        \"lollipop_cost\": lollipop_cost,\n        \"total_lollipop_cost\": total_lollipop_cost,\n        \"daily_savings\": daily_savings,\n        \"total_savings\": total_savings\n    }\n",
+    "results": {
+      "daily_allowance": 83.1,
+      "lollipop_cost": 4.16,
+      "total_lollipop_cost": 16.64,
+      "daily_savings": 66.46,
+      "total_savings": 332.3
+    }
+  },
+  "final": {
+    "question": "Marisa gets 83.1 leu as pocket money every day from her parents. She buys 4 lollipops worth 4.16 leu each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "answer_lines": [
+      "If each lollipop costs 4.16 leu, 4 lollipops cost 4 * 4.16 leu = 16.64 leu",
+      "Since 4 lollipops cost 16.64 leu, she spends 16.64 leu every day.",
+      "Her savings every day is 83.1 leu - 16.64 leu = 66.46 leu",
+      "If she saves 66.46 leu every day for 5 days, she will have 66.46 leu * 5 = 332.3 leu",
+      "#### 332.3"
+    ],
+    "final_scalar": 332.3,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Marisa gets 83.1 leu as pocket money every day from her parents. She buys 4 găluște worth 4.16 leu each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "adapted_answer": [
+      "If each găluște costs 4.16 leu, 4 găluște cost 4 * 4.16 leu = 16.64 leu",
+      "Since 4 găluște cost 16.64 leu, she spends 16.64 leu every day.",
+      "Her savings every day is 83.1 leu - 16.64 leu = 66.46 leu",
+      "If she saves 66.46 leu every day for 5 days, she will have 66.46 leu * 5 = 332.3 leu",
+      "#### 332.3"
+    ],
+    "adaptation_notes": "Replaced 'lollipops' with 'găluște', a traditional Moldovan doughnut-like pastry."
+  }
+}

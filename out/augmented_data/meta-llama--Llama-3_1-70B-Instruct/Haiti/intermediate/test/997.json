@@ -1,0 +1,142 @@
+{
+  "index": 997,
+  "split": "test",
+  "original": {
+    "question": "Walter is collecting money for charity. First he collects $500 from his neighbors. Then he collects $1500 from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him $200 as well. How much is Walter's lawyer going to contribute?",
+    "answer": "Walter collects $500 + $1500 + $200 = $<<500+1500+200=2200>>2,200 he collects from everyone for charity.\nHis lawyer has offered to donate 3 times that amount, $2,200 x 3 = $<<3*2200=6600>>6,600 that Walter's lawyer is going to donate.\n#### 6,600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Walter",
+      "dollars"
+    ],
+    "notes": "The name 'Walter' and the unit 'dollars' are culturally specific to regions other than Haiti."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "neighbor_donation",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "online_fund_donation",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "friend_donation",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_donation",
+      "value": 2200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "lawyer_donation",
+      "value": 6600.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"neighbor_donation\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"online_fund_donation\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"friend_donation\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_donation\", \"value\": 2200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"lawyer_donation\", \"value\": 6600.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "neighbor_donation",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 65405.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "online_fund_donation",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 196215.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "friend_donation",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 26162.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_donation",
+        "original_value": 2200.0,
+        "original_unit": "dollar",
+        "converted_value": 287782.0,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "lawyer_donation",
+        "original_value": 6600.0,
+        "original_unit": "dollar",
+        "converted_value": 863346.0,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Walter is collecting money for charity. First he collects ${neighbor_donation} from his neighbors. Then he collects ${online_fund_donation} from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him ${friend_donation} as well. How much is Walter's lawyer going to contribute?",
+    "templatized_answer": [
+      "Walter collects ${neighbor_donation} + ${online_fund_donation} + ${friend_donation} = ${total_donation} he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, ${total_donation} x 3 = ${lawyer_donation} that Walter's lawyer is going to donate.",
+      "#### {lawyer_donation}"
+    ],
+    "factual_assignment": {
+      "neighbor_donation": 500.0,
+      "online_fund_donation": 1500.0,
+      "friend_donation": 200.0,
+      "total_donation": 2200.0,
+      "lawyer_donation": 6600.0
+    }
+  },
+  "merged_assignment": {
+    "neighbor_donation": 65405.0,
+    "online_fund_donation": 196215.0,
+    "friend_donation": 26162.0,
+    "total_donation": 287782.0,
+    "lawyer_donation": 863346.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    neighbor_donation = 65405.0\n    online_fund_donation = 196215.0\n    friend_donation = 26162.0\n\n    total_donation = round(neighbor_donation + online_fund_donation + friend_donation, 2)\n    lawyer_donation = round(total_donation * 3, 2)\n\n    return {\n        \"neighbor_donation\": neighbor_donation,\n        \"online_fund_donation\": online_fund_donation,\n        \"friend_donation\": friend_donation,\n        \"total_donation\": total_donation,\n        \"lawyer_donation\": lawyer_donation\n    }\n",
+    "results": {
+      "neighbor_donation": 65405.0,
+      "online_fund_donation": 196215.0,
+      "friend_donation": 26162.0,
+      "total_donation": 287782.0,
+      "lawyer_donation": 863346.0
+    }
+  },
+  "final": {
+    "question": "Walter is collecting money for charity. First he collects 65405 gourde from his neighbors. Then he collects 196215 gourde from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him 26162 gourde as well. How much is Walter's lawyer going to contribute?",
+    "answer_lines": [
+      "Walter collects 65405 + 196215 + 26162 = 287782 gourde he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, 287782 x 3 = 863346 gourde that Walter's lawyer is going to donate.",
+      "#### 863346"
+    ],
+    "final_scalar": 863346,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Wensley is collecting money for charity. First he collects 65405 gourde from his neighbors. Then he collects 196215 gourde from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Wensley is going to tell him about his neighbors and the online fund until his friend gives him 26162 gourde as well. How much is Wensley's lawyer going to contribute?",
+    "adapted_answer": [
+      "Wensley collects 65405 + 196215 + 26162 = 287782 gourde he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, 287782 x 3 = 863346 gourde that Wensley's lawyer is going to donate.",
+      "#### 863346"
+    ],
+    "adaptation_notes": "Replaced 'Walter' with 'Wensley', a common Haitian name."
+  }
+}

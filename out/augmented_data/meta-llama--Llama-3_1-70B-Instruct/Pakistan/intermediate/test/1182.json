@@ -1,0 +1,130 @@
+{
+  "index": 1182,
+  "split": "test",
+  "original": {
+    "question": "Bob spends $27000 distributed between 3 schools to buy books.  He can buy 100 books for $500.  How many books can he buy per school?",
+    "answer": "He spends 27000/3=$<<27000/3=9000>>9000\nEach book cost 500/100=$<<500/100=5>>5\nSo he can buy 9000/5=<<9000/5=1800>>1800 books per school\n#### 1800"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bob",
+      "dollars"
+    ],
+    "notes": "The name 'Bob' is culturally specific to Western regions and 'dollars' is a unit of currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_budget",
+      "value": 27000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "books_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_price",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "school_budget",
+      "value": 9000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_budget\", \"value\": 27000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"books_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_price\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"school_budget\", \"value\": 9000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_budget",
+        "original_value": 27000.0,
+        "original_unit": "dollar",
+        "converted_value": 7609950.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "books_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 140925.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "book_price",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 1409.25,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "school_budget",
+        "original_value": 9000.0,
+        "original_unit": "dollar",
+        "converted_value": 2536650.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob spends ${total_budget} distributed between 3 schools to buy books.  He can buy 100 books for ${books_cost}.  How many books can he buy per school?",
+    "templatized_answer": [
+      "He spends {total_budget}/3=${school_budget}",
+      "Each book cost {books_cost}/100=${book_price}",
+      "So he can buy {school_budget}/{book_price}={school_budget}/{book_price} books per school",
+      "#### {school_budget}/{book_price}"
+    ],
+    "factual_assignment": {
+      "total_budget": 27000.0,
+      "books_cost": 500.0,
+      "book_price": 5.0,
+      "school_budget": 9000.0
+    }
+  },
+  "merged_assignment": {
+    "total_budget": 7609950.0,
+    "books_cost": 140925.0,
+    "book_price": 1409.25,
+    "school_budget": 2536650.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_budget = 7609950.0\n    books_cost = 140925.0\n\n    school_budget = total_budget / 3\n    book_price = books_cost / 100\n\n    return {\n        \"total_budget\": total_budget,\n        \"books_cost\": books_cost,\n        \"school_budget\": round(school_budget, 2),\n        \"book_price\": round(book_price, 2),\n        \"school_budget/book_price\": round(school_budget / book_price)\n    }\n",
+    "results": {
+      "total_budget": 7609950.0,
+      "books_cost": 140925.0,
+      "school_budget": 2536650.0,
+      "book_price": 1409.25,
+      "school_budget/book_price": 1800
+    }
+  },
+  "final": {
+    "question": "Bob spends 7609950 distributed between 3 schools to buy books.  He can buy 100 books for 140925.  How many books can he buy per school?",
+    "answer_lines": [
+      "He spends 7609950/3=2536650",
+      "Each book cost 140925/100=1409.25",
+      "So he can buy 2536650/1409.25=1800 books per school",
+      "#### 1800"
+    ],
+    "final_scalar": 1800,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran spends 7609950 distributed between 3 schools to buy books.  He can buy 100 books for 140925.  How many books can he buy per school?",
+    "adapted_answer": [
+      "He spends 7609950/3=2536650",
+      "Each book cost 140925/100=1409.25",
+      "So he can buy 2536650/1409.25=1800 books per school",
+      "#### 1800"
+    ],
+    "adaptation_notes": "Replaced 'Bob' with 'Kamran' to give the name a Pakistani context."
+  }
+}

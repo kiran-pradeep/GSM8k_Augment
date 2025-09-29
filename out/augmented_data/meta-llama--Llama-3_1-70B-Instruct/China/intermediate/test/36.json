@@ -1,0 +1,112 @@
+{
+  "index": 36,
+  "split": "test",
+  "original": {
+    "question": "Terry eats 2 yogurts a day.  They are currently on sale at 4 yogurts for $5.00.  How much does he spend on yogurt over 30 days?",
+    "answer": "He eats 2 yogurts a day so over 30 days he will need 2*30 = <<2*30=60>>60 yogurts\nThe yogurt is sold as 4 units for $5.00 and he needs 60 yogurts so that’s 60/4 = <<60/4=15>>15 4-packs\nEach 4-pack is $5.00 and he needs 15 4-packs so he will spend $5*15 = $<<5*15=75.00>>75.00 on yogurt\n#### 75"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "yogurts"
+    ],
+    "notes": "The text contains units (dollars) and food items (yogurts) that are not specific to China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "yogurt_sale_price",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "terry_yogurt_expense",
+      "value": 75.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"yogurt_sale_price\",\n    \"value\": 5.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"terry_yogurt_expense\",\n    \"value\": 75.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "yogurt_sale_price",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "terry_yogurt_expense",
+        "original_value": 75.0,
+        "original_unit": "dollar",
+        "converted_value": 534.75,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Terry eats {terry_yogurt_consumption_per_day} yogurts a day.  They are currently on sale at {yogurt_sale_quantity} yogurts for ${yogurt_sale_price}.  How much does he spend on yogurt over {days} days?",
+    "templatized_answer": [
+      "He eats {terry_yogurt_consumption_per_day} yogurts a day so over {days} days he will need {terry_yogurt_consumption_per_day}*{days} = <<{terry_yogurt_consumption_per_day}*{days}={terry_yogurt_consumption_total}>>{terry_yogurt_consumption_total} yogurts",
+      "The yogurt is sold as {yogurt_sale_quantity} units for ${yogurt_sale_price} and he needs {terry_yogurt_consumption_total} yogurts so that’s {terry_yogurt_consumption_total}/{yogurt_sale_quantity} = <<{terry_yogurt_consumption_total}/{yogurt_sale_quantity}={yogurt_sale_quantity_multiplier}>>{yogurt_sale_quantity_multiplier} {yogurt_sale_quantity}-packs",
+      "Each {yogurt_sale_quantity}-pack is ${yogurt_sale_price} and he needs {yogurt_sale_quantity_multiplier} {yogurt_sale_quantity}-packs so he will spend ${yogurt_sale_price}*{yogurt_sale_quantity_multiplier} = $<<{yogurt_sale_price}*{yogurt_sale_quantity_multiplier}={terry_yogurt_expense}>>{terry_yogurt_expense} on yogurt",
+      "#### {terry_yogurt_expense}"
+    ],
+    "factual_assignment": {
+      "terry_yogurt_consumption_per_day": 2,
+      "yogurt_sale_quantity": 4,
+      "yogurt_sale_price": 5.0,
+      "days": 30,
+      "terry_yogurt_consumption_total": 60,
+      "yogurt_sale_quantity_multiplier": 15,
+      "terry_yogurt_expense": 75.0
+    }
+  },
+  "merged_assignment": {
+    "terry_yogurt_consumption_per_day": 2,
+    "yogurt_sale_quantity": 4,
+    "yogurt_sale_price": 35.65,
+    "days": 30,
+    "terry_yogurt_consumption_total": 60,
+    "yogurt_sale_quantity_multiplier": 15,
+    "terry_yogurt_expense": 534.75
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    terry_yogurt_consumption_per_day = 2\n    yogurt_sale_quantity = 4\n    yogurt_sale_price = 35.65\n    days = 30\n\n    terry_yogurt_consumption_total = terry_yogurt_consumption_per_day * days\n    yogurt_sale_quantity_multiplier = terry_yogurt_consumption_total / yogurt_sale_quantity\n    terry_yogurt_expense = round(yogurt_sale_price * yogurt_sale_quantity_multiplier, 2)\n\n    return {\n        \"terry_yogurt_consumption_per_day\": terry_yogurt_consumption_per_day,\n        \"yogurt_sale_quantity\": yogurt_sale_quantity,\n        \"yogurt_sale_price\": yogurt_sale_price,\n        \"days\": days,\n        \"terry_yogurt_consumption_total\": terry_yogurt_consumption_total,\n        \"yogurt_sale_quantity_multiplier\": round(yogurt_sale_quantity_multiplier, 2),\n        \"terry_yogurt_expense\": terry_yogurt_expense\n    }\n",
+    "results": {
+      "terry_yogurt_consumption_per_day": 2,
+      "yogurt_sale_quantity": 4,
+      "yogurt_sale_price": 35.65,
+      "days": 30,
+      "terry_yogurt_consumption_total": 60,
+      "yogurt_sale_quantity_multiplier": 15.0,
+      "terry_yogurt_expense": 534.75
+    }
+  },
+  "final": {
+    "question": "Terry eats 2 yogurts a day.  They are currently on sale at 4 yogurts for 35.65 renminbi.  How much does he spend on yogurt over 30 days?",
+    "answer_lines": [
+      "He eats 2 yogurts a day so over 30 days he will need 2*30 = <<2*30=60>>60 yogurts",
+      "The yogurt is sold as 4 units for 35.65 renminbi and he needs 60 yogurts so that’s 60/4 = <<60/4=15>>15 4-packs",
+      "Each 4-pack is 35.65 renminbi and he needs 15 4-packs so he will spend 35.65*15 = <<35.65*15=534.75>>534.75 renminbi on yogurt",
+      "#### 534.75"
+    ],
+    "final_scalar": 534.75,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Terry eats 2 doufu naibai (dòu fu nǎi bái) a day.  They are currently on sale at 4 doufu naibai for 35.65 renminbi.  How much does he spend on doufu naibai over 30 days?",
+    "adapted_answer": [
+      "He eats 2 doufu naibai a day so over 30 days he will need 2*30 = <<2*30=60>>60 doufu naibai",
+      "The doufu naibai is sold as 4 units for 35.65 renminbi and he needs 60 doufu naibai so that’s 60/4 = <<60/4=15>>15 4-packs",
+      "Each 4-pack is 35.65 renminbi and he needs 15 4-packs so he will spend 35.65*15 = <<35.65*15=534.75>>534.75 renminbi on doufu naibai",
+      "#### 534.75"
+    ],
+    "adaptation_notes": "Replaced 'yogurts' with 'doufu naibai' (dòu fu nǎi bái), the Chinese term for yogurt."
+  }
+}

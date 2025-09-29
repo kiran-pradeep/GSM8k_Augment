@@ -1,0 +1,144 @@
+{
+  "index": 633,
+  "split": "test",
+  "original": {
+    "question": "Bob is 75 miles ahead of Tom, driving 55 miles per hour. Tom is driving 70 miles per hour. How long will it take Tom to catch up with Bob?",
+    "answer": "Tom is driving at 70 miles per hour to Bob's 55 miles per hour, meaning Tom is gaining at a rate of 70 mph - 55 mph = <<70-55=15>>15 mph.\nBob is 75 miles ahead of Tom, and if Tom is gaining 15 mph on him, it will take Tom 75 miles / 15 mph = <<75/15=5>>5 hours to catch up with Bob.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tom",
+      "Bob",
+      "miles",
+      "miles per hour"
+    ],
+    "notes": "Names and units are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bob_ahead",
+      "value": 75.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "bob_speed",
+      "value": 55.0,
+      "unit": "mile per hour",
+      "context": "question"
+    },
+    {
+      "variable": "tom_speed",
+      "value": 70.0,
+      "unit": "mile per hour",
+      "context": "question"
+    },
+    {
+      "variable": "tom_gain",
+      "value": 15.0,
+      "unit": "mile per hour",
+      "context": "answer"
+    },
+    {
+      "variable": "time_to_catch",
+      "value": 5.0,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"mile per hour\": {\"unit\": \"kilometer per hour\", \"factor\": 1.60934},\n        \"hour\": {\"unit\": \"hour\", \"factor\": 1},\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"],\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"],\n            })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"bob_ahead\",\n    \"value\": 75.0,\n    \"unit\": \"mile\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"bob_speed\",\n    \"value\": 55.0,\n    \"unit\": \"mile per hour\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"tom_speed\",\n    \"value\": 70.0,\n    \"unit\": \"mile per hour\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"tom_gain\",\n    \"value\": 15.0,\n    \"unit\": \"mile per hour\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"time_to_catch\",\n    \"value\": 5.0,\n    \"unit\": \"hour\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bob_ahead",
+        "original_value": 75.0,
+        "original_unit": "mile",
+        "converted_value": 120.7,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "bob_speed",
+        "original_value": 55.0,
+        "original_unit": "mile per hour",
+        "converted_value": 88.51,
+        "converted_unit": "kilometer per hour"
+      },
+      {
+        "variable": "tom_speed",
+        "original_value": 70.0,
+        "original_unit": "mile per hour",
+        "converted_value": 112.65,
+        "converted_unit": "kilometer per hour"
+      },
+      {
+        "variable": "tom_gain",
+        "original_value": 15.0,
+        "original_unit": "mile per hour",
+        "converted_value": 24.14,
+        "converted_unit": "kilometer per hour"
+      },
+      {
+        "variable": "time_to_catch",
+        "original_value": 5.0,
+        "original_unit": "hour",
+        "converted_value": 5.0,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob is {bob_ahead} miles ahead of Tom, driving {bob_speed} miles per hour. Tom is driving {tom_speed} miles per hour. How long will it take Tom to catch up with Bob?",
+    "templatized_answer": [
+      "Tom is driving at {tom_speed} miles per hour to Bob's {bob_speed} miles per hour, meaning Tom is gaining at a rate of {tom_speed} mph - {bob_speed} mph = {tom_gain} mph.",
+      "Bob is {bob_ahead} miles ahead of Tom, and if Tom is gaining {tom_gain} mph on him, it will take Tom {bob_ahead} miles / {tom_gain} mph = {time_to_catch} hours to catch up with Bob.",
+      "#### {time_to_catch}"
+    ],
+    "factual_assignment": {
+      "bob_ahead": 75.0,
+      "bob_speed": 55.0,
+      "tom_speed": 70.0,
+      "tom_gain": 15.0,
+      "time_to_catch": 5.0
+    }
+  },
+  "merged_assignment": {
+    "bob_ahead": 120.7,
+    "bob_speed": 88.51,
+    "tom_speed": 112.65,
+    "tom_gain": 24.14,
+    "time_to_catch": 5.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    bob_ahead = 120.7  # miles\n    bob_speed = 88.51  # miles per hour\n    tom_speed = 112.65  # miles per hour\n\n    # Recompute tom_gain\n    tom_gain = tom_speed - bob_speed\n\n    # Recompute time_to_catch\n    time_to_catch = bob_ahead / tom_gain\n\n    # Round to 2 decimal places where appropriate\n    tom_gain = round(tom_gain, 2)\n    time_to_catch = round(time_to_catch, 2)\n\n    return {\n        \"bob_ahead\": bob_ahead,\n        \"bob_speed\": bob_speed,\n        \"tom_speed\": tom_speed,\n        \"tom_gain\": tom_gain,\n        \"time_to_catch\": time_to_catch\n    }\n\nprint(recompute())\n",
+    "results": {
+      "bob_ahead": 120.7,
+      "bob_speed": 88.51,
+      "tom_speed": 112.65,
+      "tom_gain": 24.14,
+      "time_to_catch": 5.0
+    }
+  },
+  "final": {
+    "question": "Bob is 120.7 kilometers ahead of Tom, driving 88.51 kilometers per hour. Tom is driving 112.65 kilometers per hour. How long will it take Tom to catch up with Bob?",
+    "answer_lines": [
+      "Tom is driving at 112.65 kilometers per hour to Bob's 88.51 kilometers per hour, meaning Tom is gaining at a rate of 112.65 km/h - 88.51 km/h = 24.14 km/h.",
+      "Bob is 120.7 kilometers ahead of Tom, and if Tom is gaining 24.14 km/h on him, it will take Tom 120.7 kilometers / 24.14 km/h = 5 hours to catch up with Bob.",
+      "#### 5"
+    ],
+    "final_scalar": 5.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "王是三十二七千公里前边依于杰三。 王游速是九十一十三千公里平时。 杰三游速是十丁二七五千公里平时。 王不要依于杰三的时间是什么。",
+    "adapted_answer": [
+      "杰三游速是十丁二七五千公里平时。 王游速是九十一十三千公里平时。 杰三游速不要于王的率度是十丁二七五千公里平时 - 九十一十三千公里平时 = 七二七五千公里平时。",
+      "王不要于杰三的距离是三十二七千公里。 杰三游速不要于王的率度是七二七五千公里平时。 杰三不要于王的时间是三十二七千公里 / 七二七五千公里平时 = 五小时。",
+      "#### 5"
+    ],
+    "adaptation_notes": "Replaced names: Tom -> 杰三, Bob -> 王"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "index": 585,
+  "split": "test",
+  "original": {
+    "question": "Tabitha agreed to pay John and Jill $10 an hour to help clean out her attic and basement.  Jill worked 2 hours on Saturday and 1 hour on Sunday.  John worked twice as long as Jill on Saturday and three times as long as Jill on Sunday.  How much more money did John earn compared to Jill?",
+    "answer": "Jill worked 2 hours + 1 hour for a total of 3 hours.\nJill worked 3 hours at $10/hour so she made 3*$10 = $<<3*10=30>>30\nJohn worked twice as long as Jill on Saturday so 2*2 = <<2*2=4>>4 hours\nJohn worked three times as long as Jill on Sunday so 3*1 = <<3*1=3>>3 hours\nJohn worked 4 hours + 3 hours for 7 hours\nJohn worked 7 hours at $10/hour so he made 7*10 = $<<7*10=70>>70\nJohn made $70 while Jill made $30 so $70 - $30 = $<<70-30=40>>40 more dollars\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "Jill",
+      "dollars",
+      "Saturday",
+      "Sunday"
+    ],
+    "notes": "Names and days of the week are Western, and currency is US dollars."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jill_earnings",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "john_earnings",
+      "value": 70,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "earnings_difference",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jill_earnings\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"john_earnings\", \"value\": 70, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"earnings_difference\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 870,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "jill_earnings",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 2610,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "john_earnings",
+        "original_value": 70,
+        "original_unit": "dollar",
+        "converted_value": 6090,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "earnings_difference",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 3480,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tabitha agreed to pay John and Jill ${hourly_wage} an hour to help clean out her attic and basement.  Jill worked {saturday_hours} hours on Saturday and {sunday_hours} hours on Sunday.  John worked twice as long as Jill on Saturday and three times as long as Jill on Sunday.  How much more money did John earn compared to Jill?",
+    "templatized_answer": [
+      "Jill worked {saturday_hours} hours + {sunday_hours} hours for a total of {total_jill_hours} hours.",
+      "Jill worked {total_jill_hours} hours at ${hourly_wage}/hour so she made {total_jill_hours}*${hourly_wage} = ${jill_earnings}",
+      "John worked twice as long as Jill on Saturday so 2*{saturday_hours} = {john_saturday_hours} hours",
+      "John worked three times as long as Jill on Sunday so 3*{sunday_hours} = {john_sunday_hours} hours",
+      "John worked {john_saturday_hours} hours + {john_sunday_hours} hours for {total_john_hours} hours",
+      "John worked {total_john_hours} hours at ${hourly_wage}/hour so he made {total_john_hours}*${hourly_wage} = ${john_earnings}",
+      "John made ${john_earnings} while Jill made ${jill_earnings} so ${john_earnings} - ${jill_earnings} = ${earnings_difference} more dollars",
+      "#### ${earnings_difference}"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 10,
+      "saturday_hours": 2,
+      "sunday_hours": 1,
+      "total_jill_hours": 3,
+      "jill_earnings": 30,
+      "john_saturday_hours": 4,
+      "john_sunday_hours": 3,
+      "total_john_hours": 7,
+      "john_earnings": 70,
+      "earnings_difference": 40
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 870,
+    "saturday_hours": 2,
+    "sunday_hours": 1,
+    "total_jill_hours": 3,
+    "jill_earnings": 2610,
+    "john_saturday_hours": 4,
+    "john_sunday_hours": 3,
+    "total_john_hours": 7,
+    "john_earnings": 6090,
+    "earnings_difference": 3480
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 870\n    saturday_hours = 2\n    sunday_hours = 1\n\n    total_jill_hours = saturday_hours + sunday_hours\n    jill_earnings = round(total_jill_hours * hourly_wage, 2)\n\n    john_saturday_hours = 2 * saturday_hours\n    john_sunday_hours = 3 * sunday_hours\n    total_john_hours = john_saturday_hours + john_sunday_hours\n    john_earnings = round(total_john_hours * hourly_wage, 2)\n\n    earnings_difference = round(john_earnings - jill_earnings, 2)\n\n    return {\n        \"hourly_wage\": hourly_wage,\n        \"saturday_hours\": saturday_hours,\n        \"sunday_hours\": sunday_hours,\n        \"total_jill_hours\": total_jill_hours,\n        \"jill_earnings\": jill_earnings,\n        \"john_saturday_hours\": john_saturday_hours,\n        \"john_sunday_hours\": john_sunday_hours,\n        \"total_john_hours\": total_john_hours,\n        \"john_earnings\": john_earnings,\n        \"earnings_difference\": earnings_difference\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hourly_wage": 870,
+      "saturday_hours": 2,
+      "sunday_hours": 1,
+      "total_jill_hours": 3,
+      "jill_earnings": 2610,
+      "john_saturday_hours": 4,
+      "john_sunday_hours": 3,
+      "total_john_hours": 7,
+      "john_earnings": 6090,
+      "earnings_difference": 3480
+    }
+  },
+  "final": {
+    "question": "Tabitha agreed to pay John and Jill 870 rupees an hour to help clean out her attic and basement.  Jill worked 2 hours on Saturday and 1 hour on Sunday.  John worked twice as long as Jill on Saturday and three times as long as Jill on Sunday.  How much more money did John earn compared to Jill?",
+    "answer_lines": [
+      "Jill worked 2 hours + 1 hour for a total of 3 hours.",
+      "Jill worked 3 hours at 870 rupees/hour so she made 3*870 = 2610 rupees",
+      "John worked twice as long as Jill on Saturday so 2*2 = 4 hours",
+      "John worked three times as long as Jill on Sunday so 3*1 = 3 hours",
+      "John worked 4 hours + 3 hours for 7 hours",
+      "John worked 7 hours at 870 rupees/hour so he made 7*870 = 6090 rupees",
+      "John made 6090 rupees while Jill made 2610 rupees so 6090 - 2610 = 3480 rupees more",
+      "#### 3480"
+    ],
+    "final_scalar": 3480,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ramesh agreed to pay Rohan and Riya 870 rupees an hour to help clean out his attic and basement.  Riya worked 2 hours on Saturday and 1 hour on Sunday.  Rohan worked twice as long as Riya on Saturday and three times as long as Riya on Sunday.  How much more money did Rohan earn compared to Riya?",
+    "adapted_answer": [
+      "Riya worked 2 hours + 1 hour for a total of 3 hours.",
+      "Riya worked 3 hours at 870 rupees/hour so she made 3*870 = 2610 rupees",
+      "Rohan worked twice as long as Riya on Saturday so 2*2 = 4 hours",
+      "Rohan worked three times as long as Riya on Sunday so 3*1 = 3 hours",
+      "Rohan worked 4 hours + 3 hours for 7 hours",
+      "Rohan worked 7 hours at 870 rupees/hour so he made 7*870 = 6090 rupees",
+      "Rohan made 6090 rupees while Riya made 2610 rupees so 6090 - 2610 = 3480 rupees more",
+      "#### 3480"
+    ],
+    "adaptation_notes": "Replaced names John and Jill with Rohan and Riya to give the text an Indian context."
+  }
+}

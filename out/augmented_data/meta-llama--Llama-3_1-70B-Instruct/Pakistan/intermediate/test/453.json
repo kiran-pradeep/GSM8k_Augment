@@ -1,0 +1,157 @@
+{
+  "index": 453,
+  "split": "test",
+  "original": {
+    "question": "Jenna starts out with 8 sapphires. She trades 3 sapphires for two rubies. If sapphires are worth $800 and rubies are worth $1200, how much money are all her jewels worth?",
+    "answer": "First find the total number of sapphires Jenna still has: 8 sapphires - 3 sapphires = <<8-3=5>>5 sapphires\nThen multiply this number by the cost per sapphire to find the total cost of the sapphires: 5 sapphires * $800/sapphire = $<<5*800=4000>>4000\nThen find the total value of the rubies: 2 rubies * $1200/ruby = $<<2*1200=2400>>2400\nThen amount this to the cost of the sapphires to find the total value of her jewelry: $2400 + $4000 = $<<2400+4000=6400>>6400\n#### 6400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jenna",
+      "dollars"
+    ],
+    "notes": "Name 'Jenna' and unit 'dollars' are culturally specific to regions other than Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "sapphire_value",
+      "value": 800,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ruby_value",
+      "value": 1200,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_sapphires_value",
+      "value": 4000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_rubies_value",
+      "value": 2400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_jewelry_value",
+      "value": 6400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"sapphire_value\", \"value\": 800, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ruby_value\", \"value\": 1200, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_sapphires_value\", \"value\": 4000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_rubies_value\", \"value\": 2400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_jewelry_value\", \"value\": 6400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "sapphire_value",
+        "original_value": 800,
+        "original_unit": "dollar",
+        "converted_value": 225480.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "ruby_value",
+        "original_value": 1200,
+        "original_unit": "dollar",
+        "converted_value": 338220.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_sapphires_value",
+        "original_value": 4000,
+        "original_unit": "dollar",
+        "converted_value": 1127400.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_rubies_value",
+        "original_value": 2400,
+        "original_unit": "dollar",
+        "converted_value": 676440.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_jewelry_value",
+        "original_value": 6400,
+        "original_unit": "dollar",
+        "converted_value": 1803840.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jenna starts out with {initial_sapphires} sapphires. She trades {traded_sapphires} sapphires for two rubies. If sapphires are worth ${sapphire_value} and rubies are worth ${ruby_value}, how much money are all her jewels worth?",
+    "templatized_answer": [
+      "First find the total number of sapphires Jenna still has: {initial_sapphires} sapphires - {traded_sapphires} sapphires = {remaining_sapphires} sapphires",
+      "Then multiply this number by the cost per sapphire to find the total cost of the sapphires: {remaining_sapphires} sapphires * ${sapphire_value}/sapphire = ${total_sapphires_value}",
+      "Then find the total value of the rubies: 2 rubies * ${ruby_value}/ruby = ${total_rubies_value}",
+      "Then amount this to the cost of the sapphires to find the total value of her jewelry: ${total_rubies_value} + ${total_sapphires_value} = ${total_jewelry_value}",
+      "#### {total_jewelry_value}"
+    ],
+    "factual_assignment": {
+      "initial_sapphires": 8,
+      "traded_sapphires": 3,
+      "remaining_sapphires": 5,
+      "sapphire_value": 800,
+      "ruby_value": 1200,
+      "total_sapphires_value": 4000,
+      "total_rubies_value": 2400,
+      "total_jewelry_value": 6400
+    }
+  },
+  "merged_assignment": {
+    "initial_sapphires": 8,
+    "traded_sapphires": 3,
+    "remaining_sapphires": 5,
+    "sapphire_value": 225480.0,
+    "ruby_value": 338220.0,
+    "total_sapphires_value": 1127400.0,
+    "total_rubies_value": 676440.0,
+    "total_jewelry_value": 1803840.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_sapphires = 8\n    traded_sapphires = 3\n    sapphire_value = 225480.0\n    ruby_value = 338220.0\n\n    remaining_sapphires = initial_sapphires - traded_sapphires\n    total_sapphires_value = round(remaining_sapphires * sapphire_value, 2)\n    total_rubies_value = round(2 * ruby_value, 2)\n    total_jewelry_value = round(total_rubies_value + total_sapphires_value, 2)\n\n    return {\n        \"initial_sapphires\": initial_sapphires,\n        \"traded_sapphires\": traded_sapphires,\n        \"remaining_sapphires\": remaining_sapphires,\n        \"sapphire_value\": sapphire_value,\n        \"ruby_value\": ruby_value,\n        \"total_sapphires_value\": total_sapphires_value,\n        \"total_rubies_value\": total_rubies_value,\n        \"total_jewelry_value\": total_jewelry_value\n    }\n",
+    "results": {
+      "initial_sapphires": 8,
+      "traded_sapphires": 3,
+      "remaining_sapphires": 5,
+      "sapphire_value": 225480.0,
+      "ruby_value": 338220.0,
+      "total_sapphires_value": 1127400.0,
+      "total_rubies_value": 676440.0,
+      "total_jewelry_value": 1803840.0
+    }
+  },
+  "final": {
+    "question": "Jenna starts out with 8 sapphires. She trades 3 sapphires for two rubies. If sapphires are worth 225480 rupee and rubies are worth 338220 rupee, how much money are all her jewels worth?",
+    "answer_lines": [
+      "First find the total number of sapphires Jenna still has: 8 sapphires - 3 sapphires = 5 sapphires",
+      "Then multiply this number by the cost per sapphire to find the total cost of the sapphires: 5 sapphires * 225480 rupee/sapphire = 1127400 rupee",
+      "Then find the total value of the rubies: 2 rubies * 338220 rupee/ruby = 676440 rupee",
+      "Then amount this to the cost of the sapphires to find the total value of her jewelry: 676440 rupee + 1127400 rupee = 1803840 rupee",
+      "#### 1803840"
+    ],
+    "final_scalar": 1803840,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha starts out with 8 sapphires. She trades 3 sapphires for two rubies. If sapphires are worth 225480 rupee and rubies are worth 338220 rupee, how much money are all her jewels worth?",
+    "adapted_answer": [
+      "First find the total number of sapphires Ayesha still has: 8 sapphires - 3 sapphires = 5 sapphires",
+      "Then multiply this number by the cost per sapphire to find the total cost of the sapphires: 5 sapphires * 225480 rupee/sapphire = 1127400 rupee",
+      "Then find the total value of the rubies: 2 rubies * 338220 rupee/ruby = 676440 rupee",
+      "Then amount this to the cost of the sapphires to find the total value of her jewelry: 676440 rupee + 1127400 rupee = 1803840 rupee",
+      "#### 1803840"
+    ],
+    "adaptation_notes": "Replaced 'Jenna' with 'Ayesha' to give the name a Pakistani context."
+  }
+}

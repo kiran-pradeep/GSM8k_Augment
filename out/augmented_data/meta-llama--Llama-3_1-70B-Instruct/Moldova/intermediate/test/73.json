@@ -1,0 +1,150 @@
+{
+  "index": 73,
+  "split": "test",
+  "original": {
+    "question": "Shiela bought five cell phones for $150 each for a 3-month installment. A 2% interest will be charged for each unit. How much will Shiela pay each month for 3 months?",
+    "answer": "A $150 x 2/100 = $<<150*2/100=3>>3 interest will be charged for each unit.\nSo, each cell phone costs $150 + $3 = $<<150+3=153>>153.\nThe total amount to be paid for 5 cell phones is $153 x 5 = $<<153*5=765>>765.\nThus, Shiela will pay $765/3 = $<<765/3=255>>255 each month.\n#### 255"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cell_phone_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "interest_per_unit",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cell_phone_total_cost",
+      "value": 153.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_amount",
+      "value": 765.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_payment",
+      "value": 255.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cell_phone_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"interest_per_unit\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cell_phone_total_cost\", \"value\": 153.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_amount\", \"value\": 765.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_payment\", \"value\": 255.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cell_phone_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 2493.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "interest_per_unit",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "cell_phone_total_cost",
+        "original_value": 153.0,
+        "original_unit": "dollar",
+        "converted_value": 2542.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_amount",
+        "original_value": 765.0,
+        "original_unit": "dollar",
+        "converted_value": 12714.3,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "monthly_payment",
+        "original_value": 255.0,
+        "original_unit": "dollar",
+        "converted_value": 4238.1,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Shiela bought five cell phones for ${cell_phone_cost} each for a 3-month installment. A {interest_rate}% interest will be charged for each unit. How much will Shiela pay each month for 3 months?",
+    "templatized_answer": [
+      "A ${cell_phone_cost} x {interest_rate}/100 = ${interest_per_unit} interest will be charged for each unit.",
+      "So, each cell phone costs ${cell_phone_cost} + ${interest_per_unit} = ${cell_phone_total_cost}.",
+      "The total amount to be paid for 5 cell phones is ${cell_phone_total_cost} x 5 = ${total_amount}.",
+      "Thus, Shiela will pay ${total_amount}/3 = ${monthly_payment} each month.",
+      "#### ${monthly_payment}"
+    ],
+    "factual_assignment": {
+      "cell_phone_cost": 150.0,
+      "interest_rate": 2.0,
+      "interest_per_unit": 3.0,
+      "cell_phone_total_cost": 153.0,
+      "total_amount": 765.0,
+      "monthly_payment": 255.0
+    }
+  },
+  "merged_assignment": {
+    "cell_phone_cost": 2493.0,
+    "interest_rate": 2.0,
+    "interest_per_unit": 49.86,
+    "cell_phone_total_cost": 2542.86,
+    "total_amount": 12714.3,
+    "monthly_payment": 4238.1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cell_phone_cost = 2493.0\n    interest_rate = 2.0\n\n    interest_per_unit = cell_phone_cost * (interest_rate / 100)\n    cell_phone_total_cost = cell_phone_cost + interest_per_unit\n    total_amount = cell_phone_total_cost * 5\n    monthly_payment = total_amount / 3\n\n    return {\n        \"cell_phone_cost\": cell_phone_cost,\n        \"interest_rate\": interest_rate,\n        \"interest_per_unit\": round(interest_per_unit, 2),\n        \"cell_phone_total_cost\": round(cell_phone_total_cost, 2),\n        \"total_amount\": round(total_amount, 2),\n        \"monthly_payment\": round(monthly_payment, 2)\n    }\n",
+    "results": {
+      "cell_phone_cost": 2493.0,
+      "interest_rate": 2.0,
+      "interest_per_unit": 49.86,
+      "cell_phone_total_cost": 2542.86,
+      "total_amount": 12714.3,
+      "monthly_payment": 4238.1
+    }
+  },
+  "final": {
+    "question": "Shiela bought five cell phones for 2493 leu each for a 3-month installment. A 2% interest will be charged for each unit. How much will Shiela pay each month for 3 months?",
+    "answer_lines": [
+      "A 2493 x 2/100 = 49.86 interest will be charged for each unit.",
+      "So, each cell phone costs 2493 + 49.86 = 2542.86.",
+      "The total amount to be paid for 5 cell phones is 2542.86 x 5 = 12714.3.",
+      "Thus, Shiela will pay 12714.3/3 = 4238.1 each month.",
+      "#### 4238.1"
+    ],
+    "final_scalar": 4238.1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Shiela bought five mobile phones for 2493 lei each for a 3-month installment. A 2% interest will be charged for each unit. How much will Shiela pay each month for 3 months?",
+    "adapted_answer": [
+      "A 2493 x 2/100 = 49.86 interest will be charged for each unit.",
+      "So, each mobile phone costs 2493 + 49.86 = 2542.86.",
+      "The total amount to be paid for 5 mobile phones is 2542.86 x 5 = 12714.3.",
+      "Thus, Shiela will pay 12714.3/3 = 4238.1 each month.",
+      "#### 4238.1"
+    ],
+    "adaptation_notes": "Replaced 'cell phones' with 'mobile phones' and 'leu' with 'lei' to better fit Moldovan context."
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "index": 148,
+  "split": "test",
+  "original": {
+    "question": "Brittany and her mom go to the museum. The cost of admission is $12 for adults and $10 for children. Brittany's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received $8 in change, how much money, in dollars, did she give the cashier?",
+    "answer": "The total cost of the tickets is 12+10=<<12+10=22>>22 dollars.\nBrittany's mom gave the cashier 22+8=<<22+8=30>>30 dollars.\n#### 30"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "adult_ticket_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "child_ticket_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change_received",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cash_given",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"adult_ticket_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"child_ticket_cost\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change_received\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cash_given\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "adult_ticket_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 3382.2,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "child_ticket_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 2818.5,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "change_received",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 2254.8,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cash_given",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 8455.5,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Brittany and her mom go to the museum. The cost of admission is ${adult_ticket_cost} for adults and ${child_ticket_cost} for children. Brittany's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received ${change_received} in change, how much money, in dollars, did she give the cashier?",
+    "templatized_answer": [
+      "The total cost of the tickets is {adult_ticket_cost}+{child_ticket_cost}={adult_ticket_cost}+{child_ticket_cost} dollars.",
+      "Brittany's mom gave the cashier {adult_ticket_cost}+{child_ticket_cost}+{change_received}={adult_ticket_cost}+{child_ticket_cost}+{change_received} dollars.",
+      "#### {adult_ticket_cost}+{child_ticket_cost}+{change_received}"
+    ],
+    "factual_assignment": {
+      "adult_ticket_cost": 12.0,
+      "child_ticket_cost": 10.0,
+      "change_received": 8.0
+    }
+  },
+  "merged_assignment": {
+    "adult_ticket_cost": 3382.2,
+    "child_ticket_cost": 2818.5,
+    "change_received": 2254.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    adult_ticket_cost = 3382.2\n    child_ticket_cost = 2818.5\n    change_received = 2254.8\n\n    total_cost = round(adult_ticket_cost + child_ticket_cost, 2)\n    amount_given = round(total_cost + change_received, 2)\n\n    return {\n        \"adult_ticket_cost\": adult_ticket_cost,\n        \"child_ticket_cost\": child_ticket_cost,\n        \"change_received\": change_received,\n        \"total_cost\": total_cost,\n        \"amount_given\": amount_given\n    }\n",
+    "results": {
+      "adult_ticket_cost": 3382.2,
+      "child_ticket_cost": 2818.5,
+      "change_received": 2254.8,
+      "total_cost": 6200.7,
+      "amount_given": 8455.5
+    }
+  },
+  "final": {
+    "question": "Brittany and her mom go to the museum. The cost of admission is 3382.2 rupee for adults and 2818.5 rupee for children. Brittany's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received 2254.8 rupee in change, how much money, in rupee, did she give the cashier?",
+    "answer_lines": [
+      "The total cost of the tickets is 3382.2+2818.5=6200.7 rupee.",
+      "Brittany's mom gave the cashier 6200.7+2254.8=8455.5 rupee.",
+      "#### 8455.5"
+    ],
+    "final_scalar": 8455.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ayesha and her mom go to the Lahore Museum. The cost of admission is 3382.2 rupee for adults and 2818.5 rupee for children. Ayesha's mom gives the cashier money for 1 child ticket and 1 adult ticket. If she received 2254.8 rupee in change, how much money, in rupee, did she give the cashier?",
+    "adapted_answer": [
+      "The total cost of the tickets is 3382.2+2818.5=6200.7 rupee.",
+      "Ayesha's mom gave the cashier 6200.7+2254.8=8455.5 rupee.",
+      "#### 8455.5"
+    ],
+    "adaptation_notes": "Replaced 'Brittany' with 'Ayesha' and added 'Lahore' to the museum to give it a Pakistani context."
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "index": 1133,
+  "split": "test",
+  "original": {
+    "question": "Grandma walks 3 miles every day on her favorite walking trail, which includes 2 miles of walking on the beach and 1 mile of walking on the sidewalk.  On the sidewalk, Grandma walks at twice the rate of speed that she does on the beach.  If 40 minutes of her walk is spent on the beach, how long does it take for her to complete the entire 3-mile walk, in minutes?",
+    "answer": "On the beach, Grandma walks at a rate of 2 miles per 40 minutes, or 2/40 = 1/20 miles per minute.\nOn the sidewalk, she walks at twice the rate of speed as when she is on the sand, or 2 * 1/20 = 1/10 miles per minute.\nTo walk 1 mile on the sidewalk, it takes her 1/(1/10) = <<1/(1/10)=10>>10 minutes.\nThus, in total, it takes Grandma 40+10 = <<40+10=50>>50 minutes to walk her favorite route.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Grandma",
+      "miles",
+      "beach",
+      "sidewalk"
+    ],
+    "notes": "The text contains culturally specific entities such as Grandma, a term commonly used in Western cultures, and units of measurement like miles, which are not commonly used in China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "beach_walk",
+      "value": 2.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "sidewalk_walk",
+      "value": 1.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "total_walk",
+      "value": 3.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "beach_time",
+      "value": 40.0,
+      "unit": "minute",
+      "context": "question"
+    },
+    {
+      "variable": "sidewalk_time",
+      "value": 10.0,
+      "unit": "minute",
+      "context": "answer"
+    },
+    {
+      "variable": "total_time",
+      "value": 50.0,
+      "unit": "minute",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"beach_walk\", \"value\": 2.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"sidewalk_walk\", \"value\": 1.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"total_walk\", \"value\": 3.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"beach_time\", \"value\": 40.0, \"unit\": \"minute\", \"context\": \"question\"},\n    {\"variable\": \"sidewalk_time\", \"value\": 10.0, \"unit\": \"minute\", \"context\": \"answer\"},\n    {\"variable\": \"total_time\", \"value\": 50.0, \"unit\": \"minute\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "beach_walk",
+        "original_value": 2.0,
+        "original_unit": "mile",
+        "converted_value": 3.22,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "sidewalk_walk",
+        "original_value": 1.0,
+        "original_unit": "mile",
+        "converted_value": 1.61,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "total_walk",
+        "original_value": 3.0,
+        "original_unit": "mile",
+        "converted_value": 4.83,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "beach_time",
+        "original_value": 40.0,
+        "original_unit": "minute",
+        "converted_value": 40.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "sidewalk_time",
+        "original_value": 10.0,
+        "original_unit": "minute",
+        "converted_value": 10.0,
+        "converted_unit": "minute"
+      },
+      {
+        "variable": "total_time",
+        "original_value": 50.0,
+        "original_unit": "minute",
+        "converted_value": 50.0,
+        "converted_unit": "minute"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Grandma walks {total_walk} miles every day on her favorite walking trail, which includes {beach_walk} miles of walking on the beach and {sidewalk_walk} miles of walking on the sidewalk.  On the sidewalk, Grandma walks at twice the rate of speed that she does on the beach.  If {beach_time} minutes of her walk is spent on the beach, how long does it take for her to complete the entire {total_walk}-mile walk, in minutes?",
+    "templatized_answer": [
+      "On the beach, Grandma walks at a rate of {beach_walk} miles per {beach_time} minutes, or {beach_walk}/{beach_time} miles per minute.",
+      "On the sidewalk, she walks at twice the rate of speed as when she is on the sand, or 2 * ({beach_walk}/{beach_time}) = 2*({beach_walk}/{beach_time}) miles per minute.",
+      "To walk {sidewalk_walk} mile on the sidewalk, it takes her {sidewalk_walk}/(2*({beach_walk}/{beach_time})) = {sidewalk_time} minutes.",
+      "Thus, in total, it takes Grandma {beach_time}+{sidewalk_time} = {total_time} minutes to walk her favorite route.",
+      "#### {total_time}"
+    ],
+    "factual_assignment": {
+      "total_walk": 3.0,
+      "beach_walk": 2.0,
+      "sidewalk_walk": 1.0,
+      "beach_time": 40.0,
+      "sidewalk_time": 10.0,
+      "total_time": 50.0
+    }
+  },
+  "merged_assignment": {
+    "total_walk": 4.83,
+    "beach_walk": 3.22,
+    "sidewalk_walk": 1.61,
+    "beach_time": 40.0,
+    "sidewalk_time": 10.0,
+    "total_time": 50.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_walk = 4.83\n    beach_walk = 3.22\n    sidewalk_walk = 1.61\n    beach_time = 40.0\n\n    beach_speed = beach_walk / beach_time\n    sidewalk_speed = 2 * beach_speed\n    sidewalk_time = sidewalk_walk / sidewalk_speed\n    total_time = beach_time + sidewalk_time\n\n    return {\n        \"total_walk\": round(total_walk, 2),\n        \"beach_walk\": round(beach_walk, 2),\n        \"sidewalk_walk\": round(sidewalk_walk, 2),\n        \"beach_time\": round(beach_time, 2),\n        \"sidewalk_time\": round(sidewalk_time, 2),\n        \"total_time\": round(total_time, 2),\n        \"beach_speed\": round(beach_speed, 2),\n        \"sidewalk_speed\": round(sidewalk_speed, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_walk": 4.83,
+      "beach_walk": 3.22,
+      "sidewalk_walk": 1.61,
+      "beach_time": 40.0,
+      "sidewalk_time": 10.0,
+      "total_time": 50.0,
+      "beach_speed": 0.08,
+      "sidewalk_speed": 0.16
+    }
+  },
+  "final": {
+    "question": "Grandma walks 4.83 kilometers every day on her favorite walking trail, which includes 3.22 kilometers of walking on the beach and 1.61 kilometers of walking on the sidewalk.  On the sidewalk, Grandma walks at twice the rate of speed that she does on the beach.  If 40 minutes of her walk is spent on the beach, how long does it take for her to complete the entire 4.83-kilometer walk, in minutes?",
+    "answer_lines": [
+      "On the beach, Grandma walks at a rate of 3.22 kilometers per 40 minutes, or 3.22/40 = 0.0805 kilometers per minute.",
+      "On the sidewalk, she walks at twice the rate of speed as when she is on the sand, or 2 * 0.0805 = 0.161 kilometers per minute.",
+      "To walk 1.61 kilometers on the sidewalk, it takes her 1.61/0.161 = 10 minutes.",
+      "Thus, in total, it takes Grandma 40+10 = 50 minutes to walk her favorite route.",
+      "#### 50"
+    ],
+    "final_scalar": 50,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": null
+}

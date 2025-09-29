@@ -1,0 +1,100 @@
+{
+  "index": 792,
+  "split": "test",
+  "original": {
+    "question": "Damien created a currency based on bottle caps and got his friends to take part.  He finds 10 bottle caps a day on his way home and each bottle cap is worth $.25.  How much money does he make in a 30 day month?",
+    "answer": "He finds 10*30=<<10*30=300>>300 bottle caps in the month\nThey are worth 300*.25=$<<300*.25=75>>75\n#### 75"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "$.25",
+      "dollars"
+    ],
+    "notes": "The currency unit 'dollars' is specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bottle_cap_value",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 75,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bottle_cap_value\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_earnings\", \"value\": 75, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bottle_cap_value",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 21.75,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 6525,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Damien created a currency based on bottle caps and got his friends to take part.  He finds {bottle_caps_per_day} bottle caps a day on his way home and each bottle cap is worth ${bottle_cap_value}.  How much money does he make in a {number_of_days} day month?",
+    "templatized_answer": [
+      "He finds {bottle_caps_per_day}*{number_of_days}={bottle_caps_per_day}*{number_of_days} bottle caps in the month",
+      "They are worth {bottle_caps_per_day}*{number_of_days}*{bottle_cap_value}=${bottle_caps_per_day}*{number_of_days}*{bottle_cap_value}",
+      "#### {monthly_earnings}"
+    ],
+    "factual_assignment": {
+      "bottle_caps_per_day": 10,
+      "bottle_cap_value": 0.25,
+      "number_of_days": 30,
+      "monthly_earnings": 75
+    }
+  },
+  "merged_assignment": {
+    "bottle_caps_per_day": 10,
+    "bottle_cap_value": 21.75,
+    "number_of_days": 30,
+    "monthly_earnings": 6525
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bottle_caps_per_day = 10\n    bottle_cap_value = 21.75\n    number_of_days = 30\n\n    total_bottle_caps = bottle_caps_per_day * number_of_days\n    monthly_earnings = total_bottle_caps * bottle_cap_value\n\n    return {\n        \"bottle_caps_per_day\": bottle_caps_per_day,\n        \"bottle_cap_value\": bottle_cap_value,\n        \"number_of_days\": number_of_days,\n        \"total_bottle_caps\": total_bottle_caps,\n        \"monthly_earnings\": round(monthly_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "bottle_caps_per_day": 10,
+      "bottle_cap_value": 21.75,
+      "number_of_days": 30,
+      "total_bottle_caps": 300,
+      "monthly_earnings": 6525.0
+    }
+  },
+  "final": {
+    "question": "Damien created a currency based on bottle caps and got his friends to take part.  He finds 10 bottle caps a day on his way home and each bottle cap is worth 21.75 rupees.  How much money does he make in a 30 day month?",
+    "answer_lines": [
+      "He finds 10*30=300 bottle caps in the month",
+      "They are worth 300*21.75=6525 rupees",
+      "#### 6525"
+    ],
+    "final_scalar": 6525.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Damien created a currency based on bottle caps and got his friends to take part.  He finds 10 bottle caps a day on his way home and each bottle cap is worth 21.75 rupees.  How much money does he make in a 30 day month?",
+    "adapted_answer": [
+      "He finds 10*30=300 bottle caps in the month",
+      "They are worth 300*21.75=6525 rupees"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

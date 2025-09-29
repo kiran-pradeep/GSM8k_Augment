@@ -1,0 +1,155 @@
+{
+  "index": 216,
+  "split": "test",
+  "original": {
+    "question": "Janeth borrowed $2000 and promised to return it with an additional 10% of the amount. If she is going to pay $165 a month for 12 months, how much will be Janeth's remaining balance by then?",
+    "answer": "Janeth will pay an additional $2000x 10/100 =$<<2000*10/100=200>>200.\nSo she is going to pay off a total of $2000 + $200 = $<<2000+200=2200>>2200.\nJaneth will be able to pay off $165 x 12 = $<<165*12=1980>>1980 in 12 months.\nHence, her remaining balance by then will be $2200 - $1980 = $<<2200-1980=220>>220.\n#### 220"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Janeth",
+      "dollars"
+    ],
+    "notes": "Name 'Janeth' and unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_borrow",
+      "value": 2000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_payment",
+      "value": 165,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_payment",
+      "value": 200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_payment",
+      "value": 2200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_paid",
+      "value": 1980,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_balance",
+      "value": 220,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value, converted_unit = convert(original_value, original_unit)\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_borrow\",\n    \"value\": 2000,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"monthly_payment\",\n    \"value\": 165,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"additional_payment\",\n    \"value\": 200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_payment\",\n    \"value\": 2200,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_paid\",\n    \"value\": 1980,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"remaining_balance\",\n    \"value\": 220,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_borrow",
+        "original_value": 2000,
+        "original_unit": "dollar",
+        "converted_value": 14260.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "monthly_payment",
+        "original_value": 165,
+        "original_unit": "dollar",
+        "converted_value": 1176.45,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "additional_payment",
+        "original_value": 200,
+        "original_unit": "dollar",
+        "converted_value": 1426.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_payment",
+        "original_value": 2200,
+        "original_unit": "dollar",
+        "converted_value": 15686.0,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_paid",
+        "original_value": 1980,
+        "original_unit": "dollar",
+        "converted_value": 14117.4,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "remaining_balance",
+        "original_value": 220,
+        "original_unit": "dollar",
+        "converted_value": 1568.6,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Janeth borrowed ${initial_borrow} and promised to return it with an additional 10% of the amount. If she is going to pay ${monthly_payment} a month for 12 months, how much will be Janeth's remaining balance by then?",
+    "templatized_answer": [
+      "Janeth will pay an additional ${initial_borrow} x 10/100 = ${initial_borrow} x 10/100.",
+      "So she is going to pay off a total of ${initial_borrow} + ${initial_borrow} x 10/100 = ${initial_borrow} + ${initial_borrow} x 10/100.",
+      "Janeth will be able to pay off ${monthly_payment} x 12 = ${monthly_payment} x 12 in 12 months.",
+      "Hence, her remaining balance by then will be ${initial_borrow} + ${initial_borrow} x 10/100 - ${monthly_payment} x 12 = ${initial_borrow} + ${initial_borrow} x 10/100 - ${monthly_payment} x 12.",
+      "#### {initial_borrow} + {initial_borrow} x 10/100 - {monthly_payment} x 12"
+    ],
+    "factual_assignment": {
+      "initial_borrow": 2000,
+      "monthly_payment": 165
+    }
+  },
+  "merged_assignment": {
+    "initial_borrow": 14260.0,
+    "monthly_payment": 1176.45
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_borrow = 14260.0\n    monthly_payment = 1176.45\n\n    additional_payment = initial_borrow * 10 / 100\n    total_payment = initial_borrow + additional_payment\n    total_paid = monthly_payment * 12\n    remaining_balance = total_payment - total_paid\n\n    return {\n        \"initial_borrow\": initial_borrow,\n        \"initial_borrow x 10/100\": round(additional_payment, 2),\n        \"initial_borrow + initial_borrow x 10/100\": round(total_payment, 2),\n        \"monthly_payment x 12\": round(total_paid, 2),\n        \"initial_borrow + initial_borrow x 10/100 - monthly_payment x 12\": round(remaining_balance, 2)\n    }\n",
+    "results": {
+      "initial_borrow": 14260.0,
+      "initial_borrow x 10/100": 1426.0,
+      "initial_borrow + initial_borrow x 10/100": 15686.0,
+      "monthly_payment x 12": 14117.4,
+      "initial_borrow + initial_borrow x 10/100 - monthly_payment x 12": 1568.6
+    }
+  },
+  "final": {
+    "question": "Janeth borrowed 14260.0 renminbi and promised to return it with an additional 10% of the amount. If she is going to pay 1176.45 renminbi a month for 12 months, how much will be Janeth's remaining balance by then?",
+    "answer_lines": [
+      "Janeth will pay an additional 14260.0 x 10/100 = 1426.0.",
+      "So she is going to pay off a total of 14260.0 + 1426.0 = 15686.0.",
+      "Janeth will be able to pay off 1176.45 x 12 = 14117.4 in 12 months.",
+      "Hence, her remaining balance by then will be 15686.0 - 14117.4 = 1568.6.",
+      "#### 1568.6"
+    ],
+    "final_scalar": 1568.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jianfang borrowed 14260.0 renminbi and promised to return it with an additional 10% of the amount. If she is going to pay 1176.45 renminbi a month for 12 months, how much will be Jianfang's remaining balance by then?",
+    "adapted_answer": [
+      "Jianfang will pay an additional 14260.0 x 10/100 = 1426.0.",
+      "So she is going to pay off a total of 14260.0 + 1426.0 = 15686.0.",
+      "Jianfang will be able to pay off 1176.45 x 12 = 14117.4 in 12 months.",
+      "Hence, her remaining balance by then will be 15686.0 - 14117.4 = 1568.6.",
+      "#### 1568.6"
+    ],
+    "adaptation_notes": "Replaced 'Janeth' with 'Jianfang' to give the name a Chinese context."
+  }
+}

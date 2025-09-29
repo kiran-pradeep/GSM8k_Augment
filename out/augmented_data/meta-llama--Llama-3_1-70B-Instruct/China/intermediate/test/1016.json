@@ -1,0 +1,130 @@
+{
+  "index": 1016,
+  "split": "test",
+  "original": {
+    "question": "Mrs. Tatiana owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. What would be the price of carrots after three years if it was $120 initially? (Round to the nearest integer)",
+    "answer": "In the first year, the price of carrots increases by 5/100*120 = $<<5/100*120=6>>6\nAfter 3 years, the price of carrots will increase by $6*3 = $<<6*3=18>>18\nThe total price of carrots after three years will be 120+18 = $<<120+18=138>>138\n#### 138"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tatiana",
+      "dollars",
+      "carrots"
+    ],
+    "notes": "The name 'Tatiana' is of Russian origin, 'dollars' is a unit of currency commonly used in the US, and 'carrots' is a food item commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_carrot_price",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_year_price_increase",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_price_increase",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_carrot_price",
+      "value": 138.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] not in [\"renminbi\", \"kilogram\", \"gram\", \"kilometer\", \"meter\", \"liter\", \"milliliter\", \"minute\", \"hour\"]:\n            converted_value, converted_unit = convert(metric[\"value\"], metric[\"unit\"])\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_carrot_price\",\n    \"value\": 120.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"first_year_price_increase\",\n    \"value\": 6.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_price_increase\",\n    \"value\": 18.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"final_carrot_price\",\n    \"value\": 138.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_carrot_price",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 855.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "first_year_price_increase",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 42.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_price_increase",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 128.34,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "final_carrot_price",
+        "original_value": 138.0,
+        "original_unit": "dollar",
+        "converted_value": 983.94,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mrs. Tatiana owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. What would be the price of carrots after three years if it was ${initial_carrot_price} initially? (Round to the nearest integer)",
+    "templatized_answer": [
+      "In the first year, the price of carrots increases by 5/100*{initial_carrot_price} = ${first_year_price_increase}",
+      "After 3 years, the price of carrots will increase by {first_year_price_increase}*3 = ${total_price_increase}",
+      "The total price of carrots after three years will be {initial_carrot_price}+{total_price_increase} = ${final_carrot_price}",
+      "#### {final_carrot_price}"
+    ],
+    "factual_assignment": {
+      "initial_carrot_price": 120.0,
+      "first_year_price_increase": 6.0,
+      "total_price_increase": 18.0,
+      "final_carrot_price": 138.0
+    }
+  },
+  "merged_assignment": {
+    "initial_carrot_price": 855.6,
+    "first_year_price_increase": 42.78,
+    "total_price_increase": 128.34,
+    "final_carrot_price": 983.94
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_carrot_price = 855.6\n    first_year_price_increase = round(initial_carrot_price * 0.05, 2)\n    total_price_increase = round(first_year_price_increase * 3, 2)\n    final_carrot_price = round(initial_carrot_price + total_price_increase)\n\n    return {\n        \"initial_carrot_price\": initial_carrot_price,\n        \"first_year_price_increase\": first_year_price_increase,\n        \"total_price_increase\": total_price_increase,\n        \"final_carrot_price\": final_carrot_price\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_carrot_price": 855.6,
+      "first_year_price_increase": 42.78,
+      "total_price_increase": 128.34,
+      "final_carrot_price": 984
+    }
+  },
+  "final": {
+    "question": "Mrs. Tatiana owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. What would be the price of carrots after three years if it was 855.6 renminbi initially? (Round to the nearest integer)",
+    "answer_lines": [
+      "In the first year, the price of carrots increases by 5/100*855.6 = 42.78 renminbi",
+      "After 3 years, the price of carrots will increase by 42.78*3 = 128.34 renminbi",
+      "The total price of carrots after three years will be 855.6+128.34 = 983.94 renminbi",
+      "#### 984"
+    ],
+    "final_scalar": 984,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ms. Li owns a grocery store that sells different fruits and vegetables, which includes lotus roots. The price of lotus roots in the grocery store increases by 5% of the original price every year. What would be the price of lotus roots after three years if it was 855.6 renminbi initially? (Round to the nearest integer)",
+    "adapted_answer": [
+      "In the first year, the price of lotus roots increases by 5/100*855.6 = 42.78 renminbi",
+      "After 3 years, the price of lotus roots will increase by 42.78*3 = 128.34 renminbi",
+      "The total price of lotus roots after three years will be 855.6+128.34 = 983.94 renminbi",
+      "#### 984"
+    ],
+    "adaptation_notes": "Replaced 'Mrs. Tatiana' with 'Ms. Li' and 'carrots' with 'lotus roots' to give the text a Chinese context."
+  }
+}

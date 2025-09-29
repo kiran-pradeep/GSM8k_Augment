@@ -1,0 +1,113 @@
+{
+  "index": 36,
+  "split": "test",
+  "original": {
+    "question": "Terry eats 2 yogurts a day.  They are currently on sale at 4 yogurts for $5.00.  How much does he spend on yogurt over 30 days?",
+    "answer": "He eats 2 yogurts a day so over 30 days he will need 2*30 = <<2*30=60>>60 yogurts\nThe yogurt is sold as 4 units for $5.00 and he needs 60 yogurts so that’s 60/4 = <<60/4=15>>15 4-packs\nEach 4-pack is $5.00 and he needs 15 4-packs so he will spend $5*15 = $<<5*15=75.00>>75.00 on yogurt\n#### 75"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Terry",
+      "dollars",
+      "yogurts"
+    ],
+    "notes": "The name 'Terry' and the use of 'dollars' as currency are culturally specific to regions other than Pakistan. Yogurt is a common food item globally, but the context of the question suggests a Western cultural influence."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "yogurt_sale_price",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_yogurt_cost",
+      "value": 75.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 281.85},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"yogurt_sale_price\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_yogurt_cost\", \"value\": 75.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "yogurt_sale_price",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 1409.25,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_yogurt_cost",
+        "original_value": 75.0,
+        "original_unit": "dollar",
+        "converted_value": 21138.75,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Terry eats {yogurt_per_day} yogurts a day.  They are currently on sale at {yogurts_per_sale} yogurts for ${yogurt_sale_price}.  How much does he spend on yogurt over {days} days?",
+    "templatized_answer": [
+      "He eats {yogurt_per_day} yogurts a day so over {days} days he will need {yogurt_per_day}*{days} = <<{yogurt_per_day}*{days}={total_yogurts}>>{total_yogurts} yogurts",
+      "The yogurt is sold as {yogurts_per_sale} units for ${yogurt_sale_price} and he needs {total_yogurts} yogurts so that’s {total_yogurts}/{yogurts_per_sale} = <<{total_yogurts}/{yogurts_per_sale}={total_sales}>>{total_sales} {yogurts_per_sale}-packs",
+      "Each {yogurts_per_sale}-pack is ${yogurt_sale_price} and he needs {total_sales} {yogurts_per_sale}-packs so he will spend ${yogurt_sale_price}*{total_sales} = $<<{yogurt_sale_price}*{total_sales}={total_yogurt_cost}>>{total_yogurt_cost} on yogurt",
+      "#### {total_yogurt_cost}"
+    ],
+    "factual_assignment": {
+      "yogurt_per_day": 2,
+      "yogurts_per_sale": 4,
+      "yogurt_sale_price": 5.0,
+      "days": 30,
+      "total_yogurts": 60,
+      "total_sales": 15,
+      "total_yogurt_cost": 75.0
+    }
+  },
+  "merged_assignment": {
+    "yogurt_per_day": 2,
+    "yogurts_per_sale": 4,
+    "yogurt_sale_price": 1409.25,
+    "days": 30,
+    "total_yogurts": 60,
+    "total_sales": 15,
+    "total_yogurt_cost": 21138.75
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    yogurt_per_day = 2\n    yogurts_per_sale = 4\n    yogurt_sale_price = 1409.25\n    days = 30\n\n    total_yogurts = yogurt_per_day * days\n    total_sales = round(total_yogurts / yogurts_per_sale, 2)\n    total_yogurt_cost = round(yogurt_sale_price * total_sales, 2)\n\n    return {\n        \"yogurt_per_day\": yogurt_per_day,\n        \"yogurts_per_sale\": yogurts_per_sale,\n        \"yogurt_sale_price\": yogurt_sale_price,\n        \"days\": days,\n        \"total_yogurts\": total_yogurts,\n        \"total_sales\": total_sales,\n        \"total_yogurt_cost\": total_yogurt_cost\n    }\n",
+    "results": {
+      "yogurt_per_day": 2,
+      "yogurts_per_sale": 4,
+      "yogurt_sale_price": 1409.25,
+      "days": 30,
+      "total_yogurts": 60,
+      "total_sales": 15.0,
+      "total_yogurt_cost": 21138.75
+    }
+  },
+  "final": {
+    "question": "Terry eats 2 yogurts a day.  They are currently on sale at 4 yogurts for 1409.25 rupee.  How much does he spend on yogurt over 30 days?",
+    "answer_lines": [
+      "He eats 2 yogurts a day so over 30 days he will need 2*30 = <<2*30=60>>60 yogurts",
+      "The yogurt is sold as 4 units for 1409.25 rupee and he needs 60 yogurts so that’s 60/4 = <<60/4=15>>15 4-packs",
+      "Each 4-pack is 1409.25 rupee and he needs 15 4-packs so he will spend 1409.25*15 = <<1409.25*15=21138.75>>21138.75 rupee on yogurt",
+      "#### 21138.75"
+    ],
+    "final_scalar": 21138.75,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Tahir eats 2 dahi a day.  They are currently on sale at 4 dahi for 1409.25 rupee.  How much does he spend on dahi over 30 days?",
+    "adapted_answer": [
+      "He eats 2 dahi a day so over 30 days he will need 2*30 = 60 dahi",
+      "The dahi is sold as 4 units for 1409.25 rupee and he needs 60 dahi so that’s 60/4 = 15 4-packs",
+      "Each 4-pack is 1409.25 rupee and he needs 15 4-packs so he will spend 1409.25*15 = 21138.75 rupee on dahi",
+      "#### 21138.75"
+    ],
+    "adaptation_notes": "Replaced 'Terry' with 'Tahir' (Pakistani name) and 'yogurts' with 'dahi' (Pakistani yogurt equivalent)"
+  }
+}

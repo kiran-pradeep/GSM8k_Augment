@@ -1,0 +1,164 @@
+{
+  "index": 828,
+  "split": "test",
+  "original": {
+    "question": "Mulan has $40. Her father gave her $100. She buys two pairs of jeans at $30 each and a bag for $20. How much money does Mulan have left?",
+    "answer": "Mulan has a total of $40 + $100 = $<<40+100=140>>140.\nTwo pairs of jeans cost 2 x $30 = $<<2*30=60>>60.\nThus, Mulan spends a total of $60 + $20 = $<<60+20=80>>80.\nTherefore, Mulan has $140 - $80 = $<<140-80=60>>60 left.\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mulan",
+      "dollars"
+    ],
+    "notes": "Mulan is a Chinese name and dollars is a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "mulan_initial_money",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "father_gift",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jeans_cost",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bag_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 80,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "mulan_final_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"mulan_initial_money\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"father_gift\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jeans_cost\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bag_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"mulan_final_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "mulan_initial_money",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 664.8,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "father_gift",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 1662.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "jeans_cost",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 498.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "bag_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 332.4,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 1329.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "mulan_final_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 997.2,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mulan has ${mulan_initial_money}. Her father gave her ${father_gift}. She buys two pairs of jeans at ${jeans_cost} each and a bag for ${bag_cost}. How much money does Mulan have left?",
+    "templatized_answer": [
+      "Mulan has a total of ${mulan_initial_money} + ${father_gift} = ${mulan_initial_money + father_gift}.",
+      "Two pairs of jeans cost 2 x ${jeans_cost} = ${2 * jeans_cost}.",
+      "Thus, Mulan spends a total of ${2 * jeans_cost} + ${bag_cost} = ${total_spent}.",
+      "Therefore, Mulan has ${mulan_initial_money + father_gift} - ${total_spent} = ${mulan_final_money} left.",
+      "#### {mulan_final_money}"
+    ],
+    "factual_assignment": {
+      "mulan_initial_money": 40,
+      "father_gift": 100,
+      "jeans_cost": 30,
+      "bag_cost": 20,
+      "total_spent": 80,
+      "mulan_final_money": 60
+    }
+  },
+  "merged_assignment": {
+    "mulan_initial_money": 664.8,
+    "father_gift": 1662.0,
+    "jeans_cost": 498.6,
+    "bag_cost": 332.4,
+    "total_spent": 1329.6,
+    "mulan_final_money": 997.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    mulan_initial_money = 664.8\n    father_gift = 1662.0\n    jeans_cost = 498.6\n    bag_cost = 332.4\n\n    total_spent = 2 * jeans_cost + bag_cost\n    mulan_final_money = mulan_initial_money + father_gift - total_spent\n\n    return {\n        \"mulan_initial_money\": round(mulan_initial_money, 2),\n        \"father_gift\": round(father_gift, 2),\n        \"jeans_cost\": round(jeans_cost, 2),\n        \"bag_cost\": round(bag_cost, 2),\n        \"total_spent\": round(total_spent, 2),\n        \"mulan_final_money\": round(mulan_final_money, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "mulan_initial_money": 664.8,
+      "father_gift": 1662.0,
+      "jeans_cost": 498.6,
+      "bag_cost": 332.4,
+      "total_spent": 1329.6,
+      "mulan_final_money": 997.2
+    }
+  },
+  "final": {
+    "question": "Mulan has 664.8 leu. Her father gave her 1662.0 leu. She buys two pairs of jeans at 498.6 leu each and a bag for 332.4 leu. How much money does Mulan have left?",
+    "answer_lines": [
+      "Mulan has a total of 664.8 leu + 1662.0 leu = 2326.8 leu.",
+      "Two pairs of jeans cost 2 x 498.6 leu = 997.2 leu.",
+      "Thus, Mulan spends a total of 997.2 leu + 332.4 leu = 1329.6 leu.",
+      "Therefore, Mulan has 2326.8 leu - 1329.6 leu = 997.2 leu left.",
+      "#### 997.2"
+    ],
+    "final_scalar": 997.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Natalia has 664.8 leu. Her father gave her 1662.0 leu. She buys two pairs of jeans at 498.6 leu each and a bag for 332.4 leu. How much money does Natalia have left?",
+    "adapted_answer": [
+      "Natalia has a total of 664.8 leu + 1662.0 leu = 2326.8 leu.",
+      "Two pairs of jeans cost 2 x 498.6 leu = 997.2 leu.",
+      "Thus, Natalia spends a total of 997.2 leu + 332.4 leu = 1329.6 leu.",
+      "Therefore, Natalia has 2326.8 leu - 1329.6 leu = 997.2 leu left.",
+      "#### 997.2"
+    ],
+    "adaptation_notes": "Replaced 'Mulan' with 'Natalia' to give the character a more Moldovan name."
+  }
+}

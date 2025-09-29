@@ -1,0 +1,104 @@
+{
+  "index": 1257,
+  "split": "test",
+  "original": {
+    "question": "Bob thinks he needs 56 popsicle sticks to recreate the Washington Monument for his history project.  His favorite popsicles come 8 to a box and cost $2.00 per box.  How much will it cost Bob to build his project?",
+    "answer": "He needs 56 popsicle sticks to build his project and they come 8 to a box so he needs 56/8 = <<56/8=7>>7 boxes\nEach box costs $2.00 and he needs 7 boxes so it will cost him 2*7 = $<<2*7=14.00>>14.00\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Washington Monument",
+      "dollars",
+      "popsicles"
+    ],
+    "notes": "The question contains references to the Washington Monument, a US landmark, and uses dollars as currency and popsicles, a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "popsicle_stick_box_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "project_cost",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = round(value * list(conversions[unit].values())[0], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"popsicle_stick_box_cost\",\n    \"value\": 2.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"project_cost\",\n    \"value\": 14.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "popsicle_stick_box_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 14.26,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "project_cost",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 99.82,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob thinks he needs {number_of_popsicle_sticks} popsicle sticks to recreate the Washington Monument for his history project.  His favorite popsicles come {number_of_popsicle_sticks_per_box} to a box and cost ${popsicle_stick_box_cost} per box.  How much will it cost Bob to build his project?",
+    "templatized_answer": [
+      "He needs {number_of_popsicle_sticks} popsicle sticks to build his project and they come {number_of_popsicle_sticks_per_box} to a box so he needs {number_of_popsicle_sticks}/{number_of_popsicle_sticks_per_box} = {number_of_boxes} boxes",
+      "Each box costs ${popsicle_stick_box_cost} and he needs {number_of_boxes} boxes so it will cost him {popsicle_stick_box_cost}*{number_of_boxes} = ${project_cost}",
+      "#### {project_cost}"
+    ],
+    "factual_assignment": {
+      "number_of_popsicle_sticks": 56,
+      "number_of_popsicle_sticks_per_box": 8,
+      "popsicle_stick_box_cost": 2.0,
+      "number_of_boxes": 7,
+      "project_cost": 14.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_popsicle_sticks": 56,
+    "number_of_popsicle_sticks_per_box": 8,
+    "popsicle_stick_box_cost": 14.26,
+    "number_of_boxes": 7,
+    "project_cost": 99.82
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_popsicle_sticks = 56\n    number_of_popsicle_sticks_per_box = 8\n    popsicle_stick_box_cost = 14.26\n\n    number_of_boxes = number_of_popsicle_sticks / number_of_popsicle_sticks_per_box\n    project_cost = round(popsicle_stick_box_cost * number_of_boxes, 2)\n\n    return {\n        \"number_of_popsicle_sticks\": number_of_popsicle_sticks,\n        \"number_of_popsicle_sticks_per_box\": number_of_popsicle_sticks_per_box,\n        \"popsicle_stick_box_cost\": popsicle_stick_box_cost,\n        \"number_of_boxes\": round(number_of_boxes, 2),\n        \"project_cost\": project_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_popsicle_sticks": 56,
+      "number_of_popsicle_sticks_per_box": 8,
+      "popsicle_stick_box_cost": 14.26,
+      "number_of_boxes": 7.0,
+      "project_cost": 99.82
+    }
+  },
+  "final": {
+    "question": "Bob thinks he needs 56 popsicle sticks to recreate the Washington Monument for his history project.  His favorite popsicles come 8 to a box and cost 14.26 renminbi per box.  How much will it cost Bob to build his project?",
+    "answer_lines": [
+      "He needs 56 popsicle sticks to build his project and they come 8 to a box so he needs 56/8 = 7 boxes",
+      "Each box costs 14.26 renminbi and he needs 7 boxes so it will cost him 14.26*7 = 99.82 renminbi",
+      "#### 99.82"
+    ],
+    "final_scalar": 99.82,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Bob thinks he needs 56 bamboo skewers to recreate the Great Wall for his history project.  His favorite tanghulu come 8 to a box and cost 14.26 renminbi per box.  How much will it cost Bob to build his project?",
+    "adapted_answer": [
+      "He needs 56 bamboo skewers to build his project and they come 8 to a box so he needs 56/8 = 7 boxes",
+      "Each box costs 14.26 renminbi and he needs 7 boxes so it will cost him 14.26*7 = 99.82 renminbi",
+      "#### 99.82"
+    ],
+    "adaptation_notes": "Replaced 'Washington Monument' with 'Great Wall', 'popsicles' with 'tanghulu', and 'popsicle sticks' with 'bamboo skewers' to adapt to Chinese context."
+  }
+}

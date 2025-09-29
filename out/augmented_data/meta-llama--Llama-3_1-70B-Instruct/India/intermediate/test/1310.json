@@ -1,0 +1,114 @@
+{
+  "index": 1310,
+  "split": "test",
+  "original": {
+    "question": "Aaron and Vanessa were relay race partners on a running team. Aaron was able to run each mile twice as fast as Vanessa, but Vanessa was able to run twice as far as Aaron did. If Vanessa ran 4 miles and Aaron completed his part of the race in 16 minutes, how long in minutes did Vanessa take to complete her part?",
+    "answer": "Vanessa ran twice as far as Aaron, so Aaron ran 4 / 2 = <<4/2=2>>2 miles.\nAaron took 16 minutes, so he ran each mile in 16 / 2 = <<16/2=8>>8 minutes.\nVanessa takes twice as long to run a mile, so she took 8 * 2 = <<8*2=16>>16 minutes for each mile.\nShe ran 4 miles, so she took 4 * 16 = <<4*16=64>>64 minutes to complete her part of the race.\n#### 64"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Aaron",
+      "Vanessa",
+      "miles",
+      "minutes"
+    ],
+    "notes": "The names Aaron and Vanessa are Western names, and the units miles and minutes are commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "vanessa_distance",
+      "value": 4.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "aaron_distance",
+      "value": 2.0,
+      "unit": "mile",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"rupee\", \"factor\": 87}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"vanessa_distance\", \"value\": 4.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"aaron_distance\", \"value\": 2.0, \"unit\": \"mile\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "vanessa_distance",
+        "original_value": 4.0,
+        "original_unit": "mile",
+        "converted_value": 6.44,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "aaron_distance",
+        "original_value": 2.0,
+        "original_unit": "mile",
+        "converted_value": 3.22,
+        "converted_unit": "kilometer"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aaron and Vanessa were relay race partners on a running team. Aaron was able to run each mile twice as fast as Vanessa, but Vanessa was able to run twice as far as Aaron did. If Vanessa ran {vanessa_distance} miles and Aaron completed his part of the race in {aaron_time} minutes, how long in minutes did Vanessa take to complete her part?",
+    "templatized_answer": [
+      "Vanessa ran twice as far as Aaron, so Aaron ran {vanessa_distance} / 2 = {aaron_distance} miles.",
+      "Aaron took {aaron_time} minutes, so he ran each mile in {aaron_time} / {aaron_distance} = {aaron_speed} minutes.",
+      "Vanessa takes twice as long to run a mile, so she took {aaron_speed} * 2 = {vanessa_speed} minutes for each mile.",
+      "She ran {vanessa_distance} miles, so she took {vanessa_distance} * {vanessa_speed} = {vanessa_time} minutes to complete her part of the race.",
+      "#### {vanessa_time}"
+    ],
+    "factual_assignment": {
+      "vanessa_distance": 4.0,
+      "aaron_distance": 2.0,
+      "aaron_time": 16.0,
+      "aaron_speed": 8.0,
+      "vanessa_speed": 16.0,
+      "vanessa_time": 64.0
+    }
+  },
+  "merged_assignment": {
+    "vanessa_distance": 6.44,
+    "aaron_distance": 3.22,
+    "aaron_time": 16.0,
+    "aaron_speed": 8.0,
+    "vanessa_speed": 16.0,
+    "vanessa_time": 64.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    vanessa_distance = 6.44\n    aaron_time = 16.0\n\n    aaron_distance = vanessa_distance / 2\n    aaron_speed = aaron_time / aaron_distance\n    vanessa_speed = aaron_speed * 2\n    vanessa_time = vanessa_distance * vanessa_speed\n\n    return {\n        \"vanessa_distance\": round(vanessa_distance, 2),\n        \"aaron_distance\": round(aaron_distance, 2),\n        \"aaron_time\": round(aaron_time, 2),\n        \"aaron_speed\": round(aaron_speed, 2),\n        \"vanessa_speed\": round(vanessa_speed, 2),\n        \"vanessa_time\": round(vanessa_time, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "vanessa_distance": 6.44,
+      "aaron_distance": 3.22,
+      "aaron_time": 16.0,
+      "aaron_speed": 4.97,
+      "vanessa_speed": 9.94,
+      "vanessa_time": 64.0
+    }
+  },
+  "final": {
+    "question": "Aaron and Vanessa were relay race partners on a running team. Aaron was able to run each kilometer twice as fast as Vanessa, but Vanessa was able to run twice as far as Aaron did. If Vanessa ran 6.44 kilometers and Aaron completed his part of the race in 16 minutes, how long in minutes did Vanessa take to complete her part?",
+    "answer_lines": [
+      "Vanessa ran twice as far as Aaron, so Aaron ran 6.44 / 2 = 3.22 kilometers.",
+      "Aaron took 16 minutes, so he ran each kilometer in 16 / 3.22 = 4.97 minutes.",
+      "Vanessa takes twice as long to run a kilometer, so she took 4.97 * 2 = 9.94 minutes for each kilometer.",
+      "She ran 6.44 kilometers, so she took 6.44 * 9.94 = 64 minutes to complete her part of the race.",
+      "#### 64"
+    ],
+    "final_scalar": 64.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan and Nalini were relay race partners on a running team. Rohan was able to run each kilometer twice as fast as Nalini, but Nalini was able to run twice as far as Rohan did. If Nalini ran 6.44 kilometers and Rohan completed his part of the race in 16 minutes, how long in minutes did Nalini take to complete her part?",
+    "adapted_answer": [
+      "Nalini ran twice as far as Rohan, so Rohan ran 6.44 / 2 = 3.22 kilometers.",
+      "Rohan took 16 minutes, so he ran each kilometer in 16 / 3.22 = 4.97 minutes.",
+      "Nalini takes twice as long to run a kilometer, so she took 4.97 * 2 = 9.94 minutes for each kilometer.",
+      "She ran 6.44 kilometers, so she took 6.44 * 9.94 = 64 minutes to complete her part of the race.",
+      "#### 64"
+    ],
+    "adaptation_notes": "Replaced names 'Aaron' and 'Vanessa' with Indian names 'Rohan' and 'Nalini'."
+  }
+}

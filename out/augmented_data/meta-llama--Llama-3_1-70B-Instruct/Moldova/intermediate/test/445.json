@@ -1,0 +1,185 @@
+{
+  "index": 445,
+  "split": "test",
+  "original": {
+    "question": "Michael is racing his horse and notices that for every mile the horse runs, he eats 1/2 a bail of hay. A bail of hay costs $3. If his horse runs for 30 minutes at 32MPH, and Michael has six 5 dollar bills, how much change does he have after he buys the hay?",
+    "answer": "The horse runs 16 miles because 32 x (30/60) = <<32*(30/60)=16>>16\nThe horse needs to eat 8 bails of hay because 16 x .5 = <<16*.5=8>>8\nThe hay will cost $24 because 8 x $3 = <<8*3=24>>24\nMichael has $30 because 6 x $5 = <<6*5=30>>30\nMichael has $6 in change because $30 - $24 = $<<30-24=6>>6\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Michael",
+      "miles",
+      "MPH",
+      "dollars"
+    ],
+    "notes": "The text contains culturally specific entities such as a Western name (Michael), units of measurement (miles, MPH), and currency (dollars) commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "horse_speed",
+      "value": 32,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "hay_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "michael_money",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "horse_run_distance",
+      "value": 16,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "hay_total_cost",
+      "value": 24,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "michael_total_money",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "michael_change",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"mph\": {\"to\": \"km/h\", \"rate\": 1.60934},\n        \"mile\": {\"to\": \"km\", \"rate\": 1.60934},\n        \"pound\": {\"to\": \"kg\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"g\", \"rate\": 28.3495},\n        \"gallon\": {\"to\": \"L\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"mL\", \"rate\": 236.588},\n        \"foot\": {\"to\": \"m\", \"rate\": 0.3048},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"to\"]\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"horse_speed\", \"value\": 32, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"hay_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"michael_money\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"horse_run_distance\", \"value\": 16, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"hay_total_cost\", \"value\": 24, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"michael_total_money\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"michael_change\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "horse_speed",
+        "original_value": 32,
+        "original_unit": "mph",
+        "converted_value": 51.5,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "hay_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 49.86,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "michael_money",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 83.1,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "horse_run_distance",
+        "original_value": 16,
+        "original_unit": "mile",
+        "converted_value": 25.75,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "hay_total_cost",
+        "original_value": 24,
+        "original_unit": "dollar",
+        "converted_value": 398.88,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "michael_total_money",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 498.6,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "michael_change",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 99.72,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Michael is racing his horse and notices that for every mile the horse runs, he eats 1/2 a bail of hay. A bail of hay costs ${hay_cost}. If his horse runs for 30 minutes at {horse_speed}MPH, and Michael has six ${michael_money} dollar bills, how much change does he have after he buys the hay?",
+    "templatized_answer": [
+      "The horse runs {horse_run_distance} miles because {horse_speed} x (30/60) = {horse_run_distance}",
+      "The horse needs to eat {horse_run_distance} x .5 = {horse_run_distance} x .5 bails of hay",
+      "The hay will cost ${hay_total_cost} because {horse_run_distance} x .5 x ${hay_cost} = ${hay_total_cost}",
+      "Michael has ${michael_total_money} because 6 x ${michael_money} = ${michael_total_money}",
+      "Michael has ${michael_change} in change because ${michael_total_money} - ${hay_total_cost} = ${michael_change}",
+      "#### {michael_change}"
+    ],
+    "factual_assignment": {
+      "horse_speed": 32,
+      "hay_cost": 3,
+      "michael_money": 5,
+      "horse_run_distance": 16,
+      "hay_total_cost": 24,
+      "michael_total_money": 30,
+      "michael_change": 6
+    }
+  },
+  "merged_assignment": {
+    "horse_speed": 51.5,
+    "hay_cost": 49.86,
+    "michael_money": 83.1,
+    "horse_run_distance": 25.75,
+    "hay_total_cost": 398.88,
+    "michael_total_money": 498.6,
+    "michael_change": 99.72
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    horse_speed = 51.5  # km/h\n    hay_cost = 49.86  # MDL\n    michael_money = 83.1  # MDL\n\n    # Recompute horse_run_distance\n    horse_run_time = 30 / 60  # hours\n    horse_run_distance = horse_speed * horse_run_time\n\n    # Recompute hay_total_cost\n    hay_consumption = horse_run_distance * 0.5  # bails\n    hay_total_cost = hay_consumption * hay_cost\n\n    # Recompute michael_total_money\n    michael_total_money = 6 * michael_money\n\n    # Recompute michael_change\n    michael_change = michael_total_money - hay_total_cost\n\n    # Round to 2 decimal places where appropriate\n    horse_run_distance = round(horse_run_distance, 2)\n    hay_total_cost = round(hay_total_cost, 2)\n    michael_total_money = round(michael_total_money, 2)\n    michael_change = round(michael_change, 2)\n\n    return {\n        \"horse_speed\": horse_speed,\n        \"hay_cost\": hay_cost,\n        \"michael_money\": michael_money,\n        \"horse_run_distance\": horse_run_distance,\n        \"hay_total_cost\": hay_total_cost,\n        \"michael_total_money\": michael_total_money,\n        \"michael_change\": michael_change\n    }\n",
+    "results": {
+      "horse_speed": 51.5,
+      "hay_cost": 49.86,
+      "michael_money": 83.1,
+      "horse_run_distance": 25.75,
+      "hay_total_cost": 641.95,
+      "michael_total_money": 498.6,
+      "michael_change": -143.35
+    }
+  },
+  "final": {
+    "question": "Michael is racing his horse and notices that for every kilometer the horse runs, he eats 1/2 a bail of hay. A bail of hay costs 49.86 leu. If his horse runs for 30 minutes at 51.5 km/h, and Michael has six 83.1 leu bills, how much change does he have after he buys the hay?",
+    "answer_lines": [
+      "The horse runs 25.75 kilometers because 51.5 x (30/60) = 25.75",
+      "The horse needs to eat 25.75 x .5 = 12.875 bails of hay",
+      "The hay will cost 641.95 leu because 12.875 x 49.86 = 641.95",
+      "Michael has 498.6 leu because 6 x 83.1 = 498.6",
+      "Michael has -143.35 leu in change because 498.6 - 641.95 = -143.35",
+      "#### -143.35"
+    ],
+    "final_scalar": -143.35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ion is racing his horse and notices that for every kilometer the horse runs, he eats 1/2 a bail of hay. A bail of hay costs 49.86 leu. If his horse runs for 30 minutes at 51.5 km/h, and Ion has six 83.1 leu bills, how much change does he have after he buys the hay?",
+    "adapted_answer": [
+      "The horse runs 25.75 kilometers because 51.5 x (30/60) = 25.75",
+      "The horse needs to eat 25.75 x .5 = 12.875 bails of hay",
+      "The hay will cost 641.95 leu because 12.875 x 49.86 = 641.95",
+      "Ion has 498.6 leu because 6 x 83.1 = 498.6",
+      "Ion has -143.35 leu in change because 498.6 - 641.95 = -143.35",
+      "#### -143.35"
+    ],
+    "adaptation_notes": "Replaced 'Michael' with 'Ion', a common Moldovan name."
+  }
+}

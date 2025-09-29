@@ -1,0 +1,174 @@
+{
+  "index": 685,
+  "split": "test",
+  "original": {
+    "question": "Catherine goes to the grocery store. She buys 1 kilo of apples for $4, 2 kilos of bananas for $2 per kilo, and 2 kilos of oranges for $3 per kilo. How many dollars does she pay in total?",
+    "answer": "1 kilo of apples costs $<<1*4=4>>4.\n2 kilos of bananas costs 2 * 2 = $<<2*2=4>>4.\n2 kilos of oranges costs 2 * 3 = $<<2*3=6>>6.\nShe pays 4 + 4 + 6= $<<4+4+6=14>>14 in total.\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Catherine",
+      "dollars",
+      "apples",
+      "bananas",
+      "oranges"
+    ],
+    "notes": "The name Catherine and the use of dollars are culturally specific to regions other than Haiti. The fruits mentioned are widely available but not exclusive to Haitian cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apple_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "banana_cost_per_kilo",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "orange_cost_per_kilo",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "apple_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "banana_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "orange_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 14,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"gourde\", \"rate\": 130.81},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apple_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"banana_cost_per_kilo\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"orange_cost_per_kilo\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"apple_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"banana_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"orange_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 14, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apple_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 523.24,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "banana_cost_per_kilo",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 261.62,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "orange_cost_per_kilo",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 392.43,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "apple_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 523.24,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "banana_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 523.24,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "orange_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 784.86,
+        "converted_unit": "gourde"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 14,
+        "original_unit": "dollar",
+        "converted_value": 1831.34,
+        "converted_unit": "gourde"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Catherine goes to the grocery store. She buys 1 kilo of apples for ${apple_cost}, 2 kilos of bananas for ${banana_cost_per_kilo} per kilo, and 2 kilos of oranges for ${orange_cost_per_kilo} per kilo. How many dollars does she pay in total?",
+    "templatized_answer": [
+      "1 kilo of apples costs ${apple_cost}.",
+      "2 kilos of bananas costs 2 * {banana_cost_per_kilo} = ${2*{banana_cost_per_kilo}}.",
+      "2 kilos of oranges costs 2 * {orange_cost_per_kilo} = ${2*{orange_cost_per_kilo}}.",
+      "She pays {apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}} = ${{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}}.",
+      "#### ${{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}}"
+    ],
+    "factual_assignment": {
+      "apple_cost": 4,
+      "banana_cost_per_kilo": 2,
+      "orange_cost_per_kilo": 3
+    }
+  },
+  "merged_assignment": {
+    "apple_cost": 523.24,
+    "banana_cost_per_kilo": 261.62,
+    "orange_cost_per_kilo": 392.43
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apple_cost = 523.24\n    banana_cost_per_kilo = 261.62\n    orange_cost_per_kilo = 392.43\n\n    banana_cost = 2 * banana_cost_per_kilo\n    orange_cost = 2 * orange_cost_per_kilo\n    total_cost = apple_cost + banana_cost + orange_cost\n\n    return {\n        \"apple_cost\": apple_cost,\n        \"banana_cost_per_kilo\": banana_cost_per_kilo,\n        \"orange_cost_per_kilo\": orange_cost_per_kilo,\n        \"2*{banana_cost_per_kilo}\": round(banana_cost, 2),\n        \"2*{orange_cost_per_kilo}\": round(orange_cost, 2),\n        \"{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "apple_cost": 523.24,
+      "banana_cost_per_kilo": 261.62,
+      "orange_cost_per_kilo": 392.43,
+      "2*{banana_cost_per_kilo}": 523.24,
+      "2*{orange_cost_per_kilo}": 784.86,
+      "{apple_cost} + {2*{banana_cost_per_kilo}} + {2*{orange_cost_per_kilo}}": 1831.34
+    }
+  },
+  "final": {
+    "question": "Catherine goes to the grocery store. She buys 1 kilo of apples for 523.24 gourde, 2 kilos of bananas for 261.62 gourde per kilo, and 2 kilos of oranges for 392.43 gourde per kilo. How many gourde does she pay in total?",
+    "answer_lines": [
+      "1 kilo of apples costs 523.24 gourde.",
+      "2 kilos of bananas costs 2 * 261.62 = 523.24 gourde.",
+      "2 kilos of oranges costs 2 * 392.43 = 784.86 gourde.",
+      "She pays 523.24 + 523.24 + 784.86 = 1831.34 gourde.",
+      "#### 1831.34"
+    ],
+    "final_scalar": 1831.34,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Katlina ale nan mache. Li achte 1 kilo de zak piman pou 523.24 gourde, 2 kilo de bannann pou 261.62 gourde pa kilo, epi 2 kilo de zoranj pou 392.43 gourde pa kilo. Konbyen gourde li peye an jeneral?",
+    "adapted_answer": [
+      "1 kilo de zak piman koute 523.24 gourde.",
+      "2 kilo de bannann koute 2 * 261.62 = 523.24 gourde.",
+      "2 kilo de zoranj koute 2 * 392.43 = 784.86 gourde.",
+      "Li peye 523.24 + 523.24 + 784.86 = 1831.34 gourde.",
+      "#### 1831.34"
+    ],
+    "adaptation_notes": "Replaced 'Catherine' with 'Katlina', 'apples' with 'zak piman', 'bananas' with 'bannann', and 'oranges' with 'zoranj' to give the text a Haitian context."
+  }
+}

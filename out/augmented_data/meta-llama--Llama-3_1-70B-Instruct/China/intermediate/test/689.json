@@ -1,0 +1,156 @@
+{
+  "index": 689,
+  "split": "test",
+  "original": {
+    "question": "Manolo bought five lollipops and four candies that cost $3.20. If each lollipop costs $0.40, how much will 10 lollipops and 10 candies cost him?",
+    "answer": "Five lollipops cost $0.4 x 5 = $<<0.4*5=2>>2.\nSo four candies cost $3.20 - $2 = $1.20.\nThus, each candy costs $1.20/4 = $<<1.20/4=0.30>>0.30.\nTen lollipops cost $0.4 x 10 = $<<0.4*10=4>>4.\nTen candies cost $0.30 x 10 = $<<0.30*10=3>>3.\nHence, 10 lollipops and 10 candies will cost $4 + $3 = $7.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Manolo",
+      "lollipops",
+      "candies"
+    ],
+    "notes": "The text contains a non-Chinese name, a non-Chinese unit of currency, and Western-style sweets."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 3.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollipop_cost",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_cost",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 3.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollipop_cost\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_cost\", \"value\": 0.3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 3.2,
+        "original_unit": "dollar",
+        "converted_value": 22.82,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lollipop_cost",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 2.85,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "candy_cost",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 2.14,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 49.91,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Manolo bought {initial_lollipops} lollipops and {initial_candies} candies that cost ${initial_cost}. If each lollipop costs ${lollipop_cost}, how much will {final_lollipops} lollipops and {final_candies} candies cost him?",
+    "templatized_answer": [
+      "{initial_lollipops} lollipops cost ${lollipop_cost} x {initial_lollipops} = ${lollipop_cost * initial_lollipops}.",
+      "So {initial_candies} candies cost ${initial_cost} - ${lollipop_cost * initial_lollipops} = ${initial_cost - lollipop_cost * initial_lollipops}.",
+      "Thus, each candy costs ${initial_cost - lollipop_cost * initial_lollipops}/{initial_candies} = ${candy_cost}.",
+      "{final_lollipops} lollipops cost ${lollipop_cost} x {final_lollipops} = ${lollipop_cost * final_lollipops}.",
+      "{final_candies} candies cost ${candy_cost} x {final_candies} = ${candy_cost * final_candies}.",
+      "Hence, {final_lollipops} lollipops and {final_candies} candies will cost ${lollipop_cost * final_lollipops} + ${candy_cost * final_candies} = ${lollipop_cost * final_lollipops + candy_cost * final_candies}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "initial_lollipops": 5,
+      "initial_candies": 4,
+      "initial_cost": 3.2,
+      "lollipop_cost": 0.4,
+      "candy_cost": 0.3,
+      "final_lollipops": 10,
+      "final_candies": 10,
+      "total_cost": 7
+    }
+  },
+  "merged_assignment": {
+    "initial_lollipops": 5,
+    "initial_candies": 4,
+    "initial_cost": 22.82,
+    "lollipop_cost": 2.85,
+    "candy_cost": 2.14,
+    "final_lollipops": 10,
+    "final_candies": 10,
+    "total_cost": 49.91
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_lollipops = 5\n    initial_candies = 4\n    initial_cost = 22.82\n    lollipop_cost = 2.85\n    final_lollipops = 10\n    final_candies = 10\n\n    lollipop_total_cost = round(lollipop_cost * initial_lollipops, 2)\n    candy_total_cost = round(initial_cost - lollipop_total_cost, 2)\n    candy_cost = round(candy_total_cost / initial_candies, 2)\n    final_lollipop_total_cost = round(lollipop_cost * final_lollipops, 2)\n    final_candy_total_cost = round(candy_cost * final_candies, 2)\n    total_cost = round(final_lollipop_total_cost + final_candy_total_cost, 2)\n\n    return {\n        \"initial_lollipops\": initial_lollipops,\n        \"initial_candies\": initial_candies,\n        \"initial_cost\": initial_cost,\n        \"lollipop_cost\": lollipop_cost,\n        \"candy_cost\": candy_cost,\n        \"final_lollipops\": final_lollipops,\n        \"final_candies\": final_candies,\n        \"total_cost\": total_cost,\n        \"lollipop_total_cost\": lollipop_total_cost,\n        \"candy_total_cost\": candy_total_cost,\n        \"final_lollipop_total_cost\": final_lollipop_total_cost,\n        \"final_candy_total_cost\": final_candy_total_cost\n    }\n",
+    "results": {
+      "initial_lollipops": 5,
+      "initial_candies": 4,
+      "initial_cost": 22.82,
+      "lollipop_cost": 2.85,
+      "candy_cost": 2.14,
+      "final_lollipops": 10,
+      "final_candies": 10,
+      "total_cost": 49.9,
+      "lollipop_total_cost": 14.25,
+      "candy_total_cost": 8.57,
+      "final_lollipop_total_cost": 28.5,
+      "final_candy_total_cost": 21.4
+    }
+  },
+  "final": {
+    "question": "Manolo bought 5 lollipops and 4 candies that cost 22.82 renminbi. If each lollipop costs 2.85 renminbi, how much will 10 lollipops and 10 candies cost him?",
+    "answer_lines": [
+      "5 lollipops cost 2.85 renminbi x 5 = 14.25 renminbi.",
+      "So 4 candies cost 22.82 renminbi - 14.25 renminbi = 8.57 renminbi.",
+      "Thus, each candy costs 8.57 renminbi/4 = 2.14 renminbi.",
+      "10 lollipops cost 2.85 renminbi x 10 = 28.5 renminbi.",
+      "10 candies cost 2.14 renminbi x 10 = 21.4 renminbi.",
+      "Hence, 10 lollipops and 10 candies will cost 28.5 renminbi + 21.4 renminbi = 49.9 renminbi.",
+      "#### 49.9"
+    ],
+    "final_scalar": 49.9,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mengmeng bought 5 tanghulu and 4 dragon's beard candies that cost 22.82 renminbi. If each tanghulu costs 2.85 renminbi, how much will 10 tanghulu and 10 dragon's beard candies cost him?",
+    "adapted_answer": [
+      "5 tanghulu cost 2.85 renminbi x 5 = 14.25 renminbi.",
+      "So 4 dragon's beard candies cost 22.82 renminbi - 14.25 renminbi = 8.57 renminbi.",
+      "Thus, each dragon's beard candy costs 8.57 renminbi/4 = 2.14 renminbi.",
+      "10 tanghulu cost 2.85 renminbi x 10 = 28.5 renminbi.",
+      "10 dragon's beard candies cost 2.14 renminbi x 10 = 21.4 renminbi.",
+      "Hence, 10 tanghulu and 10 dragon's beard candies will cost 28.5 renminbi + 21.4 renminbi = 49.9 renminbi.",
+      "#### 49.9"
+    ],
+    "adaptation_notes": "Replaced 'Manolo' with 'Mengmeng', 'lollipops' with 'tanghulu', and 'candies' with 'dragon's beard candies'."
+  }
+}

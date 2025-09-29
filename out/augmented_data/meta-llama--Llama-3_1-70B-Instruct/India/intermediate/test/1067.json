@@ -1,0 +1,155 @@
+{
+  "index": 1067,
+  "split": "test",
+  "original": {
+    "question": "Anthony is sending out coupons for his pizza parlor through the mail. He wants to send out 700 small coupons and twice as many big coupons. If each small coupon costs 5 cents to mail and each big coupon costs 15 cents, how much does he spend on postage total?",
+    "answer": "First find the total cost of the small coupons: 700 coupons * $0.05/coupon = $<<700*0.05=35>>35\nThen find the number of big coupons Anthony sends out: 700 small * 2 big/small = <<700*2=1400>>1400 big coupons\nThen multiply the number of big coupons by the cost per big coupon to find the total cost of the big coupons: $0.15/coupon * 1400 coupons = $<<0.15*1400=210>>210\nThen add the costs of each size of coupon to find the total cost: $210 + $35 = $<<210+35=245>>245\n#### 245"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Anthony",
+      "pizza",
+      "dollars"
+    ],
+    "notes": "The name 'Anthony' is of Western origin, 'pizza' is a Western food item, and 'dollars' is a currency primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "small_coupon_cost",
+      "value": 0.05,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "big_coupon_cost",
+      "value": 0.15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "small_coupon_total",
+      "value": 35,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "big_coupon_total",
+      "value": 210,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_postage",
+      "value": 245,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"small_coupon_cost\",\n    \"value\": 0.05,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"big_coupon_cost\",\n    \"value\": 0.15,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"small_coupon_total\",\n    \"value\": 35,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"big_coupon_total\",\n    \"value\": 210,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_postage\",\n    \"value\": 245,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "small_coupon_cost",
+        "original_value": 0.05,
+        "original_unit": "dollar",
+        "converted_value": 4.35,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "big_coupon_cost",
+        "original_value": 0.15,
+        "original_unit": "dollar",
+        "converted_value": 13.05,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "small_coupon_total",
+        "original_value": 35,
+        "original_unit": "dollar",
+        "converted_value": 3045,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "big_coupon_total",
+        "original_value": 210,
+        "original_unit": "dollar",
+        "converted_value": 18270,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_postage",
+        "original_value": 245,
+        "original_unit": "dollar",
+        "converted_value": 21315,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Anthony is sending out coupons for his pizza parlor through the mail. He wants to send out {number_of_small_coupons} small coupons and twice as many big coupons. If each small coupon costs {small_coupon_cost} cents to mail and each big coupon costs {big_coupon_cost} cents, how much does he spend on postage total?",
+    "templatized_answer": [
+      "First find the total cost of the small coupons: {number_of_small_coupons} coupons * ${small_coupon_cost}/coupon = ${small_coupon_total}",
+      "Then find the number of big coupons Anthony sends out: {number_of_small_coupons} small * 2 big/small = {number_of_big_coupons} big coupons",
+      "Then multiply the number of big coupons by the cost per big coupon to find the total cost of the big coupons: ${big_coupon_cost}/coupon * {number_of_big_coupons} coupons = ${big_coupon_total}",
+      "Then add the costs of each size of coupon to find the total cost: ${big_coupon_total} + ${small_coupon_total} = ${total_postage}",
+      "#### {total_postage}"
+    ],
+    "factual_assignment": {
+      "number_of_small_coupons": 700,
+      "small_coupon_cost": 0.05,
+      "big_coupon_cost": 0.15,
+      "small_coupon_total": 35,
+      "big_coupon_total": 210,
+      "total_postage": 245,
+      "number_of_big_coupons": 1400
+    }
+  },
+  "merged_assignment": {
+    "number_of_small_coupons": 700,
+    "small_coupon_cost": 4.35,
+    "big_coupon_cost": 13.05,
+    "small_coupon_total": 3045,
+    "big_coupon_total": 18270,
+    "total_postage": 21315,
+    "number_of_big_coupons": 1400
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_small_coupons = 700\n    small_coupon_cost = 4.35\n    big_coupon_cost = 13.05\n\n    small_coupon_total = round(number_of_small_coupons * small_coupon_cost, 2)\n    number_of_big_coupons = number_of_small_coupons * 2\n    big_coupon_total = round(big_coupon_cost * number_of_big_coupons, 2)\n    total_postage = round(small_coupon_total + big_coupon_total, 2)\n\n    return {\n        \"number_of_small_coupons\": number_of_small_coupons,\n        \"small_coupon_cost\": small_coupon_cost,\n        \"big_coupon_cost\": big_coupon_cost,\n        \"small_coupon_total\": small_coupon_total,\n        \"big_coupon_total\": big_coupon_total,\n        \"total_postage\": total_postage,\n        \"number_of_big_coupons\": number_of_big_coupons\n    }\n",
+    "results": {
+      "number_of_small_coupons": 700,
+      "small_coupon_cost": 4.35,
+      "big_coupon_cost": 13.05,
+      "small_coupon_total": 3045.0,
+      "big_coupon_total": 18270.0,
+      "total_postage": 21315.0,
+      "number_of_big_coupons": 1400
+    }
+  },
+  "final": {
+    "question": "Anthony is sending out coupons for his pizza parlor through the mail. He wants to send out 700 small coupons and twice as many big coupons. If each small coupon costs 4.35 rupees to mail and each big coupon costs 13.05 rupees, how much does he spend on postage total?",
+    "answer_lines": [
+      "First find the total cost of the small coupons: 700 coupons * 4.35 rupees/coupon = 3045 rupees",
+      "Then find the number of big coupons Anthony sends out: 700 small * 2 big/small = 1400 big coupons",
+      "Then multiply the number of big coupons by the cost per big coupon to find the total cost of the big coupons: 13.05 rupees/coupon * 1400 coupons = 18270 rupees",
+      "Then add the costs of each size of coupon to find the total cost: 18270 rupees + 3045 rupees = 21315 rupees",
+      "#### 21315"
+    ],
+    "final_scalar": 21315,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan is sending out coupons for his dosa parlor through the mail. He wants to send out 700 small coupons and twice as many big coupons. If each small coupon costs 4.35 rupees to mail and each big coupon costs 13.05 rupees, how much does he spend on postage total?",
+    "adapted_answer": [
+      "First find the total cost of the small coupons: 700 coupons * 4.35 rupees/coupon = 3045 rupees",
+      "Then find the number of big coupons Rohan sends out: 700 small * 2 big/small = 1400 big coupons",
+      "Then multiply the number of big coupons by the cost per big coupon to find the total cost of the big coupons: 13.05 rupees/coupon * 1400 coupons = 18270 rupees",
+      "Then add the costs of each size of coupon to find the total cost: 18270 rupees + 3045 rupees = 21315 rupees",
+      "#### 21315"
+    ],
+    "adaptation_notes": "Replaced 'Anthony' with 'Rohan' and 'pizza parlor' with 'dosa parlor' to give the question an Indian context."
+  }
+}

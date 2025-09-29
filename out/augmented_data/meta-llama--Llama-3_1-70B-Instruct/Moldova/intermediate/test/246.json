@@ -1,0 +1,118 @@
+{
+  "index": 246,
+  "split": "test",
+  "original": {
+    "question": "Jeans makeup artist charges her $250 an hour.  She requires very expensive makeup for a movie she is in and it takes 6 hours to do each day and she needs it done 4 times a week.  The movie takes 5 weeks to finish.  After the movie is done the makeup artist gives Jean a 10% discount because of the amount of work done.  How much did Jean pay?",
+    "answer": "Jean pays 250*6=$<<250*6=1500>>1500 a day\nSo he pays 1500*4=$<<1500*4=6000>>6000 a week\nSo the work cost 6000*5=$<<6000*5=30000>>30,000\nThey give a discount of 30,000*.1=$<<30000*.1=3000>>3000\nSo the total cost paid is 30,000-3000=$<<30000-3000=27000>>27,000\n#### 27000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Moldova."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_rate",
+      "value": 250.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 27000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"leu\", \"rate\": 16.62},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_rate\", \"value\": 250.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 27000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_rate",
+        "original_value": 250.0,
+        "original_unit": "dollar",
+        "converted_value": 4155.0,
+        "converted_unit": "leu"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 27000.0,
+        "original_unit": "dollar",
+        "converted_value": 448740.0,
+        "converted_unit": "leu"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jeans makeup artist charges her ${hourly_rate} an hour.  She requires very expensive makeup for a movie she is in and it takes {hours_per_day} hours to do each day and she needs it done {days_per_week} times a week.  The movie takes {weeks_to_finish} weeks to finish.  After the movie is done the makeup artist gives Jean a {discount_percentage}% discount because of the amount of work done.  How much did Jean pay?",
+    "templatized_answer": [
+      "Jean pays ${hourly_rate}*{hours_per_day}=${hourly_rate}*{hours_per_day} a day",
+      "So he pays ${hourly_rate}*{hours_per_day}*{days_per_week}=${hourly_rate}*{hours_per_day}*{days_per_week} a week",
+      "So the work cost ${hourly_rate}*{hours_per_day}*{days_per_week}*{weeks_to_finish}=${hourly_rate}*{hours_per_day}*{days_per_week}*{weeks_to_finish}",
+      "They give a discount of (${hourly_rate}*{hours_per_day}*{days_per_week}*{weeks_to_finish})*{discount_percentage}/100=(${hourly_rate}*{hours_per_day}*{days_per_week}*{weeks_to_finish})*{discount_percentage}/100",
+      "So the total cost paid is (${hourly_rate}*{hours_per_day}*{days_per_week}*{weeks_to_finish})*({discount_percentage}/100)=${hourly_rate}*{hours_per_day}*{days_per_week}*{weeks_to_finish}-(${hourly_rate}*{hours_per_day}*{days_per_week}*{weeks_to_finish})*{discount_percentage}/100",
+      "#### ${total_cost}"
+    ],
+    "factual_assignment": {
+      "hourly_rate": 250.0,
+      "hours_per_day": 6,
+      "days_per_week": 4,
+      "weeks_to_finish": 5,
+      "discount_percentage": 10,
+      "total_cost": 27000.0
+    }
+  },
+  "merged_assignment": {
+    "hourly_rate": 4155.0,
+    "hours_per_day": 6,
+    "days_per_week": 4,
+    "weeks_to_finish": 5,
+    "discount_percentage": 10,
+    "total_cost": 448740.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_rate = 4155.0\n    hours_per_day = 6\n    days_per_week = 4\n    weeks_to_finish = 5\n    discount_percentage = 10\n\n    daily_cost = hourly_rate * hours_per_day\n    weekly_cost = daily_cost * days_per_week\n    total_cost_before_discount = weekly_cost * weeks_to_finish\n    discount_amount = (total_cost_before_discount * discount_percentage) / 100\n    total_cost = total_cost_before_discount - discount_amount\n\n    return {\n        \"hourly_rate\": hourly_rate,\n        \"hours_per_day\": hours_per_day,\n        \"days_per_week\": days_per_week,\n        \"weeks_to_finish\": weeks_to_finish,\n        \"discount_percentage\": discount_percentage,\n        \"daily_cost\": round(daily_cost, 2),\n        \"weekly_cost\": round(weekly_cost, 2),\n        \"total_cost_before_discount\": round(total_cost_before_discount, 2),\n        \"discount_amount\": round(discount_amount, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "hourly_rate": 4155.0,
+      "hours_per_day": 6,
+      "days_per_week": 4,
+      "weeks_to_finish": 5,
+      "discount_percentage": 10,
+      "daily_cost": 24930.0,
+      "weekly_cost": 99720.0,
+      "total_cost_before_discount": 498600.0,
+      "discount_amount": 49860.0,
+      "total_cost": 448740.0
+    }
+  },
+  "final": {
+    "question": "Jeans makeup artist charges her 4155 leu an hour.  She requires very expensive makeup for a movie she is in and it takes 6 hours to do each day and she needs it done 4 times a week.  The movie takes 5 weeks to finish.  After the movie is done the makeup artist gives Jean a 10% discount because of the amount of work done.  How much did Jean pay?",
+    "answer_lines": [
+      "Jean pays 4155*6=24930 leu a day",
+      "So he pays 24930*4=99720 leu a week",
+      "So the work cost 99720*5=498600 leu",
+      "They give a discount of 498600*10/100=49860 leu",
+      "So the total cost paid is 498600-49860=448740 leu",
+      "#### 448740"
+    ],
+    "final_scalar": 448740,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A makeup artist from Chișinău charges 4155 lei an hour. She requires very expensive makeup for a movie she is in and it takes 6 hours to do each day and she needs it done 4 times a week. The movie takes 5 weeks to finish. After the movie is done the makeup artist gives her a 10% discount because of the amount of work done. How much did she pay?",
+    "adapted_answer": [
+      "She pays 4155*6=24930 lei a day",
+      "So she pays 24930*4=99720 lei a week",
+      "So the work cost 99720*5=498600 lei",
+      "They give a discount of 498600*10/100=49860 lei",
+      "So the total cost paid is 498600-49860=448740 lei",
+      "#### 448740"
+    ],
+    "adaptation_notes": "Replaced 'leu' with 'lei' to match Moldovan currency, and 'Jean' with 'she' to make the text more neutral, and 'Jeans' with 'A makeup artist from Chișinău' to give a Moldovan context."
+  }
+}

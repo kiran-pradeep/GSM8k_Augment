@@ -1,0 +1,144 @@
+{
+  "index": 330,
+  "split": "test",
+  "original": {
+    "question": "A customer’s loyalty card at a store gives them rewards of $1 off their next purchase for every $20 they spend. Their last shopping trip, they spent $80. This shopping trip, they spent $43, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many dollars did the customer pay on this shopping trip?",
+    "answer": "The customer had 80 / 20 = $<<80/20=4>>4 in rewards.\nTheir coupon was worth 4 * 2 = $<<4*2=8>>8.\nThus, they paid 43 - 4 - 8 = $<<43-4-8=31>>31 on this shopping trip.\n#### 31"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusive to Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "last_shopping_trip",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "this_shopping_trip",
+      "value": 43.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rewards_earned",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "coupon_value",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "amount_paid",
+      "value": 31.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"last_shopping_trip\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"this_shopping_trip\", \"value\": 43.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rewards_earned\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"coupon_value\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"amount_paid\", \"value\": 31.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "last_shopping_trip",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 45550.4,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "this_shopping_trip",
+        "original_value": 43.0,
+        "original_unit": "dollar",
+        "converted_value": 24483.34,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "rewards_earned",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 2277.52,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "coupon_value",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 4555.04,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "amount_paid",
+        "original_value": 31.0,
+        "original_unit": "dollar",
+        "converted_value": 17650.78,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A customer’s loyalty card at a store gives them rewards of $1 off their next purchase for every $20 they spend. Their last shopping trip, they spent ${last_shopping_trip}. This shopping trip, they spent ${this_shopping_trip}, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many dollars did the customer pay on this shopping trip?",
+    "templatized_answer": [
+      "The customer had {last_shopping_trip} / 20 = ${rewards_earned} in rewards.",
+      "Their coupon was worth {rewards_earned} * 2 = ${coupon_value}.",
+      "Thus, they paid {this_shopping_trip} - {rewards_earned} - {coupon_value} = ${amount_paid} on this shopping trip.",
+      "#### {amount_paid}"
+    ],
+    "factual_assignment": {
+      "last_shopping_trip": 80.0,
+      "this_shopping_trip": 43.0,
+      "rewards_earned": 4.0,
+      "coupon_value": 8.0,
+      "amount_paid": 31.0
+    }
+  },
+  "merged_assignment": {
+    "last_shopping_trip": 45550.4,
+    "this_shopping_trip": 24483.34,
+    "rewards_earned": 2277.52,
+    "coupon_value": 4555.04,
+    "amount_paid": 17650.78
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    last_shopping_trip = 45550.4\n    this_shopping_trip = 24483.34\n\n    rewards_earned = round(last_shopping_trip / 20, 2)\n    coupon_value = round(rewards_earned * 2, 2)\n    amount_paid = round(this_shopping_trip - rewards_earned - coupon_value, 2)\n\n    return {\n        \"last_shopping_trip\": last_shopping_trip,\n        \"this_shopping_trip\": this_shopping_trip,\n        \"rewards_earned\": rewards_earned,\n        \"coupon_value\": coupon_value,\n        \"amount_paid\": amount_paid\n    }\n",
+    "results": {
+      "last_shopping_trip": 45550.4,
+      "this_shopping_trip": 24483.34,
+      "rewards_earned": 2277.52,
+      "coupon_value": 4555.04,
+      "amount_paid": 17650.78
+    }
+  },
+  "final": {
+    "question": "A customer’s loyalty card at a store gives them rewards of 2277.52 shilling off their next purchase for every 45550.4 shilling they spend. Their last shopping trip, they spent 45550.4 shilling. This shopping trip, they spent 24483.34 shilling, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many shilling did the customer pay on this shopping trip?",
+    "answer_lines": [
+      "The customer had 45550.4 / 45550.4 = 2277.52 shilling in rewards.",
+      "Their coupon was worth 2277.52 * 2 = 4555.04 shilling.",
+      "Thus, they paid 24483.34 - 2277.52 - 4555.04 = 17650.78 shilling on this shopping trip.",
+      "#### 17650.78"
+    ],
+    "final_scalar": 17650.78,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A customer’s loyalty card at a suuqa (market) gives them rewards of 2277.52 shilling off their next purchase for every 45550.4 shilling they spend. Their last shopping trip, they spent 45550.4 shilling. This shopping trip, they spent 24483.34 shilling, used their rewards, and applied a coupon that took twice the amount of rewards off the price. How many shilling did the customer pay on this shopping trip?",
+    "adapted_answer": [
+      "The customer had 45550.4 / 45550.4 = 2277.52 shilling in rewards.",
+      "Their coupon was worth 2277.52 * 2 = 4555.04 shilling.",
+      "Thus, they paid 24483.34 - 2277.52 - 4555.04 = 17650.78 shilling on this shopping trip.",
+      "#### 17650.78"
+    ],
+    "adaptation_notes": "Replaced 'store' with 'suuqa' (market) to give it a Somali context."
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "index": 179,
+  "split": "test",
+  "original": {
+    "question": "Lloyd earns $10 an hour on Math tutoring.  He tutored 5 hours for the first week and 8 hours for the second week. How much did he earn for the first two weeks?",
+    "answer": "Lloyd tutored 5 + 8 = <<5+8=13>>13 hours for the first two weeks.\nTherefore, he earned 13 x $10 = $<<13*10=130>>130 for the first two weeks.\n#### 130"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Lloyd",
+      "dollars"
+    ],
+    "notes": "Name 'Lloyd' and unit 'dollars' are culturally specific to regions other than China."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 130,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions and context != \"answer\":\n            converted_unit, conversion_rate = list(conversions[unit].items())[0]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"hourly_wage\",\n        \"value\": 10,\n        \"unit\": \"dollar\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"total_earnings\",\n        \"value\": 130,\n        \"unit\": \"dollar\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 71.3,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 130,
+        "original_unit": "dollar",
+        "converted_value": 130,
+        "converted_unit": "dollar"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Lloyd earns ${hourly_wage} an hour on Math tutoring.  He tutored {first_week_hours} hours for the first week and {second_week_hours} hours for the second week. How much did he earn for the first two weeks?",
+    "templatized_answer": [
+      "Lloyd tutored {first_week_hours} + {second_week_hours} = {total_hours} hours for the first two weeks.",
+      "Therefore, he earned {total_hours} x ${hourly_wage} = ${total_earnings} for the first two weeks.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 10,
+      "first_week_hours": 5,
+      "second_week_hours": 8,
+      "total_hours": 13,
+      "total_earnings": 130
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 71.3,
+    "first_week_hours": 5,
+    "second_week_hours": 8,
+    "total_hours": 13,
+    "total_earnings": 130
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 71.3\n    first_week_hours = 5\n    second_week_hours = 8\n\n    total_hours = first_week_hours + second_week_hours\n    total_earnings = round(total_hours * hourly_wage, 2)\n\n    return {\n        \"hourly_wage\": hourly_wage,\n        \"first_week_hours\": first_week_hours,\n        \"second_week_hours\": second_week_hours,\n        \"total_hours\": total_hours,\n        \"total_earnings\": total_earnings\n    }\n",
+    "results": {
+      "hourly_wage": 71.3,
+      "first_week_hours": 5,
+      "second_week_hours": 8,
+      "total_hours": 13,
+      "total_earnings": 926.9
+    }
+  },
+  "final": {
+    "question": "Lloyd earns 71.3 renminbi an hour on Math tutoring.  He tutored 5 hours for the first week and 8 hours for the second week. How much did he earn for the first two weeks?",
+    "answer_lines": [
+      "Lloyd tutored 5 + 8 = 13 hours for the first two weeks.",
+      "Therefore, he earned 13 x 71.3 renminbi = 926.9 renminbi for the first two weeks.",
+      "#### 926.9"
+    ],
+    "final_scalar": 926.9,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Li earns 71.3 renminbi an hour on Math tutoring.  He tutored 5 hours for the first week and 8 hours for the second week. How much did he earn for the first two weeks?",
+    "adapted_answer": [
+      "Li tutored 5 + 8 = 13 hours for the first two weeks.",
+      "Therefore, he earned 13 x 71.3 renminbi = 926.9 renminbi for the first two weeks.",
+      "#### 926.9"
+    ],
+    "adaptation_notes": "Replaced 'Lloyd' with 'Li' to give the name a Chinese context."
+  }
+}

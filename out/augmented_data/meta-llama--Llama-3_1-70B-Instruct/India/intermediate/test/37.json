@@ -1,0 +1,160 @@
+{
+  "index": 37,
+  "split": "test",
+  "original": {
+    "question": "John plans to sell all his toys and use the money to buy video games. He has 13 lego sets and he sells them for $15 each. He ends up buying 8 video games for $20 each and has $5 left. How many lego sets does he still have?",
+    "answer": "He spent $160 on video games because 8 x 20 = <<8*20=160>>160\nHe earned $165 from his sale because 160 + 5 = <<160+5=165>>165\nHe sold 11 lego sets because 11 x 15 = <<11*15=165>>165\nHe has 2 sets left because 13 - 11 = <<13-11=2>>2\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "Name 'John' and unit 'dollars' are culturally specific to regions other than India."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lego_set_price",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "video_game_price",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "video_game_total_cost",
+      "value": 160.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "lego_set_total_earnings",
+      "value": 165.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"lego_set_price\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"video_game_price\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"video_game_total_cost\", \"value\": 160.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"lego_set_total_earnings\", \"value\": 165.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lego_set_price",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 1305.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "video_game_price",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 1740.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "video_game_total_cost",
+        "original_value": 160.0,
+        "original_unit": "dollar",
+        "converted_value": 13920.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "lego_set_total_earnings",
+        "original_value": 165.0,
+        "original_unit": "dollar",
+        "converted_value": 14355.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 435.0,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John plans to sell all his toys and use the money to buy video games. He has {initial_lego_sets} lego sets and he sells them for ${lego_set_price} each. He ends up buying {video_games_bought} video games for ${video_game_price} each and has ${remaining_money} left. How many lego sets does he still have?",
+    "templatized_answer": [
+      "He spent ${video_game_total_cost} on video games because {video_games_bought} x ${video_game_price} = ${video_game_total_cost}",
+      "He earned ${lego_set_total_earnings} from his sale because ${video_game_total_cost} + ${remaining_money} = ${lego_set_total_earnings}",
+      "He sold {lego_sets_sold} lego sets because {lego_sets_sold} x ${lego_set_price} = ${lego_set_total_earnings}",
+      "He has {remaining_lego_sets} sets left because {initial_lego_sets} - {lego_sets_sold} = {remaining_lego_sets}",
+      "#### {remaining_lego_sets}"
+    ],
+    "factual_assignment": {
+      "initial_lego_sets": 13,
+      "lego_set_price": 15.0,
+      "video_games_bought": 8,
+      "video_game_price": 20.0,
+      "remaining_money": 5.0,
+      "video_game_total_cost": 160.0,
+      "lego_set_total_earnings": 165.0,
+      "lego_sets_sold": 11,
+      "remaining_lego_sets": 2
+    }
+  },
+  "merged_assignment": {
+    "initial_lego_sets": 13,
+    "lego_set_price": 1305.0,
+    "video_games_bought": 8,
+    "video_game_price": 1740.0,
+    "remaining_money": 435.0,
+    "video_game_total_cost": 13920.0,
+    "lego_set_total_earnings": 14355.0,
+    "lego_sets_sold": 11,
+    "remaining_lego_sets": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_lego_sets = 13\n    lego_set_price = 1305.0\n    video_games_bought = 8\n    video_game_price = 1740.0\n    remaining_money = 435.0\n\n    video_game_total_cost = video_games_bought * video_game_price\n    lego_set_total_earnings = video_game_total_cost + remaining_money\n    lego_sets_sold = lego_set_total_earnings / lego_set_price\n    remaining_lego_sets = initial_lego_sets - lego_sets_sold\n\n    return {\n        \"initial_lego_sets\": initial_lego_sets,\n        \"lego_set_price\": lego_set_price,\n        \"video_games_bought\": video_games_bought,\n        \"video_game_price\": video_game_price,\n        \"remaining_money\": remaining_money,\n        \"video_game_total_cost\": round(video_game_total_cost, 2),\n        \"lego_set_total_earnings\": round(lego_set_total_earnings, 2),\n        \"lego_sets_sold\": round(lego_sets_sold, 2),\n        \"remaining_lego_sets\": round(remaining_lego_sets, 2)\n    }\n",
+    "results": {
+      "initial_lego_sets": 13,
+      "lego_set_price": 1305.0,
+      "video_games_bought": 8,
+      "video_game_price": 1740.0,
+      "remaining_money": 435.0,
+      "video_game_total_cost": 13920.0,
+      "lego_set_total_earnings": 14355.0,
+      "lego_sets_sold": 11.0,
+      "remaining_lego_sets": 2.0
+    }
+  },
+  "final": {
+    "question": "John plans to sell all his toys and use the money to buy video games. He has 13 lego sets and he sells them for 1305 rupees each. He ends up buying 8 video games for 1740 rupees each and has 435 rupees left. How many lego sets does he still have?",
+    "answer_lines": [
+      "He spent 13920 rupees on video games because 8 x 1740 = 13920",
+      "He earned 14355 rupees from his sale because 13920 + 435 = 14355",
+      "He sold 11 lego sets because 11 x 1305 = 14355",
+      "He has 2 sets left because 13 - 11 = 2",
+      "#### 2"
+    ],
+    "final_scalar": 2.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan plans to sell all his toys and use the money to buy video games. He has 13 lego sets and he sells them for 1305 rupees each. He ends up buying 8 video games for 1740 rupees each and has 435 rupees left. How many lego sets does he still have?",
+    "adapted_answer": [
+      "He spent 13920 rupees on video games because 8 x 1740 = 13920",
+      "He earned 14355 rupees from his sale because 13920 + 435 = 14355",
+      "He sold 11 lego sets because 11 x 1305 = 14355",
+      "He has 2 sets left because 13 - 11 = 2",
+      "#### 2"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Rohan' to give it an Indian context."
+  }
+}

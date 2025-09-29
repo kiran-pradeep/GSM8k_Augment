@@ -1,0 +1,170 @@
+{
+  "index": 189,
+  "split": "test",
+  "original": {
+    "question": "Three friends spent $20.25 on 3 tickets to the fair. They also spent $4.50 less on food than on the tickets. They also went on 2 different rides which costs $33 for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "answer": "They spent $20.25 - $4.50 = $<<20.25-4.5=15.75>>15.75 on food.\nThey spent $33 x 2 = $<<33*2=66>>66 for the rides.\nThey spent a total of $20.25 + $15.75 + $66 = $102.\nSo each of them paid $102/3 = $<<102/3=34>>34.\n#### 34"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusively in Somalia."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tickets_cost",
+      "value": 20.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_savings",
+      "value": 4.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_cost",
+      "value": 33.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_cost",
+      "value": 15.75,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_ride_cost",
+      "value": 66.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 102.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "individual_cost",
+      "value": 34.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"shilling\", \"rate\": 569.38},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tickets_cost\", \"value\": 20.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_savings\", \"value\": 4.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ride_cost\", \"value\": 33.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_cost\", \"value\": 15.75, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_ride_cost\", \"value\": 66.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 102.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"individual_cost\", \"value\": 34.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tickets_cost",
+        "original_value": 20.25,
+        "original_unit": "dollar",
+        "converted_value": 11529.94,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "food_savings",
+        "original_value": 4.5,
+        "original_unit": "dollar",
+        "converted_value": 2562.21,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "ride_cost",
+        "original_value": 33.0,
+        "original_unit": "dollar",
+        "converted_value": 18789.54,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "food_cost",
+        "original_value": 15.75,
+        "original_unit": "dollar",
+        "converted_value": 8967.74,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_ride_cost",
+        "original_value": 66.0,
+        "original_unit": "dollar",
+        "converted_value": 37579.08,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 102.0,
+        "original_unit": "dollar",
+        "converted_value": 58076.76,
+        "converted_unit": "shilling"
+      },
+      {
+        "variable": "individual_cost",
+        "original_value": 34.0,
+        "original_unit": "dollar",
+        "converted_value": 19358.92,
+        "converted_unit": "shilling"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Three friends spent ${tickets_cost} on 3 tickets to the fair. They also spent ${food_savings} less on food than on the tickets. They also went on 2 different rides which costs ${ride_cost} for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "templatized_answer": [
+      "They spent ${tickets_cost} - ${food_savings} = ${tickets_cost} - ${food_savings} on food.",
+      "They spent ${ride_cost} x 2 = ${ride_cost} x 2 for the rides.",
+      "They spent a total of ${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2) = ${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2).",
+      "So each of them paid (${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2)) / 3 = (${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2)) / 3."
+    ],
+    "factual_assignment": {
+      "tickets_cost": 20.25,
+      "food_savings": 4.5,
+      "ride_cost": 33.0
+    }
+  },
+  "merged_assignment": {
+    "tickets_cost": 11529.94,
+    "food_savings": 2562.21,
+    "ride_cost": 18789.54
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"tickets_cost\": 11529.94,\n        \"food_savings\": 2562.21,\n        \"ride_cost\": 18789.54\n    }\n\n    recomputed_values = {\n        \"tickets_cost\": factual_assignment[\"tickets_cost\"],\n        \"food_savings\": factual_assignment[\"food_savings\"],\n        \"ride_cost\": factual_assignment[\"ride_cost\"],\n        \"tickets_cost - food_savings\": factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"],\n        \"ride_cost x 2\": factual_assignment[\"ride_cost\"] * 2,\n        \"tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)\": \n            factual_assignment[\"tickets_cost\"] + (factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"]) + (factual_assignment[\"ride_cost\"] * 2),\n        \"(tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)) / 3\": \n            round((factual_assignment[\"tickets_cost\"] + (factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"]) + (factual_assignment[\"ride_cost\"] * 2)) / 3, 2)\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "tickets_cost": 11529.94,
+      "food_savings": 2562.21,
+      "ride_cost": 18789.54,
+      "tickets_cost - food_savings": 8967.73,
+      "ride_cost x 2": 37579.08,
+      "tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)": 58076.75,
+      "(tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)) / 3": 19358.92
+    }
+  },
+  "final": {
+    "question": "Three friends spent 11529.94 shilling on 3 tickets to the fair. They also spent 2562.21 shilling less on food than on the tickets. They also went on 2 different rides which costs 18789.54 shilling for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "answer_lines": [
+      "They spent 11529.94 - 2562.21 = 8967.73 shilling on food.",
+      "They spent 18789.54 x 2 = 37579.08 shilling for the rides.",
+      "They spent a total of 11529.94 + 8967.73 + 37579.08 = 58076.75 shilling.",
+      "So each of them paid 58076.75 / 3 = 19358.92 shilling.",
+      "#### 19358.92"
+    ],
+    "final_scalar": 19358.92,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Three friends spent 11529.94 shilling on 3 tickets to the Eid festival. They also spent 2562.21 shilling less on muufo and sabaayad than on the tickets. They also went on 2 different camel rides which costs 18789.54 shilling for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "adapted_answer": [
+      "They spent 11529.94 - 2562.21 = 8967.73 shilling on muufo and sabaayad.",
+      "They spent 18789.54 x 2 = 37579.08 shilling for the camel rides.",
+      "They spent a total of 11529.94 + 8967.73 + 37579.08 = 58076.75 shilling.",
+      "So each of them paid 58076.75 / 3 = 19358.92 shilling.",
+      "#### 19358.92"
+    ],
+    "adaptation_notes": "Replaced 'fair' with 'Eid festival', 'food' with 'muufo and sabaayad', and 'rides' with 'camel rides' to give the text a Somali context."
+  }
+}

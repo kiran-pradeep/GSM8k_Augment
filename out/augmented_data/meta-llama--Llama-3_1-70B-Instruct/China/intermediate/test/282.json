@@ -1,0 +1,113 @@
+{
+  "index": 282,
+  "split": "test",
+  "original": {
+    "question": "Maddy is buying pizza for her cousin's soccer game. There are 12 team members and 3 coaches. Each team member brings 2 guests. A pizza will serve 3 people. If each pizza costs $15, how many dollars will Maddy spend?",
+    "answer": "Maddy is buying pizza for 12 + 3 + (12*2) = <<12+3+12*2=39>>39 people.\nThus, she needs to buy 39/3=<<39/3=13>>13 pizzas.\nThus, she will spend $15*13=$<<15*13=195>>195.\n#### 195"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Maddy",
+      "dollars",
+      "pizza",
+      "soccer"
+    ],
+    "notes": "The text contains a Western name, a non-Chinese unit of currency, a Western food item, and a sport popular in the West."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pizza_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 195.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"renminbi\", \"factor\": 7.13},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pizza_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 195.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pizza_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 106.95,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 195.0,
+        "original_unit": "dollar",
+        "converted_value": 1390.35,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Maddy is buying pizza for her cousin's soccer game. There are {number_of_team_members} team members and {number_of_coaches} coaches. Each team member brings {number_of_guests_per_member} guests. A pizza will serve {number_of_people_per_pizza} people. If each pizza costs ${pizza_cost}, how many dollars will Maddy spend?",
+    "templatized_answer": [
+      "Maddy is buying pizza for {number_of_team_members} + {number_of_coaches} + ({number_of_team_members}*{number_of_guests_per_member}) = {number_of_team_members}+{number_of_coaches}+{number_of_team_members}*{number_of_guests_per_member} people.",
+      "Thus, she needs to buy ({number_of_team_members}+{number_of_coaches}+{number_of_team_members}*{number_of_guests_per_member})/{number_of_people_per_pizza}=({number_of_team_members}+{number_of_coaches}+{number_of_team_members}*{number_of_guests_per_member})/{number_of_people_per_pizza} pizzas.",
+      "Thus, she will spend ${pizza_cost}*(({number_of_team_members}+{number_of_coaches}+{number_of_team_members}*{number_of_guests_per_member})/{number_of_people_per_pizza})=${pizza_cost}*(({number_of_team_members}+{number_of_coaches}+{number_of_team_members}*{number_of_guests_per_member})/{number_of_people_per_pizza}).",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "number_of_team_members": 12,
+      "number_of_coaches": 3,
+      "number_of_guests_per_member": 2,
+      "number_of_people_per_pizza": 3,
+      "pizza_cost": 15.0,
+      "total_spent": 195.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_team_members": 12,
+    "number_of_coaches": 3,
+    "number_of_guests_per_member": 2,
+    "number_of_people_per_pizza": 3,
+    "pizza_cost": 106.95,
+    "total_spent": 1390.35
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_team_members = 12\n    number_of_coaches = 3\n    number_of_guests_per_member = 2\n    number_of_people_per_pizza = 3\n    pizza_cost = 106.95\n\n    total_people = number_of_team_members + number_of_coaches + (number_of_team_members * number_of_guests_per_member)\n    total_pizzas = round(total_people / number_of_people_per_pizza, 2)\n    total_spent = round(pizza_cost * total_pizzas, 2)\n\n    return {\n        \"number_of_team_members\": number_of_team_members,\n        \"number_of_coaches\": number_of_coaches,\n        \"number_of_guests_per_member\": number_of_guests_per_member,\n        \"number_of_people_per_pizza\": number_of_people_per_pizza,\n        \"pizza_cost\": pizza_cost,\n        \"total_people\": total_people,\n        \"total_pizzas\": total_pizzas,\n        \"total_spent\": total_spent\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_team_members": 12,
+      "number_of_coaches": 3,
+      "number_of_guests_per_member": 2,
+      "number_of_people_per_pizza": 3,
+      "pizza_cost": 106.95,
+      "total_people": 39,
+      "total_pizzas": 13.0,
+      "total_spent": 1390.35
+    }
+  },
+  "final": {
+    "question": "Maddy is buying pizza for her cousin's soccer game. There are 12 team members and 3 coaches. Each team member brings 2 guests. A pizza will serve 3 people. If each pizza costs 106.95 renminbi, how many renminbi will Maddy spend?",
+    "answer_lines": [
+      "Maddy is buying pizza for 12 + 3 + (12*2) = 39 people.",
+      "Thus, she needs to buy 39/3=13 pizzas.",
+      "Thus, she will spend 106.95*13=1390.35 renminbi.",
+      "#### 1390.35"
+    ],
+    "final_scalar": 1390.35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mengmeng is buying jiaozi for her cousin's table tennis game. There are 12 team members and 3 coaches. Each team member brings 2 guests. A jiaozi serving will serve 3 people. If each jiaozi serving costs 106.95 renminbi, how many renminbi will Mengmeng spend?",
+    "adapted_answer": [
+      "Mengmeng is buying jiaozi for 12 + 3 + (12*2) = 39 people.",
+      "Thus, she needs to buy 39/3=13 jiaozi servings.",
+      "Thus, she will spend 106.95*13=1390.35 renminbi.",
+      "#### 1390.35"
+    ],
+    "adaptation_notes": "Replaced 'Maddy' with 'Mengmeng', 'pizza' with 'jiaozi', and 'soccer' with 'table tennis'."
+  }
+}

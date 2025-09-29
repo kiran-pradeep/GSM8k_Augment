@@ -1,0 +1,100 @@
+{
+  "index": 1262,
+  "split": "test",
+  "original": {
+    "question": "John decides to take up an odd hobby of speed talking.  His normally speaking speed is 150 WPM.  After training his speed is 2.5 times faster than his starting speed.  How long would it take him to speak 10 pages if each page has 450 words per page?",
+    "answer": "He can speak 150*2.5=<<150*2.5=375>>375 words per minute\nHe wants to say 450*10=<<450*10=4500>>4500 words\nSo he can speak them in 4500/375=<<4500/375=12>>12 minutes\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John"
+    ],
+    "notes": "The name 'John' is a culturally specific entity commonly found in Western cultures, but not typically associated with Haitian culture."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_speaking_speed",
+      "value": 150.0,
+      "unit": "wpm",
+      "context": "question"
+    },
+    {
+      "variable": "final_speaking_speed",
+      "value": 375.0,
+      "unit": "wpm",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"wpm\": {\"factor\": 1, \"unit\": \"wpm\"},\n        \"USD\": {\"factor\": 130.81, \"unit\": \"HTG\"},\n        \"pounds\": {\"factor\": 0.453592, \"unit\": \"kilograms\"},\n        \"ounces\": {\"factor\": 28.3495, \"unit\": \"grams\"},\n        \"miles\": {\"factor\": 1.60934, \"unit\": \"kilometers\"},\n        \"feet\": {\"factor\": 0.3048, \"unit\": \"meters\"},\n        \"gallons\": {\"factor\": 3.78541, \"unit\": \"liters\"},\n        \"cups\": {\"factor\": 236.588, \"unit\": \"milliliters\"}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            factor = conversions[original_unit][\"factor\"]\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * factor, 2)\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"initial_speaking_speed\",\n    \"value\": 150.0,\n    \"unit\": \"wpm\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"final_speaking_speed\",\n    \"value\": 375.0,\n    \"unit\": \"wpm\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_speaking_speed",
+        "original_value": 150.0,
+        "original_unit": "wpm",
+        "converted_value": 150.0,
+        "converted_unit": "wpm"
+      },
+      {
+        "variable": "final_speaking_speed",
+        "original_value": 375.0,
+        "original_unit": "wpm",
+        "converted_value": 375.0,
+        "converted_unit": "wpm"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John decides to take up an odd hobby of speed talking.  His normally speaking speed is {initial_speaking_speed} WPM.  After training his speed is 2.5 times faster than his starting speed.  How long would it take him to speak {number_of_pages} pages if each page has {words_per_page} words per page?",
+    "templatized_answer": [
+      "He can speak {initial_speaking_speed}*2.5={initial_speaking_speed}*2.5 words per minute",
+      "He wants to say {words_per_page}*{number_of_pages}={words_per_page}*{number_of_pages} words",
+      "So he can speak them in ({words_per_page}*{number_of_pages})/({initial_speaking_speed}*2.5)=({words_per_page}*{number_of_pages})/({initial_speaking_speed}*2.5) minutes",
+      "#### ({words_per_page}*{number_of_pages})/({initial_speaking_speed}*2.5)"
+    ],
+    "factual_assignment": {
+      "initial_speaking_speed": 150.0,
+      "number_of_pages": 10,
+      "words_per_page": 450
+    }
+  },
+  "merged_assignment": {
+    "initial_speaking_speed": 150.0,
+    "number_of_pages": 10,
+    "words_per_page": 450
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_speaking_speed = 150.0\n    number_of_pages = 10\n    words_per_page = 450\n\n    speaking_speed = initial_speaking_speed * 2.5\n    total_words = words_per_page * number_of_pages\n    time_in_minutes = total_words / speaking_speed\n\n    return {\n        \"initial_speaking_speed\": initial_speaking_speed,\n        \"initial_speaking_speed*2.5\": round(speaking_speed, 2),\n        \"words_per_page*number_of_pages\": total_words,\n        \"({words_per_page}*{number_of_pages})/({initial_speaking_speed}*2.5)\": round(time_in_minutes, 2)\n    }\n",
+    "results": {
+      "initial_speaking_speed": 150.0,
+      "initial_speaking_speed*2.5": 375.0,
+      "words_per_page*number_of_pages": 4500,
+      "({words_per_page}*{number_of_pages})/({initial_speaking_speed}*2.5)": 12.0
+    }
+  },
+  "final": {
+    "question": "John decides to take up an odd hobby of speed talking.  His normally speaking speed is 150.0 WPM.  After training his speed is 2.5 times faster than his starting speed.  How long would it take him to speak 10 pages if each page has 450 words per page?",
+    "answer_lines": [
+      "He can speak 150.0*2.5=375.0 words per minute",
+      "He wants to say 450*10=4500 words",
+      "So he can speak them in (450*10)/(150.0*2.5)=12.0 minutes",
+      "#### 12.0"
+    ],
+    "final_scalar": 12.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Jean decides to take up an odd hobby of speed talking.  His normally speaking speed is 150.0 WPM.  After training his speed is 2.5 times faster than his starting speed.  How long would it take him to speak 10 pages if each page has 450 words per page?",
+    "adapted_answer": [
+      "He can speak 150.0*2.5=375.0 words per minute",
+      "He wants to say 450*10=4500 words",
+      "So he can speak them in (450*10)/(150.0*2.5)=12.0 minutes",
+      "#### 12.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Jean', a common Haitian name."
+  }
+}

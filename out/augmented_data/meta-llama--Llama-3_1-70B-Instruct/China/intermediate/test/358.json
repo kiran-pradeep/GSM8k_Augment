@@ -1,0 +1,149 @@
+{
+  "index": 358,
+  "split": "test",
+  "original": {
+    "question": "Marisa gets $5 as pocket money every day from her parents. She buys 4 lollipops worth 25 cents each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "answer": "If each lollipop costs 25 cents, 4 lollipops cost 4 * 25 cents = <<4*25=100>>100 cents\nSince 100 cents = $1 she spends $1 everyday.\nHer savings everyday is $5 - $1 = $<<5-1=4>>4\nIf she saves $4 every day for 5 days, she will have $4 * 5 = $<<4*5=20>>20\n#### 20"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Marisa",
+      "dollars",
+      "lollipops"
+    ],
+    "notes": "The name Marisa and the use of dollars are culturally specific to regions other than China. Lollipops are also a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_allowance",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollipop_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_lollipop_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_savings",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_savings",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = list(conversions[original_unit].keys())[0]\n            conversion_rate = list(conversions[original_unit].values())[0]\n            converted_value = round(original_value * conversion_rate, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"daily_allowance\",\n    \"value\": 5,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"lollipop_cost\",\n    \"value\": 0.25,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_lollipop_cost\",\n    \"value\": 1,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"daily_savings\",\n    \"value\": 4,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"total_savings\",\n    \"value\": 20,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_allowance",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "lollipop_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 1.78,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_lollipop_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 7.13,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "daily_savings",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 28.52,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "total_savings",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Marisa gets ${daily_allowance} as pocket money every day from her parents. She buys 4 lollipops worth {lollipop_cost} dollars each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "templatized_answer": [
+      "If each lollipop costs {lollipop_cost} dollars, 4 lollipops cost 4 * {lollipop_cost} dollars = $1",
+      "Since 4 lollipops cost $1, she spends $1 every day.",
+      "Her savings every day is ${daily_allowance} - $1 = ${daily_savings}",
+      "If she saves ${daily_savings} every day for 5 days, she will have ${daily_savings} * 5 = $",
+      "#### {total_savings}"
+    ],
+    "factual_assignment": {
+      "daily_allowance": 5,
+      "lollipop_cost": 0.25,
+      "total_lollipop_cost": 1,
+      "daily_savings": 4,
+      "total_savings": 20
+    }
+  },
+  "merged_assignment": {
+    "daily_allowance": 35.65,
+    "lollipop_cost": 1.78,
+    "total_lollipop_cost": 7.13,
+    "daily_savings": 28.52,
+    "total_savings": 142.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_allowance = 35.65\n    lollipop_cost = 1.78\n    total_lollipop_cost = round(4 * lollipop_cost, 2)\n    daily_savings = round(daily_allowance - total_lollipop_cost, 2)\n    total_savings = round(daily_savings * 5, 2)\n\n    return {\n        \"daily_allowance\": daily_allowance,\n        \"lollipop_cost\": lollipop_cost,\n        \"total_lollipop_cost\": total_lollipop_cost,\n        \"daily_savings\": daily_savings,\n        \"total_savings\": total_savings\n    }\n",
+    "results": {
+      "daily_allowance": 35.65,
+      "lollipop_cost": 1.78,
+      "total_lollipop_cost": 7.12,
+      "daily_savings": 28.53,
+      "total_savings": 142.65
+    }
+  },
+  "final": {
+    "question": "Marisa gets 35.65 renminbi as pocket money every day from her parents. She buys 4 lollipops worth 1.78 renminbi each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "answer_lines": [
+      "If each lollipop costs 1.78 renminbi, 4 lollipops cost 4 * 1.78 renminbi = 7.12 renminbi",
+      "Since 4 lollipops cost 7.12 renminbi, she spends 7.12 renminbi every day.",
+      "Her savings every day is 35.65 renminbi - 7.12 renminbi = 28.53 renminbi",
+      "If she saves 28.53 renminbi every day for 5 days, she will have 28.53 renminbi * 5 = 142.65 renminbi",
+      "#### 142.65"
+    ],
+    "final_scalar": 142.65,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mei gets 35.65 renminbi as pocket money every day from her parents. She buys 4 tanghulu worth 1.78 renminbi each every day and saves the change in her piggy bank. How much money does she put in her piggy bank if she saves for 5 days?",
+    "adapted_answer": [
+      "If each tanghulu costs 1.78 renminbi, 4 tanghulu cost 4 * 1.78 renminbi = 7.12 renminbi",
+      "Since 4 tanghulu cost 7.12 renminbi, she spends 7.12 renminbi every day.",
+      "Her savings every day is 35.65 renminbi - 7.12 renminbi = 28.53 renminbi",
+      "If she saves 28.53 renminbi every day for 5 days, she will have 28.53 renminbi * 5 = 142.65 renminbi",
+      "#### 142.65"
+    ],
+    "adaptation_notes": "Replaced 'Marisa' with 'Mei' and 'lollipops' with 'tanghulu' to give the text a Chinese context."
+  }
+}

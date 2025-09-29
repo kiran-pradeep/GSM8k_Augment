@@ -1,0 +1,153 @@
+{
+  "index": 1302,
+  "split": "test",
+  "original": {
+    "question": "Matthew has a collection of 12 unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection $5 per toy, and for the other half $7 per toy. If Matthew would agree to that offer, how much money would he earn?",
+    "answer": "Half of Matthew collection means 12 * 0.5 = <<12*0.5=6>>6 toy soldiers.\nA buyer wants to buy 6 toy soldiers for $5, so he would pay 6 * 5 = $<<6*5=30>>30 for them.\nAnd for the other half, he wants to pay $7 per toy, which would sum up to 6 * 7 = $<<6*7=42>>42.\nSo if Matthew would agree to the buyer's offer, he would earn 30 + 42 = $<<30+42=72>>72.\n#### 72"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in the United States and other countries, but not in India where the rupee is the official currency."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_half_price",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_half_price",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "first_half_earnings",
+      "value": 30,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "second_half_earnings",
+      "value": 42,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 72,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"factor\": 87},\n        \"pound\": {\"to\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_half_price\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_half_price\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"first_half_earnings\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"second_half_earnings\", \"value\": 42, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 72, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_half_price",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 435,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_half_price",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 609,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "first_half_earnings",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 2610,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "second_half_earnings",
+        "original_value": 42,
+        "original_unit": "dollar",
+        "converted_value": 3654,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 72,
+        "original_unit": "dollar",
+        "converted_value": 6264,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Matthew has a collection of {total_toys} unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection ${first_half_price} per toy, and for the other half ${second_half_price} per toy. If Matthew would agree to that offer, how much money would he earn?",
+    "templatized_answer": [
+      "Half of Matthew collection means {total_toys} * 0.5 = {total_toys_half} toy soldiers.",
+      "A buyer wants to buy {total_toys_half} toy soldiers for ${first_half_price}, so he would pay {total_toys_half} * {first_half_price} = ${first_half_earnings} for them.",
+      "And for the other half, he wants to pay ${second_half_price} per toy, which would sum up to {total_toys_half} * {second_half_price} = ${second_half_earnings}.",
+      "So if Matthew would agree to the buyer's offer, he would earn {first_half_earnings} + {second_half_earnings} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "total_toys": 12,
+      "first_half_price": 5,
+      "second_half_price": 7,
+      "total_toys_half": 6,
+      "first_half_earnings": 30,
+      "second_half_earnings": 42,
+      "total_earnings": 72
+    }
+  },
+  "merged_assignment": {
+    "total_toys": 12,
+    "first_half_price": 435,
+    "second_half_price": 609,
+    "total_toys_half": 6,
+    "first_half_earnings": 2610,
+    "second_half_earnings": 3654,
+    "total_earnings": 6264
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_toys = 12\n    first_half_price = 435\n    second_half_price = 609\n\n    total_toys_half = total_toys * 0.5\n    first_half_earnings = total_toys_half * first_half_price\n    second_half_earnings = total_toys_half * second_half_price\n    total_earnings = first_half_earnings + second_half_earnings\n\n    return {\n        \"total_toys\": total_toys,\n        \"first_half_price\": first_half_price,\n        \"second_half_price\": second_half_price,\n        \"total_toys_half\": round(total_toys_half, 2),\n        \"first_half_earnings\": round(first_half_earnings, 2),\n        \"second_half_earnings\": round(second_half_earnings, 2),\n        \"total_earnings\": round(total_earnings, 2)\n    }\n",
+    "results": {
+      "total_toys": 12,
+      "first_half_price": 435,
+      "second_half_price": 609,
+      "total_toys_half": 6.0,
+      "first_half_earnings": 2610.0,
+      "second_half_earnings": 3654.0,
+      "total_earnings": 6264.0
+    }
+  },
+  "final": {
+    "question": "Matthew has a collection of 12 unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection 435 rupees per toy, and for the other half 609 rupees per toy. If Matthew would agree to that offer, how much money would he earn?",
+    "answer_lines": [
+      "Half of Matthew collection means 12 * 0.5 = 6 toy soldiers.",
+      "A buyer wants to buy 6 toy soldiers for 435 rupees, so he would pay 6 * 435 = 2610 rupees for them.",
+      "And for the other half, he wants to pay 609 rupees per toy, which would sum up to 6 * 609 = 3654 rupees.",
+      "So if Matthew would agree to the buyer's offer, he would earn 2610 + 3654 = 6264 rupees.",
+      "#### 6264"
+    ],
+    "final_scalar": 6264,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Rohan has a collection of 12 unique toy soldiers. He wants to sell them for a fair price. He found a buyer who is willing to pay for half his collection 435 rupees per toy, and for the other half 609 rupees per toy. If Rohan would agree to that offer, how much money would he earn?",
+    "adapted_answer": [
+      "Half of Rohan's collection means 12 * 0.5 = 6 toy soldiers.",
+      "A buyer wants to buy 6 toy soldiers for 435 rupees, so he would pay 6 * 435 = 2610 rupees for them.",
+      "And for the other half, he wants to pay 609 rupees per toy, which would sum up to 6 * 609 = 3654 rupees.",
+      "So if Rohan would agree to the buyer's offer, he would earn 2610 + 3654 = 6264 rupees.",
+      "#### 6264"
+    ],
+    "adaptation_notes": "Replaced 'Matthew' with 'Rohan' to use an Indian name."
+  }
+}

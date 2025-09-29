@@ -1,0 +1,125 @@
+{
+  "index": 499,
+  "split": "test",
+  "original": {
+    "question": "Mark is trying to choose between two venues for a surprise party for his wife.  The first venue charges a flat fee of $200, regardless of how many guests attend.  While the second charges, $25 per person who attends.  However, the first venue does not include food, which Mark estimates will cost $5 for each person who attends.  At the second venue, food for each guest is already included in the price.  How many guests are necessary for the two venues to be equal in cost?",
+    "answer": "The total cost of the first venue can be expressed as 200 + 5*X, where X is the number of guests. Similarly, the total cost of the second venue can be expressed as 25*X.\nNext we must find the value of X that makes these two costs equal. Setting these two expressions equal to each other, we get the equation 200 + 5*X = 25*X.\nBy subtracting 5*X from each side to get 200 = 20*X.\nThen, X = 200/20 = 10, so when there are 10 guests the two venues will be equal in cost.\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The question contains a unit of currency (dollars) that is not specific to Pakistan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "flat_fee",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cost_per_guest",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_cost_per_guest",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"rupee\", \"rate\": 281.85},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"flat_fee\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cost_per_guest\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_cost_per_guest\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "flat_fee",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 56370.0,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "cost_per_guest",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 7046.25,
+        "converted_unit": "rupee"
+      },
+      {
+        "variable": "food_cost_per_guest",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 1409.25,
+        "converted_unit": "rupee"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark is trying to choose between two venues for a surprise party for his wife.  The first venue charges a flat fee of ${flat_fee}, regardless of how many guests attend.  While the second charges, ${cost_per_guest} per person who attends.  However, the first venue does not include food, which Mark estimates will cost ${food_cost_per_guest} for each person who attends.  At the second venue, food for each guest is already included in the price.  How many guests are necessary for the two venues to be equal in cost?",
+    "templatized_answer": [
+      "The total cost of the first venue can be expressed as {flat_fee} + {food_cost_per_guest}*X, where X is the number of guests.",
+      "Similarly, the total cost of the second venue can be expressed as {cost_per_guest}*X.",
+      "Next we must find the value of X that makes these two costs equal. Setting these two expressions equal to each other, we get the equation {flat_fee} + {food_cost_per_guest}*X = {cost_per_guest}*X.",
+      "By subtracting {food_cost_per_guest}*X from each side to get {flat_fee} = ({cost_per_guest}-{food_cost_per_guest})*X.",
+      "Then, X = {flat_fee}/({cost_per_guest}-{food_cost_per_guest})",
+      "#### X"
+    ],
+    "factual_assignment": {
+      "flat_fee": 200.0,
+      "cost_per_guest": 25.0,
+      "food_cost_per_guest": 5.0,
+      "X": 10
+    }
+  },
+  "merged_assignment": {
+    "flat_fee": 56370.0,
+    "cost_per_guest": 7046.25,
+    "food_cost_per_guest": 1409.25,
+    "X": 10
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    flat_fee = 56370.0\n    cost_per_guest = 7046.25\n    food_cost_per_guest = 1409.25\n\n    total_cost_first_venue = f\"{flat_fee} + {food_cost_per_guest}*X\"\n    total_cost_second_venue = f\"{cost_per_guest}*X\"\n\n    equation = f\"{flat_fee} + {food_cost_per_guest}*X = {cost_per_guest}*X\"\n    simplified_equation = f\"{flat_fee} = ({cost_per_guest}-{food_cost_per_guest})*X\"\n\n    X = round(flat_fee / (cost_per_guest - food_cost_per_guest), 2)\n\n    return {\n        \"flat_fee\": flat_fee,\n        \"cost_per_guest\": cost_per_guest,\n        \"food_cost_per_guest\": food_cost_per_guest,\n        \"total_cost_first_venue\": total_cost_first_venue,\n        \"total_cost_second_venue\": total_cost_second_venue,\n        \"equation\": equation,\n        \"simplified_equation\": simplified_equation,\n        \"X\": X\n    }\n\nprint(recompute())\n",
+    "results": {
+      "flat_fee": 56370.0,
+      "cost_per_guest": 7046.25,
+      "food_cost_per_guest": 1409.25,
+      "total_cost_first_venue": "56370.0 + 1409.25*X",
+      "total_cost_second_venue": "7046.25*X",
+      "equation": "56370.0 + 1409.25*X = 7046.25*X",
+      "simplified_equation": "56370.0 = (7046.25-1409.25)*X",
+      "X": 10.0
+    }
+  },
+  "final": {
+    "question": "Mark is trying to choose between two venues for a surprise party for his wife.  The first venue charges a flat fee of 56370.0, regardless of how many guests attend.  While the second charges, 7046.25 per person who attends.  However, the first venue does not include food, which Mark estimates will cost 1409.25 for each person who attends.  At the second venue, food for each guest is already included in the price.  How many guests are necessary for the two venues to be equal in cost?",
+    "answer_lines": [
+      "The total cost of the first venue can be expressed as 56370.0 + 1409.25*X, where X is the number of guests.",
+      "Similarly, the total cost of the second venue can be expressed as 7046.25*X.",
+      "Next we must find the value of X that makes these two costs equal. Setting these two expressions equal to each other, we get the equation 56370.0 + 1409.25*X = 7046.25*X.",
+      "By subtracting 1409.25*X from each side to get 56370.0 = (7046.25-1409.25)*X.",
+      "Then, X = 56370.0/(7046.25-1409.25)",
+      "#### 10.0"
+    ],
+    "final_scalar": 10.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kamran is trying to choose between two venues for a surprise party for his wife.  The first venue charges a flat fee of 56370.0 rupees, regardless of how many guests attend.  While the second charges, 7046.25 rupees per person who attends.  However, the first venue does not include food, which Kamran estimates will cost 1409.25 rupees for each person who attends.  At the second venue, food for each guest is already included in the price.  How many guests are necessary for the two venues to be equal in cost?",
+    "adapted_answer": [
+      "The total cost of the first venue can be expressed as 56370.0 + 1409.25*X, where X is the number of guests.",
+      "Similarly, the total cost of the second venue can be expressed as 7046.25*X.",
+      "Next we must find the value of X that makes these two costs equal. Setting these two expressions equal to each other, we get the equation 56370.0 + 1409.25*X = 7046.25*X.",
+      "By subtracting 1409.25*X from each side to get 56370.0 = (7046.25-1409.25)*X.",
+      "Then, X = 56370.0/(7046.25-1409.25)",
+      "#### 10.0"
+    ],
+    "adaptation_notes": "Replaced 'dollars' with 'rupees' and 'Mark' with 'Kamran' to give the text a Pakistani context."
+  }
+}

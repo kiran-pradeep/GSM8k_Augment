@@ -1,0 +1,95 @@
+{
+  "index": 733,
+  "split": "test",
+  "original": {
+    "question": "While walking down the street with his 3 younger siblings, Greg found $20. To be fair to his siblings, he decided to split the money equally. How much money did each of them get?",
+    "answer": "Greg and his 3 siblings equal 3 people + 1 person = <<3+1=4>>4 people.\nThe 20 dollars were divided equally, so each of them received $20 / 4 people = <<20/4=5>>5 dollars/person\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not in China where the yuan is the standard unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "found_money",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "split_money",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"renminbi\": 7.13},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = list(conversions[unit].keys())[0]\n            converted_value = value * list(conversions[unit].values())[0]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"found_money\",\n    \"value\": 20.0,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"split_money\",\n    \"value\": 5.0,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "found_money",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 142.6,
+        "converted_unit": "renminbi"
+      },
+      {
+        "variable": "split_money",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 35.65,
+        "converted_unit": "renminbi"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "While walking down the street with his 3 younger siblings, Greg found ${found_money}. To be fair to his siblings, he decided to split the money equally. How much money did each of them get?",
+    "templatized_answer": [
+      "Greg and his 3 siblings equal 3 people + 1 person = {number_of_people} people.",
+      "The {found_money} dollars were divided equally, so each of them received ${found_money} / {number_of_people} people = ${split_money} dollars/person"
+    ],
+    "factual_assignment": {
+      "found_money": 20.0,
+      "split_money": 5.0,
+      "number_of_people": 4
+    }
+  },
+  "merged_assignment": {
+    "found_money": 142.6,
+    "split_money": 35.65,
+    "number_of_people": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    found_money = 142.6\n    number_of_people = 4\n    split_money = round(found_money / number_of_people, 2)\n    \n    return {\n        \"found_money\": found_money,\n        \"number_of_people\": number_of_people,\n        \"split_money\": split_money\n    }\n",
+    "results": {
+      "found_money": 142.6,
+      "number_of_people": 4,
+      "split_money": 35.65
+    }
+  },
+  "final": {
+    "question": "While walking down the street with his 3 younger siblings, Greg found 142.6 renminbi. To be fair to his siblings, he decided to split the money equally. How much money did each of them get?",
+    "answer_lines": [
+      "Greg and his 3 siblings equal 3 people + 1 person = 4 people.",
+      "The 142.6 renminbi were divided equally, so each of them received 142.6 renminbi / 4 people = 35.65 renminbi/person",
+      "#### 35.65"
+    ],
+    "final_scalar": 35.65,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "While walking down the street with his 3 younger siblings, Greg found 142.6 yuan. To be fair to his siblings, he decided to split the money equally. How much money did each of them get?",
+    "adapted_answer": [
+      "Greg and his 3 siblings equal 3 people + 1 person = 4 people.",
+      "The 142.6 yuan were divided equally, so each of them received 142.6 yuan / 4 people = 35.65 yuan/person",
+      "#### 35.65"
+    ],
+    "adaptation_notes": "Replaced 'renminbi' with 'yuan', as both terms refer to the Chinese currency, but 'yuan' is more commonly used in informal contexts."
+  }
+}
