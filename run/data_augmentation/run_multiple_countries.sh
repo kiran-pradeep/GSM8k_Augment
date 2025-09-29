@@ -6,7 +6,7 @@ split="test"
 limit=-1
 start=0
 workers=8
-templates="templates"
+templates="templates/data_augmentation"
 failfast=false
 
 # Define arrays for each country's environment variables

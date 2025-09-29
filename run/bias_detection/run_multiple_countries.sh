@@ -6,7 +6,7 @@ split="test"
 limit=-1
 start=0
 workers=8
-templates="templates/bias_detection"
+templates="templates/bias_detection/cotZS"
 failfast=false
 
 
