@@ -1,0 +1,157 @@
+{
+  "index": 1083,
+  "split": "test",
+  "original": {
+    "question": "The bananas at the supermarket cost $0.80 each, or a bunch for $3.00.  Jenny buys 10 bunches that average 4 bananas per bunch. How much money, in dollars, did she save by buying the bananas in bunches instead of individually?",
+    "answer": "Ten bunches makes 10*3=$<<10*3=30>>30.\nThere are 10*4=<<10*4=40>>40 bananas.\n40 bananas would cost 40*0.80=$<<40*0.80=32>>32 individually.\nShe saved 32-30=<<32-30=2>>2 dollars\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "bananas"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in the US, and 'bananas' which is a food item not native to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "banana_bunch_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "banana_individual_cost",
+      "value": 0.8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_bunch_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_individual_cost",
+      "value": 32.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "savings",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"banana_bunch_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"banana_individual_cost\", \"value\": 0.8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_bunch_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_individual_cost\", \"value\": 32.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"savings\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "banana_bunch_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "banana_individual_cost",
+        "original_value": 0.8,
+        "original_unit": "dollar",
+        "converted_value": 117.66,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_bunch_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 4412.1,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_individual_cost",
+        "original_value": 32.0,
+        "original_unit": "dollar",
+        "converted_value": 4706.24,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "savings",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The bananas at the supermarket cost ${banana_individual_cost} each, or a bunch for ${banana_bunch_cost}.  Jenny buys {number_of_bunches} bunches that average {bananas_per_bunch} bananas per bunch. How much money, in dollars, did she save by buying the bananas in bunches instead of individually?",
+    "templatized_answer": [
+      "{number_of_bunches} bunches makes {number_of_bunches}*${banana_bunch_cost}=${total_bunch_cost}.",
+      "There are {number_of_bunches}*{bananas_per_bunch}={total_bananas} bananas.",
+      "{total_bananas} bananas would cost {total_bananas}*${banana_individual_cost}=${total_individual_cost} individually.",
+      "She saved ${total_individual_cost}-${total_bunch_cost}=${savings} dollars",
+      "#### ${savings}"
+    ],
+    "factual_assignment": {
+      "banana_bunch_cost": 3.0,
+      "banana_individual_cost": 0.8,
+      "number_of_bunches": 10,
+      "bananas_per_bunch": 4,
+      "total_bunch_cost": 30.0,
+      "total_individual_cost": 32.0,
+      "total_bananas": 40,
+      "savings": 2.0
+    }
+  },
+  "merged_assignment": {
+    "banana_bunch_cost": 441.21,
+    "banana_individual_cost": 117.66,
+    "number_of_bunches": 10,
+    "bananas_per_bunch": 4,
+    "total_bunch_cost": 4412.1,
+    "total_individual_cost": 4706.24,
+    "total_bananas": 40,
+    "savings": 294.14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    banana_bunch_cost = 441.21\n    banana_individual_cost = 117.66\n    number_of_bunches = 10\n    bananas_per_bunch = 4\n\n    total_bunch_cost = round(number_of_bunches * banana_bunch_cost, 2)\n    total_bananas = number_of_bunches * bananas_per_bunch\n    total_individual_cost = round(total_bananas * banana_individual_cost, 2)\n    savings = round(total_individual_cost - total_bunch_cost, 2)\n\n    return {\n        \"banana_individual_cost\": banana_individual_cost,\n        \"banana_bunch_cost\": banana_bunch_cost,\n        \"number_of_bunches\": number_of_bunches,\n        \"bananas_per_bunch\": bananas_per_bunch,\n        \"total_bunch_cost\": total_bunch_cost,\n        \"total_individual_cost\": total_individual_cost,\n        \"total_bananas\": total_bananas,\n        \"savings\": savings\n    }\n",
+    "results": {
+      "banana_individual_cost": 117.66,
+      "banana_bunch_cost": 441.21,
+      "number_of_bunches": 10,
+      "bananas_per_bunch": 4,
+      "total_bunch_cost": 4412.1,
+      "total_individual_cost": 4706.4,
+      "total_bananas": 40,
+      "savings": 294.3
+    }
+  },
+  "final": {
+    "question": "The bananas at the supermarket cost 117.66 yen each, or a bunch for 441.21 yen.  Jenny buys 10 bunches that average 4 bananas per bunch. How much money, in yen, did she save by buying the bananas in bunches instead of individually?",
+    "answer_lines": [
+      "Ten bunches makes 10*441.21=4412.1 yen.",
+      "There are 10*4=40 bananas.",
+      "40 bananas would cost 40*117.66=4706.4 yen individually.",
+      "She saved 4706.4-4412.1=294.3 yen",
+      "#### 294.3"
+    ],
+    "final_scalar": 294.3,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The ringos at the supermarket cost 117.66 yen each, or a bunch for 441.21 yen.  Jenny buys 10 bunches that average 4 ringos per bunch. How much money, in yen, did she save by buying the ringos in bunches instead of individually?",
+    "adapted_answer": [
+      "Ten bunches makes 10*441.21=4412.1 yen.",
+      "There are 10*4=40 ringos.",
+      "40 ringos would cost 40*117.66=4706.4 yen individually.",
+      "She saved 4706.4-4412.1=294.3 yen",
+      "#### 294.3"
+    ],
+    "adaptation_notes": "Replaced 'bananas' with 'ringos' (Japanese word for apples, but used here as a substitute for bananas)"
+  }
+}

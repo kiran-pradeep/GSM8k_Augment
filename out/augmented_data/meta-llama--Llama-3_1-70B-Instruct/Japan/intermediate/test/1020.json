@@ -1,0 +1,74 @@
+{
+  "index": 1020,
+  "split": "test",
+  "original": {
+    "question": "John picks 4 bananas on Wednesday. Then he picks 6 bananas on Thursday. On Friday, he picks triple the number of bananas he did on Wednesday. How many bananas does John have?",
+    "answer": "Combining Wednesday and Thursday, John has 4 bananas + 6 bananas = <<4+6=10>>10 bananas.\nOn Friday, he picks 3 * 4 bananas = <<3*4=12>>12 bananas.\nAltogether, John has 10 bananas + 12 bananas = <<10+12=22>>22 bananas.\n#### 22"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "bananas"
+    ],
+    "notes": "Name 'John' is Western, and bananas are not native to Japan."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 147.07, 'unit': 'yen'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit]['factor'], 2)\n            converted_unit = conversions[unit]['unit']\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "John picks {wednesday_bananas} bananas on Wednesday. Then he picks {thursday_bananas} bananas on Thursday. On Friday, he picks triple the number of bananas he did on Wednesday. How many bananas does John have?",
+    "templatized_answer": [
+      "Combining Wednesday and Thursday, John has {wednesday_bananas} bananas + {thursday_bananas} bananas = {wednesday_bananas} + {thursday_bananas} bananas.",
+      "On Friday, he picks 3 * {wednesday_bananas} bananas = 3 * {wednesday_bananas} bananas.",
+      "Altogether, John has {wednesday_bananas} + {thursday_bananas} bananas + 3 * {wednesday_bananas} bananas = {wednesday_bananas} + {thursday_bananas} + 3 * {wednesday_bananas} bananas.",
+      "#### {total_bananas}"
+    ],
+    "factual_assignment": {
+      "wednesday_bananas": 4,
+      "thursday_bananas": 6,
+      "total_bananas": 22
+    }
+  },
+  "merged_assignment": {
+    "wednesday_bananas": 4,
+    "thursday_bananas": 6,
+    "total_bananas": 22
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"wednesday_bananas\": 4,\n        \"thursday_bananas\": 6,\n        \"total_bananas\": 22\n    }\n\n    recomputed_values = factual_assignment.copy()\n\n    recomputed_values[\"wednesday_bananas_plus_thursday_bananas\"] = (\n        recomputed_values[\"wednesday_bananas\"] + recomputed_values[\"thursday_bananas\"]\n    )\n\n    recomputed_values[\"friday_bananas\"] = 3 * recomputed_values[\"wednesday_bananas\"]\n\n    recomputed_values[\"total_bananas\"] = (\n        recomputed_values[\"wednesday_bananas_plus_thursday_bananas\"] + recomputed_values[\"friday_bananas\"]\n    )\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "wednesday_bananas": 4,
+      "thursday_bananas": 6,
+      "total_bananas": 22,
+      "wednesday_bananas_plus_thursday_bananas": 10,
+      "friday_bananas": 12
+    }
+  },
+  "final": {
+    "question": "John picks 4 bananas on Wednesday. Then he picks 6 bananas on Thursday. On Friday, he picks triple the number of bananas he did on Wednesday. How many bananas does John have?",
+    "answer_lines": [
+      "Combining Wednesday and Thursday, John has 4 bananas + 6 bananas = 10 bananas.",
+      "On Friday, he picks 3 * 4 bananas = 12 bananas.",
+      "Altogether, John has 10 bananas + 12 bananas = 22 bananas.",
+      "#### 22"
+    ],
+    "final_scalar": 22,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro picks 4 ringos on Wednesday. Then he picks 6 ringos on Thursday. On Friday, he picks triple the number of ringos he did on Wednesday. How many ringos does Taro have?",
+    "adapted_answer": [
+      "Combining Wednesday and Thursday, Taro has 4 ringos + 6 ringos = 10 ringos.",
+      "On Friday, he picks 3 * 4 ringos = 12 ringos.",
+      "Altogether, Taro has 10 ringos + 12 ringos = 22 ringos.",
+      "#### 22"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro' (Japanese name) and 'bananas' with 'ringos' (Japanese word for apples, used here as a substitute for bananas)."
+  }
+}

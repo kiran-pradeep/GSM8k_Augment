@@ -1,0 +1,111 @@
+{
+  "index": 397,
+  "split": "test",
+  "original": {
+    "question": "Mark has $50 in his bank account. He earns $10 per day at his work. If he wants to buy a bike that costs $300, how many days does Mark have to save his money?",
+    "answer": "Mike has $50 in his bank account, so the amount he needs to save to reach the bike goal is $300 - $50 = $250\nHe earns $10 per day, so $250 / $10/day = <<250/10=25>>25 days\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_savings",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bike_cost",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_savings\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_earnings\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bike_cost\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_savings",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 69475.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 13895.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "bike_cost",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 416850.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark has ${initial_savings} in his bank account. He earns ${daily_earnings} per day at his work. If he wants to buy a bike that costs ${bike_cost}, how many days does Mark have to save his money?",
+    "templatized_answer": [
+      "Mark has ${initial_savings} in his bank account, so the amount he needs to save to reach the bike goal is ${bike_cost} - ${initial_savings} = ${bike_cost} - ${initial_savings}",
+      "He earns ${daily_earnings} per day, so (${bike_cost} - ${initial_savings}) / ${daily_earnings}/day = (${bike_cost} - ${initial_savings}) / ${daily_earnings}",
+      "#### {bike_cost} - {initial_savings}"
+    ],
+    "factual_assignment": {
+      "initial_savings": 50.0,
+      "daily_earnings": 10.0,
+      "bike_cost": 300.0
+    }
+  },
+  "merged_assignment": {
+    "initial_savings": 69475.0,
+    "daily_earnings": 13895.0,
+    "bike_cost": 416850.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_savings = 69475.0\n    daily_earnings = 13895.0\n    bike_cost = 416850.0\n\n    amount_to_save = bike_cost - initial_savings\n    days_to_save = amount_to_save / daily_earnings\n\n    return {\n        \"initial_savings\": initial_savings,\n        \"daily_earnings\": daily_earnings,\n        \"bike_cost\": bike_cost,\n        \"bike_cost - initial_savings\": round(amount_to_save, 2),\n        \"(bike_cost - initial_savings) / daily_earnings\": round(days_to_save, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_savings": 69475.0,
+      "daily_earnings": 13895.0,
+      "bike_cost": 416850.0,
+      "bike_cost - initial_savings": 347375.0,
+      "(bike_cost - initial_savings) / daily_earnings": 25.0
+    }
+  },
+  "final": {
+    "question": "Mark has 69475 won in his bank account. He earns 13895 won per day at his work. If he wants to buy a bike that costs 416850 won, how many days does Mark have to save his money?",
+    "answer_lines": [
+      "Mark has 69475 won in his bank account, so the amount he needs to save to reach the bike goal is 416850 won - 69475 won = 347375 won",
+      "He earns 13895 won per day, so 347375 won / 13895 won/day = 25",
+      "#### 25"
+    ],
+    "final_scalar": 25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": " has 69475 in his bank account. He earns 13895 per day at his work. If he wants to buy a bike that costs 416850, how many days does  have to save his money?",
+    "adapted_answer": [
+      " has 69475 in his bank account, so the amount he needs to save to reach the bike goal is 416850 - 69475 = 347375",
+      "He earns 13895 per day, so 347375 / 13895 = 25",
+      "#### 25"
+    ],
+    "adaptation_notes": "Replaced 'Mark' with '', 'won' is already Korean currency unit, and 'bike' is a neutral term, so no changes were needed for it."
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "index": 152,
+  "split": "test",
+  "original": {
+    "question": "Carl buys ten packs of cookies. Each pack of cookies has six cookies inside. Each cookie cost $0.10. How much change does Carl receive if he pay with a $10 bill?",
+    "answer": "A pack of cookies costs 6 x $0.10 = $<<6*0.1=0.60>>0.60.\nThus, ten packs of cookies cost 10 x $0.6 = $<<10*0.6=6>>6.\nTherefore, Carl will receive a $10 - $6 = $<<10-6=4>>4 change.\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Carl",
+      "cookies",
+      "dollars"
+    ],
+    "notes": "The name 'Carl' and the use of 'dollars' are culturally specific to Western regions. Cookies are also a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cookie_cost",
+      "value": 0.1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pack_cost",
+      "value": 0.6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "payment",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cookie_cost\", \"value\": 0.1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pack_cost\", \"value\": 0.6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"payment\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cookie_cost",
+        "original_value": 0.1,
+        "original_unit": "dollar",
+        "converted_value": 138.95,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "pack_cost",
+        "original_value": 0.6,
+        "original_unit": "dollar",
+        "converted_value": 833.7,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 8337.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "payment",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 13895.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "change",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carl buys {number_of_packs} packs of cookies. Each pack of cookies has {number_of_cookies_per_pack} cookies inside. Each cookie cost ${cookie_cost}. How much change does Carl receive if he pay with a ${payment} bill?",
+    "templatized_answer": [
+      "A pack of cookies costs {number_of_cookies_per_pack} x ${cookie_cost} = ${pack_cost}.",
+      "Thus, {number_of_packs} packs of cookies cost {number_of_packs} x ${pack_cost} = ${total_cost}.",
+      "Therefore, Carl will receive a ${payment} - ${total_cost} = ${change} change.",
+      "#### {change}"
+    ],
+    "factual_assignment": {
+      "number_of_packs": 10,
+      "number_of_cookies_per_pack": 6,
+      "cookie_cost": 0.1,
+      "pack_cost": 0.6,
+      "total_cost": 6,
+      "payment": 10,
+      "change": 4
+    }
+  },
+  "merged_assignment": {
+    "number_of_packs": 10,
+    "number_of_cookies_per_pack": 6,
+    "cookie_cost": 138.95,
+    "pack_cost": 833.7,
+    "total_cost": 8337.0,
+    "payment": 13895.0,
+    "change": 5558.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_packs = 10\n    number_of_cookies_per_pack = 6\n    cookie_cost = 138.95\n\n    pack_cost = number_of_cookies_per_pack * cookie_cost\n    pack_cost = round(pack_cost, 2)\n\n    total_cost = number_of_packs * pack_cost\n    total_cost = round(total_cost, 2)\n\n    payment = 13895.0\n    change = payment - total_cost\n    change = round(change, 2)\n\n    return {\n        \"number_of_packs\": number_of_packs,\n        \"number_of_cookies_per_pack\": number_of_cookies_per_pack,\n        \"cookie_cost\": cookie_cost,\n        \"pack_cost\": pack_cost,\n        \"total_cost\": total_cost,\n        \"payment\": payment,\n        \"change\": change\n    }\n",
+    "results": {
+      "number_of_packs": 10,
+      "number_of_cookies_per_pack": 6,
+      "cookie_cost": 138.95,
+      "pack_cost": 833.7,
+      "total_cost": 8337.0,
+      "payment": 13895.0,
+      "change": 5558.0
+    }
+  },
+  "final": {
+    "question": "Carl buys 10 packs of cookies. Each pack of cookies has 6 cookies inside. Each cookie cost 138.95 won. How much change does Carl receive if he pay with a 13895.0 won bill?",
+    "answer_lines": [
+      "A pack of cookies costs 6 x 138.95 won = 833.7 won.",
+      "Thus, 10 packs of cookies cost 10 x 833.7 won = 8337.0 won.",
+      "Therefore, Carl will receive a 13895.0 won - 8337.0 won = 5558.0 won change.",
+      "#### 5558.0"
+    ],
+    "final_scalar": 5558.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo buys 10 packs of yakgwa. Each pack of yakgwa has 6 yakgwa inside. Each yakgwa cost 138.95 won. How much change does Min-soo receive if he pay with a 13895.0 won bill?",
+    "adapted_answer": [
+      "A pack of yakgwa costs 6 x 138.95 won = 833.7 won.",
+      "Thus, 10 packs of yakgwa cost 10 x 833.7 won = 8337.0 won.",
+      "Therefore, Min-soo will receive a 13895.0 won - 8337.0 won = 5558.0 won change.",
+      "#### 5558.0"
+    ],
+    "adaptation_notes": "Replaced 'Carl' with 'Min-soo' (a common Korean name) and 'cookies' with 'yakgwa' (a traditional Korean cookie-like dessert)."
+  }
+}

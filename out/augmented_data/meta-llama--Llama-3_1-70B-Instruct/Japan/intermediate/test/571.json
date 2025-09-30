@@ -1,0 +1,160 @@
+{
+  "index": 571,
+  "split": "test",
+  "original": {
+    "question": "Leah just got a new kitten. Spaying her cost $200, her 3 vaccines costs $20 each, and the kitten broke 4 vases that cost $12 each. How much has the kitten cost so far?",
+    "answer": "First find the total cost of the vaccines: $20/vaccine * 3 vaccines = $<<20*3=60>>60\nThen find the total cost of the vases: 4 vases * $12/vase = $<<4*12=48>>48\nThen add the cost of the vaccines and vases to the cost of the spaying to find the total cost: $200 + $48 + $60 = $<<200+48+60=308>>308\n#### 308"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "spaying_cost",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "vaccine_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "vase_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_vaccine_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_vase_cost",
+      "value": 48.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 308.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"spaying_cost\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"vaccine_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"vase_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_vaccine_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_vase_cost\", \"value\": 48.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 308.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "spaying_cost",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 29414.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "vaccine_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "vase_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 1764.84,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_vaccine_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 8824.2,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_vase_cost",
+        "original_value": 48.0,
+        "original_unit": "dollar",
+        "converted_value": 7059.36,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 308.0,
+        "original_unit": "dollar",
+        "converted_value": 45297.56,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Leah just got a new kitten. Spaying her cost ${spaying_cost}, her 3 vaccines costs ${vaccine_cost} each, and the kitten broke 4 vases that cost ${vase_cost} each. How much has the kitten cost so far?",
+    "templatized_answer": [
+      "First find the total cost of the vaccines: ${vaccine_cost}/vaccine * 3 vaccines = ${total_vaccine_cost}",
+      "Then find the total cost of the vases: 4 vases * ${vase_cost}/vase = ${total_vase_cost}",
+      "Then add the cost of the vaccines and vases to the cost of the spaying to find the total cost: ${spaying_cost} + ${total_vase_cost} + ${total_vaccine_cost} = ${total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "spaying_cost": 200.0,
+      "vaccine_cost": 20.0,
+      "vase_cost": 12.0,
+      "total_vaccine_cost": 60.0,
+      "total_vase_cost": 48.0,
+      "total_cost": 308.0
+    }
+  },
+  "merged_assignment": {
+    "spaying_cost": 29414.0,
+    "vaccine_cost": 2941.4,
+    "vase_cost": 1764.84,
+    "total_vaccine_cost": 8824.2,
+    "total_vase_cost": 7059.36,
+    "total_cost": 45297.56
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    spaying_cost = 29414.0\n    vaccine_cost = 2941.4\n    vase_cost = 1764.84\n\n    total_vaccine_cost = vaccine_cost * 3\n    total_vase_cost = vase_cost * 4\n    total_cost = spaying_cost + total_vaccine_cost + total_vase_cost\n\n    return {\n        \"spaying_cost\": round(spaying_cost, 2),\n        \"vaccine_cost\": round(vaccine_cost, 2),\n        \"vase_cost\": round(vase_cost, 2),\n        \"total_vaccine_cost\": round(total_vaccine_cost, 2),\n        \"total_vase_cost\": round(total_vase_cost, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "spaying_cost": 29414.0,
+      "vaccine_cost": 2941.4,
+      "vase_cost": 1764.84,
+      "total_vaccine_cost": 8824.2,
+      "total_vase_cost": 7059.36,
+      "total_cost": 45297.56
+    }
+  },
+  "final": {
+    "question": "Leah just got a new kitten. Spaying her cost 29414 yen, her 3 vaccines costs 2941.4 yen each, and the kitten broke 4 vases that cost 1764.84 yen each. How much has the kitten cost so far?",
+    "answer_lines": [
+      "First find the total cost of the vaccines: 2941.4 yen/vaccine * 3 vaccines = 8824.2 yen",
+      "Then find the total cost of the vases: 4 vases * 1764.84 yen/vase = 7059.36 yen",
+      "Then add the cost of the vaccines and vases to the cost of the spaying to find the total cost: 29414 yen + 7059.36 yen + 8824.2 yen = 45297.56 yen",
+      "#### 45297.56"
+    ],
+    "final_scalar": 45297.56,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui just got a new kitten. Spaying her cost 29414 yen, her 3 vaccines costs 2941.4 yen each, and the kitten broke 4 vases that cost 1764.84 yen each. How much has the kitten cost so far?",
+    "adapted_answer": [
+      "First find the total cost of the vaccines: 2941.4 yen/vaccine * 3 vaccines = 8824.2 yen",
+      "Then find the total cost of the vases: 4 vases * 1764.84 yen/vase = 7059.36 yen",
+      "Then add the cost of the vaccines and vases to the cost of the spaying to find the total cost: 29414 yen + 7059.36 yen + 8824.2 yen = 45297.56 yen",
+      "#### 45297.56"
+    ],
+    "adaptation_notes": "Replaced 'Leah' with 'Yui' to use a Japanese name."
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "index": 653,
+  "split": "test",
+  "original": {
+    "question": "Sally has realized she did not receive a full wage this week. Her bank account, which held $200 at the start of the week, now holds $420. She has received no other money into her bank account this week. If her weekly wage should be $300, how many dollars were withheld from Sally’s wage?",
+    "answer": "The wage she received was $420 – $200 = $<<420-200=220>>220\nThis means her wage was $300 – $220 = $<<300-220=80>>80 short\n#### 80"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Sally"
+    ],
+    "notes": "The text contains a Western name and a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_balance",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "current_balance",
+      "value": 420.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_wage",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "received_wage",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "withheld_wage",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_balance\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"current_balance\", \"value\": 420.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_wage\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"received_wage\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"withheld_wage\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_balance",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 29414.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "current_balance",
+        "original_value": 420.0,
+        "original_unit": "dollar",
+        "converted_value": 61769.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "weekly_wage",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 44121.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "received_wage",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 32355.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "withheld_wage",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 11765.6,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sally has realized she did not receive a full wage this week. Her bank account, which held ${initial_balance} at the start of the week, now holds ${current_balance}. She has received no other money into her bank account this week. If her weekly wage should be ${weekly_wage}, how many dollars were withheld from Sally’s wage?",
+    "templatized_answer": [
+      "The wage she received was ${current_balance} – ${initial_balance} = ${received_wage}",
+      "This means her wage was ${weekly_wage} – ${received_wage} = ${withheld_wage}",
+      "#### {withheld_wage}"
+    ],
+    "factual_assignment": {
+      "initial_balance": 200.0,
+      "current_balance": 420.0,
+      "weekly_wage": 300.0,
+      "received_wage": 220.0,
+      "withheld_wage": 80.0
+    }
+  },
+  "merged_assignment": {
+    "initial_balance": 29414.0,
+    "current_balance": 61769.4,
+    "weekly_wage": 44121.0,
+    "received_wage": 32355.4,
+    "withheld_wage": 11765.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_balance = 29414.0\n    weekly_wage = 44121.0\n    current_balance = 61769.4\n\n    received_wage = current_balance - initial_balance\n    withheld_wage = weekly_wage - received_wage\n\n    return {\n        \"initial_balance\": round(initial_balance, 2),\n        \"current_balance\": round(current_balance, 2),\n        \"weekly_wage\": round(weekly_wage, 2),\n        \"received_wage\": round(received_wage, 2),\n        \"withheld_wage\": round(withheld_wage, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_balance": 29414.0,
+      "current_balance": 61769.4,
+      "weekly_wage": 44121.0,
+      "received_wage": 32355.4,
+      "withheld_wage": 11765.6
+    }
+  },
+  "final": {
+    "question": "Sally has realized she did not receive a full wage this week. Her bank account, which held 29414.0 yen at the start of the week, now holds 61769.4 yen. She has received no other money into her bank account this week. If her weekly wage should be 44121.0 yen, how many yen were withheld from Sally’s wage?",
+    "answer_lines": [
+      "The wage she received was 61769.4 – 29414.0 = 32355.4",
+      "This means her wage was 44121.0 – 32355.4 = 11765.6",
+      "#### 11765.6"
+    ],
+    "final_scalar": 11765.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui has realized she did not receive a full wage this week. Her bank account, which held 29414.0 yen at the start of the week, now holds 61769.4 yen. She has received no other money into her bank account this week. If her weekly wage should be 44121.0 yen, how many yen were withheld from Yui’s wage?",
+    "adapted_answer": [
+      "The wage she received was 61769.4 – 29414.0 = 32355.4",
+      "This means her wage was 44121.0 – 32355.4 = 11765.6",
+      "#### 11765.6"
+    ],
+    "adaptation_notes": "Replaced 'Sally' with 'Yui', a Japanese name."
+  }
+}

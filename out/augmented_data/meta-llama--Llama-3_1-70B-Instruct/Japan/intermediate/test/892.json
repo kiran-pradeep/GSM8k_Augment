@@ -1,0 +1,131 @@
+{
+  "index": 892,
+  "split": "test",
+  "original": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her $6, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays $11 for her goods?",
+    "answer": "Ellen's yogurt cost is half the price of the salad, so it's $6 / 2 = $<<6/2=3>>3.\nFor the two carrots Ellen needs to pay $11 - $6 - $3 = $<<11-6-3=2>>2.\nSo one carrot costs $2 / $2 = $<<2/2=1>>1.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ellen",
+      "dollars",
+      "carrots",
+      "salad",
+      "yogurt"
+    ],
+    "notes": "The text contains a Western name, a non-Japanese unit of currency, and Western food items."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "salad_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "yogurt_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "carrot_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"salad_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"yogurt_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"carrot_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "salad_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "yogurt_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 1617.77,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "carrot_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 147.07,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her ${salad_cost}, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays ${total_cost} for her goods?",
+    "templatized_answer": [
+      "Ellen's yogurt cost is half the price of the salad, so it's ${salad_cost} / 2 = ${salad_cost / 2}.",
+      "For the two carrots Ellen needs to pay ${total_cost} - ${salad_cost} - ${salad_cost / 2} = ${total_cost - salad_cost - (salad_cost / 2)}.",
+      "So one carrot costs (${total_cost - salad_cost - (salad_cost / 2)}) / 2 = ${carrot_cost}.",
+      "#### {carrot_cost}"
+    ],
+    "factual_assignment": {
+      "salad_cost": 6,
+      "total_cost": 11,
+      "carrot_cost": 1
+    }
+  },
+  "merged_assignment": {
+    "salad_cost": 882.42,
+    "total_cost": 1617.77,
+    "carrot_cost": 147.07
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    salad_cost = 882.42\n    total_cost = 1617.77\n\n    yogurt_cost = salad_cost / 2\n    total_cost_without_carrots = salad_cost + yogurt_cost\n    total_carrot_cost = total_cost - total_cost_without_carrots\n    carrot_cost = total_carrot_cost / 2\n\n    return {\n        \"salad_cost\": round(salad_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"carrot_cost\": round(carrot_cost, 2),\n        \"salad_cost / 2\": round(yogurt_cost, 2),\n        \"total_cost - salad_cost - (salad_cost / 2)\": round(total_carrot_cost, 2)\n    }\n",
+    "results": {
+      "salad_cost": 882.42,
+      "total_cost": 1617.77,
+      "carrot_cost": 147.07,
+      "salad_cost / 2": 441.21,
+      "total_cost - salad_cost - (salad_cost / 2)": 294.14
+    }
+  },
+  "final": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her 882.42 yen, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays 1617.77 yen for her goods?",
+    "answer_lines": [
+      "Ellen's yogurt cost is half the price of the salad, so it's 882.42 / 2 = 441.21.",
+      "For the two carrots Ellen needs to pay 1617.77 - 882.42 - 441.21 = 294.14.",
+      "So one carrot costs 294.14 / 2 = 147.07.",
+      "#### 147.07"
+    ],
+    "final_scalar": 147.07,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is on a diet. She eats two daikons, a hiyayakko, and a tofu every day. The hiyayakko costs her 882.42 yen, while the tofu is half the price. How much does Yui pay for one daikon every day when in total she pays 1617.77 yen for her goods?",
+    "adapted_answer": [
+      "Yui's tofu cost is half the price of the hiyayakko, so it's 882.42 / 2 = 441.21.",
+      "For the two daikons Yui needs to pay 1617.77 - 882.42 - 441.21 = 294.14.",
+      "So one daikon costs 294.14 / 2 = 147.07.",
+      "#### 147.07"
+    ],
+    "adaptation_notes": "Replaced Ellen with Yui, carrots with daikons, salad with hiyayakko, and yogurt with tofu."
+  }
+}

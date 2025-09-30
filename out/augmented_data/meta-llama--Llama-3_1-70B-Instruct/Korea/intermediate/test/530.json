@@ -1,0 +1,88 @@
+{
+  "index": 530,
+  "split": "test",
+  "original": {
+    "question": "After tracking his workout routine for 8 weeks, Josh discovered that he had spent 4 hours working out every week except on some occasions. At one point, he spent 5 hours each for two consecutive weeks. Another time, he spent 6 hours in one week. What is the total number of hours he has spent working out across the 8 weeks?",
+    "answer": "For 2 weeks, he spent 5 hours each for a total of 5*2 = <<5*2=10>>10 hours\nIn another week, he spent 6 hours; which gives a total of 10+6 = <<10+6=16>>16 hours\n2+1 = <<2+1=3>>3 weeks have been accounted for\nHe tracked 8 weeks so there are 8-3 = <<8-3=5>>5 weeks left\nHe spent 4 hours each week for 5 weeks for a total of 4*5 = <<4*5=20>>20 hours\nThe total across the 8 weeks is: 16+20 = <<16+20=36>>36 hours\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Josh"
+    ],
+    "notes": "The name 'Josh' is culturally specific to Western regions."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 1389.5, 'unit': 'won'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "After tracking his workout routine for {total_weeks} weeks, Josh discovered that he had spent {usual_hours} hours working out every week except on some occasions. At one point, he spent {consecutive_hours} hours each for two consecutive weeks. Another time, he spent {exceptional_hours} hours in one week. What is the total number of hours he has spent working out across the {total_weeks} weeks?",
+    "templatized_answer": [
+      "For 2 weeks, he spent {consecutive_hours} hours each for a total of {consecutive_hours}*2 = {consecutive_hours}*2 hours",
+      "In another week, he spent {exceptional_hours} hours; which gives a total of {consecutive_hours}*2+{exceptional_hours} = {consecutive_hours}*2+{exceptional_hours} hours",
+      "2+1 = 3 weeks have been accounted for",
+      "He tracked {total_weeks} weeks so there are {total_weeks}-3 = {total_weeks}-3 weeks left",
+      "He spent {usual_hours} hours each week for {total_weeks}-3 weeks for a total of {usual_hours}*({total_weeks}-3) = {usual_hours}*({total_weeks}-3) hours",
+      "The total across the {total_weeks} weeks is: {consecutive_hours}*2+{exceptional_hours}+{usual_hours}*({total_weeks}-3) = {consecutive_hours}*2+{exceptional_hours}+{usual_hours}*({total_weeks}-3) hours",
+      "#### {consecutive_hours}*2+{exceptional_hours}+{usual_hours}*({total_weeks}-3)"
+    ],
+    "factual_assignment": {
+      "total_weeks": 8,
+      "usual_hours": 4,
+      "consecutive_hours": 5,
+      "exceptional_hours": 6
+    }
+  },
+  "merged_assignment": {
+    "total_weeks": 8,
+    "usual_hours": 4,
+    "consecutive_hours": 5,
+    "exceptional_hours": 6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_weeks = 8\n    usual_hours = 4\n    consecutive_hours = 5\n    exceptional_hours = 6\n\n    consecutive_hours_total = consecutive_hours * 2\n    exceptional_hours_total = consecutive_hours_total + exceptional_hours\n    weeks_accounted_for = 3\n    weeks_left = total_weeks - weeks_accounted_for\n    usual_hours_total = usual_hours * weeks_left\n    total_hours = consecutive_hours_total + exceptional_hours - consecutive_hours_total + exceptional_hours + usual_hours_total\n\n    return {\n        \"total_weeks\": total_weeks,\n        \"usual_hours\": usual_hours,\n        \"consecutive_hours\": consecutive_hours,\n        \"exceptional_hours\": exceptional_hours,\n        \"consecutive_hours*2\": consecutive_hours_total,\n        \"consecutive_hours*2+{exceptional_hours}\": exceptional_hours_total,\n        \"total_weeks}-3\": weeks_left,\n        \"usual_hours}*({total_weeks}-3)\": usual_hours_total,\n        \"consecutive_hours}*2+{exceptional_hours}+{usual_hours}*({total_weeks}-3)\": total_hours\n    }\n",
+    "results": {
+      "total_weeks": 8,
+      "usual_hours": 4,
+      "consecutive_hours": 5,
+      "exceptional_hours": 6,
+      "consecutive_hours*2": 10,
+      "consecutive_hours*2+{exceptional_hours}": 16,
+      "total_weeks}-3": 5,
+      "usual_hours}*({total_weeks}-3)": 20,
+      "consecutive_hours}*2+{exceptional_hours}+{usual_hours}*({total_weeks}-3)": 32
+    }
+  },
+  "final": {
+    "question": "After tracking his workout routine for 8 weeks, Josh discovered that he had spent 4 hours working out every week except on some occasions. At one point, he spent 5 hours each for two consecutive weeks. Another time, he spent 6 hours in one week. What is the total number of hours he has spent working out across the 8 weeks?",
+    "answer_lines": [
+      "For 2 weeks, he spent 5 hours each for a total of 5*2 = 10 hours",
+      "In another week, he spent 6 hours; which gives a total of 10+6 = 16 hours",
+      "2+1 = 3 weeks have been accounted for",
+      "He tracked 8 weeks so there are 8-3 = 5 weeks left",
+      "He spent 4 hours each week for 5 weeks for a total of 4*5 = 20 hours",
+      "The total across the 8 weeks is: 16+20 = 36 hours",
+      "#### 36"
+    ],
+    "final_scalar": 36,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "After tracking his workout routine for 8 weeks, Min-soo discovered that he had spent 4 hours working out every week except on some occasions. At one point, he spent 5 hours each for two consecutive weeks. Another time, he spent 6 hours in one week. What is the total number of hours he has spent working out across the 8 weeks?",
+    "adapted_answer": [
+      "For 2 weeks, he spent 5 hours each for a total of 5*2 = 10 hours",
+      "In another week, he spent 6 hours; which gives a total of 10+6 = 16 hours",
+      "2+1 = 3 weeks have been accounted for",
+      "He tracked 8 weeks so there are 8-3 = 5 weeks left",
+      "He spent 4 hours each week for 5 weeks for a total of 4*5 = 20 hours",
+      "The total across the 8 weeks is: 16+20 = 36 hours",
+      "#### 36"
+    ],
+    "adaptation_notes": "Replaced 'Josh' with 'Min-soo', a common Korean name."
+  }
+}

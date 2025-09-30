@@ -1,0 +1,144 @@
+{
+  "index": 1115,
+  "split": "test",
+  "original": {
+    "question": "Anna is trying to buy books for her local library. She had a budget of $16, and she has already spent $4. She also bought 2 books today, and both books cost her the same amount of money. If Anna has $2 left in her budget, how much did each of the books cost?",
+    "answer": "Anna had already spent some money, so she started the day with $16 – $4 = $<<16-4=12>>12.\nShe has money left in the budget, so she spent a total of $12 – $2 = $<<12-2=10>>10 on the books.\nTherefore each book cost her $10 / 2 = $<<10/2=5>>5.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Anna",
+      "dollars"
+    ],
+    "notes": "The name 'Anna' is Western and the unit 'dollars' is commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_budget",
+      "value": 16,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "spent_before",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_budget",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent_today",
+      "value": 10,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "book_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_budget\", \"value\": 16, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"spent_before\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_budget\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent_today\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"book_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_budget",
+        "original_value": 16,
+        "original_unit": "dollar",
+        "converted_value": 2353.12,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "spent_before",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "remaining_budget",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_spent_today",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Anna is trying to buy books for her local library. She had a budget of ${initial_budget}, and she has already spent ${spent_before}. She also bought 2 books today, and both books cost her the same amount of money. If Anna has ${remaining_budget} left in her budget, how much did each of the books cost?",
+    "templatized_answer": [
+      "Anna had already spent some money, so she started the day with ${initial_budget} – ${spent_before} = ${initial_budget-spent_before}.",
+      "She has money left in the budget, so she spent a total of ${initial_budget-spent_before} – ${remaining_budget} = ${initial_budget-spent_before-remaining_budget} on the books.",
+      "Therefore each book cost her ${initial_budget-spent_before-remaining_budget} / 2 = ${book_cost}.",
+      "#### {book_cost}"
+    ],
+    "factual_assignment": {
+      "initial_budget": 16,
+      "spent_before": 4,
+      "remaining_budget": 2,
+      "book_cost": 5
+    }
+  },
+  "merged_assignment": {
+    "initial_budget": 2353.12,
+    "spent_before": 588.28,
+    "remaining_budget": 294.14,
+    "book_cost": 735.35
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_budget = 2353.12\n    spent_before = 588.28\n    remaining_budget = 294.14\n\n    initial_budget_minus_spent_before = round(initial_budget - spent_before, 2)\n    total_spent_on_books = round(initial_budget_minus_spent_before - remaining_budget, 2)\n    book_cost = round(total_spent_on_books / 2, 2)\n\n    return {\n        \"initial_budget\": initial_budget,\n        \"spent_before\": spent_before,\n        \"remaining_budget\": remaining_budget,\n        \"initial_budget-spent_before\": initial_budget_minus_spent_before,\n        \"initial_budget-spent_before-remaining_budget\": total_spent_on_books,\n        \"book_cost\": book_cost\n    }\n",
+    "results": {
+      "initial_budget": 2353.12,
+      "spent_before": 588.28,
+      "remaining_budget": 294.14,
+      "initial_budget-spent_before": 1764.84,
+      "initial_budget-spent_before-remaining_budget": 1470.7,
+      "book_cost": 735.35
+    }
+  },
+  "final": {
+    "question": "Anna is trying to buy books for her local library. She had a budget of 2353.12 yen, and she has already spent 588.28 yen. She also bought 2 books today, and both books cost her the same amount of money. If Anna has 294.14 yen left in her budget, how much did each of the books cost?",
+    "answer_lines": [
+      "Anna had already spent some money, so she started the day with 2353.12 – 588.28 = 1764.84 yen.",
+      "She has money left in the budget, so she spent a total of 1764.84 – 294.14 = 1470.7 yen on the books.",
+      "Therefore each book cost her 1470.7 / 2 = 735.35 yen.",
+      "#### 735.35"
+    ],
+    "final_scalar": 735.35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is trying to buy books for her local library. She had a budget of 2353.12 yen, and she has already spent 588.28 yen. She also bought 2 books today, and both books cost her the same amount of money. If Yui has 294.14 yen left in her budget, how much did each of the books cost?",
+    "adapted_answer": [
+      "Yui had already spent some money, so she started the day with 2353.12 – 588.28 = 1764.84 yen.",
+      "She has money left in the budget, so she spent a total of 1764.84 – 294.14 = 1470.7 yen on the books.",
+      "Therefore each book cost her 1470.7 / 2 = 735.35 yen.",
+      "#### 735.35"
+    ],
+    "adaptation_notes": "Replaced 'Anna' with 'Yui', a Japanese name."
+  }
+}

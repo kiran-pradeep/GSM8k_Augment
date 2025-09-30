@@ -1,0 +1,125 @@
+{
+  "index": 857,
+  "split": "test",
+  "original": {
+    "question": "The amount of water passing through a river at one point in time is 4000 gallons. After a day of heavy rain, the amount of water passing through the river doubles at the same point. If the volume of water passing through the river at that point increases by 6000 gallons on the third day, calculate the total amount of water passing through the river at that point.",
+    "answer": "After a day of rain, the volume of water in the river passing at one point in time doubled to 2*4000 = <<2*4000=8000>>8000 gallons.\nAfter more heavy rains, the volume of water passing through the river on the third day is 8000+6000 = <<8000+6000=14000>>14000 gallons.\n#### 14000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "gallons"
+    ],
+    "notes": "The unit 'gallons' is commonly used in the United States and is not the standard unit of measurement in Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_water_volume",
+      "value": 4000.0,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "doubled_water_volume",
+      "value": 8000.0,
+      "unit": "gallon",
+      "context": "answer"
+    },
+    {
+      "variable": "third_day_water_increase",
+      "value": 6000.0,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "total_water_volume",
+      "value": 14000.0,
+      "unit": "gallon",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_water_volume\", \"value\": 4000.0, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"doubled_water_volume\", \"value\": 8000.0, \"unit\": \"gallon\", \"context\": \"answer\"},\n    {\"variable\": \"third_day_water_increase\", \"value\": 6000.0, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"total_water_volume\", \"value\": 14000.0, \"unit\": \"gallon\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_water_volume",
+        "original_value": 4000.0,
+        "original_unit": "gallon",
+        "converted_value": 15141.64,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "doubled_water_volume",
+        "original_value": 8000.0,
+        "original_unit": "gallon",
+        "converted_value": 30283.28,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "third_day_water_increase",
+        "original_value": 6000.0,
+        "original_unit": "gallon",
+        "converted_value": 22712.46,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "total_water_volume",
+        "original_value": 14000.0,
+        "original_unit": "gallon",
+        "converted_value": 52995.74,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The amount of water passing through a river at one point in time is {initial_water_volume} gallons. After a day of heavy rain, the amount of water passing through the river doubles at the same point. If the volume of water passing through the river at that point increases by {third_day_water_increase} gallons on the third day, calculate the total amount of water passing through the river at that point.",
+    "templatized_answer": [
+      "After a day of rain, the volume of water in the river passing at one point in time doubled to 2*{initial_water_volume} = {doubled_water_volume} gallons.",
+      "After more heavy rains, the volume of water passing through the river on the third day is {doubled_water_volume}+{third_day_water_increase} = {total_water_volume} gallons.",
+      "#### {total_water_volume}"
+    ],
+    "factual_assignment": {
+      "initial_water_volume": 4000.0,
+      "doubled_water_volume": 8000.0,
+      "third_day_water_increase": 6000.0,
+      "total_water_volume": 14000.0
+    }
+  },
+  "merged_assignment": {
+    "initial_water_volume": 15141.64,
+    "doubled_water_volume": 30283.28,
+    "third_day_water_increase": 22712.46,
+    "total_water_volume": 52995.74
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_water_volume = 15141.64\n    doubled_water_volume = 2 * initial_water_volume\n    third_day_water_increase = 22712.46\n    total_water_volume = doubled_water_volume + third_day_water_increase\n\n    return {\n        \"{initial_water_volume}\": round(initial_water_volume, 2),\n        \"{doubled_water_volume}\": round(doubled_water_volume, 2),\n        \"{third_day_water_increase}\": round(third_day_water_increase, 2),\n        \"{total_water_volume}\": round(total_water_volume, 2)\n    }\n",
+    "results": {
+      "{initial_water_volume}": 15141.64,
+      "{doubled_water_volume}": 30283.28,
+      "{third_day_water_increase}": 22712.46,
+      "{total_water_volume}": 52995.74
+    }
+  },
+  "final": {
+    "question": "The amount of water passing through a river at one point in time is 15141.64 liters. After a day of heavy rain, the amount of water passing through the river doubles at the same point. If the volume of water passing through the river at that point increases by 22712.46 liters on the third day, calculate the total amount of water passing through the river at that point.",
+    "answer_lines": [
+      "After a day of rain, the volume of water in the river passing at one point in time doubled to 2*15141.64 = 30283.28 liters.",
+      "After more heavy rains, the volume of water passing through the river on the third day is 30283.28+22712.46 = 52995.74 liters.",
+      "#### 52995.74"
+    ],
+    "final_scalar": 52995.74,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The amount of water passing through a kawa at one point in time is 15141.64 liters. After a day of heavy rain, the amount of water passing through the kawa doubles at the same point. If the volume of water passing through the kawa at that point increases by 22712.46 liters on the third day, calculate the total amount of water passing through the kawa at that point.",
+    "adapted_answer": [
+      "After a day of rain, the volume of water in the kawa passing at one point in time doubled to 2*15141.64 = 30283.28 liters.",
+      "After more heavy rains, the volume of water passing through the kawa on the third day is 30283.28+22712.46 = 52995.74 liters.",
+      "#### 52995.74"
+    ],
+    "adaptation_notes": "Replaced 'river' with 'kawa', which is the Japanese word for 'river'."
+  }
+}

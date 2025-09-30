@@ -1,0 +1,155 @@
+{
+  "index": 1316,
+  "split": "test",
+  "original": {
+    "question": "Mark's car breaks down and he needs to get a new radiator.  The cost for a new radiator is $400 but he goes to get it at a junk shop and gets it for 80% off.  He then hires a mechanic to install it and it takes 3 hours at $50 an hour.  How much did he pay?",
+    "answer": "The discount on the radiator was 400*.8=$<<400*.8=320>>320\nSo he paid 400-320=$<<400-320=80>>80\nThe mechanic charges 3*50=$<<3*50=150>>150\nSo in total he paid 80+150=$<<80+150=230>>230\n#### 230"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "radiator_cost",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount",
+      "value": 320.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "radiator_discounted_cost",
+      "value": 80.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "mechanic_hourly_rate",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mechanic_total_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 230.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"radiator_cost\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discount\", \"value\": 320.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"radiator_discounted_cost\", \"value\": 80.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"mechanic_hourly_rate\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"mechanic_total_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 230.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "radiator_cost",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 555800.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "discount",
+        "original_value": 320.0,
+        "original_unit": "dollar",
+        "converted_value": 444640.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "radiator_discounted_cost",
+        "original_value": 80.0,
+        "original_unit": "dollar",
+        "converted_value": 111160.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "mechanic_hourly_rate",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 69475.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "mechanic_total_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 208425.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 230.0,
+        "original_unit": "dollar",
+        "converted_value": 319585.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark's car breaks down and he needs to get a new radiator.  The cost for a new radiator is ${radiator_cost} but he goes to get it at a junk shop and gets it for 80% off.  He then hires a mechanic to install it and it takes 3 hours at ${mechanic_hourly_rate} an hour.  How much did he pay?",
+    "templatized_answer": [
+      "The discount on the radiator was {radiator_cost}*.8=${radiator_cost*.8}",
+      "So he paid {radiator_cost}-{radiator_cost*.8}=${radiator_cost-{radiator_cost*.8}}",
+      "The mechanic charges 3*{mechanic_hourly_rate}=${3*{mechanic_hourly_rate}}",
+      "So in total he paid {radiator_cost-{radiator_cost*.8}}+{3*{mechanic_hourly_rate}}=${{radiator_cost-{radiator_cost*.8}}+{3*{mechanic_hourly_rate}}}",
+      "#### {radiator_cost-{radiator_cost*.8}+3*{mechanic_hourly_rate}}"
+    ],
+    "factual_assignment": {
+      "radiator_cost": 400.0,
+      "mechanic_hourly_rate": 50.0
+    }
+  },
+  "merged_assignment": {
+    "radiator_cost": 555800.0,
+    "mechanic_hourly_rate": 69475.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    radiator_cost = 555800.0\n    mechanic_hourly_rate = 69475.0\n\n    discount_on_radiator = radiator_cost * 0.8\n    cost_of_radiator = radiator_cost - discount_on_radiator\n    cost_of_mechanic = 3 * mechanic_hourly_rate\n    total_cost = cost_of_radiator + cost_of_mechanic\n\n    return {\n        \"{radiator_cost}\": radiator_cost,\n        \"{radiator_cost*.8}\": round(discount_on_radiator, 2),\n        \"{radiator_cost-{radiator_cost*.8}}\": round(cost_of_radiator, 2),\n        \"{mechanic_hourly_rate}\": mechanic_hourly_rate,\n        \"{3*{mechanic_hourly_rate}}\": round(cost_of_mechanic, 2),\n        \"{radiator_cost-{radiator_cost*.8}+3*{mechanic_hourly_rate}}\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "{radiator_cost}": 555800.0,
+      "{radiator_cost*.8}": 444640.0,
+      "{radiator_cost-{radiator_cost*.8}}": 111160.0,
+      "{mechanic_hourly_rate}": 69475.0,
+      "{3*{mechanic_hourly_rate}}": 208425.0,
+      "{radiator_cost-{radiator_cost*.8}+3*{mechanic_hourly_rate}}": 319585.0
+    }
+  },
+  "final": {
+    "question": "Mark's car breaks down and he needs to get a new radiator.  The cost for a new radiator is 555800 won but he goes to get it at a junk shop and gets it for 80% off.  He then hires a mechanic to install it and it takes 3 hours at 69475 won an hour.  How much did he pay?",
+    "answer_lines": [
+      "The discount on the radiator was 555800*.8=444640",
+      "So he paid 555800-444640=111160",
+      "The mechanic charges 3*69475=208425",
+      "So in total he paid 111160+208425=319585",
+      "#### 319585"
+    ],
+    "final_scalar": 319585,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo's car breaks down and he needs to get a new radiator.  The cost for a new radiator is 555800 won but he goes to get it at a junk shop and gets it for 80% off.  He then hires a mechanic to install it and it takes 3 hours at 69475 won an hour.  How much did he pay?",
+    "adapted_answer": [
+      "The discount on the radiator was 555800*.8=444640",
+      "So he paid 555800-444640=111160",
+      "The mechanic charges 3*69475=208425",
+      "So in total he paid 111160+208425=319585",
+      "#### 319585"
+    ],
+    "adaptation_notes": "Replaced 'Mark' with 'Min-soo' to give the name a Korean context."
+  }
+}

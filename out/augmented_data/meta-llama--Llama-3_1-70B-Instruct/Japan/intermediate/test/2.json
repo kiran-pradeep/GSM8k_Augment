@@ -1,0 +1,163 @@
+{
+  "index": 2,
+  "split": "test",
+  "original": {
+    "question": "Josh decides to try flipping a house.  He buys a house for $80,000 and then puts in $50,000 in repairs.  This increased the value of the house by 150%.  How much profit did he make?",
+    "answer": "The cost of the house and repairs came out to 80,000+50,000=$<<80000+50000=130000>>130,000\nHe increased the value of the house by 80,000*1.5=<<80000*1.5=120000>>120,000\nSo the new value of the house is 120,000+80,000=$<<120000+80000=200000>>200,000\nSo he made a profit of 200,000-130,000=$<<200000-130000=70000>>70,000\n#### 70000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "house_cost",
+      "value": 80000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "repair_cost",
+      "value": 50000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 130000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "increased_value",
+      "value": 120000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "new_house_value",
+      "value": 200000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 70000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"house_cost\", \"value\": 80000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"repair_cost\", \"value\": 50000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 130000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"increased_value\", \"value\": 120000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"new_house_value\", \"value\": 200000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 70000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "house_cost",
+        "original_value": 80000.0,
+        "original_unit": "dollar",
+        "converted_value": 11765600.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "repair_cost",
+        "original_value": 50000.0,
+        "original_unit": "dollar",
+        "converted_value": 7353500.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 130000.0,
+        "original_unit": "dollar",
+        "converted_value": 19119100.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "increased_value",
+        "original_value": 120000.0,
+        "original_unit": "dollar",
+        "converted_value": 17648400.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "new_house_value",
+        "original_value": 200000.0,
+        "original_unit": "dollar",
+        "converted_value": 29414000.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "profit",
+        "original_value": 70000.0,
+        "original_unit": "dollar",
+        "converted_value": 10294900.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Josh decides to try flipping a house.  He buys a house for ${house_cost} and then puts in ${repair_cost} in repairs.  This increased the value of the house by 150%.  How much profit did he make?",
+    "templatized_answer": [
+      "The cost of the house and repairs came out to {house_cost}+{repair_cost}=${{house_cost}+{repair_cost}}",
+      "He increased the value of the house by {house_cost}*1.5={increased_value}",
+      "So the new value of the house is {increased_value}+{house_cost}=${{increased_value}+{house_cost}}",
+      "So he made a profit of {new_house_value}-{total_cost}=${{new_house_value}-{total_cost}}",
+      "#### {profit}"
+    ],
+    "factual_assignment": {
+      "house_cost": 80000,
+      "repair_cost": 50000,
+      "total_cost": 130000,
+      "increased_value": 120000,
+      "new_house_value": 200000,
+      "profit": 70000
+    }
+  },
+  "merged_assignment": {
+    "house_cost": 11765600.0,
+    "repair_cost": 7353500.0,
+    "total_cost": 19119100.0,
+    "increased_value": 17648400.0,
+    "new_house_value": 29414000.0,
+    "profit": 10294900.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    house_cost = 11765600.0\n    repair_cost = 7353500.0\n    total_cost = house_cost + repair_cost\n    increased_value = house_cost * 1.5\n    new_house_value = increased_value + house_cost\n    profit = new_house_value - total_cost\n\n    return {\n        \"house_cost\": house_cost,\n        \"repair_cost\": repair_cost,\n        \"total_cost\": round(total_cost, 2),\n        \"increased_value\": round(increased_value, 2),\n        \"new_house_value\": round(new_house_value, 2),\n        \"profit\": round(profit, 2)\n    }\n",
+    "results": {
+      "house_cost": 11765600.0,
+      "repair_cost": 7353500.0,
+      "total_cost": 19119100.0,
+      "increased_value": 17648400.0,
+      "new_house_value": 29414000.0,
+      "profit": 10294900.0
+    }
+  },
+  "final": {
+    "question": "Josh decides to try flipping a house.  He buys a house for 11765600 yen and then puts in 7353500 yen in repairs.  This increased the value of the house by 150%.  How much profit did he make?",
+    "answer_lines": [
+      "The cost of the house and repairs came out to 11765600+7353500=19119100",
+      "He increased the value of the house by 11765600*1.5=17648400",
+      "So the new value of the house is 17648400+11765600=29414000",
+      "So he made a profit of 29414000-19119100=10294900",
+      "#### 10294900"
+    ],
+    "final_scalar": 10294900,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro decides to try flipping a house.  He buys a house for 11765600 yen and then puts in 7353500 yen in repairs.  This increased the value of the house by 150%.  How much profit did he make?",
+    "adapted_answer": [
+      "The cost of the house and repairs came out to 11765600+7353500=19119100",
+      "He increased the value of the house by 11765600*1.5=17648400",
+      "So the new value of the house is 17648400+11765600=29414000",
+      "So he made a profit of 29414000-19119100=10294900",
+      "#### 10294900"
+    ],
+    "adaptation_notes": "Replaced 'Josh' with 'Taro' to give the name a Japanese context."
+  }
+}

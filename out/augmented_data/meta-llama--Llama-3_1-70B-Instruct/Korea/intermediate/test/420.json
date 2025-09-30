@@ -1,0 +1,144 @@
+{
+  "index": 420,
+  "split": "test",
+  "original": {
+    "question": "To fund his store, Mr. Josue solicited money from two banks. The first bank gave him $4000, and the second company gave him twice as much. If he initially had $5000 in capital, how much capital does he have now?",
+    "answer": "If the second bank gave him twice as much money as the first bank, he received 2*$4000 = $<<2*4000=8000>>8000 from the second bank.\nThe total amount of money Mr. Josue got from the two banks is $8000+$4000 = $<<8000+4000=12000>>12000\nIf he initially had capital of $5000, his capital now is $12000+$5000= $17000\n#### 17000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, not Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_bank_donation",
+      "value": 4000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_bank_donation",
+      "value": 8000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "initial_capital",
+      "value": 5000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_capital",
+      "value": 17000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_donation",
+      "value": 12000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 1389.5, \"unit\": \"won\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n            converted_unit = conversions[original_unit][\"unit\"]\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_bank_donation\", \"value\": 4000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_bank_donation\", \"value\": 8000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"initial_capital\", \"value\": 5000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_capital\", \"value\": 17000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_donation\", \"value\": 12000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_bank_donation",
+        "original_value": 4000.0,
+        "original_unit": "dollar",
+        "converted_value": 5558000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "second_bank_donation",
+        "original_value": 8000.0,
+        "original_unit": "dollar",
+        "converted_value": 11116000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "initial_capital",
+        "original_value": 5000.0,
+        "original_unit": "dollar",
+        "converted_value": 6947500.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_capital",
+        "original_value": 17000.0,
+        "original_unit": "dollar",
+        "converted_value": 23621500.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_donation",
+        "original_value": 12000.0,
+        "original_unit": "dollar",
+        "converted_value": 16674000.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To fund his store, Mr. Josue solicited money from two banks. The first bank gave him ${first_bank_donation}, and the second company gave him twice as much. If he initially had ${initial_capital} in capital, how much capital does he have now?",
+    "templatized_answer": [
+      "If the second bank gave him twice as much money as the first bank, he received 2*${first_bank_donation} = ${second_bank_donation} from the second bank.",
+      "The total amount of money Mr. Josue got from the two banks is ${second_bank_donation}+${first_bank_donation} = ${total_donation}",
+      "If he initially had capital of ${initial_capital}, his capital now is ${total_donation}+${initial_capital}= ${total_capital}",
+      "#### {total_capital}"
+    ],
+    "factual_assignment": {
+      "first_bank_donation": 4000.0,
+      "second_bank_donation": 8000.0,
+      "initial_capital": 5000.0,
+      "total_capital": 17000.0,
+      "total_donation": 12000.0
+    }
+  },
+  "merged_assignment": {
+    "first_bank_donation": 5558000.0,
+    "second_bank_donation": 11116000.0,
+    "initial_capital": 6947500.0,
+    "total_capital": 23621500.0,
+    "total_donation": 16674000.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    first_bank_donation = 5558000.0\n    second_bank_donation = 2 * first_bank_donation\n    total_donation = second_bank_donation + first_bank_donation\n    initial_capital = 6947500.0\n    total_capital = total_donation + initial_capital\n\n    return {\n        \"first_bank_donation\": round(first_bank_donation, 2),\n        \"second_bank_donation\": round(second_bank_donation, 2),\n        \"total_donation\": round(total_donation, 2),\n        \"initial_capital\": round(initial_capital, 2),\n        \"total_capital\": round(total_capital, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "first_bank_donation": 5558000.0,
+      "second_bank_donation": 11116000.0,
+      "total_donation": 16674000.0,
+      "initial_capital": 6947500.0,
+      "total_capital": 23621500.0
+    }
+  },
+  "final": {
+    "question": "To fund his store, Mr. Josue solicited money from two banks. The first bank gave him 5558000 won, and the second company gave him twice as much. If he initially had 6947500 won in capital, how much capital does he have now?",
+    "answer_lines": [
+      "If the second bank gave him twice as much money as the first bank, he received 2*5558000 = 11116000 won from the second bank.",
+      "The total amount of money Mr. Josue got from the two banks is 11116000+5558000 = 16674000 won",
+      "If he initially had capital of 6947500 won, his capital now is 16674000+6947500= 23621500 won",
+      "#### 23621500"
+    ],
+    "final_scalar": 23621500,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To fund his store, Mr. Josue solicited money from two banks. The first bank gave him 5558000 won, and the second company gave him twice as much. If he initially had 6947500 won in capital, how much capital does he have now?",
+    "adapted_answer": [
+      "If the second bank gave him twice as much money as the first bank, he received 2*5558000 = 11116000 won from the second bank.",
+      "The total amount of money Mr. Josue got from the two banks is 11116000+5558000 = 16674000 won",
+      "If he initially had capital of 6947500 won, his capital now is 16674000+6947500= 23621500 won",
+      "#### 23621500"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

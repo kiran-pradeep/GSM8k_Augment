@@ -1,0 +1,116 @@
+{
+  "index": 911,
+  "split": "test",
+  "original": {
+    "question": "Colby works for a manufacturing company in the packaging division.  He gets paid $0.20 for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in dollars, does he earn in a typical eight-hour workday?",
+    "answer": "Ten less than fifty is 50-10=<<50-10=40>>40 packages per hour.\nAt $0.20 per completed package. if he completes 40 packages per hour he earns 40*$0.20=$<<40*0.20=8>>8 per hour.\nThus, in a typical eight-hour day, he earns 8*$8=$<<8*8=64>>64.\n#### 64"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Colby",
+      "dollars"
+    ],
+    "notes": "The name 'Colby' is culturally specific to Western regions and the unit 'dollars' is a currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "package_payment",
+      "value": 0.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_earnings",
+      "value": 8,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 64,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"package_payment\", \"value\": 0.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_earnings\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"daily_earnings\", \"value\": 64, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "package_payment",
+        "original_value": 0.2,
+        "original_unit": "dollar",
+        "converted_value": 277.9,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "hourly_earnings",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 11116.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 64,
+        "original_unit": "dollar",
+        "converted_value": 88928.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Colby works for a manufacturing company in the packaging division.  He gets paid ${package_payment} for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in dollars, does he earn in a typical eight-hour workday?",
+    "templatized_answer": [
+      "Ten less than fifty is 50-10={fifty_minus_ten} packages per hour.",
+      "At ${package_payment} per completed package. if he completes {fifty_minus_ten} packages per hour he earns {fifty_minus_ten}*${package_payment}=${hourly_earnings} per hour.",
+      "Thus, in a typical eight-hour day, he earns ${hourly_earnings}*8=${daily_earnings}.",
+      "#### {daily_earnings}"
+    ],
+    "factual_assignment": {
+      "package_payment": 0.2,
+      "hourly_earnings": 8,
+      "daily_earnings": 64,
+      "fifty_minus_ten": 40
+    }
+  },
+  "merged_assignment": {
+    "package_payment": 277.9,
+    "hourly_earnings": 11116.0,
+    "daily_earnings": 88928.0,
+    "fifty_minus_ten": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    package_payment = 277.9\n    fifty_minus_ten = 40\n    hourly_earnings = fifty_minus_ten * package_payment\n    daily_earnings = hourly_earnings * 8\n\n    return {\n        \"package_payment\": package_payment,\n        \"fifty_minus_ten\": fifty_minus_ten,\n        \"hourly_earnings\": round(hourly_earnings, 2),\n        \"daily_earnings\": round(daily_earnings, 2)\n    }\n",
+    "results": {
+      "package_payment": 277.9,
+      "fifty_minus_ten": 40,
+      "hourly_earnings": 11116.0,
+      "daily_earnings": 88928.0
+    }
+  },
+  "final": {
+    "question": "Colby works for a manufacturing company in the packaging division.  He gets paid 277.9 won for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in won, does he earn in a typical eight-hour workday?",
+    "answer_lines": [
+      "Ten less than fifty is 50-10=40 packages per hour.",
+      "At 277.9 won per completed package. if he completes 40 packages per hour he earns 40*277.9=11116.0 won per hour.",
+      "Thus, in a typical eight-hour day, he earns 11116.0*8=88928.0 won.",
+      "#### 88928.0"
+    ],
+    "final_scalar": 88928.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo works for a manufacturing company in the packaging division.  He gets paid 277.9 won for every package he completes. If he completes 10 less than 50 packages per hour, how much money, in won, does he earn in a typical eight-hour workday?",
+    "adapted_answer": [
+      "Ten less than fifty is 50-10=40 packages per hour.",
+      "At 277.9 won per completed package. if he completes 40 packages per hour he earns 40*277.9=11116.0 won per hour.",
+      "Thus, in a typical eight-hour day, he earns 11116.0*8=88928.0 won.",
+      "#### 88928.0"
+    ],
+    "adaptation_notes": "Replaced 'Colby' with 'Min-soo' to provide a Korean context."
+  }
+}

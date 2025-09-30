@@ -1,0 +1,129 @@
+{
+  "index": 511,
+  "split": "test",
+  "original": {
+    "question": "Gerald works at a daycare that pays him $30 every day. He worked for an entire week and spent a total of $100. How much does he have left?",
+    "answer": "He earns $30 daily for a week (7 days) for a total earnings of $30*7 = $<<30*7=210>>210\nHe spent $100 leaving him with $210-$100 = $110\n#### 110"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Gerald"
+    ],
+    "notes": "The name 'Gerald' and the unit 'dollars' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_earnings",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 210,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 110,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_earnings\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 210, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 110, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_earnings",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 41685.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 138950.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 210,
+        "original_unit": "dollar",
+        "converted_value": 291795.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 110,
+        "original_unit": "dollar",
+        "converted_value": 152845.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gerald works at a daycare that pays him ${daily_earnings} every day. He worked for an entire week and spent a total of ${total_spent}. How much does he have left?",
+    "templatized_answer": [
+      "He earns ${daily_earnings} daily for a week ({days_in_week} days) for a total earnings of ${daily_earnings}*{days_in_week} = ${total_earnings}",
+      "He spent ${total_spent} leaving him with ${total_earnings}-${total_spent} = ${remaining_money}",
+      "#### {remaining_money}"
+    ],
+    "factual_assignment": {
+      "daily_earnings": 30,
+      "total_spent": 100,
+      "total_earnings": 210,
+      "remaining_money": 110,
+      "days_in_week": 7
+    }
+  },
+  "merged_assignment": {
+    "daily_earnings": 41685.0,
+    "total_spent": 138950.0,
+    "total_earnings": 291795.0,
+    "remaining_money": 152845.0,
+    "days_in_week": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_earnings = 41685.0\n    days_in_week = 7\n    total_spent = 138950.0\n\n    total_earnings = daily_earnings * days_in_week\n    remaining_money = total_earnings - total_spent\n\n    return {\n        \"daily_earnings\": round(daily_earnings, 2),\n        \"total_spent\": round(total_spent, 2),\n        \"total_earnings\": round(total_earnings, 2),\n        \"remaining_money\": round(remaining_money, 2),\n        \"days_in_week\": days_in_week\n    }\n",
+    "results": {
+      "daily_earnings": 41685.0,
+      "total_spent": 138950.0,
+      "total_earnings": 291795.0,
+      "remaining_money": 152845.0,
+      "days_in_week": 7
+    }
+  },
+  "final": {
+    "question": "Gerald works at a daycare that pays him 41685 won every day. He worked for an entire week and spent a total of 138950 won. How much does he have left?",
+    "answer_lines": [
+      "He earns 41685 won daily for a week (7 days) for a total earnings of 41685*7 = 291795",
+      "He spent 138950 won leaving him with 291795-138950 = 152845",
+      "#### 152845"
+    ],
+    "final_scalar": 152845,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo works at a daycare that pays him 41685 won every day. He worked for an entire week and spent a total of 138950 won. How much does he have left?",
+    "adapted_answer": [
+      "He earns 41685 won daily for a week (7 days) for a total earnings of 41685*7 = 291795",
+      "He spent 138950 won leaving him with 291795-138950 = 152845",
+      "#### 152845"
+    ],
+    "adaptation_notes": "Replaced 'Gerald' with 'Min-soo' to give the name a Korean context."
+  }
+}

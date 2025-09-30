@@ -1,0 +1,178 @@
+{
+  "index": 356,
+  "split": "test",
+  "original": {
+    "question": "Dean's mother gave him $28 to go to the toy store. Dean bought 6 toy cars and 5 teddy bears. Each toy car cost $2 and each teddy bear cost $1. His mother then feels generous and decides to give him an extra $10. How much money does Dean have left?",
+    "answer": "The cost of the toy cars is 6 cars × $2/car = $<<6*2=12>>12.\nThe cost of the teddy bears is 5 bears × $1/bear = $<<5*1=5>>5.\nThe total cost of the toys is $12 + $5 = $<<12+5=17>>17.\nAdding the two amounts of money his mother gave him, we find that Dean has $28 + $10 = $<<28+10=38>>38 to spend.\nDean has $38 − $17 = $21 left.\n#### 21"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 28,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "toy_car_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "teddy_bear_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_money",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_money",
+      "value": 38,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 17,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 28, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"toy_car_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"teddy_bear_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"extra_money\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_money\", \"value\": 38, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 17, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_money\", \"value\": 21, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 28,
+        "original_unit": "dollar",
+        "converted_value": 38906.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "toy_car_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "teddy_bear_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 1389.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "extra_money",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 13895.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 38,
+        "original_unit": "dollar",
+        "converted_value": 52801.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 17,
+        "original_unit": "dollar",
+        "converted_value": 23621.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 29179.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Dean's mother gave him ${initial_money} to go to the toy store. Dean bought 6 toy cars and 5 teddy bears. Each toy car cost ${toy_car_cost} and each teddy bear cost ${teddy_bear_cost}. His mother then feels generous and decides to give him an extra ${extra_money}. How much money does Dean have left?",
+    "templatized_answer": [
+      "The cost of the toy cars is 6 cars × ${toy_car_cost}/car = ${6*toy_car_cost}.",
+      "The cost of the teddy bears is 5 bears × ${teddy_bear_cost}/bear = ${5*teddy_bear_cost}.",
+      "The total cost of the toys is ${6*toy_car_cost} + ${5*teddy_bear_cost} = ${6*toy_car_cost+5*teddy_bear_cost}.",
+      "Adding the two amounts of money his mother gave him, we find that Dean has ${initial_money} + ${extra_money} = ${initial_money+extra_money} to spend.",
+      "Dean has ${initial_money+extra_money} − ${6*toy_car_cost+5*teddy_bear_cost} = ${initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)} left.",
+      "#### {initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)}"
+    ],
+    "factual_assignment": {
+      "initial_money": 28,
+      "toy_car_cost": 2,
+      "teddy_bear_cost": 1,
+      "extra_money": 10
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 38906.0,
+    "toy_car_cost": 2779.0,
+    "teddy_bear_cost": 1389.5,
+    "extra_money": 13895.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 38906.0\n    toy_car_cost = 2779.0\n    teddy_bear_cost = 1389.5\n    extra_money = 13895.0\n\n    cost_of_toy_cars = 6 * toy_car_cost\n    cost_of_teddy_bears = 5 * teddy_bear_cost\n    total_cost_of_toys = cost_of_toy_cars + cost_of_teddy_bears\n    total_money = initial_money + extra_money\n    money_left = total_money - total_cost_of_toys\n\n    return {\n        \"initial_money\": round(initial_money, 2),\n        \"toy_car_cost\": round(toy_car_cost, 2),\n        \"teddy_bear_cost\": round(teddy_bear_cost, 2),\n        \"extra_money\": round(extra_money, 2),\n        \"6*toy_car_cost\": round(cost_of_toy_cars, 2),\n        \"5*teddy_bear_cost\": round(cost_of_teddy_bears, 2),\n        \"6*toy_car_cost+5*teddy_bear_cost\": round(total_cost_of_toys, 2),\n        \"initial_money+extra_money\": round(total_money, 2),\n        \"initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)\": round(money_left, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_money": 38906.0,
+      "toy_car_cost": 2779.0,
+      "teddy_bear_cost": 1389.5,
+      "extra_money": 13895.0,
+      "6*toy_car_cost": 16674.0,
+      "5*teddy_bear_cost": 6947.5,
+      "6*toy_car_cost+5*teddy_bear_cost": 23621.5,
+      "initial_money+extra_money": 52801.0,
+      "initial_money+extra_money-(6*toy_car_cost+5*teddy_bear_cost)": 29179.5
+    }
+  },
+  "final": {
+    "question": "Dean's mother gave him 38906 won to go to the toy store. Dean bought 6 toy cars and 5 teddy bears. Each toy car cost 2779 won and each teddy bear cost 1389.5 won. His mother then feels generous and decides to give him an extra 13895 won. How much money does Dean have left?",
+    "answer_lines": [
+      "The cost of the toy cars is 6 cars × 2779 won/car = 16674 won.",
+      "The cost of the teddy bears is 5 bears × 1389.5 won/bear = 6947.5 won.",
+      "The total cost of the toys is 16674 won + 6947.5 won = 23621.5 won.",
+      "Adding the two amounts of money his mother gave him, we find that Dean has 38906 won + 13895 won = 52801 won to spend.",
+      "Dean has 52801 won − 23621.5 won = 29179.5 won left.",
+      "#### 29179.5"
+    ],
+    "final_scalar": 29179.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Dean's mother gave him 38906 won to go to the toy store. Dean bought 6 toy cars and 5 teddy bears. Each toy car cost 2779 won and each teddy bear cost 1389.5 won. His mother then feels generous and decides to give him an extra 13895 won. How much money does Dean have left?",
+    "adapted_answer": [
+      "The cost of the toy cars is 6 cars × 2779 won/car = 16674 won.",
+      "The cost of the teddy bears is 5 bears × 1389.5 won/bear = 6947.5 won.",
+      "The total cost of the toys is 16674 won + 6947.5 won = 23621.5 won.",
+      "Adding the two amounts of money his mother gave him, we find that Dean has 38906 won + 13895 won = 52801 won to spend.",
+      "Dean has 52801 won − 23621.5 won = 29179.5 won left.",
+      "#### 29179.5"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "index": 36,
+  "split": "test",
+  "original": {
+    "question": "Terry eats 2 yogurts a day.  They are currently on sale at 4 yogurts for $5.00.  How much does he spend on yogurt over 30 days?",
+    "answer": "He eats 2 yogurts a day so over 30 days he will need 2*30 = <<2*30=60>>60 yogurts\nThe yogurt is sold as 4 units for $5.00 and he needs 60 yogurts so that’s 60/4 = <<60/4=15>>15 4-packs\nEach 4-pack is $5.00 and he needs 15 4-packs so he will spend $5*15 = $<<5*15=75.00>>75.00 on yogurt\n#### 75"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Terry",
+      "dollars",
+      "yogurts"
+    ],
+    "notes": "The name Terry and the use of dollars as currency are culturally specific to regions other than Japan. Yogurts, while available in Japan, are not a traditional Japanese food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "yogurt_cost",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 75.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"yogurt_cost\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 75.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "yogurt_cost",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 75.0,
+        "original_unit": "dollar",
+        "converted_value": 11030.25,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Terry eats {yogurt_per_day} yogurts a day.  They are currently on sale at {yogurts_per_pack} yogurts for ${yogurt_cost}.  How much does he spend on yogurt over {days} days?",
+    "templatized_answer": [
+      "He eats {yogurt_per_day} yogurts a day so over {days} days he will need {yogurt_per_day}*{days} = <<{yogurt_per_day}*{days}={total_yogurts}>>{total_yogurts} yogurts",
+      "The yogurt is sold as {yogurts_per_pack} units for ${yogurt_cost} and he needs {total_yogurts} yogurts so that’s {total_yogurts}/{yogurts_per_pack} = <<{total_yogurts}/{yogurts_per_pack}={packs_needed}>>{packs_needed} {yogurts_per_pack}-packs",
+      "Each {yogurts_per_pack}-pack is ${yogurt_cost} and he needs {packs_needed} {yogurts_per_pack}-packs so he will spend ${yogurt_cost}*{packs_needed} = $<<{yogurt_cost}*{packs_needed}={total_spent}>>{total_spent} on yogurt",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "yogurt_per_day": 2,
+      "days": 30,
+      "yogurt_cost": 5.0,
+      "yogurts_per_pack": 4,
+      "total_yogurts": 60,
+      "packs_needed": 15,
+      "total_spent": 75.0
+    }
+  },
+  "merged_assignment": {
+    "yogurt_per_day": 2,
+    "days": 30,
+    "yogurt_cost": 735.35,
+    "yogurts_per_pack": 4,
+    "total_yogurts": 60,
+    "packs_needed": 15,
+    "total_spent": 11030.25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    yogurt_per_day = 2\n    days = 30\n    yogurt_cost = 735.35\n    yogurts_per_pack = 4\n\n    total_yogurts = yogurt_per_day * days\n    packs_needed = round(total_yogurts / yogurts_per_pack, 2)\n    total_spent = round(yogurt_cost * packs_needed, 2)\n\n    return {\n        \"yogurt_per_day\": yogurt_per_day,\n        \"days\": days,\n        \"yogurt_cost\": yogurt_cost,\n        \"yogurts_per_pack\": yogurts_per_pack,\n        \"total_yogurts\": total_yogurts,\n        \"packs_needed\": packs_needed,\n        \"total_spent\": total_spent\n    }\n\nprint(recompute())\n",
+    "results": {
+      "yogurt_per_day": 2,
+      "days": 30,
+      "yogurt_cost": 735.35,
+      "yogurts_per_pack": 4,
+      "total_yogurts": 60,
+      "packs_needed": 15.0,
+      "total_spent": 11030.25
+    }
+  },
+  "final": {
+    "question": "Terry eats 2 yogurts a day.  They are currently on sale at 4 yogurts for 735.35 yen.  How much does he spend on yogurt over 30 days?",
+    "answer_lines": [
+      "He eats 2 yogurts a day so over 30 days he will need 2*30 = <<2*30=60>>60 yogurts",
+      "The yogurt is sold as 4 units for 735.35 yen and he needs 60 yogurts so that’s 60/4 = <<60/4=15>>15 4-packs",
+      "Each 4-pack is 735.35 yen and he needs 15 4-packs so he will spend 735.35*15 = <<735.35*15=11030.25>>11030.25 yen on yogurt",
+      "#### 11030.25"
+    ],
+    "final_scalar": 11030.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro eats 2 yogurts a day.  They are currently on sale at 4 yogurts for 735.35 yen.  How much does he spend on yogurt over 30 days?",
+    "adapted_answer": [
+      "He eats 2 yogurts a day so over 30 days he will need 2*30 = <<2*30=60>>60 yogurts",
+      "The yogurt is sold as 4 units for 735.35 yen and he needs 60 yogurts so that’s 60/4 = <<60/4=15>>15 4-packs",
+      "Each 4-pack is 735.35 yen and he needs 15 4-packs so he will spend 735.35*15 = <<735.35*15=11030.25>>11030.25 yen on yogurt",
+      "#### 11030.25"
+    ],
+    "adaptation_notes": "Replaced 'Terry' with 'Taro' to give the name a Japanese context."
+  }
+}

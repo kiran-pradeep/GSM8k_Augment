@@ -1,0 +1,149 @@
+{
+  "index": 596,
+  "split": "test",
+  "original": {
+    "question": "George needs to pay for dental work. He needs 2 implants. Each implant has a base price of $2000. For one of the implants, he wants a crown made of porcelain. That feature costs an extra $500. He’s already put down a deposit of $600. He makes $15 per hour at work. How many hours does he need to work before he has enough to pay for the dental work?",
+    "answer": "The total base cost of the implants is 2 * $2000 = $<<2*2000=4000>>4000.\nAdding the porcelain crown increases the total to $4000 + $500 = $<<4000+500=4500>>4500.\nSubtracting the deposit, George needs to pay a total of $4500 - $600 = $<<4500-600=3900>>3900.\nThis means George would need to work a total of $3900 / $15 per hour = <<3900/15=260>>260 hours.\n#### 260"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "George",
+      "dollars"
+    ],
+    "notes": "The name 'George' is culturally specific to Western regions and the unit 'dollars' is commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "implant_base_price",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "porcelain_crown_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "deposit",
+      "value": 600.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hourly_wage",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 3900.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"implant_base_price\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"porcelain_crown_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"deposit\", \"value\": 600.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hourly_wage\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 3900.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "implant_base_price",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 294140.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "porcelain_crown_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 73535.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "deposit",
+        "original_value": 600.0,
+        "original_unit": "dollar",
+        "converted_value": 88242.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "hourly_wage",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 2206.05,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 3900.0,
+        "original_unit": "dollar",
+        "converted_value": 573573.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "George needs to pay for dental work. He needs 2 implants. Each implant has a base price of ${implant_base_price}. For one of the implants, he wants a crown made of porcelain. That feature costs an extra ${porcelain_crown_cost}. He’s already put down a deposit of ${deposit}. He makes ${hourly_wage} per hour at work. How many hours does he need to work before he has enough to pay for the dental work?",
+    "templatized_answer": [
+      "The total base cost of the implants is 2 * ${implant_base_price} = ${2*implant_base_price}.",
+      "Adding the porcelain crown increases the total to ${2*implant_base_price} + ${porcelain_crown_cost} = ${2*implant_base_price+porcelain_crown_cost}.",
+      "Subtracting the deposit, George needs to pay a total of ${2*implant_base_price+porcelain_crown_cost} - ${deposit} = ${2*implant_base_price+porcelain_crown_cost-deposit}.",
+      "This means George would need to work a total of ${2*implant_base_price+porcelain_crown_cost-deposit} / ${hourly_wage} per hour = ${2*implant_base_price+porcelain_crown_cost-deposit}/hourly_wage hours.",
+      "#### {2*implant_base_price+porcelain_crown_cost-deposit}/hourly_wage"
+    ],
+    "factual_assignment": {
+      "implant_base_price": 2000.0,
+      "porcelain_crown_cost": 500.0,
+      "deposit": 600.0,
+      "hourly_wage": 15.0
+    }
+  },
+  "merged_assignment": {
+    "implant_base_price": 294140.0,
+    "porcelain_crown_cost": 73535.0,
+    "deposit": 88242.0,
+    "hourly_wage": 2206.05
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    implant_base_price = 294140.0\n    porcelain_crown_cost = 73535.0\n    deposit = 88242.0\n    hourly_wage = 2206.05\n\n    total_base_cost = 2 * implant_base_price\n    total_cost_with_crown = total_base_cost + porcelain_crown_cost\n    total_cost_after_deposit = total_cost_with_crown - deposit\n    hours_needed = total_cost_after_deposit / hourly_wage\n\n    return {\n        \"implant_base_price\": implant_base_price,\n        \"porcelain_crown_cost\": porcelain_crown_cost,\n        \"deposit\": deposit,\n        \"hourly_wage\": hourly_wage,\n        \"2*implant_base_price\": round(total_base_cost, 2),\n        \"2*implant_base_price+porcelain_crown_cost\": round(total_cost_with_crown, 2),\n        \"2*implant_base_price+porcelain_crown_cost-deposit\": round(total_cost_after_deposit, 2),\n        \"(2*implant_base_price+porcelain_crown_cost-deposit)/hourly_wage\": round(hours_needed, 2)\n    }\n",
+    "results": {
+      "implant_base_price": 294140.0,
+      "porcelain_crown_cost": 73535.0,
+      "deposit": 88242.0,
+      "hourly_wage": 2206.05,
+      "2*implant_base_price": 588280.0,
+      "2*implant_base_price+porcelain_crown_cost": 661815.0,
+      "2*implant_base_price+porcelain_crown_cost-deposit": 573573.0,
+      "(2*implant_base_price+porcelain_crown_cost-deposit)/hourly_wage": 260.0
+    }
+  },
+  "final": {
+    "question": "George needs to pay for dental work. He needs 2 implants. Each implant has a base price of 294140. For one of the implants, he wants a crown made of porcelain. That feature costs an extra 73535. He’s already put down a deposit of 88242. He makes 2206.05 per hour at work. How many hours does he need to work before he has enough to pay for the dental work?",
+    "answer_lines": [
+      "The total base cost of the implants is 2 * 294140 = 588280.",
+      "Adding the porcelain crown increases the total to 588280 + 73535 = 661815.",
+      "Subtracting the deposit, George needs to pay a total of 661815 - 88242 = 573573.",
+      "This means George would need to work a total of 573573 / 2206.05 per hour = 260 hours.",
+      "#### 260"
+    ],
+    "final_scalar": 260,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro needs to pay for dental work. He needs 2 implants. Each implant has a base price of 294140. For one of the implants, he wants a crown made of porcelain. That feature costs an extra 73535. He’s already put down a deposit of 88242. He makes 2206.05 per hour at work. How many hours does he need to work before he has enough to pay for the dental work?",
+    "adapted_answer": [
+      "The total base cost of the implants is 2 * 294140 = 588280.",
+      "Adding the porcelain crown increases the total to 588280 + 73535 = 661815.",
+      "Subtracting the deposit, Taro needs to pay a total of 661815 - 88242 = 573573.",
+      "This means Taro would need to work a total of 573573 / 2206.05 per hour = 260 hours.",
+      "#### 260"
+    ],
+    "adaptation_notes": "Replaced 'George' with 'Taro' to give the name a Japanese context."
+  }
+}

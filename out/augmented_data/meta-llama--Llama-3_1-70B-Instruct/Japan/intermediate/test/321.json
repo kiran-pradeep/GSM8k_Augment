@@ -1,0 +1,112 @@
+{
+  "index": 321,
+  "split": "test",
+  "original": {
+    "question": "A magazine costs half as much as a book. The book costs $4. A pen costs $1 less than a magazine. How much is the pen?",
+    "answer": "The cost of a magazine is $4/2 = $<<4/2=2>>2.\nThe cost of a pen is $2 - $1 = $<<2-1=1>>1.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "book_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "magazine_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "pen_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"book_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"magazine_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"pen_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "book_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "magazine_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "pen_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 147.07,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A magazine costs half as much as a book. The book costs ${book_cost}. A pen costs ${pen_cost_difference} less than a magazine. How much is the pen?",
+    "templatized_answer": [
+      "The cost of a magazine is ${book_cost}/2 = ${magazine_cost}.",
+      "The cost of a pen is ${magazine_cost} - ${pen_cost_difference} = ${pen_cost}.",
+      "#### {pen_cost}"
+    ],
+    "factual_assignment": {
+      "book_cost": 4,
+      "magazine_cost": 2,
+      "pen_cost": 1,
+      "pen_cost_difference": 1
+    }
+  },
+  "merged_assignment": {
+    "book_cost": 588.28,
+    "magazine_cost": 294.14,
+    "pen_cost": 147.07,
+    "pen_cost_difference": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    book_cost = 588.28\n    magazine_cost = book_cost / 2\n    pen_cost_difference = 1\n    pen_cost = magazine_cost - pen_cost_difference\n\n    return {\n        \"book_cost\": book_cost,\n        \"magazine_cost\": round(magazine_cost, 2),\n        \"pen_cost\": round(pen_cost, 2),\n        \"pen_cost_difference\": pen_cost_difference\n    }\n",
+    "results": {
+      "book_cost": 588.28,
+      "magazine_cost": 294.14,
+      "pen_cost": 293.14,
+      "pen_cost_difference": 1
+    }
+  },
+  "final": {
+    "question": "A magazine costs half as much as a book. The book costs 588.28 yen. A pen costs 1 yen less than a magazine. How much is the pen?",
+    "answer_lines": [
+      "The cost of a magazine is 588.28/2 = 294.14.",
+      "The cost of a pen is 294.14 - 1 = 293.14.",
+      "#### 293.14"
+    ],
+    "final_scalar": 293.14,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A manga magazine costs half as much as a tankobon book. The tankobon book costs 588.28 yen. A fountain pen costs 1 yen less than a manga magazine. How much is the fountain pen?",
+    "adapted_answer": [
+      "The cost of a manga magazine is 588.28/2 = 294.14.",
+      "The cost of a fountain pen is 294.14 - 1 = 293.14.",
+      "#### 293.14"
+    ],
+    "adaptation_notes": "Replaced 'magazine' with 'manga magazine', 'book' with 'tankobon book', and 'pen' with 'fountain pen' to give the question a Japanese context."
+  }
+}

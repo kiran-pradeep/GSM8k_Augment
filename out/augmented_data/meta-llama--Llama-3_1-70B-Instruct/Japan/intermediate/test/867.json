@@ -1,0 +1,108 @@
+{
+  "index": 867,
+  "split": "test",
+  "original": {
+    "question": "Daisy bought a bag of potatoes that weighed 5 pounds. She also bought a bag of sweet potatoes that weighed 2 times as much as the potatoes and a bag of carrots that weighed 3 pounds fewer than the sweet potatoes. How many pounds of carrots did Daisy buy?",
+    "answer": "She bought 5 x 2 = <<5*2=10>>10 pounds of sweet potatoes.\nDaisy bought 10 - 3 = <<10-3=7>>7 pounds of carrots.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Daisy",
+      "pounds"
+    ],
+    "notes": "Western name and unit of weight commonly used in the US"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "potatoes_weight",
+      "value": 5,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "sweet_potatoes_weight",
+      "value": 10,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "carrots_weight",
+      "value": 7,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"yen\", 147.07),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"potatoes_weight\", \"value\": 5, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"sweet_potatoes_weight\", \"value\": 10, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"carrots_weight\", \"value\": 7, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "potatoes_weight",
+        "original_value": 5,
+        "original_unit": "pound",
+        "converted_value": 2.27,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "sweet_potatoes_weight",
+        "original_value": 10,
+        "original_unit": "pound",
+        "converted_value": 4.54,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "carrots_weight",
+        "original_value": 7,
+        "original_unit": "pound",
+        "converted_value": 3.18,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Daisy bought a bag of potatoes that weighed {potatoes_weight} pounds. She also bought a bag of sweet potatoes that weighed 2 times as much as the potatoes and a bag of carrots that weighed 3 pounds fewer than the sweet potatoes. How many pounds of carrots did Daisy buy?",
+    "templatized_answer": [
+      "She bought {potatoes_weight} x 2 = {potatoes_weight} * 2 pounds of sweet potatoes.",
+      "Daisy bought {potatoes_weight} * 2 - 3 = {carrots_weight} pounds of carrots.",
+      "#### {carrots_weight}"
+    ],
+    "factual_assignment": {
+      "potatoes_weight": 5,
+      "carrots_weight": 7
+    }
+  },
+  "merged_assignment": {
+    "potatoes_weight": 2.27,
+    "carrots_weight": 3.18
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"potatoes_weight\": 2.27,\n        \"carrots_weight\": 3.18\n    }\n\n    recomputed_values = {}\n\n    # Recompute potatoes_weight\n    recomputed_values[\"potatoes_weight\"] = factual_assignment[\"potatoes_weight\"]\n\n    # Recompute sweet potatoes weight\n    sweet_potatoes_weight = recomputed_values[\"potatoes_weight\"] * 2\n    recomputed_values[\"sweet_potatoes_weight\"] = round(sweet_potatoes_weight, 2)\n\n    # Recompute carrots_weight\n    recomputed_values[\"carrots_weight\"] = factual_assignment[\"carrots_weight\"]\n\n    return recomputed_values\n\nrecomputed_values = recompute()\nprint(recomputed_values)\n",
+    "results": {
+      "potatoes_weight": 2.27,
+      "sweet_potatoes_weight": 4.54,
+      "carrots_weight": 3.18
+    }
+  },
+  "final": {
+    "question": "Daisy bought a bag of potatoes that weighed 2.27 kilograms. She also bought a bag of sweet potatoes that weighed 2 times as much as the potatoes and a bag of carrots that weighed 3 kilograms fewer than the sweet potatoes. How many kilograms of carrots did Daisy buy?",
+    "answer_lines": [
+      "She bought 2.27 x 2 = 4.54 kilograms of sweet potatoes.",
+      "Daisy bought 4.54 - 1.36 = 3.18 kilograms of carrots.",
+      "#### 3.18"
+    ],
+    "final_scalar": 3.18,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui bought a bag of potatoes that weighed 2.27 kilograms. She also bought a bag of satsuma imo that weighed 2 times as much as the potatoes and a bag of ninjin that weighed 3 kilograms fewer than the satsuma imo. How many kilograms of ninjin did Yui buy?",
+    "adapted_answer": [
+      "She bought 2.27 x 2 = 4.54 kilograms of satsuma imo.",
+      "Yui bought 4.54 - 1.36 = 3.18 kilograms of ninjin.",
+      "#### 3.18"
+    ],
+    "adaptation_notes": "Replaced 'Daisy' with 'Yui', 'sweet potatoes' with 'satsuma imo', and 'carrots' with 'ninjin'."
+  }
+}

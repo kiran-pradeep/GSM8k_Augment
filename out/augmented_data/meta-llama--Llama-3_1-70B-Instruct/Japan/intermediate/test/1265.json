@@ -1,0 +1,153 @@
+{
+  "index": 1265,
+  "split": "test",
+  "original": {
+    "question": "Tim wanted to make lemonade for a pool party.  For a gallon of lemonade, his recipe called for 1 cup of fresh lemon juice.  He found that 6 lemons would yield 1 cup of juice.  He figured he would need to make 4 gallons of lemonade for the party.  His best friend Allen asked if Tim could make an extra gallon for him that was twice as tart as the other gallons.  How many lemons will Tim need?",
+    "answer": "Tim is going to make one gallon twice as tart as the others and each gallon needs 1 cup of juice. So he needs 2*1 = <<2*1=2>>2 cups for the tart batch\nIn addition, he will make 4 regular gallons of lemonade, which each need 1 cup juice so 4*1 = <<4*1=4>>4 cups total\nAll total he will need 2 + 4 = <<2+4=6>>6 cups of juice\nEach cup requires 6 lemons each and he needs 6 cups of juice so 6 * 6 = <<6*6=36>>36 lemons needed\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "gallons",
+      "lemonade",
+      "Tim",
+      "Allen"
+    ],
+    "notes": "The text contains Western names and units of measurement, as well as a food item commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "lemonade_volume",
+      "value": 4,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "lemonade_volume_extra",
+      "value": 1,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "lemon_juice_volume",
+      "value": 1,
+      "unit": "cup",
+      "context": "question"
+    },
+    {
+      "variable": "lemon_juice_volume_tart",
+      "value": 2,
+      "unit": "cup",
+      "context": "answer"
+    },
+    {
+      "variable": "lemon_juice_volume_total",
+      "value": 6,
+      "unit": "cup",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollar': {'factor': 147.07, 'unit': 'yen'},\n        'pound': {'factor': 0.453592, 'unit': 'kilogram'},\n        'ounce': {'factor': 28.3495, 'unit': 'gram'},\n        'mile': {'factor': 1.60934, 'unit': 'kilometer'},\n        'foot': {'factor': 0.3048, 'unit': 'meter'},\n        'gallon': {'factor': 3.78541, 'unit': 'liter'},\n        'cup': {'factor': 236.588, 'unit': 'milliliter'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n        context = metric['context']\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            factor = conversions[unit]['factor']\n            converted_unit = conversions[unit]['unit']\n            converted_value = round(value * factor, 2)\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"lemonade_volume\", \"value\": 4, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"lemonade_volume_extra\", \"value\": 1, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"lemon_juice_volume\", \"value\": 1, \"unit\": \"cup\", \"context\": \"question\"},\n    {\"variable\": \"lemon_juice_volume_tart\", \"value\": 2, \"unit\": \"cup\", \"context\": \"answer\"},\n    {\"variable\": \"lemon_juice_volume_total\", \"value\": 6, \"unit\": \"cup\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "lemonade_volume",
+        "original_value": 4,
+        "original_unit": "gallon",
+        "converted_value": 15.14,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "lemonade_volume_extra",
+        "original_value": 1,
+        "original_unit": "gallon",
+        "converted_value": 3.79,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "lemon_juice_volume",
+        "original_value": 1,
+        "original_unit": "cup",
+        "converted_value": 236.59,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "lemon_juice_volume_tart",
+        "original_value": 2,
+        "original_unit": "cup",
+        "converted_value": 473.18,
+        "converted_unit": "milliliter"
+      },
+      {
+        "variable": "lemon_juice_volume_total",
+        "original_value": 6,
+        "original_unit": "cup",
+        "converted_value": 1419.53,
+        "converted_unit": "milliliter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tim wanted to make lemonade for a pool party.  For a gallon of lemonade, his recipe called for {lemon_juice_volume} cup of fresh lemon juice.  He found that {lemons_per_cup} lemons would yield {lemon_juice_volume} cup of juice.  He figured he would need to make {lemonade_volume} gallons of lemonade for the party.  His best friend Allen asked if Tim could make an extra {lemonade_volume_extra} gallon for him that was twice as tart as the other gallons.  How many lemons will Tim need?",
+    "templatized_answer": [
+      "Tim is going to make one gallon twice as tart as the others and each gallon needs {lemon_juice_volume} cup of juice. So he needs {lemon_juice_volume_tart} * {lemon_juice_volume} = {lemon_juice_volume_tart} cups for the tart batch",
+      "In addition, he will make {lemonade_volume} regular gallons of lemonade, which each need {lemon_juice_volume} cup juice so {lemonade_volume} * {lemon_juice_volume} = {lemon_juice_volume_total} - {lemon_juice_volume_tart} cups total",
+      "All total he will need {lemon_juice_volume_tart} + {lemon_juice_volume_total} - {lemon_juice_volume_tart} = {lemon_juice_volume_total} cups of juice",
+      "Each cup requires {lemons_per_cup} lemons each and he needs {lemon_juice_volume_total} cups of juice so {lemon_juice_volume_total} * {lemons_per_cup} = {lemon_juice_volume_total} * {lemons_per_cup} lemons needed",
+      "#### {lemon_juice_volume_total} * {lemons_per_cup}"
+    ],
+    "factual_assignment": {
+      "lemon_juice_volume": 1,
+      "lemon_juice_volume_tart": 2,
+      "lemon_juice_volume_total": 6,
+      "lemonade_volume": 4,
+      "lemonade_volume_extra": 1,
+      "lemons_per_cup": 6
+    }
+  },
+  "merged_assignment": {
+    "lemon_juice_volume": 236.59,
+    "lemon_juice_volume_tart": 473.18,
+    "lemon_juice_volume_total": 1419.53,
+    "lemonade_volume": 15.14,
+    "lemonade_volume_extra": 3.79,
+    "lemons_per_cup": 6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    lemon_juice_volume = 236.59\n    lemons_per_cup = 6\n    lemonade_volume = 15.14\n    lemonade_volume_extra = 3.79\n\n    lemon_juice_volume_tart = lemon_juice_volume * 2\n    lemon_juice_volume_total = (lemon_juice_volume * lemonade_volume) + lemon_juice_volume_tart\n\n    return {\n        \"lemon_juice_volume\": round(lemon_juice_volume, 2),\n        \"lemon_juice_volume_tart\": round(lemon_juice_volume_tart, 2),\n        \"lemon_juice_volume_total\": round(lemon_juice_volume_total, 2),\n        \"lemonade_volume\": round(lemonade_volume, 2),\n        \"lemonade_volume_extra\": round(lemonade_volume_extra, 2),\n        \"lemons_per_cup\": lemons_per_cup\n    }\n",
+    "results": {
+      "lemon_juice_volume": 236.59,
+      "lemon_juice_volume_tart": 473.18,
+      "lemon_juice_volume_total": 4055.15,
+      "lemonade_volume": 15.14,
+      "lemonade_volume_extra": 3.79,
+      "lemons_per_cup": 6
+    }
+  },
+  "final": {
+    "question": "Tim wanted to make lemonade for a pool party.  For a liter of lemonade, his recipe called for 236.59 milliliters of fresh lemon juice.  He found that 6 lemons would yield 236.59 milliliters of juice.  He figured he would need to make 15.14 liters of lemonade for the party.  His best friend Allen asked if Tim could make an extra 3.79 liters for him that was twice as tart as the other liters.  How many lemons will Tim need?",
+    "answer_lines": [
+      "Tim is going to make one liter twice as tart as the others and each liter needs 236.59 milliliters of juice. So he needs 2 * 236.59 = 473.18 milliliters for the tart batch",
+      "In addition, he will make 15.14 regular liters of lemonade, which each need 236.59 milliliters juice so 15.14 * 236.59 = 3585.97 milliliters total",
+      "All total he will need 473.18 + 3585.97 = 4059.15 milliliters of juice",
+      "Each milliliter requires 6 / 236.59 lemons each and he needs 4059.15 milliliters of juice so 4059.15 * 6 / 236.59 = 102.96 lemons needed",
+      "#### 102.96"
+    ],
+    "final_scalar": 102.96,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro wanted to make yuzu juice for a pool party.  For a liter of yuzu juice, his recipe called for 236.59 milliliters of fresh yuzu juice.  He found that 6 yuzu would yield 236.59 milliliters of juice.  He figured he would need to make 15.14 liters of yuzu juice for the party.  His best friend Shinji asked if Taro could make an extra 3.79 liters for him that was twice as tart as the other liters.  How many yuzu will Taro need?",
+    "adapted_answer": [
+      "Taro is going to make one liter twice as tart as the others and each liter needs 236.59 milliliters of juice. So he needs 2 * 236.59 = 473.18 milliliters for the tart batch",
+      "In addition, he will make 15.14 regular liters of yuzu juice, which each need 236.59 milliliters juice so 15.14 * 236.59 = 3585.97 milliliters total",
+      "All total he will need 473.18 + 3585.97 = 4059.15 milliliters of juice",
+      "Each milliliter requires 6 / 236.59 yuzu each and he needs 4059.15 milliliters of juice so 4059.15 * 6 / 236.59 = 102.96 yuzu needed",
+      "#### 102.96"
+    ],
+    "adaptation_notes": "Replaced 'lemonade' with 'yuzu juice', 'Tim' with 'Taro', 'Allen' with 'Shinji', and 'lemons' with 'yuzu'."
+  }
+}

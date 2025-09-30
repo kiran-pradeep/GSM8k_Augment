@@ -1,0 +1,172 @@
+{
+  "index": 611,
+  "split": "test",
+  "original": {
+    "question": "John decides to build a program capable of identifying cancer cells.  He gets initial funding of $100,000 for the first 5 months of research.  His research ends up taking 10 times that long and every month after those first 5 took 50% more funding per month.  How much did his research cost?",
+    "answer": "The research ended up taking 5*10=<<5*10=50>>50 months\nSo he paid for expensive research for 50-5=<<50-5=45>>45 months\nEach month of research at the cheaper stage cost 100,000/5=$<<100000/5=20000>>20,000\nSo the more expensive research cost 20,000*1.5=$<<20000*1.5=30000>>30,000\nSo that research cost 45*30,000=$<<45*30000=1350000>>1,350,000\nSo the total cost was 1,350,000+100,000=$<<1350000+100000=1450000>>1,450,000\n#### 1,450,000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is culturally specific to Western regions and the unit 'dollars' is a currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_funding",
+      "value": 100000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cheaper_monthly_cost",
+      "value": 20000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "expensive_monthly_cost",
+      "value": 30000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "expensive_research_cost",
+      "value": 1350000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_research_cost",
+      "value": 1450000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_funding\", \"value\": 100000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cheaper_monthly_cost\", \"value\": 20000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"expensive_monthly_cost\", \"value\": 30000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"expensive_research_cost\", \"value\": 1350000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_research_cost\", \"value\": 1450000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_funding",
+        "original_value": 100000.0,
+        "original_unit": "dollar",
+        "converted_value": 138950000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "cheaper_monthly_cost",
+        "original_value": 20000.0,
+        "original_unit": "dollar",
+        "converted_value": 27790000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "expensive_monthly_cost",
+        "original_value": 30000.0,
+        "original_unit": "dollar",
+        "converted_value": 41685000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "expensive_research_cost",
+        "original_value": 1350000.0,
+        "original_unit": "dollar",
+        "converted_value": 1875825000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_research_cost",
+        "original_value": 1450000.0,
+        "original_unit": "dollar",
+        "converted_value": 2014775000.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John decides to build a program capable of identifying cancer cells.  He gets initial funding of ${initial_funding} for the first {initial_months} months of research.  His research ends up taking {research_multiplier} times that long and every month after those first {initial_months} took {funding_increase_percentage}% more funding per month.  How much did his research cost?",
+    "templatized_answer": [
+      "The research ended up taking {initial_months}*{research_multiplier}={research_duration} months",
+      "So he paid for expensive research for {research_duration}-{initial_months}={expensive_research_months} months",
+      "Each month of research at the cheaper stage cost {initial_funding}/{initial_months}=${cheaper_monthly_cost}",
+      "So the more expensive research cost {cheaper_monthly_cost}*{funding_increase_multiplier}=${expensive_monthly_cost}",
+      "So that research cost {expensive_research_months}*{expensive_monthly_cost}=${expensive_research_cost}",
+      "So the total cost was {expensive_research_cost}+{initial_funding}=${total_research_cost}",
+      "#### {total_research_cost}"
+    ],
+    "factual_assignment": {
+      "initial_funding": 100000.0,
+      "initial_months": 5,
+      "research_multiplier": 10,
+      "research_duration": 50,
+      "expensive_research_months": 45,
+      "cheaper_monthly_cost": 20000.0,
+      "funding_increase_percentage": 50,
+      "funding_increase_multiplier": 1.5,
+      "expensive_monthly_cost": 30000.0,
+      "expensive_research_cost": 1350000.0,
+      "total_research_cost": 1450000.0
+    }
+  },
+  "merged_assignment": {
+    "initial_funding": 138950000.0,
+    "initial_months": 5,
+    "research_multiplier": 10,
+    "research_duration": 50,
+    "expensive_research_months": 45,
+    "cheaper_monthly_cost": 27790000.0,
+    "funding_increase_percentage": 50,
+    "funding_increase_multiplier": 1.5,
+    "expensive_monthly_cost": 41685000.0,
+    "expensive_research_cost": 1875825000.0,
+    "total_research_cost": 2014775000.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_funding = 138950000.0\n    initial_months = 5\n    research_multiplier = 10\n    funding_increase_percentage = 50\n\n    research_duration = initial_months * research_multiplier\n    expensive_research_months = research_duration - initial_months\n    cheaper_monthly_cost = initial_funding / initial_months\n    funding_increase_multiplier = 1 + funding_increase_percentage / 100\n    expensive_monthly_cost = cheaper_monthly_cost * funding_increase_multiplier\n    expensive_research_cost = expensive_research_months * expensive_monthly_cost\n    total_research_cost = expensive_research_cost + initial_funding\n\n    return {\n        \"initial_funding\": initial_funding,\n        \"initial_months\": initial_months,\n        \"research_multiplier\": research_multiplier,\n        \"research_duration\": research_duration,\n        \"expensive_research_months\": expensive_research_months,\n        \"cheaper_monthly_cost\": round(cheaper_monthly_cost, 2),\n        \"funding_increase_percentage\": funding_increase_percentage,\n        \"funding_increase_multiplier\": round(funding_increase_multiplier, 2),\n        \"expensive_monthly_cost\": round(expensive_monthly_cost, 2),\n        \"expensive_research_cost\": round(expensive_research_cost, 2),\n        \"total_research_cost\": round(total_research_cost, 2)\n    }\n",
+    "results": {
+      "initial_funding": 138950000.0,
+      "initial_months": 5,
+      "research_multiplier": 10,
+      "research_duration": 50,
+      "expensive_research_months": 45,
+      "cheaper_monthly_cost": 27790000.0,
+      "funding_increase_percentage": 50,
+      "funding_increase_multiplier": 1.5,
+      "expensive_monthly_cost": 41685000.0,
+      "expensive_research_cost": 1875825000.0,
+      "total_research_cost": 2014775000.0
+    }
+  },
+  "final": {
+    "question": "John decides to build a program capable of identifying cancer cells.  He gets initial funding of 138950000 won for the first 5 months of research.  His research ends up taking 10 times that long and every month after those first 5 took 50% more funding per month.  How much did his research cost?",
+    "answer_lines": [
+      "The research ended up taking 5*10=50 months",
+      "So he paid for expensive research for 50-5=45 months",
+      "Each month of research at the cheaper stage cost 138950000/5=27790000 won",
+      "So the more expensive research cost 27790000*1.5=41685000 won",
+      "So that research cost 45*41685000=1875825000 won",
+      "So the total cost was 1875825000+138950000=2014775000 won",
+      "#### 2014775000"
+    ],
+    "final_scalar": 2014775000,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo decides to build a program capable of identifying cancer cells.  He gets initial funding of 138950000 won for the first 5 months of research.  His research ends up taking 10 times that long and every month after those first 5 took 50% more funding per month.  How much did his research cost?",
+    "adapted_answer": [
+      "The research ended up taking 5*10=50 months",
+      "So he paid for expensive research for 50-5=45 months",
+      "Each month of research at the cheaper stage cost 138950000/5=27790000 won",
+      "So the more expensive research cost 27790000*1.5=41685000 won",
+      "So that research cost 45*41685000=1875825000 won",
+      "So the total cost was 1875825000+138950000=2014775000 won",
+      "#### 2014775000"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Min-soo' to give the name a Korean context."
+  }
+}

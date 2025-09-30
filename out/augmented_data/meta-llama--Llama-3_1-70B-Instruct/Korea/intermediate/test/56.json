@@ -1,0 +1,129 @@
+{
+  "index": 56,
+  "split": "test",
+  "original": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for $7 and popcorn for $7. If he has 42 dollars for the week, how many times can he go to the movies?",
+    "answer": "It costs him $14 to go to the movies because 7 + 7 = <<7+7=14>>14\nHe can go to the movies 3 times because 42 / 14 = <<42/14=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Peter",
+      "dollars",
+      "movies",
+      "popcorn"
+    ],
+    "notes": "The name 'Peter' is Western, 'dollars' is a US unit of currency, 'movies' is a Western form of entertainment, and 'popcorn' is a Western snack commonly associated with movie theaters."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weekly_budget",
+      "value": 42.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "movie_ticket",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popcorn_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_movie_cost",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"weekly_budget\", \"value\": 42.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"movie_ticket\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"popcorn_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_movie_cost\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weekly_budget",
+        "original_value": 42.0,
+        "original_unit": "dollar",
+        "converted_value": 58359.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "movie_ticket",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 9726.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "popcorn_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 9726.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_movie_cost",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 19453.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Peter plans to go to the movies this week. He always gets a ticket for ${movie_ticket} and popcorn for ${popcorn_cost}. If he has ${weekly_budget} dollars for the week, how many times can he go to the movies?",
+    "templatized_answer": [
+      "It costs him ${total_movie_cost} to go to the movies because {movie_ticket} + {popcorn_cost} = {total_movie_cost}",
+      "He can go to the movies {weekly_budget} / {total_movie_cost} times",
+      "#### {weekly_budget} / {total_movie_cost}"
+    ],
+    "factual_assignment": {
+      "weekly_budget": 42,
+      "movie_ticket": 7,
+      "popcorn_cost": 7,
+      "total_movie_cost": 14
+    }
+  },
+  "merged_assignment": {
+    "weekly_budget": 58359.0,
+    "movie_ticket": 9726.5,
+    "popcorn_cost": 9726.5,
+    "total_movie_cost": 19453.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    weekly_budget = 58359.0\n    movie_ticket = 9726.5\n    popcorn_cost = 9726.5\n\n    total_movie_cost = round(movie_ticket + popcorn_cost, 2)\n    times_can_go = round(weekly_budget / total_movie_cost, 2)\n\n    return {\n        \"weekly_budget\": weekly_budget,\n        \"movie_ticket\": movie_ticket,\n        \"popcorn_cost\": popcorn_cost,\n        \"total_movie_cost\": total_movie_cost,\n        \"times_can_go\": times_can_go\n    }\n\nresult = recompute()\nprint(result)\n",
+    "results": {
+      "weekly_budget": 58359.0,
+      "movie_ticket": 9726.5,
+      "popcorn_cost": 9726.5,
+      "total_movie_cost": 19453.0,
+      "times_can_go": 3.0
+    }
+  },
+  "final": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for 9726.5 won and popcorn for 9726.5 won. If he has 58359.0 won for the week, how many times can he go to the movies?",
+    "answer_lines": [
+      "It costs him 19453.0 won to go to the movies because 9726.5 + 9726.5 = 19453.0",
+      "He can go to the movies 58359.0 / 19453.0 times",
+      "#### 3.0"
+    ],
+    "final_scalar": 3.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo plans to go to the movies this week. He always gets a ticket for 9726.5 won and hotteok for 9726.5 won. If he has 58359.0 won for the week, how many times can he go to the movies?",
+    "adapted_answer": [
+      "It costs him 19453.0 won to go to the movies because 9726.5 + 9726.5 = 19453.0",
+      "He can go to the movies 58359.0 / 19453.0 times",
+      "#### 3.0"
+    ],
+    "adaptation_notes": "Replaced 'Peter' with 'Min-soo', 'popcorn' with 'hotteok', and kept other entities unchanged as they are already neutral or Korea-specific."
+  }
+}

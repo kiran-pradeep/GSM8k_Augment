@@ -1,0 +1,96 @@
+{
+  "index": 476,
+  "split": "test",
+  "original": {
+    "question": "Sarah went to buy books from the store and spent $300 on the books. If each book was $15 and she gave an equal number of books to her 4 kids, how many books did each child get?",
+    "answer": "Since she spent $300 on the books and each book's cost was $15, she bought $300/$15= <<300/15=20>>20 books.\nIf Sarah gave an equal number of books to each of her children, each kid received 20/4 = <<20/4=5>>5 books.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sarah",
+      "dollars"
+    ],
+    "notes": "The name 'Sarah' is Western and the unit 'dollars' is commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_cost",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_cost\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_cost",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 44121.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 2206.05,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sarah went to buy books from the store and spent ${total_cost} on the books. If each book was ${book_cost} and she gave an equal number of books to her 4 kids, how many books did each child get?",
+    "templatized_answer": [
+      "Since she spent ${total_cost} on the books and each book's cost was ${book_cost}, she bought ${total_cost}/${book_cost}={total_cost/book_cost} books.",
+      "If Sarah gave an equal number of books to each of her children, each kid received {total_cost/book_cost}/4 = {(total_cost/book_cost)/4} books.",
+      "#### {(total_cost/book_cost)/4}"
+    ],
+    "factual_assignment": {
+      "total_cost": 300.0,
+      "book_cost": 15.0
+    }
+  },
+  "merged_assignment": {
+    "total_cost": 44121.0,
+    "book_cost": 2206.05
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_cost = 44121.0\n    book_cost = 2206.05\n\n    total_books = total_cost / book_cost\n    books_per_child = total_books / 4\n\n    return {\n        \"total_cost\": round(total_cost, 2),\n        \"book_cost\": round(book_cost, 2),\n        \"total_cost/book_cost\": round(total_books, 2),\n        \"(total_cost/book_cost)/4\": round(books_per_child, 2)\n    }\n",
+    "results": {
+      "total_cost": 44121.0,
+      "book_cost": 2206.05,
+      "total_cost/book_cost": 20.0,
+      "(total_cost/book_cost)/4": 5.0
+    }
+  },
+  "final": {
+    "question": "Sarah went to buy books from the store and spent 44121 yen on the books. If each book was 2206.05 yen and she gave an equal number of books to her 4 kids, how many books did each child get?",
+    "answer_lines": [
+      "Since she spent 44121 yen on the books and each book's cost was 2206.05 yen, she bought 44121/2206.05=20 books.",
+      "If Sarah gave an equal number of books to each of her children, each kid received 20/4 = 5 books.",
+      "#### 5"
+    ],
+    "final_scalar": 5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui went to buy books from the store and spent 44121 yen on the books. If each book was 2206.05 yen and she gave an equal number of books to her 4 kids, how many books did each child get?",
+    "adapted_answer": [
+      "Since she spent 44121 yen on the books and each book's cost was 2206.05 yen, she bought 44121/2206.05=20 books.",
+      "If Yui gave an equal number of books to each of her children, each kid received 20/4 = 5 books.",
+      "#### 5"
+    ],
+    "adaptation_notes": "Replaced 'Sarah' with 'Yui', a Japanese name."
+  }
+}

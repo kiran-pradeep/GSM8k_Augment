@@ -1,0 +1,166 @@
+{
+  "index": 310,
+  "split": "test",
+  "original": {
+    "question": "Theo has $6000 he wishes to spend on his upcoming business trip to South Africa. He buys 6 business suits at $100 each, 3 suitcases at $50 each, a flight ticket that costs $700 more than 5 times as much as the cost of a business suit. He wishes to save $2000 for this trip, how much does he have to spend on buying gifts for his business partners in South Africa?",
+    "answer": "Theo buys business suits for 6 suits * $100/suit = $<<6*100=600>>600.\nTheo buys suitcases for 3 suitcases * $50/suitcase = $<<3*50=150>>150.\nTheo buys a flight ticket that costs $700 + 5 * $100 = $<<700+5*100=1200>>1200.\nTheo can spend $6000 - $600 - $150 - $1200 - $2000 = $<<6000-600-150-1200-2000=2050>>2050 on gifts for his friends.\n#### 2050"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Theo",
+      "South Africa",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name, a country in Africa, and a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "trip_budget",
+      "value": 6000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "suit_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "suitcase_cost",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "flight_ticket_cost",
+      "value": 700.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "savings",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gift_budget",
+      "value": 2050.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"trip_budget\", \"value\": 6000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"suit_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"suitcase_cost\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"flight_ticket_cost\", \"value\": 700.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"savings\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gift_budget\", \"value\": 2050.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "trip_budget",
+        "original_value": 6000.0,
+        "original_unit": "dollar",
+        "converted_value": 882420.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "suit_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "suitcase_cost",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 7353.5,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "flight_ticket_cost",
+        "original_value": 700.0,
+        "original_unit": "dollar",
+        "converted_value": 102949.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "savings",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 294140.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gift_budget",
+        "original_value": 2050.0,
+        "original_unit": "dollar",
+        "converted_value": 301493.5,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Theo has ${trip_budget} he wishes to spend on his upcoming business trip to South Africa. He buys 6 business suits at ${suit_cost} each, 3 suitcases at ${suitcase_cost} each, a flight ticket that costs ${flight_ticket_cost} more than 5 times as much as the cost of a business suit. He wishes to save ${savings} for this trip, how much does he have to spend on buying gifts for his business partners in South Africa?",
+    "templatized_answer": [
+      "Theo buys business suits for 6 suits * ${suit_cost}/suit = ${6*suit_cost}.",
+      "Theo buys suitcases for 3 suitcases * ${suitcase_cost}/suitcase = ${3*suitcase_cost}.",
+      "Theo buys a flight ticket that costs ${flight_ticket_cost} + 5 * ${suit_cost} = ${flight_ticket_cost + 5*suit_cost}.",
+      "Theo can spend ${trip_budget} - ${6*suit_cost} - ${3*suitcase_cost} - (${flight_ticket_cost} + 5*${suit_cost}) - ${savings} = ${trip_budget - 6*suit_cost - 3*suitcase_cost - flight_ticket_cost - 5*suit_cost - savings} on gifts for his friends.",
+      "#### ${trip_budget - 6*suit_cost - 3*suitcase_cost - flight_ticket_cost - 5*suit_cost - savings}"
+    ],
+    "factual_assignment": {
+      "trip_budget": 6000.0,
+      "suit_cost": 100.0,
+      "suitcase_cost": 50.0,
+      "flight_ticket_cost": 700.0,
+      "savings": 2000.0
+    }
+  },
+  "merged_assignment": {
+    "trip_budget": 882420.0,
+    "suit_cost": 14707.0,
+    "suitcase_cost": 7353.5,
+    "flight_ticket_cost": 102949.0,
+    "savings": 294140.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    trip_budget = 882420.0\n    suit_cost = 14707.0\n    suitcase_cost = 7353.5\n    flight_ticket_cost = 102949.0\n    savings = 294140.0\n\n    total_suit_cost = 6 * suit_cost\n    total_suitcase_cost = 3 * suitcase_cost\n    total_flight_ticket_cost = flight_ticket_cost + 5 * suit_cost\n    remaining_budget = trip_budget - total_suit_cost - total_suitcase_cost - total_flight_ticket_cost - savings\n\n    return {\n        \"trip_budget\": trip_budget,\n        \"suit_cost\": suit_cost,\n        \"suitcase_cost\": suitcase_cost,\n        \"flight_ticket_cost\": flight_ticket_cost,\n        \"savings\": savings,\n        \"6*suit_cost\": round(total_suit_cost, 2),\n        \"3*suitcase_cost\": round(total_suitcase_cost, 2),\n        \"flight_ticket_cost + 5*suit_cost\": round(total_flight_ticket_cost, 2),\n        \"trip_budget - 6*suit_cost - 3*suitcase_cost - flight_ticket_cost - 5*suit_cost - savings\": round(remaining_budget, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "trip_budget": 882420.0,
+      "suit_cost": 14707.0,
+      "suitcase_cost": 7353.5,
+      "flight_ticket_cost": 102949.0,
+      "savings": 294140.0,
+      "6*suit_cost": 88242.0,
+      "3*suitcase_cost": 22060.5,
+      "flight_ticket_cost + 5*suit_cost": 176484.0,
+      "trip_budget - 6*suit_cost - 3*suitcase_cost - flight_ticket_cost - 5*suit_cost - savings": 301493.5
+    }
+  },
+  "final": {
+    "question": "Theo has 882420 yen he wishes to spend on his upcoming business trip to South Africa. He buys 6 business suits at 14707 yen each, 3 suitcases at 7353.5 yen each, a flight ticket that costs 102949 yen more than 5 times as much as the cost of a business suit. He wishes to save 294140 yen for this trip, how much does he have to spend on buying gifts for his business partners in South Africa?",
+    "answer_lines": [
+      "Theo buys business suits for 6 suits * 14707 yen/suit = 88242 yen.",
+      "Theo buys suitcases for 3 suitcases * 7353.5 yen/suitcase = 22060.5 yen.",
+      "Theo buys a flight ticket that costs 102949 yen + 5 * 14707 yen = 176484 yen.",
+      "Theo can spend 882420 yen - 88242 yen - 22060.5 yen - 176484 yen - 294140 yen = 301493.5 yen on gifts for his friends.",
+      "#### 301493.5"
+    ],
+    "final_scalar": 301493.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro has 882420 yen he wishes to spend on his upcoming business trip to Tokyo. He buys 6 business suits at 14707 yen each, 3 suitcases at 7353.5 yen each, a flight ticket that costs 102949 yen more than 5 times as much as the cost of a business suit. He wishes to save 294140 yen for this trip, how much does he have to spend on buying gifts for his business partners in Tokyo?",
+    "adapted_answer": [
+      "Taro buys business suits for 6 suits * 14707 yen/suit = 88242 yen.",
+      "Taro buys suitcases for 3 suitcases * 7353.5 yen/suitcase = 22060.5 yen.",
+      "Taro buys a flight ticket that costs 102949 yen + 5 * 14707 yen = 176484 yen.",
+      "Taro can spend 882420 yen - 88242 yen - 22060.5 yen - 176484 yen - 294140 yen = 301493.5 yen on gifts for his friends.",
+      "#### 301493.5"
+    ],
+    "adaptation_notes": "Replaced 'Theo' with 'Taro' and 'South Africa' with 'Tokyo'."
+  }
+}

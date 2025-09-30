@@ -1,0 +1,140 @@
+{
+  "index": 1182,
+  "split": "test",
+  "original": {
+    "question": "Bob spends $27000 distributed between 3 schools to buy books.  He can buy 100 books for $500.  How many books can he buy per school?",
+    "answer": "He spends 27000/3=$<<27000/3=9000>>9000\nEach book cost 500/100=$<<500/100=5>>5\nSo he can buy 9000/5=<<9000/5=1800>>1800 books per school\n#### 1800"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bob",
+      "dollars"
+    ],
+    "notes": "The name 'Bob' is culturally specific to Western regions and the unit 'dollars' is primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_budget",
+      "value": 27000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "books_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "books_per_dollar",
+      "value": 100.0,
+      "unit": "books",
+      "context": "question"
+    },
+    {
+      "variable": "school_budget",
+      "value": 9000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "book_price",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_budget\", \"value\": 27000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"books_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"books_per_dollar\", \"value\": 100.0, \"unit\": \"books\", \"context\": \"question\"},\n    {\"variable\": \"school_budget\", \"value\": 9000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"book_price\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_budget",
+        "original_value": 27000.0,
+        "original_unit": "dollar",
+        "converted_value": 3970890.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "books_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 73535.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "books_per_dollar",
+        "original_value": 100.0,
+        "original_unit": "books",
+        "converted_value": 100.0,
+        "converted_unit": "books"
+      },
+      {
+        "variable": "school_budget",
+        "original_value": 9000.0,
+        "original_unit": "dollar",
+        "converted_value": 1323630.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "book_price",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob spends ${total_budget} distributed between 3 schools to buy books.  He can buy {books_per_dollar} books for ${books_cost}.  How many books can he buy per school?",
+    "templatized_answer": [
+      "He spends {total_budget}/3=${total_budget/3} per school",
+      "Each book cost {books_cost}/{books_per_dollar}=${books_cost/books_per_dollar}",
+      "So he can buy {total_budget/3}/{books_cost/books_per_dollar}={total_budget/(3*books_cost/books_per_dollar)} books per school",
+      "#### {total_budget/(3*books_cost/books_per_dollar)}"
+    ],
+    "factual_assignment": {
+      "total_budget": 27000.0,
+      "books_cost": 500.0,
+      "books_per_dollar": 100.0
+    }
+  },
+  "merged_assignment": {
+    "total_budget": 3970890.0,
+    "books_cost": 73535.0,
+    "books_per_dollar": 100.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_budget = 3970890.0\n    books_cost = 73535.0\n    books_per_dollar = 100.0\n\n    total_budget_per_school = total_budget / 3\n    cost_per_book = books_cost / books_per_dollar\n    books_per_school = total_budget_per_school / cost_per_book\n\n    return {\n        \"total_budget\": total_budget,\n        \"total_budget/3\": round(total_budget_per_school, 2),\n        \"books_cost/books_per_dollar\": round(cost_per_book, 2),\n        \"total_budget/(3*books_cost/books_per_dollar)\": round(books_per_school, 2)\n    }\n",
+    "results": {
+      "total_budget": 3970890.0,
+      "total_budget/3": 1323630.0,
+      "books_cost/books_per_dollar": 735.35,
+      "total_budget/(3*books_cost/books_per_dollar)": 1800.0
+    }
+  },
+  "final": {
+    "question": "Bob spends 3970890 yen distributed between 3 schools to buy books.  He can buy 100 books for 73535 yen.  How many books can he buy per school?",
+    "answer_lines": [
+      "He spends 3970890/3=1323630 yen per school",
+      "Each book cost 73535/100=735.35 yen",
+      "So he can buy 1323630/735.35=1800 books per school",
+      "#### 1800"
+    ],
+    "final_scalar": 1800,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro spends 3970890 yen distributed between 3 schools to buy books.  He can buy 100 books for 73535 yen.  How many books can he buy per school?",
+    "adapted_answer": [
+      "He spends 3970890/3=1323630 yen per school",
+      "Each book cost 73535/100=735.35 yen",
+      "So he can buy 1323630/735.35=1800 books per school",
+      "#### 1800"
+    ],
+    "adaptation_notes": "Replaced 'Bob' with 'Taro', a traditional Japanese name."
+  }
+}

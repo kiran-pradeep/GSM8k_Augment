@@ -1,0 +1,128 @@
+{
+  "index": 722,
+  "split": "test",
+  "original": {
+    "question": "Ron is fed up with the pothole in front of his house. If it doesn't get fixed, it's going to do $450 worth of damage to his car. Unfortunately, the city council refuses to fix it, and will fine Ron $120 for unauthorized road maintenance if he fixes it himself. Ron will also have to buy 3 buckets of asphalt that each cost $25. How much money does Ron save by fixing the pothole?",
+    "answer": "First find the total cost of the asphalt by multiplying the number of buckets by the cost per bucket: 3 buckets * $25/bucket = $<<3*25=75>>75\nNow subtract the cost of the asphalt and the fine from the cost of the damage Ron avoids: $450 - $75 - $120 = $<<450-75-120=255>>255\n#### 255"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is commonly used in Western countries, but not exclusive to Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "damage_cost",
+      "value": 450.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fine_cost",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "asphalt_cost_per_bucket",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "asphalt_total_cost",
+      "value": 75.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "savings",
+      "value": 255.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"damage_cost\", \"value\": 450.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fine_cost\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"asphalt_cost_per_bucket\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"asphalt_total_cost\", \"value\": 75.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"savings\", \"value\": 255.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "damage_cost",
+        "original_value": 450.0,
+        "original_unit": "dollar",
+        "converted_value": 625275.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "fine_cost",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 166740.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "asphalt_cost_per_bucket",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 34737.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "asphalt_total_cost",
+        "original_value": 75.0,
+        "original_unit": "dollar",
+        "converted_value": 104212.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "savings",
+        "original_value": 255.0,
+        "original_unit": "dollar",
+        "converted_value": 354322.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ron is fed up with the pothole in front of his house. If it doesn't get fixed, it's going to do ${damage_cost} worth of damage to his car. Unfortunately, the city council refuses to fix it, and will fine Ron ${fine_cost} for unauthorized road maintenance if he fixes it himself. Ron will also have to buy 3 buckets of asphalt that each cost ${asphalt_cost_per_bucket}. How much money does Ron save by fixing the pothole?",
+    "templatized_answer": [
+      "First find the total cost of the asphalt by multiplying the number of buckets by the cost per bucket: 3 buckets * ${asphalt_cost_per_bucket}/bucket = ${3*asphalt_cost_per_bucket}",
+      "Now subtract the cost of the asphalt and the fine from the cost of the damage Ron avoids: ${damage_cost} - ${3*asphalt_cost_per_bucket} - ${fine_cost} = ${damage_cost - 3*asphalt_cost_per_bucket - fine_cost}",
+      "#### {damage_cost - 3*asphalt_cost_per_bucket - fine_cost}"
+    ],
+    "factual_assignment": {
+      "damage_cost": 450.0,
+      "fine_cost": 120.0,
+      "asphalt_cost_per_bucket": 25.0
+    }
+  },
+  "merged_assignment": {
+    "damage_cost": 625275.0,
+    "fine_cost": 166740.0,
+    "asphalt_cost_per_bucket": 34737.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    damage_cost = 625275.0\n    fine_cost = 166740.0\n    asphalt_cost_per_bucket = 34737.5\n\n    total_asphalt_cost = 3 * asphalt_cost_per_bucket\n    money_saved = damage_cost - total_asphalt_cost - fine_cost\n\n    return {\n        \"damage_cost\": damage_cost,\n        \"fine_cost\": fine_cost,\n        \"asphalt_cost_per_bucket\": asphalt_cost_per_bucket,\n        \"3*asphalt_cost_per_bucket\": round(total_asphalt_cost, 2),\n        \"damage_cost - 3*asphalt_cost_per_bucket - fine_cost\": round(money_saved, 2)\n    }\n",
+    "results": {
+      "damage_cost": 625275.0,
+      "fine_cost": 166740.0,
+      "asphalt_cost_per_bucket": 34737.5,
+      "3*asphalt_cost_per_bucket": 104212.5,
+      "damage_cost - 3*asphalt_cost_per_bucket - fine_cost": 354322.5
+    }
+  },
+  "final": {
+    "question": "Ron is fed up with the pothole in front of his house. If it doesn't get fixed, it's going to do 625275 won worth of damage to his car. Unfortunately, the city council refuses to fix it, and will fine Ron 166740 won for unauthorized road maintenance if he fixes it himself. Ron will also have to buy 3 buckets of asphalt that each cost 34737.5 won. How much money does Ron save by fixing the pothole?",
+    "answer_lines": [
+      "First find the total cost of the asphalt by multiplying the number of buckets by the cost per bucket: 3 buckets * 34737.5 won/bucket = 104212.5 won",
+      "Now subtract the cost of the asphalt and the fine from the cost of the damage Ron avoids: 625275 won - 104212.5 won - 166740 won = 354322.5 won",
+      "#### 354322.5"
+    ],
+    "final_scalar": 354322.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

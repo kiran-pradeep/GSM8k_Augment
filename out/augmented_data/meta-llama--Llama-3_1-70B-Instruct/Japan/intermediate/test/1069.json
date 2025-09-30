@@ -1,0 +1,105 @@
+{
+  "index": 1069,
+  "split": "test",
+  "original": {
+    "question": "Mr Hezekiah had 20 trucks from his store supplying fertiliser to different farmers in his hometown dispatched for delivery on a particular day. Each truck was carrying 20 tons of fertiliser packed in bags. Two hours after the trucks had departed for delivery, Mr Hezekiah got the news that a quarter of the number of lorries dispatched for delivery had mechanical failures on the road and could not deliver the fertilisers to the farmers. Calculate the total number of tons of fertiliser that reached the farmers that day?",
+    "answer": "If there were 20 trucks dispatched for delivery, and 1/4 of the total number had mechanical failures, there were 1/4*20 = <<20*1/4=5>>5 failed deliveries.\nOut of the 20 trucks dispatched to deliver fertiliser, 20-5 = <<20-5=15>>15 trucks delivered to the farmers.\nSince each truck carried 20 tons of fertiliser, the total amount of tons of fertiliser delivered that day was 15*20 = <<15*20=300>>300 tons.\n#### 300"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Hezekiah"
+    ],
+    "notes": "Hezekiah is a name of Hebrew origin, commonly found in Western cultures."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "truck_capacity",
+      "value": 20,
+      "unit": "ton",
+      "context": "question"
+    },
+    {
+      "variable": "total_fertiliser_delivered",
+      "value": 300,
+      "unit": "ton",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"ton\": {\"to\": \"ton\", \"rate\": 1}  # ton is already SI unit\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"truck_capacity\",\n        \"value\": 20,\n        \"unit\": \"ton\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"total_fertiliser_delivered\",\n        \"value\": 300,\n        \"unit\": \"ton\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "truck_capacity",
+        "original_value": 20,
+        "original_unit": "ton",
+        "converted_value": 20,
+        "converted_unit": "ton"
+      },
+      {
+        "variable": "total_fertiliser_delivered",
+        "original_value": 300,
+        "original_unit": "ton",
+        "converted_value": 300,
+        "converted_unit": "ton"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mr Hezekiah had {total_trucks} trucks from his store supplying fertiliser to different farmers in his hometown dispatched for delivery on a particular day. Each truck was carrying {truck_capacity} tons of fertiliser packed in bags. Two hours after the trucks had departed for delivery, Mr Hezekiah got the news that a quarter of the number of lorries dispatched for delivery had mechanical failures on the road and could not deliver the fertilisers to the farmers. Calculate the total number of tons of fertiliser that reached the farmers that day?",
+    "templatized_answer": [
+      "If there were {total_trucks} trucks dispatched for delivery, and 1/4 of the total number had mechanical failures, there were 1/4*{total_trucks} = {failed_deliveries} failed deliveries.",
+      "Out of the {total_trucks} trucks dispatched to deliver fertiliser, {total_trucks}-{failed_deliveries} = {successful_deliveries} trucks delivered to the farmers.",
+      "Since each truck carried {truck_capacity} tons of fertiliser, the total amount of tons of fertiliser delivered that day was {successful_deliveries}*{truck_capacity} = {total_fertiliser_delivered} tons.",
+      "#### {total_fertiliser_delivered}"
+    ],
+    "factual_assignment": {
+      "total_trucks": 20,
+      "truck_capacity": 20,
+      "failed_deliveries": 5,
+      "successful_deliveries": 15,
+      "total_fertiliser_delivered": 300
+    }
+  },
+  "merged_assignment": {
+    "total_trucks": 20,
+    "truck_capacity": 20,
+    "failed_deliveries": 5,
+    "successful_deliveries": 15,
+    "total_fertiliser_delivered": 300
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_trucks = 20\n    truck_capacity = 20\n\n    failed_deliveries = total_trucks / 4\n    failed_deliveries = round(failed_deliveries, 2)\n\n    successful_deliveries = total_trucks - failed_deliveries\n\n    total_fertiliser_delivered = successful_deliveries * truck_capacity\n\n    return {\n        \"total_trucks\": total_trucks,\n        \"truck_capacity\": truck_capacity,\n        \"failed_deliveries\": failed_deliveries,\n        \"successful_deliveries\": successful_deliveries,\n        \"total_fertiliser_delivered\": total_fertiliser_delivered\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_trucks": 20,
+      "truck_capacity": 20,
+      "failed_deliveries": 5.0,
+      "successful_deliveries": 15.0,
+      "total_fertiliser_delivered": 300.0
+    }
+  },
+  "final": {
+    "question": "Mr Hezekiah had 20 trucks from his store supplying fertiliser to different farmers in his hometown dispatched for delivery on a particular day. Each truck was carrying 20 tons of fertiliser packed in bags. Two hours after the trucks had departed for delivery, Mr Hezekiah got the news that a quarter of the number of lorries dispatched for delivery had mechanical failures on the road and could not deliver the fertilisers to the farmers. Calculate the total number of tons of fertiliser that reached the farmers that day?",
+    "answer_lines": [
+      "If there were 20 trucks dispatched for delivery, and 1/4 of the total number had mechanical failures, there were 1/4*20 = 5.0 failed deliveries.",
+      "Out of the 20 trucks dispatched to deliver fertiliser, 20-5.0 = 15.0 trucks delivered to the farmers.",
+      "Since each truck carried 20 tons of fertiliser, the total amount of tons of fertiliser delivered that day was 15.0*20 = 300.0 tons.",
+      "#### 300.0"
+    ],
+    "final_scalar": 300.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Mr. Hiroshi had 20 trucks from his store supplying fertiliser to different farmers in his hometown dispatched for delivery on a particular day. Each truck was carrying 20 tons of fertiliser packed in bags. Two hours after the trucks had departed for delivery, Mr. Hiroshi got the news that a quarter of the number of lorries dispatched for delivery had mechanical failures on the road and could not deliver the fertilisers to the farmers. Calculate the total number of tons of fertiliser that reached the farmers that day?",
+    "adapted_answer": [
+      "If there were 20 trucks dispatched for delivery, and 1/4 of the total number had mechanical failures, there were 1/4*20 = 5.0 failed deliveries.",
+      "Out of the 20 trucks dispatched to deliver fertiliser, 20-5.0 = 15.0 trucks delivered to the farmers.",
+      "Since each truck carried 20 tons of fertiliser, the total amount of tons of fertiliser delivered that day was 15.0*20 = 300.0 tons.",
+      "#### 300.0"
+    ],
+    "adaptation_notes": "Replaced 'Mr. Hezekiah' with 'Mr. Hiroshi' to give the name a Japanese context."
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "index": 1082,
+  "split": "test",
+  "original": {
+    "question": "James decided to walk to the store.  When he got halfway there he realized he forgot something at home and had to walk back.  If his home is 4 miles from the store and he walks 4 miles per hour how long did it take him to reach the store?",
+    "answer": "He walked 4/2=<<4/2=2>>2 miles there before turning around\nSo in total he walked 2+2+4=<<2+2+4=8>>8 miles, he walked 2 miles to the halfway point than 2 miles home.\nThat means it took him 8/4=<<8/4=2>>2 hours\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles"
+    ],
+    "notes": "The unit 'miles' is commonly used in Western countries, but not in Japan where meters or kilometers are more commonly used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "distance_to_store",
+      "value": 4,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "walking_speed",
+      "value": 4,
+      "unit": "mile per hour",
+      "context": "question"
+    },
+    {
+      "variable": "distance_halfway",
+      "value": 2,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "total_distance",
+      "value": 8,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "time_to_store",
+      "value": 2,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"mile per hour\": {\"unit\": \"kilometer per hour\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"distance_to_store\", \"value\": 4, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"walking_speed\", \"value\": 4, \"unit\": \"mile per hour\", \"context\": \"question\"},\n    {\"variable\": \"distance_halfway\", \"value\": 2, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"total_distance\", \"value\": 8, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"time_to_store\", \"value\": 2, \"unit\": \"hour\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "distance_to_store",
+        "original_value": 4,
+        "original_unit": "mile",
+        "converted_value": 6.44,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "walking_speed",
+        "original_value": 4,
+        "original_unit": "mile per hour",
+        "converted_value": 6.44,
+        "converted_unit": "kilometer per hour"
+      },
+      {
+        "variable": "distance_halfway",
+        "original_value": 2,
+        "original_unit": "mile",
+        "converted_value": 3.22,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "total_distance",
+        "original_value": 8,
+        "original_unit": "mile",
+        "converted_value": 12.87,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "time_to_store",
+        "original_value": 2,
+        "original_unit": "hour",
+        "converted_value": 2,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James decided to walk to the store.  When he got halfway there he realized he forgot something at home and had to walk back.  If his home is {distance_to_store} miles from the store and he walks {walking_speed} miles per hour how long did it take him to reach the store?",
+    "templatized_answer": [
+      "He walked {distance_to_store}/2={distance_halfway} miles there before turning around",
+      "So in total he walked {distance_halfway}+{distance_halfway}+{distance_to_store}={total_distance} miles, he walked {distance_halfway} miles to the halfway point than {distance_halfway} miles home.",
+      "That means it took him {total_distance}/{walking_speed}={time_to_store} hours",
+      "#### {time_to_store}"
+    ],
+    "factual_assignment": {
+      "distance_to_store": 4,
+      "walking_speed": 4,
+      "distance_halfway": 2,
+      "total_distance": 8,
+      "time_to_store": 2
+    }
+  },
+  "merged_assignment": {
+    "distance_to_store": 6.44,
+    "walking_speed": 6.44,
+    "distance_halfway": 3.22,
+    "total_distance": 12.87,
+    "time_to_store": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    distance_to_store = 6.44\n    walking_speed = 6.44\n\n    distance_halfway = distance_to_store / 2\n    distance_halfway = round(distance_halfway, 2)\n\n    total_distance = distance_halfway + distance_halfway + distance_to_store\n    total_distance = round(total_distance, 2)\n\n    time_to_store = total_distance / walking_speed\n    time_to_store = round(time_to_store, 2)\n\n    return {\n        \"distance_to_store\": distance_to_store,\n        \"walking_speed\": walking_speed,\n        \"distance_halfway\": distance_halfway,\n        \"total_distance\": total_distance,\n        \"time_to_store\": time_to_store\n    }\n",
+    "results": {
+      "distance_to_store": 6.44,
+      "walking_speed": 6.44,
+      "distance_halfway": 3.22,
+      "total_distance": 12.88,
+      "time_to_store": 2.0
+    }
+  },
+  "final": {
+    "question": "James decided to walk to the store.  When he got halfway there he realized he forgot something at home and had to walk back.  If his home is 6.44 kilometers from the store and he walks 6.44 kilometers per hour how long did it take him to reach the store?",
+    "answer_lines": [
+      "He walked 6.44/2=3.22 kilometers there before turning around",
+      "So in total he walked 3.22+3.22+6.44=12.88 kilometers, he walked 3.22 kilometers to the halfway point than 3.22 kilometers home.",
+      "That means it took him 12.88/6.44=2.0 hours",
+      "#### 2.0"
+    ],
+    "final_scalar": 2.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro decided to walk to the konbini.  When he got halfway there he realized he forgot something at home and had to walk back.  If his home is 6.44 kilometers from the konbini and he walks 6.44 kilometers per hour how long did it take him to reach the konbini?",
+    "adapted_answer": [
+      "He walked 6.44/2=3.22 kilometers there before turning around",
+      "So in total he walked 3.22+3.22+6.44=12.88 kilometers, he walked 3.22 kilometers to the halfway point than 3.22 kilometers home.",
+      "That means it took him 12.88/6.44=2.0 hours",
+      "#### 2.0"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Taro', 'store' with 'konbini' (Japanese convenience store)."
+  }
+}

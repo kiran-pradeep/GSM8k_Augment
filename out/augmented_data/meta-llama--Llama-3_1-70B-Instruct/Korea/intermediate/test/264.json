@@ -1,0 +1,157 @@
+{
+  "index": 264,
+  "split": "test",
+  "original": {
+    "question": "Carmen has $100, Samantha has $25 more than Carmen, and Daisy has $50 more than Samantha. How much do all three girls have combined?",
+    "answer": "Samantha has $100+$25 = $<<100+25=125>>125.\nDaisy has $125+$50 = $<<125+50=175>>175.\nThe total amount of money that the three girls have is $175+$125+$100 = $<<175+125+100=400>>400.\n#### 400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Carmen",
+      "Samantha",
+      "Daisy",
+      "dollars"
+    ],
+    "notes": "The names Carmen, Samantha, and Daisy are culturally specific to Western regions, and the unit 'dollars' is commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "carmen_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "samantha_money",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daisy_money",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "samantha_total",
+      "value": 125,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "daisy_total",
+      "value": 175,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_money",
+      "value": 400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"carmen_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"samantha_money\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daisy_money\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"samantha_total\", \"value\": 125, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"daisy_total\", \"value\": 175, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_money\", \"value\": 400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "carmen_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 138950.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "samantha_money",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 34737.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "daisy_money",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 69475.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "samantha_total",
+        "original_value": 125,
+        "original_unit": "dollar",
+        "converted_value": 173687.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "daisy_total",
+        "original_value": 175,
+        "original_unit": "dollar",
+        "converted_value": 243162.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 400,
+        "original_unit": "dollar",
+        "converted_value": 555800.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Carmen has ${carmen_money}, Samantha has ${samantha_money} more than Carmen, and Daisy has ${daisy_money} more than Samantha. How much do all three girls have combined?",
+    "templatized_answer": [
+      "Samantha has ${carmen_money}+${samantha_money} = ${carmen_money}+${samantha_money}.",
+      "Daisy has ${carmen_money}+${samantha_money}+${daisy_money} = ${carmen_money}+${samantha_money}+${daisy_money}.",
+      "The total amount of money that the three girls have is ${carmen_money}+${carmen_money}+${samantha_money}+${daisy_money}+${carmen_money} = ${carmen_money}+${carmen_money}+${samantha_money}+${daisy_money}+${carmen_money}.",
+      "#### {carmen_money}+{carmen_money}+{samantha_money}+{daisy_money}+{carmen_money}"
+    ],
+    "factual_assignment": {
+      "carmen_money": 100,
+      "samantha_money": 25,
+      "daisy_money": 50
+    }
+  },
+  "merged_assignment": {
+    "carmen_money": 138950.0,
+    "samantha_money": 34737.5,
+    "daisy_money": 69475.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    carmen_money = 138950.0\n    samantha_money = 34737.5\n    daisy_money = 69475.0\n\n    samantha_total = carmen_money + samantha_money\n    daisy_total = carmen_money + samantha_money + daisy_money\n    total_money = carmen_money + samantha_total + daisy_total\n\n    return {\n        \"carmen_money\": carmen_money,\n        \"samantha_money\": samantha_money,\n        \"daisy_money\": daisy_money,\n        \"carmen_money+samantha_money\": round(samantha_total, 2),\n        \"carmen_money+samantha_money+daisy_money\": round(daisy_total, 2),\n        \"carmen_money+carmen_money+samantha_money+daisy_money+carmen_money\": round(total_money, 2)\n    }\n",
+    "results": {
+      "carmen_money": 138950.0,
+      "samantha_money": 34737.5,
+      "daisy_money": 69475.0,
+      "carmen_money+samantha_money": 173687.5,
+      "carmen_money+samantha_money+daisy_money": 243162.5,
+      "carmen_money+carmen_money+samantha_money+daisy_money+carmen_money": 555800.0
+    }
+  },
+  "final": {
+    "question": "Carmen has 138950.0 won, Samantha has 34737.5 won more than Carmen, and Daisy has 69475.0 won more than Samantha. How much do all three girls have combined?",
+    "answer_lines": [
+      "Samantha has 138950.0+34737.5 = 173687.5.",
+      "Daisy has 173687.5+69475.0 = 243162.5.",
+      "The total amount of money that the three girls have is 243162.5+173687.5+138950.0 = 555800.0.",
+      "#### 555800.0"
+    ],
+    "final_scalar": 555800.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji has 138950.0 won, Ji-hyun has 34737.5 won more than Min-ji, and Soo-young has 69475.0 won more than Ji-hyun. How much do all three girls have combined?",
+    "adapted_answer": [
+      "Ji-hyun has 138950.0+34737.5 = 173687.5.",
+      "Soo-young has 173687.5+69475.0 = 243162.5.",
+      "The total amount of money that the three girls have is 243162.5+173687.5+138950.0 = 555800.0.",
+      "#### 555800.0"
+    ],
+    "adaptation_notes": "Replaced names with Korean equivalents: Carmen -> Min-ji, Samantha -> Ji-hyun, Daisy -> Soo-young."
+  }
+}

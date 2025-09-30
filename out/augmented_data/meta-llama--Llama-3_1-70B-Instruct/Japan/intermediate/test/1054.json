@@ -1,0 +1,130 @@
+{
+  "index": 1054,
+  "split": "test",
+  "original": {
+    "question": "My kitchen floor has a total area of 200 SqFt. I want to install new square floor tiles that cost $12 each, and each tile side is 1ft in length. How much will it cost me to renovate my kitchen floor?",
+    "answer": "The total area of a square tile is length * width or 1*1 = <<1*1=1>>1 SqFt\nIf the kitchen has a total area of 200 SqFt then my kitchen needs 200/1 = <<200/1=200>>200 square tiles\nIf each tile costs $12, then 200 square tiles will cost $12 * 200 = $<<12*200=2400>>2,400\n#### 2400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "SqFt"
+    ],
+    "notes": "The use of dollars as currency and square feet as a unit of area are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tile_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 2400,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "kitchen_area",
+      "value": 200,
+      "unit": "SqFt",
+      "context": "question"
+    },
+    {
+      "variable": "tile_area",
+      "value": 1,
+      "unit": "SqFt",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tile_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 2400, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"kitchen_area\", \"value\": 200, \"unit\": \"SqFt\", \"context\": \"question\"},\n    {\"variable\": \"tile_area\", \"value\": 1, \"unit\": \"SqFt\", \"context\": \"question\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tile_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1764.84,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 2400,
+        "original_unit": "dollar",
+        "converted_value": 352968.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "kitchen_area",
+        "original_value": 200,
+        "original_unit": "SqFt",
+        "converted_value": 200,
+        "converted_unit": "SqFt"
+      },
+      {
+        "variable": "tile_area",
+        "original_value": 1,
+        "original_unit": "SqFt",
+        "converted_value": 1,
+        "converted_unit": "SqFt"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "My kitchen floor has a total area of {kitchen_area} SqFt. I want to install new square floor tiles that cost ${tile_cost} each, and each tile side is 1ft in length. How much will it cost me to renovate my kitchen floor?",
+    "templatized_answer": [
+      "The total area of a square tile is length * width or 1*1 = {tile_area} SqFt",
+      "If the kitchen has a total area of {kitchen_area} SqFt then my kitchen needs {kitchen_area}/{tile_area} = {kitchen_area} square tiles",
+      "If each tile costs ${tile_cost}, then {kitchen_area} square tiles will cost ${tile_cost} * {kitchen_area} = ${total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "tile_cost": 12,
+      "total_cost": 2400,
+      "kitchen_area": 200,
+      "tile_area": 1
+    }
+  },
+  "merged_assignment": {
+    "tile_cost": 1764.84,
+    "total_cost": 352968.0,
+    "kitchen_area": 200,
+    "tile_area": 1
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tile_cost = 1764.84\n    kitchen_area = 200\n    tile_area = 1\n\n    total_tiles = kitchen_area / tile_area\n    total_cost = tile_cost * total_tiles\n\n    return {\n        \"tile_cost\": round(tile_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"kitchen_area\": kitchen_area,\n        \"tile_area\": tile_area,\n        \"total_tiles\": round(total_tiles, 2)\n    }\n",
+    "results": {
+      "tile_cost": 1764.84,
+      "total_cost": 352968.0,
+      "kitchen_area": 200,
+      "tile_area": 1,
+      "total_tiles": 200.0
+    }
+  },
+  "final": {
+    "question": "My kitchen floor has a total area of 200 SqFt. I want to install new square floor tiles that cost 1764.84 yen each, and each tile side is 1ft in length. How much will it cost me to renovate my kitchen floor?",
+    "answer_lines": [
+      "The total area of a square tile is length * width or 1*1 = 1 SqFt",
+      "If the kitchen has a total area of 200 SqFt then my kitchen needs 200/1 = 200 square tiles",
+      "If each tile costs 1764.84 yen, then 200 square tiles will cost 1764.84 * 200 = 352968.0 yen",
+      "#### 352968.0"
+    ],
+    "final_scalar": 352968.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "My kitchen floor has a total area of 200 square meters. I want to install new square floor tiles that cost 1764.84 yen each, and each tile side is 0.3048 meters in length. How much will it cost me to renovate my kitchen floor?",
+    "adapted_answer": [
+      "The total area of a square tile is length * width or 0.3048*0.3048 = 0.09290304 square meters",
+      "If the kitchen has a total area of 200 square meters then my kitchen needs 200/0.09290304 = 2152.7826087 square tiles, but since each tile is 0.09290304 square meters, we need to convert the kitchen area to square feet first, 1 square meter = 10.7639 square feet, 200 square meters = 2152.7826087 square feet, then my kitchen needs 2152.7826087/0.09290304 = 200 square tiles (after rounding to the nearest whole number), but since each tile is 1ft in length, we can simply divide the area in square feet by the area of the tile in square feet, 200 square feet / 1 square feet = 200 square tiles",
+      "If each tile costs 1764.84 yen, then 200 square tiles will cost 1764.84 * 200 = 352968.0 yen",
+      "#### 352968.0"
+    ],
+    "adaptation_notes": "Replaced SqFt with square meters and then converted back to square feet for calculation purposes, as the original problem used square feet. Also, replaced feet with meters for tile length."
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "index": 704,
+  "split": "test",
+  "original": {
+    "question": "Gerald and Julia divided $100 in the ratio 3:2. If Gerald spent $10 on a book, how much money did he have left?",
+    "answer": "The $100 was divided into 3 + 2 = <<3+2=5>>5 parts.\nSo each part is $100/5 = $<<100/5=20>>20.\nSo Gerald received $20 x 3 = $<<20*3=60>>60.\nGerald bought a book at $<<10=10>>10.\nTherefore, Gerald was left with $60 - $10 = $<<60-10=50>>50.\n#### 50"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Gerald",
+      "Julia",
+      "dollars"
+    ],
+    "notes": "The names Gerald and Julia are Western names, and the unit of currency is dollars, which is commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "geralds_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "geralds_money_left",
+      "value": 50,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"geralds_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"geralds_money_left\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 138950.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 13895.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "geralds_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 83370.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "geralds_money_left",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 69475.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gerald and Julia divided ${initial_money} in the ratio 3:2. If Gerald spent ${book_cost} on a book, how much money did he have left?",
+    "templatized_answer": [
+      "The ${initial_money} was divided into 3 + 2 = 5 parts.",
+      "So each part is ${initial_money}/5 = ${initial_money/5}.",
+      "So Gerald received ${initial_money/5} x 3 = ${initial_money/5*3}.",
+      "Gerald bought a book at ${book_cost}.",
+      "Therefore, Gerald was left with ${initial_money/5*3} - ${book_cost} = ${initial_money/5*3-book_cost}.",
+      "#### {initial_money/5*3-book_cost}"
+    ],
+    "factual_assignment": {
+      "initial_money": 100,
+      "book_cost": 10
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 138950.0,
+    "book_cost": 13895.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 138950.0\n    book_cost = 13895.0\n\n    initial_money_div_5 = round(initial_money / 5, 2)\n    gerald_received = round(initial_money_div_5 * 3, 2)\n    gerald_left = round(gerald_received - book_cost, 2)\n\n    return {\n        \"initial_money\": initial_money,\n        \"initial_money/5\": initial_money_div_5,\n        \"initial_money/5*3\": gerald_received,\n        \"book_cost\": book_cost,\n        \"initial_money/5*3-book_cost\": gerald_left\n    }\n",
+    "results": {
+      "initial_money": 138950.0,
+      "initial_money/5": 27790.0,
+      "initial_money/5*3": 83370.0,
+      "book_cost": 13895.0,
+      "initial_money/5*3-book_cost": 69475.0
+    }
+  },
+  "final": {
+    "question": "Gerald and Julia divided 138950 won in the ratio 3:2. If Gerald spent 13895 won on a book, how much money did he have left?",
+    "answer_lines": [
+      "The 138950 won was divided into 3 + 2 = 5 parts.",
+      "So each part is 138950/5 = 27790 won.",
+      "So Gerald received 27790 x 3 = 83370 won.",
+      "Gerald bought a book at 13895 won.",
+      "Therefore, Gerald was left with 83370 - 13895 = 69475 won.",
+      "#### 69475"
+    ],
+    "final_scalar": 69475,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo and Ji-hyun divided 138950 won in the ratio 3:2. If Min-soo spent 13895 won on a book, how much money did he have left?",
+    "adapted_answer": [
+      "The 138950 won was divided into 3 + 2 = 5 parts.",
+      "So each part is 138950/5 = 27790 won.",
+      "So Min-soo received 27790 x 3 = 83370 won.",
+      "Min-soo bought a book at 13895 won.",
+      "Therefore, Min-soo was left with 83370 - 13895 = 69475 won.",
+      "#### 69475"
+    ],
+    "adaptation_notes": "Replaced 'Gerald' with 'Min-soo' and 'Julia' with 'Ji-hyun' to provide a Korean context."
+  }
+}

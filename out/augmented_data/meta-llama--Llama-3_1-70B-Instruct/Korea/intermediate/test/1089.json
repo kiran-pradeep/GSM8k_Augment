@@ -1,0 +1,129 @@
+{
+  "index": 1089,
+  "split": "test",
+  "original": {
+    "question": "Nathan has a bouncy ball that bounces to 2/3rds of its starting height with each bounce. If he drops it from the third-floor balcony in the mall, where each story is 24 feet high, how high does the ball go on its second bounce?",
+    "answer": "First find the total height from which Nathan drops the ball: 24 feet/story * 3 stories = <<24*3=72>>72 feet\nThen multiply that number by 2/3rds to find the height of the ball after one bounce: 72 feet * 2/3 = <<72*2/3=48>>48 feet\nThen multiply that number by 2/3rds to find the height of the ball after two bounces: 48 feet * 2/3 = <<48*2/3=32>>32 feet\n#### 32"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Nathan",
+      "feet"
+    ],
+    "notes": "Name 'Nathan' and unit 'feet' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_height",
+      "value": 72.0,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "first_bounce_height",
+      "value": 48.0,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "second_bounce_height",
+      "value": 32.0,
+      "unit": "feet",
+      "context": "answer"
+    },
+    {
+      "variable": "story_height",
+      "value": 24.0,
+      "unit": "feet",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"factor\": 1389.5, \"unit\": \"won\"},\n        \"pounds\": {\"factor\": 0.453592, \"unit\": \"kilograms\"},\n        \"ounces\": {\"factor\": 28.3495, \"unit\": \"grams\"},\n        \"miles\": {\"factor\": 1.60934, \"unit\": \"kilometers\"},\n        \"feet\": {\"factor\": 0.3048, \"unit\": \"meters\"},\n        \"gallons\": {\"factor\": 3.78541, \"unit\": \"liters\"},\n        \"cups\": {\"factor\": 236.588, \"unit\": \"milliliters\"}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            factor = conversions[original_unit][\"factor\"]\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * factor, 2)\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_height\", \"value\": 72.0, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"first_bounce_height\", \"value\": 48.0, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"second_bounce_height\", \"value\": 32.0, \"unit\": \"feet\", \"context\": \"answer\"},\n    {\"variable\": \"story_height\", \"value\": 24.0, \"unit\": \"feet\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_height",
+        "original_value": 72.0,
+        "original_unit": "feet",
+        "converted_value": 21.95,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "first_bounce_height",
+        "original_value": 48.0,
+        "original_unit": "feet",
+        "converted_value": 14.63,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "second_bounce_height",
+        "original_value": 32.0,
+        "original_unit": "feet",
+        "converted_value": 9.75,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "story_height",
+        "original_value": 24.0,
+        "original_unit": "feet",
+        "converted_value": 7.32,
+        "converted_unit": "meters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Nathan has a bouncy ball that bounces to 2/3rds of its starting height with each bounce. If he drops it from the third-floor balcony in the mall, where each story is {story_height} feet high, how high does the ball go on its second bounce?",
+    "templatized_answer": [
+      "First find the total height from which Nathan drops the ball: {story_height} feet/story * 3 stories = {initial_height} feet",
+      "Then multiply that number by 2/3rds to find the height of the ball after one bounce: {initial_height} feet * 2/3 = {first_bounce_height} feet",
+      "Then multiply that number by 2/3rds to find the height of the ball after two bounces: {first_bounce_height} feet * 2/3 = {second_bounce_height} feet",
+      "#### {second_bounce_height}"
+    ],
+    "factual_assignment": {
+      "initial_height": 72.0,
+      "first_bounce_height": 48.0,
+      "second_bounce_height": 32.0,
+      "story_height": 24.0
+    }
+  },
+  "merged_assignment": {
+    "initial_height": 21.95,
+    "first_bounce_height": 14.63,
+    "second_bounce_height": 9.75,
+    "story_height": 7.32
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    story_height = 7.32\n    initial_height = story_height * 3\n    first_bounce_height = initial_height * (2/3)\n    second_bounce_height = first_bounce_height * (2/3)\n\n    return {\n        \"story_height\": round(story_height, 2),\n        \"initial_height\": round(initial_height, 2),\n        \"first_bounce_height\": round(first_bounce_height, 2),\n        \"second_bounce_height\": round(second_bounce_height, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "story_height": 7.32,
+      "initial_height": 21.96,
+      "first_bounce_height": 14.64,
+      "second_bounce_height": 9.76
+    }
+  },
+  "final": {
+    "question": "Nathan has a bouncy ball that bounces to 2/3rds of its starting height with each bounce. If he drops it from the third-floor balcony in the mall, where each story is 7.32 meters high, how high does the ball go on its second bounce?",
+    "answer_lines": [
+      "First find the total height from which Nathan drops the ball: 7.32 meters/story * 3 stories = 21.96 meters",
+      "Then multiply that number by 2/3rds to find the height of the ball after one bounce: 21.96 meters * 2/3 = 14.64 meters",
+      "Then multiply that number by 2/3rds to find the height of the ball after two bounces: 14.64 meters * 2/3 = 9.76 meters",
+      "#### 9.76"
+    ],
+    "final_scalar": 9.76,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo has a bouncy ball that bounces to 2/3rds of its starting height with each bounce. If he drops it from the third-floor balcony in the mall, where each story is 7.32 meters high, how high does the ball go on its second bounce?",
+    "adapted_answer": [
+      "First find the total height from which Min-soo drops the ball: 7.32 meters/story * 3 stories = 21.96 meters",
+      "Then multiply that number by 2/3rds to find the height of the ball after one bounce: 21.96 meters * 2/3 = 14.64 meters",
+      "Then multiply that number by 2/3rds to find the height of the ball after two bounces: 14.64 meters * 2/3 = 9.76 meters",
+      "#### 9.76"
+    ],
+    "adaptation_notes": "Replaced 'Nathan' with 'Min-soo' to give the problem a Korean context."
+  }
+}

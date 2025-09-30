@@ -1,0 +1,101 @@
+{
+  "index": 142,
+  "split": "test",
+  "original": {
+    "question": "Jordan plays video games for 2 hours every day. He also has a part-time job where he earns $10 an hour. How much money would Jordan earn in one week if he spent his video game time working instead?",
+    "answer": "Jordan plays video games for 2 hours every day x 7 days in a week = <<2*7=14>>14 hours a week.\nIf Jordan spent his 14 hours working instead, he would make 14 hours x $10 = $<<14*10=140>>140.\n#### 140"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jordan",
+      "dollars"
+    ],
+    "notes": "Name 'Jordan' and unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 140,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 140, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 140,
+        "original_unit": "dollar",
+        "converted_value": 20589.8,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jordan plays video games for {daily_video_game_hours} hours every day. He also has a part-time job where he earns ${hourly_wage} an hour. How much money would Jordan earn in one week if he spent his video game time working instead?",
+    "templatized_answer": [
+      "Jordan plays video games for {daily_video_game_hours} hours every day x {days_in_week} days in a week = {daily_video_game_hours} * {days_in_week} hours a week.",
+      "If Jordan spent his {daily_video_game_hours} * {days_in_week} hours working instead, he would make {daily_video_game_hours} * {days_in_week} hours x ${hourly_wage} = ${daily_video_game_hours} * {days_in_week} * {hourly_wage}.",
+      "#### {weekly_earnings}"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 10,
+      "weekly_earnings": 140,
+      "daily_video_game_hours": 2,
+      "days_in_week": 7
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 1470.7,
+    "weekly_earnings": 20589.8,
+    "daily_video_game_hours": 2,
+    "days_in_week": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 1470.7\n    daily_video_game_hours = 2\n    days_in_week = 7\n\n    weekly_video_game_hours = daily_video_game_hours * days_in_week\n    weekly_earnings = weekly_video_game_hours * hourly_wage\n\n    return {\n        \"hourly_wage\": hourly_wage,\n        \"weekly_earnings\": round(weekly_earnings, 2),\n        \"daily_video_game_hours\": daily_video_game_hours,\n        \"days_in_week\": days_in_week,\n        \"weekly_video_game_hours\": weekly_video_game_hours\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hourly_wage": 1470.7,
+      "weekly_earnings": 20589.8,
+      "daily_video_game_hours": 2,
+      "days_in_week": 7,
+      "weekly_video_game_hours": 14
+    }
+  },
+  "final": {
+    "question": "Jordan plays video games for 2 hours every day. He also has a part-time job where he earns 1470.7 yen an hour. How much money would Jordan earn in one week if he spent his video game time working instead?",
+    "answer_lines": [
+      "Jordan plays video games for 2 hours every day x 7 days in a week = 2 * 7 hours a week.",
+      "If Jordan spent his 2 * 7 hours working instead, he would make 2 * 7 hours x 1470.7 yen = 2 * 7 * 1470.7 yen.",
+      "#### 20589.8"
+    ],
+    "final_scalar": 20589.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro plays video games for 2 hours every day. He also has a part-time job where he earns 1470.7 yen an hour. How much money would Taro earn in one week if he spent his video game time working instead?",
+    "adapted_answer": [
+      "Taro plays video games for 2 hours every day x 7 days in a week = 2 * 7 hours a week.",
+      "If Taro spent his 2 * 7 hours working instead, he would make 2 * 7 hours x 1470.7 yen = 2 * 7 * 1470.7 yen.",
+      "#### 20589.8"
+    ],
+    "adaptation_notes": "Replaced 'Jordan' with 'Taro', a common Japanese name."
+  }
+}

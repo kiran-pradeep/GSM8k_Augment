@@ -1,0 +1,110 @@
+{
+  "index": 1167,
+  "split": "test",
+  "original": {
+    "question": "Jack had $100. Sophia gave him 1/5 of her $100. How many dollars does Jack have now?",
+    "answer": "Sophia gave 100 * 1/5 =<<100*1/5=20>>20 $ to Jack.\nJack now has 100 + 20 = <<100+20=120>>120$\n#### 120"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Jack",
+      "Sophia"
+    ],
+    "notes": "The text contains Western names and a unit of currency not native to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sophia_gift",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_money",
+      "value": 120,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sophia_gift\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_money\", \"value\": 120, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "sophia_gift",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 120,
+        "original_unit": "dollar",
+        "converted_value": 17648.4,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jack had ${initial_money}. Sophia gave him 1/5 of her ${initial_money}. How many dollars does Jack have now?",
+    "templatized_answer": [
+      "Sophia gave {initial_money} * 1/5 = {sophia_gift} $ to Jack.",
+      "Jack now has {initial_money} + {sophia_gift} = {total_money} $"
+    ],
+    "factual_assignment": {
+      "initial_money": 100,
+      "sophia_gift": 20,
+      "total_money": 120
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 14707.0,
+    "sophia_gift": 2941.4,
+    "total_money": 17648.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 14707.0\n    sophia_gift = round(initial_money * 1/5, 2)\n    total_money = round(initial_money + sophia_gift, 2)\n    \n    return {\n        \"initial_money\": initial_money,\n        \"sophia_gift\": sophia_gift,\n        \"total_money\": total_money\n    }\n",
+    "results": {
+      "initial_money": 14707.0,
+      "sophia_gift": 2941.4,
+      "total_money": 17648.4
+    }
+  },
+  "final": {
+    "question": "Jack had 14707.0 yen. Sophia gave him 1/5 of her 14707.0 yen. How many yen does Jack have now?",
+    "answer_lines": [
+      "Sophia gave 14707.0 * 1/5 = 2941.4 yen to Jack.",
+      "Jack now has 14707.0 + 2941.4 = 17648.4 yen",
+      "#### 17648.4"
+    ],
+    "final_scalar": 17648.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro had 14707.0 yen. Yui gave him 1/5 of her 14707.0 yen. How many yen does Taro have now?",
+    "adapted_answer": [
+      "Yui gave 14707.0 * 1/5 = 2941.4 yen to Taro.",
+      "Taro now has 14707.0 + 2941.4 = 17648.4 yen",
+      "#### 17648.4"
+    ],
+    "adaptation_notes": "Replaced 'Jack' with 'Taro' and 'Sophia' with 'Yui' to use Japanese names."
+  }
+}

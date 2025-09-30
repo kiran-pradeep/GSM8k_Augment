@@ -1,0 +1,115 @@
+{
+  "index": 896,
+  "split": "test",
+  "original": {
+    "question": "John rents his car out 10 times a month for 3 hours each time.  He gets paid $25 an hour.  If his car payment is $500, how much profit does he make on his car?",
+    "answer": "He rents his car 10*3=<<10*3=30>>30 hour a month\nSo he makes 25*30=$<<25*30=750>>750 a month\nThat means he has a profit of 750-500=$<<750-500=250>>250 a month\n#### 250"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is culturally specific to Western regions and the unit 'dollars' is a currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_rental",
+      "value": 25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "car_payment",
+      "value": 500,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_profit",
+      "value": 250,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_rental\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"car_payment\", \"value\": 500, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_profit\", \"value\": 250, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_rental",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 34737.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "car_payment",
+        "original_value": 500,
+        "original_unit": "dollar",
+        "converted_value": 694750.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "monthly_profit",
+        "original_value": 250,
+        "original_unit": "dollar",
+        "converted_value": 347375.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John rents his car out {rental_times} times a month for {rental_hours} hours each time.  He gets paid ${hourly_rental} an hour.  If his car payment is ${car_payment}, how much profit does he make on his car?",
+    "templatized_answer": [
+      "He rents his car {rental_times}*{rental_hours}={rental_times}*{rental_hours} hours a month",
+      "So he makes {hourly_rental}*{rental_times}*{rental_hours}=${hourly_rental}*{rental_times}*{rental_hours} a month",
+      "That means he has a profit of {hourly_rental}*{rental_times}*{rental_hours}-{car_payment}=${hourly_rental}*{rental_times}*{rental_hours}-{car_payment} a month",
+      "#### {hourly_rental}*{rental_times}*{rental_hours}-{car_payment}"
+    ],
+    "factual_assignment": {
+      "hourly_rental": 25,
+      "car_payment": 500,
+      "rental_times": 10,
+      "rental_hours": 3
+    }
+  },
+  "merged_assignment": {
+    "hourly_rental": 34737.5,
+    "car_payment": 694750.0,
+    "rental_times": 10,
+    "rental_hours": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_rental = 34737.5\n    car_payment = 694750.0\n    rental_times = 10\n    rental_hours = 3\n\n    total_rental_hours = rental_times * rental_hours\n    total_rental_income = hourly_rental * total_rental_hours\n    profit = total_rental_income - car_payment\n\n    return {\n        \"{rental_times}*{rental_hours}\": total_rental_hours,\n        \"{hourly_rental}*{rental_times}*{rental_hours}\": round(total_rental_income, 2),\n        \"{hourly_rental}*{rental_times}*{rental_hours}-{car_payment}\": round(profit, 2)\n    }\n",
+    "results": {
+      "{rental_times}*{rental_hours}": 30,
+      "{hourly_rental}*{rental_times}*{rental_hours}": 1042125.0,
+      "{hourly_rental}*{rental_times}*{rental_hours}-{car_payment}": 347375.0
+    }
+  },
+  "final": {
+    "question": "John rents his car out 10 times a month for 3 hours each time.  He gets paid 34737.5 won an hour.  If his car payment is 694750.0 won, how much profit does he make on his car?",
+    "answer_lines": [
+      "He rents his car 10*3=30 hours a month",
+      "So he makes 34737.5*10*3=1042125.0 won a month",
+      "That means he has a profit of 1042125.0-694750.0=347375.0 won a month",
+      "#### 347375.0"
+    ],
+    "final_scalar": 347375.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo rents his car out 10 times a month for 3 hours each time.  He gets paid 34737.5 won an hour.  If his car payment is 694750.0 won, how much profit does he make on his car?",
+    "adapted_answer": [
+      "He rents his car 10*3=30 hours a month",
+      "So he makes 34737.5*10*3=1042125.0 won a month",
+      "That means he has a profit of 1042125.0-694750.0=347375.0 won a month",
+      "#### 347375.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Min-soo' to give the name a Korean context."
+  }
+}

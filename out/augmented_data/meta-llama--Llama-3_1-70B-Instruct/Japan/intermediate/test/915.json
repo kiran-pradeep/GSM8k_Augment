@@ -1,0 +1,128 @@
+{
+  "index": 915,
+  "split": "test",
+  "original": {
+    "question": "Bruce works for 5 hours on Tuesday. On Wednesday he works twice the time he works on Tuesday. On Thursday he works 2 hours less than the time he works on Wednesday. How many hours does Bruce work in all these three days?",
+    "answer": "On Wednesday, Bruce works for 2 * 5 = <<2*5=10>>10 hours.\nOn Thursday, Bruce works for 10 – 2 = <<10-2=8>>8 hours.\nOn these three days, Bruce works for 5 + 10 + 8 = <<5+10+8=23>>23 hours.\n#### 23"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bruce"
+    ],
+    "notes": "The name 'Bruce' is culturally specific to Western regions."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tuesday_hours",
+      "value": 5.0,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "wednesday_hours",
+      "value": 10.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "thursday_hours",
+      "value": 8.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "total_hours",
+      "value": 23.0,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"hour\": {\"unit\": \"hour\", \"factor\": 1},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tuesday_hours\", \"value\": 5.0, \"unit\": \"hour\", \"context\": \"question\"},\n    {\"variable\": \"wednesday_hours\", \"value\": 10.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"thursday_hours\", \"value\": 8.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"total_hours\", \"value\": 23.0, \"unit\": \"hour\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tuesday_hours",
+        "original_value": 5.0,
+        "original_unit": "hour",
+        "converted_value": 5.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "wednesday_hours",
+        "original_value": 10.0,
+        "original_unit": "hour",
+        "converted_value": 10.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "thursday_hours",
+        "original_value": 8.0,
+        "original_unit": "hour",
+        "converted_value": 8.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "total_hours",
+        "original_value": 23.0,
+        "original_unit": "hour",
+        "converted_value": 23.0,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bruce works for {tuesday_hours} hours on Tuesday. On Wednesday he works twice the time he works on Tuesday. On Thursday he works 2 hours less than the time he works on Wednesday. How many hours does Bruce work in all these three days?",
+    "templatized_answer": [
+      "On Wednesday, Bruce works for 2 * {tuesday_hours} = {wednesday_hours} hours.",
+      "On Thursday, Bruce works for {wednesday_hours} - 2 = {thursday_hours} hours.",
+      "On these three days, Bruce works for {tuesday_hours} + {wednesday_hours} + {thursday_hours} = {total_hours} hours.",
+      "#### {total_hours}"
+    ],
+    "factual_assignment": {
+      "tuesday_hours": 5.0,
+      "wednesday_hours": 10.0,
+      "thursday_hours": 8.0,
+      "total_hours": 23.0
+    }
+  },
+  "merged_assignment": {
+    "tuesday_hours": 5.0,
+    "wednesday_hours": 10.0,
+    "thursday_hours": 8.0,
+    "total_hours": 23.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tuesday_hours = 5.0\n    wednesday_hours = 2 * tuesday_hours\n    thursday_hours = wednesday_hours - 2\n    total_hours = tuesday_hours + wednesday_hours + thursday_hours\n\n    return {\n        \"tuesday_hours\": round(tuesday_hours, 2),\n        \"wednesday_hours\": round(wednesday_hours, 2),\n        \"thursday_hours\": round(thursday_hours, 2),\n        \"total_hours\": round(total_hours, 2)\n    }\n",
+    "results": {
+      "tuesday_hours": 5.0,
+      "wednesday_hours": 10.0,
+      "thursday_hours": 8.0,
+      "total_hours": 23.0
+    }
+  },
+  "final": {
+    "question": "Bruce works for 5 hours on Tuesday. On Wednesday he works twice the time he works on Tuesday. On Thursday he works 2 hours less than the time he works on Wednesday. How many hours does Bruce work in all these three days?",
+    "answer_lines": [
+      "On Wednesday, Bruce works for 2 * 5 = 10 hours.",
+      "On Thursday, Bruce works for 10 - 2 = 8 hours.",
+      "On these three days, Bruce works for 5 + 10 + 8 = 23 hours.",
+      "#### 23"
+    ],
+    "final_scalar": 23.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro works for 5 hours on Tuesday. On Wednesday he works twice the time he works on Tuesday. On Thursday he works 2 hours less than the time he works on Wednesday. How many hours does Taro work in all these three days?",
+    "adapted_answer": [
+      "On Wednesday, Taro works for 2 * 5 = 10 hours.",
+      "On Thursday, Taro works for 10 - 2 = 8 hours.",
+      "On these three days, Taro works for 5 + 10 + 8 = 23 hours.",
+      "#### 23"
+    ],
+    "adaptation_notes": "Replaced 'Bruce' with 'Taro', a common Japanese name."
+  }
+}

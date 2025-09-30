@@ -1,0 +1,124 @@
+{
+  "index": 1022,
+  "split": "test",
+  "original": {
+    "question": "Teresa sells large stuffed animals for three times the price of small stuffed animals. Today, she sold twice as many small stuffed animals as large ones and earned $120 from the sales. Each small stuffed animal costs $4. How many small stuffed animals did she sell?",
+    "answer": "Let A be the number of large stuffed animals Teresa sold.\nThus, she sold 2A small stuffed animals.\nLarge stuffed animals cost 3 * 4 = $<<3*4=12>>12.\nShe earned 12A + 4 * 2A = 12A + 8A = 20A = $120 from selling stuffed animals today.\nThus, she sold A = 120 / 20 = <<120/20=6>>6 large stuffed animals today.\nTeresa sold twice as many small stuffed animals, so she sold 6 * 2 = <<6*2=12>>12 small stuffed animals today.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Teresa",
+      "dollars"
+    ],
+    "notes": "Name 'Teresa' and unit 'dollars' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_earnings",
+      "value": 120,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "small_animal_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "large_animal_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_earnings\", \"value\": 120, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"small_animal_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"large_animal_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_earnings",
+        "original_value": 120,
+        "original_unit": "dollar",
+        "converted_value": 166740.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "small_animal_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "large_animal_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 16674.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Teresa sells large stuffed animals for three times the price of small stuffed animals. Today, she sold twice as many small stuffed animals as large ones and earned ${total_earnings} from the sales. Each small stuffed animal costs ${small_animal_cost}. How many small stuffed animals did she sell?",
+    "templatized_answer": [
+      "Let A be the number of large stuffed animals Teresa sold.",
+      "Thus, she sold 2A small stuffed animals.",
+      "Large stuffed animals cost 3 * {small_animal_cost} = ${large_animal_cost}.",
+      "She earned {large_animal_cost}A + {small_animal_cost} * 2A = {large_animal_cost}A + {small_animal_cost} * 2A = ({large_animal_cost} + 2 * {small_animal_cost})A = {total_earnings}.",
+      "Thus, she sold A = {total_earnings} / ({large_animal_cost} + 2 * {small_animal_cost}) = {total_earnings} / (3 * {small_animal_cost} + 2 * {small_animal_cost}) = {total_earnings} / (5 * {small_animal_cost}).",
+      "Teresa sold twice as many small stuffed animals, so she sold 2 * ({total_earnings} / (5 * {small_animal_cost})) = ({total_earnings} / (5 * {small_animal_cost} / 2)) = ({total_earnings} / (5 / 2 * {small_animal_cost})) = ({total_earnings} * 2 / 5) / {small_animal_cost} = (2 * {total_earnings} / 5) / {small_animal_cost} = 2 * {total_earnings} / (5 * {small_animal_cost}).",
+      "#### 2 * {total_earnings} / (5 * {small_animal_cost})"
+    ],
+    "factual_assignment": {
+      "total_earnings": 120,
+      "small_animal_cost": 4,
+      "large_animal_cost": 12
+    }
+  },
+  "merged_assignment": {
+    "total_earnings": 166740.0,
+    "small_animal_cost": 5558.0,
+    "large_animal_cost": 16674.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_earnings = 166740.0\n    small_animal_cost = 5558.0\n    large_animal_cost = 3 * small_animal_cost\n\n    A = total_earnings / (large_animal_cost + 2 * small_animal_cost)\n    A = total_earnings / (3 * small_animal_cost + 2 * small_animal_cost)\n    A = total_earnings / (5 * small_animal_cost)\n\n    num_small_animals = 2 * A\n    num_small_animals = 2 * (total_earnings / (5 * small_animal_cost))\n    num_small_animals = (2 * total_earnings / 5) / small_animal_cost\n    num_small_animals = 2 * total_earnings / (5 * small_animal_cost)\n\n    return {\n        \"total_earnings\": total_earnings,\n        \"small_animal_cost\": small_animal_cost,\n        \"large_animal_cost\": large_animal_cost,\n        \"A\": round(A, 2),\n        \"num_small_animals\": round(num_small_animals, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_earnings": 166740.0,
+      "small_animal_cost": 5558.0,
+      "large_animal_cost": 16674.0,
+      "A": 6.0,
+      "num_small_animals": 12.0
+    }
+  },
+  "final": {
+    "question": "Teresa sells large stuffed animals for three times the price of small stuffed animals. Today, she sold twice as many small stuffed animals as large ones and earned 166740 won from the sales. Each small stuffed animal costs 5558 won. How many small stuffed animals did she sell?",
+    "answer_lines": [
+      "Let A be the number of large stuffed animals Teresa sold.",
+      "Thus, she sold 2A small stuffed animals.",
+      "Large stuffed animals cost 3 * 5558 = 16674 won.",
+      "She earned 16674A + 5558 * 2A = 16674A + 11116A = 27790A = 166740 won from selling stuffed animals today.",
+      "Thus, she sold A = 166740 / 27790 = 6 large stuffed animals today.",
+      "Teresa sold twice as many small stuffed animals, so she sold 6 * 2 = 12 small stuffed animals today.",
+      "#### 12.0"
+    ],
+    "final_scalar": 12.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji sells large stuffed animals for three times the price of small stuffed animals. Today, she sold twice as many small stuffed animals as large ones and earned 166740 won from the sales. Each small stuffed animal costs 5558 won. How many small stuffed animals did she sell?",
+    "adapted_answer": [
+      "Let A be the number of large stuffed animals Min-ji sold.",
+      "Thus, she sold 2A small stuffed animals.",
+      "Large stuffed animals cost 3 * 5558 = 16674 won.",
+      "She earned 16674A + 5558 * 2A = 16674A + 11116A = 27790A = 166740 won from selling stuffed animals today.",
+      "Thus, she sold A = 166740 / 27790 = 6 large stuffed animals today.",
+      "Min-ji sold twice as many small stuffed animals, so she sold 6 * 2 = 12 small stuffed animals today.",
+      "#### 12.0"
+    ],
+    "adaptation_notes": "Replaced 'Teresa' with 'Min-ji', a common Korean name."
+  }
+}

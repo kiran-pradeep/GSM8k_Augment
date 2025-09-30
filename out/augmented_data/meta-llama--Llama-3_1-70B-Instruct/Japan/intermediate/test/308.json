@@ -1,0 +1,180 @@
+{
+  "index": 308,
+  "split": "test",
+  "original": {
+    "question": "A tub of ice cream costing $13 is now sold at $11. A packet of milk was sold at a discount of $0.5. How much will you save if you buy 2 tubs of ice cream and 4 packets of milk?",
+    "answer": "The discount for each tub of ice cream is $13 - $11 = $<<13-11=2>>2.\nSo the discount for 2 tubs of ice cream is $2 x 2 = $<<2*2=4>>4.\nThe total discount for 4 packets of milk is $0.5 x 4 = $<<0.5*4=2>>2.\nYou will save $4 + $2 = $6 for 2 tubs of ice cream and 4 packets of milk.\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "ice cream"
+    ],
+    "notes": "The text contains 'dollars' as a unit of currency and 'ice cream' as a food item, both of which are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ice_cream_original_price",
+      "value": 13,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ice_cream_discounted_price",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "milk_discount",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ice_cream_discount",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_ice_cream_discount",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_milk_discount",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_savings",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ice_cream_original_price\", \"value\": 13, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ice_cream_discounted_price\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"milk_discount\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ice_cream_discount\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_ice_cream_discount\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_milk_discount\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_savings\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ice_cream_original_price",
+        "original_value": 13,
+        "original_unit": "dollar",
+        "converted_value": 1911.91,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ice_cream_discounted_price",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 1617.77,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "milk_discount",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 73.53,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ice_cream_discount",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_ice_cream_discount",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_milk_discount",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_savings",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A tub of ice cream costing ${ice_cream_original_price} is now sold at ${ice_cream_discounted_price}. A packet of milk was sold at a discount of ${milk_discount}. How much will you save if you buy 2 tubs of ice cream and 4 packets of milk?",
+    "templatized_answer": [
+      "The discount for each tub of ice cream is ${ice_cream_original_price} - ${ice_cream_discounted_price} = ${ice_cream_discount}.",
+      "So the discount for 2 tubs of ice cream is ${ice_cream_discount} x 2 = ${total_ice_cream_discount}.",
+      "The total discount for 4 packets of milk is ${milk_discount} x 4 = ${total_milk_discount}.",
+      "You will save ${total_ice_cream_discount} + ${total_milk_discount} = ${total_savings} for 2 tubs of ice cream and 4 packets of milk.",
+      "#### {total_savings}"
+    ],
+    "factual_assignment": {
+      "ice_cream_original_price": 13,
+      "ice_cream_discounted_price": 11,
+      "milk_discount": 0.5,
+      "ice_cream_discount": 2,
+      "total_ice_cream_discount": 4,
+      "total_milk_discount": 2,
+      "total_savings": 6
+    }
+  },
+  "merged_assignment": {
+    "ice_cream_original_price": 1911.91,
+    "ice_cream_discounted_price": 1617.77,
+    "milk_discount": 73.53,
+    "ice_cream_discount": 294.14,
+    "total_ice_cream_discount": 588.28,
+    "total_milk_discount": 294.14,
+    "total_savings": 882.42
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    ice_cream_original_price = 1911.91\n    ice_cream_discounted_price = 1617.77\n    milk_discount = 73.53\n\n    ice_cream_discount = round(ice_cream_original_price - ice_cream_discounted_price, 2)\n    total_ice_cream_discount = round(ice_cream_discount * 2, 2)\n    total_milk_discount = round(milk_discount * 4, 2)\n    total_savings = round(total_ice_cream_discount + total_milk_discount, 2)\n\n    return {\n        \"ice_cream_original_price\": ice_cream_original_price,\n        \"ice_cream_discounted_price\": ice_cream_discounted_price,\n        \"milk_discount\": milk_discount,\n        \"ice_cream_discount\": ice_cream_discount,\n        \"total_ice_cream_discount\": total_ice_cream_discount,\n        \"total_milk_discount\": total_milk_discount,\n        \"total_savings\": total_savings\n    }\n",
+    "results": {
+      "ice_cream_original_price": 1911.91,
+      "ice_cream_discounted_price": 1617.77,
+      "milk_discount": 73.53,
+      "ice_cream_discount": 294.14,
+      "total_ice_cream_discount": 588.28,
+      "total_milk_discount": 294.12,
+      "total_savings": 882.4
+    }
+  },
+  "final": {
+    "question": "A tub of ice cream costing 1911.91 yen is now sold at 1617.77 yen. A packet of milk was sold at a discount of 73.53 yen. How much will you save if you buy 2 tubs of ice cream and 4 packets of milk?",
+    "answer_lines": [
+      "The discount for each tub of ice cream is 1911.91 yen - 1617.77 yen = 294.14 yen.",
+      "So the discount for 2 tubs of ice cream is 294.14 yen x 2 = 588.28 yen.",
+      "The total discount for 4 packets of milk is 73.53 yen x 4 = 294.12 yen.",
+      "You will save 588.28 yen + 294.12 yen = 882.4 yen for 2 tubs of ice cream and 4 packets of milk.",
+      "#### 882.4"
+    ],
+    "final_scalar": 882.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A tub of Mochi ice cream costing 1911.91 yen is now sold at 1617.77 yen. A packet of Matcha milk was sold at a discount of 73.53 yen. How much will you save if you buy 2 tubs of Mochi ice cream and 4 packets of Matcha milk?",
+    "adapted_answer": [
+      "The discount for each tub of Mochi ice cream is 1911.91 yen - 1617.77 yen = 294.14 yen.",
+      "So the discount for 2 tubs of Mochi ice cream is 294.14 yen x 2 = 588.28 yen.",
+      "The total discount for 4 packets of Matcha milk is 73.53 yen x 4 = 294.12 yen.",
+      "You will save 588.28 yen + 294.12 yen = 882.4 yen for 2 tubs of Mochi ice cream and 4 packets of Matcha milk.",
+      "#### 882.4"
+    ],
+    "adaptation_notes": "Replaced 'ice cream' with 'Mochi ice cream' and 'milk' with 'Matcha milk' to give the text a Japanese context."
+  }
+}

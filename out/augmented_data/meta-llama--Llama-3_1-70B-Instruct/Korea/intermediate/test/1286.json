@@ -1,0 +1,131 @@
+{
+  "index": 1286,
+  "split": "test",
+  "original": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in cents does James have?",
+    "answer": "First figure out how much the nickels are worth: 2 * 5 cents = <<2*5=10>>10 cents\nThen figure out how much the dimes are worth: 7 * 10 cents = <<7*10=70>>70 cents\nFinally, add the value of the nickels, dimes and quarter: 25 cents + 10 cents + 70 cents = <<25+10+70=105>>105 cents\n#### 105"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "quarter",
+      "nickels",
+      "dimes",
+      "cents"
+    ],
+    "notes": "The text contains culturally specific entities such as a Western name and US currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "quarter_value",
+      "value": 25,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "nickels_value",
+      "value": 10,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "dimes_value",
+      "value": 70,
+      "unit": "cent",
+      "context": "answer"
+    },
+    {
+      "variable": "total_amount",
+      "value": 105,
+      "unit": "cent",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"cent\": {\"unit\": \"won\", \"rate\": 1389.5 / 100},\n        \"dollar\": {\"unit\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"quarter_value\", \"value\": 25, \"unit\": \"cent\", \"context\": \"answer\"},\n    {\"variable\": \"nickels_value\", \"value\": 10, \"unit\": \"cent\", \"context\": \"answer\"},\n    {\"variable\": \"dimes_value\", \"value\": 70, \"unit\": \"cent\", \"context\": \"answer\"},\n    {\"variable\": \"total_amount\", \"value\": 105, \"unit\": \"cent\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "quarter_value",
+        "original_value": 25,
+        "original_unit": "cent",
+        "converted_value": 347.38,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "nickels_value",
+        "original_value": 10,
+        "original_unit": "cent",
+        "converted_value": 138.95,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "dimes_value",
+        "original_value": 70,
+        "original_unit": "cent",
+        "converted_value": 972.65,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_amount",
+        "original_value": 105,
+        "original_unit": "cent",
+        "converted_value": 1458.97,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in cents does James have?",
+    "templatized_answer": [
+      "First figure out how much the nickels are worth: 2 * 5 cents = {nickel_value} cents",
+      "Then figure out how much the dimes are worth: 7 * 10 cents = {dimes_value} cents",
+      "Finally, add the value of the nickels, dimes and quarter: {quarter_value} cents + {nickel_value} cents + {dimes_value} cents = {total_amount} cents",
+      "#### {total_amount}"
+    ],
+    "factual_assignment": {
+      "quarter_value": 25,
+      "nickel_value": 10,
+      "dimes_value": 70,
+      "total_amount": 105
+    }
+  },
+  "merged_assignment": {
+    "quarter_value": 347.38,
+    "nickel_value": 10,
+    "dimes_value": 972.65,
+    "total_amount": 1458.97
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Define the values in cents\n    quarter_value_cents = 25\n    nickel_value_cents = 5\n    dime_value_cents = 10\n\n    # Recompute the values\n    nickel_value = 2 * nickel_value_cents\n    dimes_value = 7 * dime_value_cents\n    total_amount = quarter_value_cents + nickel_value + dimes_value\n\n    # Return the recomputed values\n    return {\n        \"quarter_value\": quarter_value_cents,\n        \"nickel_value\": nickel_value,\n        \"dimes_value\": dimes_value,\n        \"total_amount\": total_amount\n    }\n",
+    "results": {
+      "quarter_value": 25,
+      "nickel_value": 10,
+      "dimes_value": 70,
+      "total_amount": 105
+    }
+  },
+  "final": {
+    "question": "James likes to check the coin return of the vending machine for change. One day he finds a quarter, two nickels, and 7 dimes. How much money in won does James have?",
+    "answer_lines": [
+      "First figure out how much the nickels are worth: 2 * 5 cents = 10 cents = 138.95 won",
+      "Then figure out how much the dimes are worth: 7 * 10 cents = 70 cents = 972.65 won",
+      "Finally, add the value of the nickels, dimes and quarter: 25 cents = 347.38 won + 10 cents = 138.95 won + 70 cents = 972.65 won = 1458.97 won",
+      "#### 1458.97"
+    ],
+    "final_scalar": 1458.97,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo likes to check the coin return of the vending machine for change. One day he finds a 250-won coin, two 50-won coins, and 7 100-won coins. How much money in won does Min-soo have?",
+    "adapted_answer": [
+      "First figure out how much the 50-won coins are worth: 2 * 50 won = 100 won = 138.95 won",
+      "Then figure out how much the 100-won coins are worth: 7 * 100 won = 700 won = 972.65 won",
+      "Finally, add the value of the 50-won coins, 100-won coins and 250-won coin: 250 won = 347.38 won + 100 won = 138.95 won + 700 won = 972.65 won = 1458.97 won"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Min-soo', 'quarter' with '250-won coin', 'nickels' with '50-won coins', and 'dimes' with '100-won coins'."
+  }
+}

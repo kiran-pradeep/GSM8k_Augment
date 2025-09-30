@@ -1,0 +1,103 @@
+{
+  "index": 1091,
+  "split": "test",
+  "original": {
+    "question": "An apple orchard sells apples in bags of 10. The orchard sold a total of 2000 apples one day. How much did an orchard earn for selling this at $5 per bag?",
+    "answer": "There were 2000/10 = <<2000/10=200>>200 bags of apples sold.\nTherefore, the orchard earned 200 x $5 = $<<200*5=1000>>1000.\n#### 1000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "apples"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in Western countries, and 'apples' which is a food item commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bag_price",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 1000,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bag_price\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 1000, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bag_price",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 1000,
+        "original_unit": "dollar",
+        "converted_value": 147070.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An apple orchard sells apples in bags of {apples_per_bag}. The orchard sold a total of {total_apples} apples one day. How much did an orchard earn for selling this at ${bag_price} per bag?",
+    "templatized_answer": [
+      "There were {total_apples}/{apples_per_bag} = {total_bags} bags of apples sold.",
+      "Therefore, the orchard earned {total_bags} x ${bag_price} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "bag_price": 5,
+      "total_earnings": 1000,
+      "apples_per_bag": 10,
+      "total_apples": 2000,
+      "total_bags": 200
+    }
+  },
+  "merged_assignment": {
+    "bag_price": 735.35,
+    "total_earnings": 147070.0,
+    "apples_per_bag": 10,
+    "total_apples": 2000,
+    "total_bags": 200
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"bag_price\": 735.35,\n        \"total_earnings\": 147070.0,\n        \"apples_per_bag\": 10,\n        \"total_apples\": 2000,\n        \"total_bags\": 200\n    }\n\n    # Recompute total_bags\n    total_bags = factual_assignment[\"total_apples\"] / factual_assignment[\"apples_per_bag\"]\n\n    # Recompute total_earnings\n    total_earnings = total_bags * factual_assignment[\"bag_price\"]\n\n    # Round to 2 decimal places where appropriate\n    total_earnings = round(total_earnings, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"apples_per_bag\": factual_assignment[\"apples_per_bag\"],\n        \"total_apples\": factual_assignment[\"total_apples\"],\n        \"total_bags\": round(total_bags, 2),\n        \"bag_price\": round(factual_assignment[\"bag_price\"], 2),\n        \"total_earnings\": total_earnings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "apples_per_bag": 10,
+      "total_apples": 2000,
+      "total_bags": 200.0,
+      "bag_price": 735.35,
+      "total_earnings": 147070.0
+    }
+  },
+  "final": {
+    "question": "An apple orchard sells apples in bags of 10. The orchard sold a total of 2000 apples one day. How much did an orchard earn for selling this at 735.35 yen per bag?",
+    "answer_lines": [
+      "There were 2000/10 = 200.0 bags of apples sold.",
+      "Therefore, the orchard earned 200.0 x 735.35 yen = 147070.0 yen.",
+      "#### 147070.0"
+    ],
+    "final_scalar": 147070.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A Japanese pear orchard sells Japanese pears in bags of 10. The orchard sold a total of 2000 Japanese pears one day. How much did an orchard earn for selling this at 735.35 yen per bag?",
+    "adapted_answer": [
+      "There were 2000/10 = 200.0 bags of Japanese pears sold.",
+      "Therefore, the orchard earned 200.0 x 735.35 yen = 147070.0 yen.",
+      "#### 147070.0"
+    ],
+    "adaptation_notes": "Replaced 'apple' with 'Japanese pear' to give the question a Japanese context."
+  }
+}

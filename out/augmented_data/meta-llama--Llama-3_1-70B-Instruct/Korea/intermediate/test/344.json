@@ -1,0 +1,134 @@
+{
+  "index": 344,
+  "split": "test",
+  "original": {
+    "question": "At a restaurant, Juice Box A is 4 dollars. Juice Box B is 5 dollars more than Juice Box A. Juice Box C is 7 dollars more than Juice Box A. How much more is Juice box C than Juice Box B?",
+    "answer": "Juice Box B is 4+5 = <<4+5=9>>9 dollars.\nJuice box C is 4+7 = <<4+7=11>>11 dollars.\nJuice box C is 11-9 = <<11-9=2>>2 dollars more than Juice box B.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "juice_box_a_cost",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "juice_box_b_cost",
+      "value": 9.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "juice_box_c_cost",
+      "value": 11.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "juice_box_c_b_difference",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"juice_box_a_cost\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"juice_box_b_cost\", \"value\": 9.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"juice_box_c_cost\", \"value\": 11.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"juice_box_c_b_difference\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "juice_box_a_cost",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "juice_box_b_cost",
+        "original_value": 9.0,
+        "original_unit": "dollar",
+        "converted_value": 12505.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "juice_box_c_cost",
+        "original_value": 11.0,
+        "original_unit": "dollar",
+        "converted_value": 15284.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "juice_box_c_b_difference",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "At a restaurant, Juice Box A is {juice_box_a_cost} dollars. Juice Box B is {juice_box_b_a_difference} dollars more than Juice Box A. Juice Box C is {juice_box_c_a_difference} dollars more than Juice Box A. How much more is Juice box C than Juice Box B?",
+    "templatized_answer": [
+      "Juice Box B is {juice_box_a_cost}+{juice_box_b_a_difference} = {juice_box_b_cost} dollars.",
+      "Juice box C is {juice_box_a_cost}+{juice_box_c_a_difference} = {juice_box_c_cost} dollars.",
+      "Juice box C is {juice_box_c_cost}-{juice_box_b_cost} = {juice_box_c_b_difference} dollars more than Juice box B.",
+      "#### {juice_box_c_b_difference}"
+    ],
+    "factual_assignment": {
+      "juice_box_a_cost": 4.0,
+      "juice_box_b_a_difference": 5.0,
+      "juice_box_c_a_difference": 7.0,
+      "juice_box_b_cost": 9.0,
+      "juice_box_c_cost": 11.0,
+      "juice_box_c_b_difference": 2.0
+    }
+  },
+  "merged_assignment": {
+    "juice_box_a_cost": 5558.0,
+    "juice_box_b_a_difference": 5.0,
+    "juice_box_c_a_difference": 7.0,
+    "juice_box_b_cost": 12505.5,
+    "juice_box_c_cost": 15284.5,
+    "juice_box_c_b_difference": 2779.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    juice_box_a_cost = 5558.0\n    juice_box_b_a_difference = 5.0\n    juice_box_c_a_difference = 7.0\n\n    juice_box_b_cost = juice_box_a_cost + juice_box_b_a_difference\n    juice_box_c_cost = juice_box_a_cost + juice_box_c_a_difference\n    juice_box_c_b_difference = juice_box_c_cost - juice_box_b_cost\n\n    return {\n        \"juice_box_a_cost\": round(juice_box_a_cost, 2),\n        \"juice_box_b_a_difference\": round(juice_box_b_a_difference, 2),\n        \"juice_box_c_a_difference\": round(juice_box_c_a_difference, 2),\n        \"juice_box_b_cost\": round(juice_box_b_cost, 2),\n        \"juice_box_c_cost\": round(juice_box_c_cost, 2),\n        \"juice_box_c_b_difference\": round(juice_box_c_b_difference, 2)\n    }\n",
+    "results": {
+      "juice_box_a_cost": 5558.0,
+      "juice_box_b_a_difference": 5.0,
+      "juice_box_c_a_difference": 7.0,
+      "juice_box_b_cost": 5563.0,
+      "juice_box_c_cost": 5565.0,
+      "juice_box_c_b_difference": 2.0
+    }
+  },
+  "final": {
+    "question": "At a restaurant, Juice Box A is 5558 won. Juice Box B is 5 won more than Juice Box A. Juice Box C is 7 won more than Juice Box A. How much more is Juice box C than Juice Box B?",
+    "answer_lines": [
+      "Juice Box B is 5558+5 = 5563 won.",
+      "Juice box C is 5558+7 = 5565 won.",
+      "Juice box C is 5565-5563 = 2 won more than Juice box B.",
+      "#### 2"
+    ],
+    "final_scalar": 2.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "At a restaurant, Sikhye A is 5558 won. Sikhye B is 5 won more than Sikhye A. Sikhye C is 7 won more than Sikhye A. How much more is Sikhye C than Sikhye B?",
+    "adapted_answer": [
+      "Sikhye B is 5558+5 = 5563 won.",
+      "Sikhye C is 5558+7 = 5565 won.",
+      "Sikhye C is 5565-5563 = 2 won more than Sikhye B.",
+      "#### 2"
+    ],
+    "adaptation_notes": "Replaced 'Juice Box' with 'Sikhye', a traditional Korean drink."
+  }
+}

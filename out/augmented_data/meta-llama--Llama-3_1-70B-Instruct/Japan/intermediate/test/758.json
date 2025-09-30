@@ -1,0 +1,111 @@
+{
+  "index": 758,
+  "split": "test",
+  "original": {
+    "question": "A bag has a 5% discount. If it is marked $140, how much will you pay after the discount?",
+    "answer": "The discount amounts to $140 x 5/100 = $<<140*5/100=7>>7.\nHence, you will pay $140 - $7 = $<<140-7=133>>133 for the discounted bag.\n#### 133"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "original_price",
+      "value": 140.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "discount_amount",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discounted_price",
+      "value": 133.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"original_price\", \"value\": 140.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"discount_amount\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discounted_price\", \"value\": 133.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "original_price",
+        "original_value": 140.0,
+        "original_unit": "dollar",
+        "converted_value": 20589.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "discount_amount",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "discounted_price",
+        "original_value": 133.0,
+        "original_unit": "dollar",
+        "converted_value": 19560.31,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A bag has a {discount_percentage}% discount. If it is marked ${original_price}, how much will you pay after the discount?",
+    "templatized_answer": [
+      "The discount amounts to ${original_price} x {discount_percentage}/100 = ${discount_amount}.",
+      "Hence, you will pay ${original_price} - ${discount_amount} = ${discounted_price} for the discounted bag.",
+      "#### {discounted_price}"
+    ],
+    "factual_assignment": {
+      "original_price": 140.0,
+      "discount_amount": 7.0,
+      "discounted_price": 133.0,
+      "discount_percentage": 5.0
+    }
+  },
+  "merged_assignment": {
+    "original_price": 20589.8,
+    "discount_amount": 1029.49,
+    "discounted_price": 19560.31,
+    "discount_percentage": 5.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    discount_percentage = 5.0\n    original_price = 20589.8\n\n    discount_amount = original_price * discount_percentage / 100\n    discounted_price = original_price - discount_amount\n\n    return {\n        \"discount_percentage\": discount_percentage,\n        \"original_price\": original_price,\n        \"discount_amount\": round(discount_amount, 2),\n        \"discounted_price\": round(discounted_price, 2)\n    }\n",
+    "results": {
+      "discount_percentage": 5.0,
+      "original_price": 20589.8,
+      "discount_amount": 1029.49,
+      "discounted_price": 19560.31
+    }
+  },
+  "final": {
+    "question": "A bag has a 5.0% discount. If it is marked 20589.8 yen, how much will you pay after the discount?",
+    "answer_lines": [
+      "The discount amounts to 20589.8 x 5.0/100 = 1029.49.",
+      "Hence, you will pay 20589.8 - 1029.49 = 19560.31 for the discounted bag.",
+      "#### 19560.31"
+    ],
+    "final_scalar": 19560.31,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A furoshiki has a 5.0% discount. If it is marked 20589.8 yen, how much will you pay after the discount?",
+    "adapted_answer": [
+      "The discount amounts to 20589.8 x 5.0/100 = 1029.49.",
+      "Hence, you will pay 20589.8 - 1029.49 = 19560.31 for the discounted furoshiki."
+    ],
+    "adaptation_notes": "Replaced 'bag' with 'furoshiki', a traditional Japanese wrapping cloth, to provide a Japanese context."
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "index": 363,
+  "split": "test",
+  "original": {
+    "question": "John drives to his friend's house 200 miles away.  He drives at a speed of 70 mph.  He had to take a detour that added 10 miles to his trip.  After he gets there he takes a route home that is 240 miles but he goes 80 mph.  How long did the trip take?",
+    "answer": "The first leg was 200+10=<<200+10=210>>210 miles\nSo he drove 210/70=<<210/70=3>>3 hours\nThe second route took 240/80=<<240/80=3>>3 hours\nSo in total he drove 3+3=<<3+3=6>>6 hours\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "miles",
+      "mph"
+    ],
+    "notes": "Detected Western name and non-metric units"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "distance_to_friend",
+      "value": 200.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "speed_to_friend",
+      "value": 70.0,
+      "unit": "mph",
+      "context": "question"
+    },
+    {
+      "variable": "detour_distance",
+      "value": 10.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "distance_home",
+      "value": 240.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "speed_home",
+      "value": 80.0,
+      "unit": "mph",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"km\", \"factor\": 1.60934},\n        \"mph\": {\"unit\": \"km/h\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kg\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"g\", \"factor\": 28.3495},\n        \"gallon\": {\"unit\": \"L\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"mL\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"foot\": {\"unit\": \"m\", \"factor\": 0.3048},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"distance_to_friend\", \"value\": 200.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"speed_to_friend\", \"value\": 70.0, \"unit\": \"mph\", \"context\": \"question\"},\n    {\"variable\": \"detour_distance\", \"value\": 10.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"distance_home\", \"value\": 240.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"speed_home\", \"value\": 80.0, \"unit\": \"mph\", \"context\": \"question\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "distance_to_friend",
+        "original_value": 200.0,
+        "original_unit": "mile",
+        "converted_value": 321.87,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "speed_to_friend",
+        "original_value": 70.0,
+        "original_unit": "mph",
+        "converted_value": 112.65,
+        "converted_unit": "km/h"
+      },
+      {
+        "variable": "detour_distance",
+        "original_value": 10.0,
+        "original_unit": "mile",
+        "converted_value": 16.09,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "distance_home",
+        "original_value": 240.0,
+        "original_unit": "mile",
+        "converted_value": 386.24,
+        "converted_unit": "km"
+      },
+      {
+        "variable": "speed_home",
+        "original_value": 80.0,
+        "original_unit": "mph",
+        "converted_value": 128.75,
+        "converted_unit": "km/h"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John drives to his friend's house {distance_to_friend} miles away. He drives at a speed of {speed_to_friend} mph. He had to take a detour that added {detour_distance} miles to his trip. After he gets there he takes a route home that is {distance_home} miles but he goes {speed_home} mph. How long did the trip take?",
+    "templatized_answer": [
+      "The first leg was {distance_to_friend}+{detour_distance}={distance_to_friend}+{detour_distance} miles",
+      "So he drove ({distance_to_friend}+{detour_distance})/{speed_to_friend}=({distance_to_friend}+{detour_distance})/{speed_to_friend} hours",
+      "The second route took {distance_home}/{speed_home}={distance_home}/{speed_home} hours",
+      "So in total he drove ({distance_to_friend}+{detour_distance})/{speed_to_friend}+{distance_home}/{speed_home}=({distance_to_friend}+{detour_distance})/{speed_to_friend}+{distance_home}/{speed_home} hours",
+      "#### ({distance_to_friend}+{detour_distance})/{speed_to_friend}+{distance_home}/{speed_home}"
+    ],
+    "factual_assignment": {
+      "distance_to_friend": 200.0,
+      "speed_to_friend": 70.0,
+      "detour_distance": 10.0,
+      "distance_home": 240.0,
+      "speed_home": 80.0
+    }
+  },
+  "merged_assignment": {
+    "distance_to_friend": 321.87,
+    "speed_to_friend": 112.65,
+    "detour_distance": 16.09,
+    "distance_home": 386.24,
+    "speed_home": 128.75
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    distance_to_friend = 321.87\n    speed_to_friend = 112.65\n    detour_distance = 16.09\n    distance_home = 386.24\n    speed_home = 128.75\n\n    total_distance_to_friend = distance_to_friend + detour_distance\n    time_to_friend = round(total_distance_to_friend / speed_to_friend, 2)\n    time_home = round(distance_home / speed_home, 2)\n    total_time = round(time_to_friend + time_home, 2)\n\n    return {\n        \"distance_to_friend\": distance_to_friend,\n        \"speed_to_friend\": speed_to_friend,\n        \"detour_distance\": detour_distance,\n        \"distance_home\": distance_home,\n        \"speed_home\": speed_home,\n        \"distance_to_friend+detour_distance\": total_distance_to_friend,\n        \"({distance_to_friend}+{detour_distance})/{speed_to_friend}\": time_to_friend,\n        \"{distance_home}/{speed_home}\": time_home,\n        \"({distance_to_friend}+{detour_distance})/{speed_to_friend}+{distance_home}/{speed_home}\": total_time\n    }\n",
+    "results": {
+      "distance_to_friend": 321.87,
+      "speed_to_friend": 112.65,
+      "detour_distance": 16.09,
+      "distance_home": 386.24,
+      "speed_home": 128.75,
+      "distance_to_friend+detour_distance": 337.96,
+      "({distance_to_friend}+{detour_distance})/{speed_to_friend}": 3.0,
+      "{distance_home}/{speed_home}": 3.0,
+      "({distance_to_friend}+{detour_distance})/{speed_to_friend}+{distance_home}/{speed_home}": 6.0
+    }
+  },
+  "final": {
+    "question": "John drives to his friend's house 321.87 kilometers away. He drives at a speed of 112.65 kilometers per hour. He had to take a detour that added 16.09 kilometers to his trip. After he gets there he takes a route home that is 386.24 kilometers but he goes 128.75 kilometers per hour. How long did the trip take?",
+    "answer_lines": [
+      "The first leg was 321.87+16.09=337.96 kilometers",
+      "So he drove 337.96/112.65=3.0 hours",
+      "The second route took 386.24/128.75=3.0 hours",
+      "So in total he drove 3.0+3.0=6.0 hours",
+      "#### 6.0"
+    ],
+    "final_scalar": 6.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro drives to his friend's house 321.87 kilometers away. He drives at a speed of 112.65 kilometers per hour. He had to take a detour that added 16.09 kilometers to his trip. After he gets there he takes a route home that is 386.24 kilometers but he goes 128.75 kilometers per hour. How long did the trip take?",
+    "adapted_answer": [
+      "The first leg was 321.87+16.09=337.96 kilometers",
+      "So he drove 337.96/112.65=3.0 hours",
+      "The second route took 386.24/128.75=3.0 hours",
+      "So in total he drove 3.0+3.0=6.0 hours",
+      "#### 6.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro' to give the name a Japanese context."
+  }
+}

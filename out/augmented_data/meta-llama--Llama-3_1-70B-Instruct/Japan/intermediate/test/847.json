@@ -1,0 +1,129 @@
+{
+  "index": 847,
+  "split": "test",
+  "original": {
+    "question": "Brenda invested $300 into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "answer": "Three-quarters of $300 is (3/4)*$300 = $<<(3/4)*300=225>>225\nAfter 3 years, interest of $225*3 = $<<225*3=675>>675 has been accumulated\nShe now has a total of $300+$675 = $<<300+675=975>>975\n#### 975"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Brenda",
+      "dollars"
+    ],
+    "notes": "The name Brenda and the unit dollars are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_investment",
+      "value": 300,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "interest_per_year",
+      "value": 225,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_interest",
+      "value": 675,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_after_3_years",
+      "value": 975,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_investment\", \"value\": 300, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"interest_per_year\", \"value\": 225, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_interest\", \"value\": 675, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_after_3_years\", \"value\": 975, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_investment",
+        "original_value": 300,
+        "original_unit": "dollar",
+        "converted_value": 44121.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "interest_per_year",
+        "original_value": 225,
+        "original_unit": "dollar",
+        "converted_value": 33090.75,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_interest",
+        "original_value": 675,
+        "original_unit": "dollar",
+        "converted_value": 99272.25,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_after_3_years",
+        "original_value": 975,
+        "original_unit": "dollar",
+        "converted_value": 143393.25,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Brenda invested ${initial_investment} into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "templatized_answer": [
+      "Three-quarters of ${initial_investment} is (3/4)*${initial_investment} = ${interest_per_year}",
+      "After 3 years, interest of ${interest_per_year}*3 = ${total_interest} has been accumulated",
+      "She now has a total of ${initial_investment}+${total_interest} = ${total_after_3_years}",
+      "#### {total_after_3_years}"
+    ],
+    "factual_assignment": {
+      "initial_investment": 300,
+      "interest_per_year": 225,
+      "total_interest": 675,
+      "total_after_3_years": 975
+    }
+  },
+  "merged_assignment": {
+    "initial_investment": 44121.0,
+    "interest_per_year": 33090.75,
+    "total_interest": 99272.25,
+    "total_after_3_years": 143393.25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_investment = 44121.0\n    interest_per_year = (3/4) * initial_investment\n    total_interest = interest_per_year * 3\n    total_after_3_years = initial_investment + total_interest\n\n    return {\n        \"initial_investment\": initial_investment,\n        \"interest_per_year\": round(interest_per_year, 2),\n        \"total_interest\": round(total_interest, 2),\n        \"total_after_3_years\": round(total_after_3_years, 2)\n    }\n",
+    "results": {
+      "initial_investment": 44121.0,
+      "interest_per_year": 33090.75,
+      "total_interest": 99272.25,
+      "total_after_3_years": 143393.25
+    }
+  },
+  "final": {
+    "question": "Brenda invested 44121.0 into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "answer_lines": [
+      "Three-quarters of 44121.0 is (3/4)*44121.0 = 33090.75",
+      "After 3 years, interest of 33090.75*3 = 99272.25 has been accumulated",
+      "She now has a total of 44121.0+99272.25 = 143393.25",
+      "#### 143393.25"
+    ],
+    "final_scalar": 143393.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui invested 44121.0 into a scheme that accumulates simple interest at the rate of three-quarters of the original amount per year. How much in total will she have after 3 years?",
+    "adapted_answer": [
+      "Three-quarters of 44121.0 is (3/4)*44121.0 = 33090.75",
+      "After 3 years, interest of 33090.75*3 = 99272.25 has been accumulated",
+      "She now has a total of 44121.0+99272.25 = 143393.25",
+      "#### 143393.25"
+    ],
+    "adaptation_notes": "Replaced 'Brenda' with 'Yui', a common Japanese name."
+  }
+}

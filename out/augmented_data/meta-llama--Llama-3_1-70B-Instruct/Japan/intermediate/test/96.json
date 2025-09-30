@@ -1,0 +1,110 @@
+{
+  "index": 96,
+  "split": "test",
+  "original": {
+    "question": "Harry slept 9 hours last night. His friend James slept only 2/3 of what Harry slept. How many more hours did Harry sleep than James?",
+    "answer": "James slept 9 hours * 2/3 = <<9*2/3=6>>6 hours.\nSo, Harry slept 9 - 6 = <<9-6=3>>3 hours more than James.\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Harry",
+      "James"
+    ],
+    "notes": "Names 'Harry' and 'James' are culturally specific to Western regions."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "harry_sleep",
+      "value": 9.0,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "james_sleep",
+      "value": 6.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "sleep_difference",
+      "value": 3.0,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588},\n        \"hour\": {\"to\": \"hour\", \"rate\": 1}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"harry_sleep\",\n    \"value\": 9.0,\n    \"unit\": \"hour\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"james_sleep\",\n    \"value\": 6.0,\n    \"unit\": \"hour\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"sleep_difference\",\n    \"value\": 3.0,\n    \"unit\": \"hour\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "harry_sleep",
+        "original_value": 9.0,
+        "original_unit": "hour",
+        "converted_value": 9.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "james_sleep",
+        "original_value": 6.0,
+        "original_unit": "hour",
+        "converted_value": 6.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "sleep_difference",
+        "original_value": 3.0,
+        "original_unit": "hour",
+        "converted_value": 3.0,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Harry slept {harry_sleep} hours last night. His friend James slept only 2/3 of what Harry slept. How many more hours did Harry sleep than James?",
+    "templatized_answer": [
+      "James slept {harry_sleep} hours * 2/3 = {james_sleep} hours.",
+      "So, Harry slept {harry_sleep} - {james_sleep} = {sleep_difference} hours more than James.",
+      "#### {sleep_difference}"
+    ],
+    "factual_assignment": {
+      "harry_sleep": 9.0,
+      "james_sleep": 6.0,
+      "sleep_difference": 3.0
+    }
+  },
+  "merged_assignment": {
+    "harry_sleep": 9.0,
+    "james_sleep": 6.0,
+    "sleep_difference": 3.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    harry_sleep = 9.0\n    james_sleep = harry_sleep * 2/3\n    sleep_difference = harry_sleep - james_sleep\n\n    return {\n        \"harry_sleep\": harry_sleep,\n        \"james_sleep\": round(james_sleep, 2),\n        \"sleep_difference\": round(sleep_difference, 2)\n    }\n",
+    "results": {
+      "harry_sleep": 9.0,
+      "james_sleep": 6.0,
+      "sleep_difference": 3.0
+    }
+  },
+  "final": {
+    "question": "Harry slept 9.0 hours last night. His friend James slept only 2/3 of what Harry slept. How many more hours did Harry sleep than James?",
+    "answer_lines": [
+      "James slept 9.0 hours * 2/3 = 6.0 hours.",
+      "So, Harry slept 9.0 - 6.0 = 3.0 hours more than James.",
+      "#### 3.0"
+    ],
+    "final_scalar": 3.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro slept 9.0 hours last night. His friend Shinji slept only 2/3 of what Taro slept. How many more hours did Taro sleep than Shinji?",
+    "adapted_answer": [
+      "Shinji slept 9.0 hours * 2/3 = 6.0 hours.",
+      "So, Taro slept 9.0 - 6.0 = 3.0 hours more than Shinji.",
+      "#### 3.0"
+    ],
+    "adaptation_notes": "Replaced 'Harry' with 'Taro' and 'James' with 'Shinji' to give the names a Japanese context."
+  }
+}

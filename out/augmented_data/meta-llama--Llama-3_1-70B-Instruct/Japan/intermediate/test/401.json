@@ -1,0 +1,117 @@
+{
+  "index": 401,
+  "split": "test",
+  "original": {
+    "question": "A builder works for 4 weeks every month and for 6 days every week. If he gets paid $50 every day, how much does he earn if he works for a year?",
+    "answer": "The builder works for 6 days every week and works for 4 weeks every month so he works for 6 days/week * 4 weeks/month = <<6*4=24>>24 days/month\nIf he earns $50 every day he then earns $50/day * 24 days/month = $<<50*24=1200>>1200/month\nA year is equal to 12 months so every year he earns $1200/month * 12 months/year = $<<1200*12=14400>>14400\n#### 14400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_earnings",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 1200,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_earnings",
+      "value": 14400,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_earnings\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_earnings\", \"value\": 1200, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_earnings\", \"value\": 14400, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_earnings",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 7353.5,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 1200,
+        "original_unit": "dollar",
+        "converted_value": 176484.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "yearly_earnings",
+        "original_value": 14400,
+        "original_unit": "dollar",
+        "converted_value": 2117808.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A builder works for {weeks_per_month} weeks every month and for {days_per_week} days every week. If he gets paid ${daily_earnings} every day, how much does he earn if he works for a year?",
+    "templatized_answer": [
+      "The builder works for {days_per_week} days every week and works for {weeks_per_month} weeks every month so he works for {days_per_week} days/week * {weeks_per_month} weeks/month = {days_per_week} * {weeks_per_month} days/month",
+      "If he earns ${daily_earnings} every day he then earns ${daily_earnings}/day * {days_per_week} * {weeks_per_month} days/month = ${daily_earnings} * {days_per_week} * {weeks_per_month}/month",
+      "A year is equal to {months_per_year} months so every year he earns ${daily_earnings} * {days_per_week} * {weeks_per_month}/month * {months_per_year} months/year = ${daily_earnings} * {days_per_week} * {weeks_per_month} * {months_per_year}",
+      "#### ${daily_earnings} * {days_per_week} * {weeks_per_month} * {months_per_year}"
+    ],
+    "factual_assignment": {
+      "daily_earnings": 50,
+      "weeks_per_month": 4,
+      "days_per_week": 6,
+      "months_per_year": 12
+    }
+  },
+  "merged_assignment": {
+    "daily_earnings": 7353.5,
+    "weeks_per_month": 4,
+    "days_per_week": 6,
+    "months_per_year": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_earnings = 7353.5\n    weeks_per_month = 4\n    days_per_week = 6\n    months_per_year = 12\n\n    days_per_month = days_per_week * weeks_per_month\n    monthly_earnings = daily_earnings * days_per_month\n    yearly_earnings = monthly_earnings * months_per_year\n\n    return {\n        \"daily_earnings\": daily_earnings,\n        \"weeks_per_month\": weeks_per_month,\n        \"days_per_week\": days_per_week,\n        \"months_per_year\": months_per_year,\n        \"days_per_month\": days_per_month,\n        \"monthly_earnings\": round(monthly_earnings, 2),\n        \"yearly_earnings\": round(yearly_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "daily_earnings": 7353.5,
+      "weeks_per_month": 4,
+      "days_per_week": 6,
+      "months_per_year": 12,
+      "days_per_month": 24,
+      "monthly_earnings": 176484.0,
+      "yearly_earnings": 2117808.0
+    }
+  },
+  "final": {
+    "question": "A builder works for 4 weeks every month and for 6 days every week. If he gets paid 7353.5 yen every day, how much does he earn if he works for a year?",
+    "answer_lines": [
+      "The builder works for 6 days every week and works for 4 weeks every month so he works for 6 days/week * 4 weeks/month = 6 * 4 days/month = 24 days/month",
+      "If he earns 7353.5 yen every day he then earns 7353.5 yen/day * 24 days/month = 176484.0 yen/month",
+      "A year is equal to 12 months so every year he earns 176484.0 yen/month * 12 months/year = 2117808.0 yen",
+      "#### 2117808.0"
+    ],
+    "final_scalar": 2117808.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A builder works for 4 weeks every month and for 6 days every week. If he gets paid 7353.5 yen every day, how much does he earn if he works for a year?",
+    "adapted_answer": [
+      "The builder works for 6 days every week and works for 4 weeks every month so he works for 6 days/week * 4 weeks/month = 6 * 4 days/month = 24 days/month",
+      "If he earns 7353.5 yen every day he then earns 7353.5 yen/day * 24 days/month = 176484.0 yen/month",
+      "A year is equal to 12 months so every year he earns 176484.0 yen/month * 12 months/year = 2117808.0 yen"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

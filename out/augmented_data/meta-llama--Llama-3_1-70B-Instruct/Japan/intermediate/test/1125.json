@@ -1,0 +1,115 @@
+{
+  "index": 1125,
+  "split": "test",
+  "original": {
+    "question": "John packs M&M in small bags to eat.  He buys 3 large bags weighing 10 ounces each.  If an ounce of M&M has 30 M&M in it how many small bags can he make if he puts 10 in each small bag?",
+    "answer": "He bought 3*10=<<3*10=30>>30 ounces of M&M\nThat means he got 30*30=<<30*30=900>>900 M&Ms\nSo he can make 900/10=<<900/10=90>>90 bags\n#### 90"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "M&M",
+      "ounces"
+    ],
+    "notes": "The name 'John' is Western, 'M&M' is a Western candy, and 'ounces' is a unit of measurement commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "large_bag_weight",
+      "value": 10.0,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "large_bag_weight_total",
+      "value": 30.0,
+      "unit": "ounce",
+      "context": "answer"
+    },
+    {
+      "variable": "small_bag_capacity",
+      "value": 10.0,
+      "unit": "M&M",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"unit\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"large_bag_weight\", \"value\": 10.0, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"large_bag_weight_total\", \"value\": 30.0, \"unit\": \"ounce\", \"context\": \"answer\"},\n    {\"variable\": \"small_bag_capacity\", \"value\": 10.0, \"unit\": \"M&M\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "large_bag_weight",
+        "original_value": 10.0,
+        "original_unit": "ounce",
+        "converted_value": 283.5,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "large_bag_weight_total",
+        "original_value": 30.0,
+        "original_unit": "ounce",
+        "converted_value": 850.49,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "small_bag_capacity",
+        "original_value": 10.0,
+        "original_unit": "M&M",
+        "converted_value": 10.0,
+        "converted_unit": "M&M"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John packs M&M in small bags to eat.  He buys 3 large bags weighing {large_bag_weight} ounces each.  If an ounce of M&M has 30 M&M in it how many small bags can he make if he puts {small_bag_capacity} in each small bag?",
+    "templatized_answer": [
+      "He bought 3*{large_bag_weight}={large_bag_weight_total} ounces of M&M",
+      "That means he got {large_bag_weight_total}*30={large_bag_weight_total}*30 M&Ms",
+      "So he can make ({large_bag_weight_total}*30)/{small_bag_capacity}=#### {small_bag_capacity}"
+    ],
+    "factual_assignment": {
+      "large_bag_weight": 10.0,
+      "large_bag_weight_total": 30.0,
+      "small_bag_capacity": 10.0
+    }
+  },
+  "merged_assignment": {
+    "large_bag_weight": 283.5,
+    "large_bag_weight_total": 850.49,
+    "small_bag_capacity": 10.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    large_bag_weight = 283.5\n    large_bag_weight_total = 3 * large_bag_weight\n    large_bag_weight_total_mms = large_bag_weight_total * 30\n    small_bag_capacity = 10.0\n    small_bags = large_bag_weight_total_mms / small_bag_capacity\n\n    return {\n        \"large_bag_weight\": large_bag_weight,\n        \"large_bag_weight_total\": round(large_bag_weight_total, 2),\n        \"large_bag_weight_total_mms\": round(large_bag_weight_total_mms, 2),\n        \"small_bag_capacity\": small_bag_capacity,\n        \"small_bags\": round(small_bags, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "large_bag_weight": 283.5,
+      "large_bag_weight_total": 850.5,
+      "large_bag_weight_total_mms": 25515.0,
+      "small_bag_capacity": 10.0,
+      "small_bags": 2551.5
+    }
+  },
+  "final": {
+    "question": "John packs M&M in small bags to eat.  He buys 3 large bags weighing 283.5 grams each.  If a gram of M&M has 30 M&M in it how many small bags can he make if he puts 10 in each small bag?",
+    "answer_lines": [
+      "He bought 3*283.5=850.5 grams of M&M",
+      "That means he got 850.5*30=25515 M&Ms",
+      "So he can make 25515/10=2551.5 bags",
+      "#### 2551.5"
+    ],
+    "final_scalar": 2551.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro packs Hi-Chew in small bags to eat.  He buys 3 large bags weighing 283.5 grams each.  If a gram of Hi-Chew has 30 Hi-Chew in it how many small bags can he make if he puts 10 in each small bag?",
+    "adapted_answer": [
+      "He bought 3*283.5=850.5 grams of Hi-Chew",
+      "That means he got 850.5*30=25515 Hi-Chews",
+      "So he can make 25515/10=2551.5 bags",
+      "#### 2551.5"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro' (Japanese name) and 'M&M' with 'Hi-Chew' (Japanese candy)."
+  }
+}

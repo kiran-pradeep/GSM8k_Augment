@@ -1,0 +1,122 @@
+{
+  "index": 1258,
+  "split": "test",
+  "original": {
+    "question": "There are five phones on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs $20, how much does the whole phone plan cost?",
+    "answer": "Each additional phone costs 20 / 2 = $<<20/2=10>>10.\nThus, the four additional phones cost 4 * 10 = $<<4*10=40>>40 in all.\nThus, the whole phone plan cost $40 + $20 = $<<40+20=60>>60.\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "main_phone_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_phone_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "additional_phones_total_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "whole_phone_plan_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"main_phone_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"additional_phone_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"additional_phones_total_cost\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"whole_phone_plan_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "main_phone_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "additional_phone_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "additional_phones_total_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 5882.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "whole_phone_plan_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 8824.2,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "There are five phones on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs ${main_phone_cost}, how much does the whole phone plan cost?",
+    "templatized_answer": [
+      "Each additional phone costs {main_phone_cost} / 2 = ${main_phone_cost / 2}.",
+      "Thus, the four additional phones cost 4 * {main_phone_cost / 2} = ${4 * (main_phone_cost / 2)} in all.",
+      "Thus, the whole phone plan cost ${4 * (main_phone_cost / 2)} + ${main_phone_cost} = ${4 * (main_phone_cost / 2) + main_phone_cost}.",
+      "#### {4 * (main_phone_cost / 2) + main_phone_cost}"
+    ],
+    "factual_assignment": {
+      "main_phone_cost": 20
+    }
+  },
+  "merged_assignment": {
+    "main_phone_cost": 2941.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    main_phone_cost = 2941.4\n    additional_phone_cost = main_phone_cost / 2\n    additional_phones_cost = 4 * additional_phone_cost\n    whole_phone_plan_cost = additional_phones_cost + main_phone_cost\n\n    return {\n        \"main_phone_cost\": main_phone_cost,\n        \"main_phone_cost / 2\": round(additional_phone_cost, 2),\n        \"4 * (main_phone_cost / 2)\": round(additional_phones_cost, 2),\n        \"4 * (main_phone_cost / 2) + main_phone_cost\": round(whole_phone_plan_cost, 2)\n    }\n",
+    "results": {
+      "main_phone_cost": 2941.4,
+      "main_phone_cost / 2": 1470.7,
+      "4 * (main_phone_cost / 2)": 5882.8,
+      "4 * (main_phone_cost / 2) + main_phone_cost": 8824.2
+    }
+  },
+  "final": {
+    "question": "There are five phones on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs 2941.4 yen, how much does the whole phone plan cost?",
+    "answer_lines": [
+      "Each additional phone costs 2941.4 / 2 = 1470.7 yen.",
+      "Thus, the four additional phones cost 4 * 1470.7 = 5882.8 yen in all.",
+      "Thus, the whole phone plan cost 5882.8 + 2941.4 = 8824.2 yen.",
+      "#### 8824.2"
+    ],
+    "final_scalar": 8824.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "There are five keitai on a phone plan. The main phone costs twice as much as each additional phone. If the main phone plan costs 2941.4 yen, how much does the whole phone plan cost?",
+    "adapted_answer": [
+      "Each additional phone costs 2941.4 / 2 = 1470.7 yen.",
+      "Thus, the four additional phones cost 4 * 1470.7 = 5882.8 yen in all.",
+      "Thus, the whole phone plan cost 5882.8 + 2941.4 = 8824.2 yen.",
+      "#### 8824.2"
+    ],
+    "adaptation_notes": "Replaced 'phones' with 'keitai', a Japanese term for mobile phones."
+  }
+}

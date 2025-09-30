@@ -1,0 +1,121 @@
+{
+  "index": 892,
+  "split": "test",
+  "original": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her $6, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays $11 for her goods?",
+    "answer": "Ellen's yogurt cost is half the price of the salad, so it's $6 / 2 = $<<6/2=3>>3.\nFor the two carrots Ellen needs to pay $11 - $6 - $3 = $<<11-6-3=2>>2.\nSo one carrot costs $2 / $2 = $<<2/2=1>>1.\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ellen",
+      "dollars",
+      "carrots",
+      "yogurt",
+      "salad"
+    ],
+    "notes": "The text contains a Western name, a non-Korean unit of currency, and Western food items."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "salad_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "yogurt_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "carrot_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"salad_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"yogurt_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"carrot_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "salad_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 8337.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "yogurt_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 15284.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "carrot_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 1389.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her ${salad_cost}, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays ${total_cost} for her goods?",
+    "templatized_answer": [
+      "Ellen's yogurt cost is half the price of the salad, so it's ${salad_cost} / 2 = ${salad_cost / 2}.",
+      "For the two carrots Ellen needs to pay ${total_cost} - ${salad_cost} - ${salad_cost / 2} = ${total_cost - salad_cost - (salad_cost / 2)}.",
+      "So one carrot costs (${total_cost - salad_cost - (salad_cost / 2)}) / 2 = ${carrot_cost}.",
+      "#### {carrot_cost}"
+    ],
+    "factual_assignment": {
+      "salad_cost": 6,
+      "total_cost": 11,
+      "carrot_cost": 1
+    }
+  },
+  "merged_assignment": {
+    "salad_cost": 8337.0,
+    "total_cost": 15284.5,
+    "carrot_cost": 1389.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    salad_cost = 8337.0\n    total_cost = 15284.5\n\n    yogurt_cost = salad_cost / 2\n    total_carrot_cost = total_cost - salad_cost - yogurt_cost\n    carrot_cost = total_carrot_cost / 2\n\n    return {\n        \"salad_cost\": round(salad_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"carrot_cost\": round(carrot_cost, 2),\n        \"yogurt_cost\": round(yogurt_cost, 2),\n        \"total_carrot_cost\": round(total_carrot_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "salad_cost": 8337.0,
+      "total_cost": 15284.5,
+      "carrot_cost": 1389.5,
+      "yogurt_cost": 4168.5,
+      "total_carrot_cost": 2779.0
+    }
+  },
+  "final": {
+    "question": "Ellen is on a diet. She eats two carrots, a salad, and a yogurt every day. The salad costs her 8337.0 won, while the yogurt is half the price. How much does Ellen pay for one carrot every day when in total she pays 15284.5 won for her goods?",
+    "answer_lines": [
+      "Ellen's yogurt cost is half the price of the salad, so it's 8337.0 / 2 = 4168.5.",
+      "For the two carrots Ellen needs to pay 15284.5 - 8337.0 - 4168.5 = 2779.0.",
+      "So one carrot costs 2779.0 / 2 = 1389.5.",
+      "#### 1389.5"
+    ],
+    "final_scalar": 1389.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  }
+}

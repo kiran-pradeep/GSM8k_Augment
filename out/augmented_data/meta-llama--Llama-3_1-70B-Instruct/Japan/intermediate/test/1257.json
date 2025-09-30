@@ -1,0 +1,104 @@
+{
+  "index": 1257,
+  "split": "test",
+  "original": {
+    "question": "Bob thinks he needs 56 popsicle sticks to recreate the Washington Monument for his history project.  His favorite popsicles come 8 to a box and cost $2.00 per box.  How much will it cost Bob to build his project?",
+    "answer": "He needs 56 popsicle sticks to build his project and they come 8 to a box so he needs 56/8 = <<56/8=7>>7 boxes\nEach box costs $2.00 and he needs 7 boxes so it will cost him 2*7 = $<<2*7=14.00>>14.00\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Washington Monument",
+      "popsicles",
+      "dollars"
+    ],
+    "notes": "The question contains references to the Washington Monument, a US landmark, and uses US currency and a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "popsicle_stick_box_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "project_cost",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"popsicle_stick_box_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"project_cost\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "popsicle_stick_box_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "project_cost",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 2058.98,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob thinks he needs {number_of_popsicle_sticks} popsicle sticks to recreate the Washington Monument for his history project.  His favorite popsicles come {popsicle_sticks_per_box} to a box and cost ${popsicle_stick_box_cost} per box.  How much will it cost Bob to build his project?",
+    "templatized_answer": [
+      "He needs {number_of_popsicle_sticks} popsicle sticks to build his project and they come {popsicle_sticks_per_box} to a box so he needs {number_of_popsicle_sticks}/{popsicle_sticks_per_box} = {number_of_boxes} boxes",
+      "Each box costs ${popsicle_stick_box_cost} and he needs {number_of_boxes} boxes so it will cost him {popsicle_stick_box_cost}*{number_of_boxes} = ${project_cost}",
+      "#### {project_cost}"
+    ],
+    "factual_assignment": {
+      "number_of_popsicle_sticks": 56,
+      "popsicle_sticks_per_box": 8,
+      "popsicle_stick_box_cost": 2.0,
+      "number_of_boxes": 7,
+      "project_cost": 14.0
+    }
+  },
+  "merged_assignment": {
+    "number_of_popsicle_sticks": 56,
+    "popsicle_sticks_per_box": 8,
+    "popsicle_stick_box_cost": 294.14,
+    "number_of_boxes": 7,
+    "project_cost": 2058.98
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_popsicle_sticks = 56\n    popsicle_sticks_per_box = 8\n    popsicle_stick_box_cost = 294.14\n\n    number_of_boxes = number_of_popsicle_sticks / popsicle_sticks_per_box\n    project_cost = round(popsicle_stick_box_cost * number_of_boxes, 2)\n\n    return {\n        \"number_of_popsicle_sticks\": number_of_popsicle_sticks,\n        \"popsicle_sticks_per_box\": popsicle_sticks_per_box,\n        \"popsicle_stick_box_cost\": round(popsicle_stick_box_cost, 2),\n        \"number_of_boxes\": round(number_of_boxes, 2),\n        \"project_cost\": project_cost\n    }\n",
+    "results": {
+      "number_of_popsicle_sticks": 56,
+      "popsicle_sticks_per_box": 8,
+      "popsicle_stick_box_cost": 294.14,
+      "number_of_boxes": 7.0,
+      "project_cost": 2058.98
+    }
+  },
+  "final": {
+    "question": "Bob thinks he needs 56 popsicle sticks to recreate the Washington Monument for his history project.  His favorite popsicles come 8 to a box and cost 294.14 yen per box.  How much will it cost Bob to build his project?",
+    "answer_lines": [
+      "He needs 56 popsicle sticks to build his project and they come 8 to a box so he needs 56/8 = 7 boxes",
+      "Each box costs 294.14 yen and he needs 7 boxes so it will cost him 294.14*7 = 2058.98 yen",
+      "#### 2058.98"
+    ],
+    "final_scalar": 2058.98,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Bob thinks he needs 56 popsicle sticks to recreate the Tokyo Tower for his history project.  His favorite ice candies come 8 to a box and cost 294.14 yen per box.  How much will it cost Bob to build his project?",
+    "adapted_answer": [
+      "He needs 56 popsicle sticks to build his project and they come 8 to a box so he needs 56/8 = 7 boxes",
+      "Each box costs 294.14 yen and he needs 7 boxes so it will cost him 294.14*7 = 2058.98 yen",
+      "#### 2058.98"
+    ],
+    "adaptation_notes": "Replaced 'Washington Monument' with 'Tokyo Tower' and 'popsicles' with 'ice candies' to provide a Japanese context."
+  }
+}

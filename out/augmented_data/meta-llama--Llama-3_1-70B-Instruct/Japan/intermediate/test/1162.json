@@ -1,0 +1,95 @@
+{
+  "index": 1162,
+  "split": "test",
+  "original": {
+    "question": "Geb is 10 less than half the age of Haley. If Haley is 26 years old, how old is Geb?",
+    "answer": "Half of Haley's age is 26/2 = <<26/2=13>>13.\nSo Geb is 13 - 10 = <<13-10=3>>3 years old.\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Haley",
+      "Geb"
+    ],
+    "notes": "Names Haley and Geb are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "haley_age",
+      "value": 26,
+      "unit": "year",
+      "context": "question"
+    },
+    {
+      "variable": "geb_age",
+      "value": 3,
+      "unit": "year",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"year\": {\"factor\": 1, \"unit\": \"year\"},\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            factor = conversions[original_unit][\"factor\"]\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * factor, 2)\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"haley_age\", \"value\": 26, \"unit\": \"year\", \"context\": \"question\"},\n    {\"variable\": \"geb_age\", \"value\": 3, \"unit\": \"year\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "haley_age",
+        "original_value": 26,
+        "original_unit": "year",
+        "converted_value": 26,
+        "converted_unit": "year"
+      },
+      {
+        "variable": "geb_age",
+        "original_value": 3,
+        "original_unit": "year",
+        "converted_value": 3,
+        "converted_unit": "year"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Geb is 10 less than half the age of Haley. If Haley is {haley_age} years old, how old is Geb?",
+    "templatized_answer": [
+      "Half of Haley's age is {haley_age}/2 = {haley_age/2}.",
+      "So Geb is {haley_age/2} - 10 = {geb_age} years old.",
+      "#### {geb_age}"
+    ],
+    "factual_assignment": {
+      "haley_age": 26,
+      "geb_age": 3
+    }
+  },
+  "merged_assignment": {
+    "haley_age": 26,
+    "geb_age": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    haley_age = 26\n    haley_age_half = haley_age / 2\n    geb_age = haley_age_half - 10\n\n    return {\n        \"haley_age\": haley_age,\n        \"haley_age/2\": round(haley_age_half, 2),\n        \"geb_age\": round(geb_age, 2)\n    }\n",
+    "results": {
+      "haley_age": 26,
+      "haley_age/2": 13.0,
+      "geb_age": 3.0
+    }
+  },
+  "final": {
+    "question": "Geb is 10 less than half the age of Haley. If Haley is 26 years old, how old is Geb?",
+    "answer_lines": [
+      "Half of Haley's age is 26/2 = 13.0.",
+      "So Geb is 13.0 - 10 = 3.0 years old.",
+      "#### 3.0"
+    ],
+    "final_scalar": 3.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Kaito is 10 less than half the age of Yui. If Yui is 26 years old, how old is Kaito?",
+    "adapted_answer": [
+      "Half of Yui's age is 26/2 = 13.0.",
+      "So Kaito is 13.0 - 10 = 3.0 years old.",
+      "#### 3.0"
+    ],
+    "adaptation_notes": "Replaced 'Geb' with 'Kaito' and 'Haley' with 'Yui' to give the names a Japanese context."
+  }
+}

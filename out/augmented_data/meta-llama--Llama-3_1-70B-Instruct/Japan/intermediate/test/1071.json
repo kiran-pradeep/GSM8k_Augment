@@ -1,0 +1,143 @@
+{
+  "index": 1071,
+  "split": "test",
+  "original": {
+    "question": "Kayla is having her birthday party at a movie theater. The fee to rent the theater is $125 for a party of 20, plus $6 for each additional guest. Kayla invited her 25 classmates and the 7 girls in her dance class, as well as 13 family members. Only 4 people said they could not come. How much will the party cost?",
+    "answer": "Kayla invited 25 classmates + 7 dance class friends + 13 family members = <<25+7+13=45>>45 people invited.\nOf the 45 people invited – 4 people cannot come = <<45-4=41>>41 people attending the party.\nOf the 41 people attending – 20 are included in the fee = <<41-20=21>>21 additional guests not included in the fee.\nThe cost for 21 additional guests is 21 x $6 = $<<21*6=126>>126.\nThe total cost for the party is the $125 fee + $126 for additional guests = $<<125+126=251>>251.\n#### 251"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "rental_fee",
+      "value": 125.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_guest_fee",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_guests_cost",
+      "value": 126.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_party_cost",
+      "value": 251.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"rental_fee\", \"value\": 125.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"additional_guest_fee\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"additional_guests_cost\", \"value\": 126.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_party_cost\", \"value\": 251.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "rental_fee",
+        "original_value": 125.0,
+        "original_unit": "dollar",
+        "converted_value": 18383.75,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "additional_guest_fee",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "additional_guests_cost",
+        "original_value": 126.0,
+        "original_unit": "dollar",
+        "converted_value": 18530.82,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_party_cost",
+        "original_value": 251.0,
+        "original_unit": "dollar",
+        "converted_value": 36914.57,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kayla is having her birthday party at a movie theater. The fee to rent the theater is ${rental_fee} for a party of 20, plus ${additional_guest_fee} for each additional guest. Kayla invited her 25 classmates and the 7 girls in her dance class, as well as 13 family members. Only 4 people said they could not come. How much will the party cost?",
+    "templatized_answer": [
+      "Kayla invited 25 classmates + 7 dance class friends + 13 family members = {total_guests_invited} people invited.",
+      "Of the {total_guests_invited} people invited – 4 people cannot come = {total_guests_attending} people attending the party.",
+      "Of the {total_guests_attending} people attending – 20 are included in the fee = {additional_guests} additional guests not included in the fee.",
+      "The cost for {additional_guests} additional guests is {additional_guests} x ${additional_guest_fee} = ${additional_guests_cost}.",
+      "The total cost for the party is the ${rental_fee} fee + ${additional_guests_cost} for additional guests = ${total_party_cost}.",
+      "#### {total_party_cost}"
+    ],
+    "factual_assignment": {
+      "rental_fee": 125.0,
+      "additional_guest_fee": 6.0,
+      "additional_guests_cost": 126.0,
+      "total_party_cost": 251.0,
+      "total_guests_invited": 45,
+      "total_guests_attending": 41,
+      "additional_guests": 21
+    }
+  },
+  "merged_assignment": {
+    "rental_fee": 18383.75,
+    "additional_guest_fee": 882.42,
+    "additional_guests_cost": 18530.82,
+    "total_party_cost": 36914.57,
+    "total_guests_invited": 45,
+    "total_guests_attending": 41,
+    "additional_guests": 21
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    rental_fee = 18383.75\n    additional_guest_fee = 882.42\n\n    total_guests_invited = 25 + 7 + 13\n    total_guests_attending = total_guests_invited - 4\n    additional_guests = total_guests_attending - 20\n    additional_guests_cost = round(additional_guests * additional_guest_fee, 2)\n    total_party_cost = round(rental_fee + additional_guests_cost, 2)\n\n    return {\n        \"rental_fee\": rental_fee,\n        \"additional_guest_fee\": additional_guest_fee,\n        \"additional_guests_cost\": additional_guests_cost,\n        \"total_party_cost\": total_party_cost,\n        \"total_guests_invited\": total_guests_invited,\n        \"total_guests_attending\": total_guests_attending,\n        \"additional_guests\": additional_guests\n    }\n",
+    "results": {
+      "rental_fee": 18383.75,
+      "additional_guest_fee": 882.42,
+      "additional_guests_cost": 18530.82,
+      "total_party_cost": 36914.57,
+      "total_guests_invited": 45,
+      "total_guests_attending": 41,
+      "additional_guests": 21
+    }
+  },
+  "final": {
+    "question": "Kayla is having her birthday party at a movie theater. The fee to rent the theater is 18383.75 yen for a party of 20, plus 882.42 yen for each additional guest. Kayla invited her 25 classmates and the 7 girls in her dance class, as well as 13 family members. Only 4 people said they could not come. How much will the party cost?",
+    "answer_lines": [
+      "Kayla invited 25 classmates + 7 dance class friends + 13 family members = 45 people invited.",
+      "Of the 45 people invited – 4 people cannot come = 41 people attending the party.",
+      "Of the 41 people attending – 20 are included in the fee = 21 additional guests not included in the fee.",
+      "The cost for 21 additional guests is 21 x 882.42 yen = 18530.82 yen.",
+      "The total cost for the party is the 18383.75 yen fee + 18530.82 yen for additional guests = 36914.57 yen.",
+      "#### 36914.57"
+    ],
+    "final_scalar": 36914.57,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is having her birthday party at a movie theater. The fee to rent the theater is 18383.75 yen for a party of 20, plus 882.42 yen for each additional guest. Yui invited her 25 classmates and the 7 girls in her karate class, as well as 13 family members. Only 4 people said they could not come. How much will the party cost?",
+    "adapted_answer": [
+      "Yui invited 25 classmates + 7 karate class friends + 13 family members = 45 people invited.",
+      "Of the 45 people invited – 4 people cannot come = 41 people attending the party.",
+      "Of the 41 people attending – 20 are included in the fee = 21 additional guests not included in the fee.",
+      "The cost for 21 additional guests is 21 x 882.42 yen = 18530.82 yen.",
+      "The total cost for the party is the 18383.75 yen fee + 18530.82 yen for additional guests = 36914.57 yen.",
+      "#### 36914.57"
+    ],
+    "adaptation_notes": "Replaced 'Kayla' with 'Yui', 'dance class' with 'karate class'."
+  }
+}

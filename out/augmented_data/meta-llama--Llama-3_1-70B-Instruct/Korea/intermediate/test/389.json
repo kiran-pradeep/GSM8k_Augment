@@ -1,0 +1,152 @@
+{
+  "index": 389,
+  "split": "test",
+  "original": {
+    "question": "David and Dasha went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at $2 per ticket.  You can also buy a ride bracelet for $30 which gives you 9 rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all 9 rides, how much money does David save?",
+    "answer": "Each ride cost 2 x $2 = $<<2*2=4>>4.\nAll 9 rides cost $4 x 9 = $<<4*9=36>>36.\nBy bathing the ride bracelet, David saves $36 - $30 = $<<36-30=6>>6.\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "David",
+      "Dasha",
+      "dollars"
+    ],
+    "notes": "The names David and Dasha, and the unit dollars are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ride_ticket_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_bracelet_cost",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_ride_cost",
+      "value": 36,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "money_saved",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ride_ticket_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ride_bracelet_cost\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ride_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_ride_cost\", \"value\": 36, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"money_saved\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ride_ticket_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "ride_bracelet_cost",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 41685.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "ride_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_ride_cost",
+        "original_value": 36,
+        "original_unit": "dollar",
+        "converted_value": 50022.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "money_saved",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 8337.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "David and Dasha went to the carnival, where there are {number_of_rides} rides.  Each ride costs {number_of_tickets_per_ride} ride tickets at ${ride_ticket_cost} per ticket.  You can also buy a ride bracelet for ${ride_bracelet_cost} which gives you {number_of_rides} rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all {number_of_rides} rides, how much money does David save?",
+    "templatized_answer": [
+      "Each ride cost {number_of_tickets_per_ride} x ${ride_ticket_cost} = ${ride_cost}.",
+      "All {number_of_rides} rides cost ${ride_cost} x {number_of_rides} = ${total_ride_cost}.",
+      "By bathing the ride bracelet, David saves ${total_ride_cost} - ${ride_bracelet_cost} = ${money_saved}.",
+      "#### {money_saved}"
+    ],
+    "factual_assignment": {
+      "number_of_rides": 9,
+      "number_of_tickets_per_ride": 2,
+      "ride_ticket_cost": 2,
+      "ride_bracelet_cost": 30,
+      "ride_cost": 4,
+      "total_ride_cost": 36,
+      "money_saved": 6
+    }
+  },
+  "merged_assignment": {
+    "number_of_rides": 9,
+    "number_of_tickets_per_ride": 2,
+    "ride_ticket_cost": 2779.0,
+    "ride_bracelet_cost": 41685.0,
+    "ride_cost": 5558.0,
+    "total_ride_cost": 50022.0,
+    "money_saved": 8337.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_rides = 9\n    number_of_tickets_per_ride = 2\n    ride_ticket_cost = 2779.0\n\n    ride_cost = number_of_tickets_per_ride * ride_ticket_cost\n    total_ride_cost = ride_cost * number_of_rides\n    ride_bracelet_cost = 41685.0\n    money_saved = total_ride_cost - ride_bracelet_cost\n\n    return {\n        \"number_of_rides\": number_of_rides,\n        \"number_of_tickets_per_ride\": number_of_tickets_per_ride,\n        \"ride_ticket_cost\": round(ride_ticket_cost, 2),\n        \"ride_cost\": round(ride_cost, 2),\n        \"total_ride_cost\": round(total_ride_cost, 2),\n        \"ride_bracelet_cost\": round(ride_bracelet_cost, 2),\n        \"money_saved\": round(money_saved, 2)\n    }\n",
+    "results": {
+      "number_of_rides": 9,
+      "number_of_tickets_per_ride": 2,
+      "ride_ticket_cost": 2779.0,
+      "ride_cost": 5558.0,
+      "total_ride_cost": 50022.0,
+      "ride_bracelet_cost": 41685.0,
+      "money_saved": 8337.0
+    }
+  },
+  "final": {
+    "question": "David and Dasha went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at 2779.0 won per ticket.  You can also buy a ride bracelet for 41685.0 won which gives you 9 rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all 9 rides, how much money does David save?",
+    "answer_lines": [
+      "Each ride cost 2 x 2779.0 won = 5558.0 won.",
+      "All 9 rides cost 5558.0 won x 9 = 50022.0 won.",
+      "By bathing the ride bracelet, David saves 50022.0 won - 41685.0 won = 8337.0 won.",
+      "#### 8337.0"
+    ],
+    "final_scalar": 8337.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo and Ji-hyun went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at 2779.0 won per ticket.  You can also buy a ride bracelet for 41685.0 won which gives you 9 rides.  If Min-soo buys a ride bracelet and Ji-hyun buys tickets, and they ride all 9 rides, how much money does Min-soo save?",
+    "adapted_answer": [
+      "Each ride cost 2 x 2779.0 won = 5558.0 won.",
+      "All 9 rides cost 5558.0 won x 9 = 50022.0 won.",
+      "By bathing the ride bracelet, Min-soo saves 50022.0 won - 41685.0 won = 8337.0 won.",
+      "#### 8337.0"
+    ],
+    "adaptation_notes": "Replaced 'David' with 'Min-soo' and 'Dasha' with 'Ji-hyun' to give the names a Korean context."
+  }
+}

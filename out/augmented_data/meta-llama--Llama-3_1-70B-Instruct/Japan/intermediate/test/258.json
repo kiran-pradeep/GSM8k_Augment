@@ -1,0 +1,122 @@
+{
+  "index": 258,
+  "split": "test",
+  "original": {
+    "question": "Nancy is returning her overdue books to the library. She owes $0.50 cents each on 8 books, plus a flat $2.00 fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "answer": "First multiply the late fee per book by the number of books: $0.50/book * 8 books = $<<0.5*8=4.00>>4.00\nThen add the \"more than a week overdue\" fee to the answer from the previous step to find the total: $4.00 + $2.00 = $<<4+2=6.00>>6.00\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Nancy",
+      "dollars"
+    ],
+    "notes": "The name 'Nancy' and the unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "late_fee_per_book",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "overdue_fee",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_late_fee",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"late_fee_per_book\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"overdue_fee\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_late_fee\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "late_fee_per_book",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 73.53,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "overdue_fee",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_late_fee",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Nancy is returning her overdue books to the library. She owes ${late_fee_per_book} cents each on 8 books, plus a flat ${overdue_fee} fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "templatized_answer": [
+      "First multiply the late fee per book by the number of books: ${late_fee_per_book}/book * 8 books = ${late_fee_per_book}*8",
+      "Then add the \"more than a week overdue\" fee to the answer from the previous step to find the total: ${late_fee_per_book}*8 + ${overdue_fee} = ${late_fee_per_book}*8+${overdue_fee}",
+      "#### {late_fee_per_book}*8+{overdue_fee}"
+    ],
+    "factual_assignment": {
+      "late_fee_per_book": 0.5,
+      "overdue_fee": 2.0
+    }
+  },
+  "merged_assignment": {
+    "late_fee_per_book": 73.53,
+    "overdue_fee": 294.14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    late_fee_per_book = 73.53\n    overdue_fee = 294.14\n\n    late_fee_per_book_times_8 = round(late_fee_per_book * 8, 2)\n    total_fee = round(late_fee_per_book_times_8 + overdue_fee, 2)\n\n    return {\n        \"late_fee_per_book\": late_fee_per_book,\n        \"overdue_fee\": overdue_fee,\n        \"late_fee_per_book*8\": late_fee_per_book_times_8,\n        \"late_fee_per_book*8+overdue_fee\": total_fee\n    }\n",
+    "results": {
+      "late_fee_per_book": 73.53,
+      "overdue_fee": 294.14,
+      "late_fee_per_book*8": 588.24,
+      "late_fee_per_book*8+overdue_fee": 882.38
+    }
+  },
+  "final": {
+    "question": "Nancy is returning her overdue books to the library. She owes 73.53 yen each on 8 books, plus a flat 294.14 yen fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "answer_lines": [
+      "First multiply the late fee per book by the number of books: 73.53 yen/book * 8 books = 73.53*8",
+      "Then add the \"more than a week overdue\" fee to the answer from the previous step to find the total: 73.53*8 + 294.14 = 73.53*8+294.14",
+      "#### 882.38"
+    ],
+    "final_scalar": 882.38,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is returning her overdue books to the library. She owes 73.53 yen each on 8 books, plus a flat 294.14 yen fee for having at least one book that's over a week overdue. How much does she have to pay total?",
+    "adapted_answer": [
+      "First multiply the late fee per book by the number of books: 73.53 yen/book * 8 books = 73.53*8",
+      "Then add the 'more than a week overdue' fee to the answer from the previous step to find the total: 73.53*8 + 294.14 = 73.53*8+294.14",
+      "#### 882.38"
+    ],
+    "adaptation_notes": "Replaced 'Nancy' with 'Yui', a common Japanese name."
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "index": 1313,
+  "split": "test",
+  "original": {
+    "question": "A fruit vendor bought 50 watermelons for $80. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer": "The fruit vendor's profit for the 50 watermelons was $80 x 25/100 = $<<80*25/100=20>>20.\nSo, he was able to sell them all for $80 + $20 = $<<80+20=100>>100.\nThus, the vendor sold each watermelon for $100/$50 = $<<100/50=2>>2 each.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "watermelons"
+    ],
+    "notes": "The text contains a unit of currency (dollars) and a food item (watermelons) that are not specific to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "profit",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_selling_price",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "watermelon_selling_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"profit\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_selling_price\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"watermelon_selling_price\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 11765.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "profit",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_selling_price",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "watermelon_selling_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A fruit vendor bought 50 watermelons for ${initial_cost}. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "templatized_answer": [
+      "The fruit vendor's profit for the 50 watermelons was ${initial_cost} x 25/100 = ${initial_cost} * 25/100.",
+      "So, he was able to sell them all for ${initial_cost} + ${initial_cost} * 25/100.",
+      "Thus, the vendor sold each watermelon for (${initial_cost} + ${initial_cost} * 25/100)/50."
+    ],
+    "factual_assignment": {
+      "initial_cost": 80
+    }
+  },
+  "merged_assignment": {
+    "initial_cost": 11765.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_cost = 11765.6\n    profit = initial_cost * 25 / 100\n    total_selling_price = initial_cost + profit\n    selling_price_per_watermelon = total_selling_price / 50\n\n    return {\n        \"initial_cost\": round(initial_cost, 2),\n        \"initial_cost * 25/100\": round(profit, 2),\n        \"initial_cost + initial_cost * 25/100\": round(total_selling_price, 2),\n        \"(initial_cost + initial_cost * 25/100)/50\": round(selling_price_per_watermelon, 2)\n    }\n",
+    "results": {
+      "initial_cost": 11765.6,
+      "initial_cost * 25/100": 2941.4,
+      "initial_cost + initial_cost * 25/100": 14707.0,
+      "(initial_cost + initial_cost * 25/100)/50": 294.14
+    }
+  },
+  "final": {
+    "question": "A fruit vendor bought 50 watermelons for 11765.6 yen. He sold all of them at a profit of 25%. How much was each watermelon sold?",
+    "answer_lines": [
+      "The fruit vendor's profit for the 50 watermelons was 11765.6 x 25/100 = 11765.6 * 25/100 = 2941.4.",
+      "So, he was able to sell them all for 11765.6 + 2941.4 = 14707.0.",
+      "Thus, the vendor sold each watermelon for (11765.6 + 2941.4)/50 = 294.14.",
+      "#### 294.14"
+    ],
+    "final_scalar": 294.14,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A fruit vendor bought 50 mikan for 11765.6 yen. He sold all of them at a profit of 25%. How much was each mikan sold?",
+    "adapted_answer": [
+      "The fruit vendor's profit for the 50 mikan was 11765.6 x 25/100 = 11765.6 * 25/100 = 2941.4.",
+      "So, he was able to sell them all for 11765.6 + 2941.4 = 14707.0.",
+      "Thus, the vendor sold each mikan for (11765.6 + 2941.4)/50 = 294.14.",
+      "#### 294.14"
+    ],
+    "adaptation_notes": "Replaced 'watermelons' with 'mikan', a type of Japanese citrus fruit."
+  }
+}

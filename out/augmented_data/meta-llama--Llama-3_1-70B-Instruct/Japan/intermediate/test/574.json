@@ -1,0 +1,161 @@
+{
+  "index": 574,
+  "split": "test",
+  "original": {
+    "question": "A food truck only sells grilled cheeses.  They source their bread for $3.00 a loaf and each loaf makes 10 sandwiches.  They spend $30.00 on different cheeses and condiments per 10 sandwiches.  If they sell 10 sandwiches for $7.00 each, what is their net profit?",
+    "answer": "They spend $3.00 on bread and $30.00 on cheese and condiments for a total of 3+30 = $<<3+30=33.00>>33.00\nThey sell 10 sandwiches at $7.00 apiece for a total of 10*7 = $<<10*7=70.00>>70.00\nThey made $70.00 and spent $33.00 for a net profit of 70-33 = $<<70-33=37.00>>37.00 per 10 sandwiches\n#### 37"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "grilled cheeses"
+    ],
+    "notes": "The text contains a unit of currency (dollars) and a food item (grilled cheeses) that are not specific to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bread_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cheese_condiments_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sandwich_revenue",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 33.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 70.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "net_profit",
+      "value": 37.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bread_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cheese_condiments_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sandwich_revenue\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 33.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_revenue\", \"value\": 70.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"net_profit\", \"value\": 37.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bread_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "cheese_condiments_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 4412.1,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "sandwich_revenue",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 33.0,
+        "original_unit": "dollar",
+        "converted_value": 4853.31,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 70.0,
+        "original_unit": "dollar",
+        "converted_value": 10294.9,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "net_profit",
+        "original_value": 37.0,
+        "original_unit": "dollar",
+        "converted_value": 5441.59,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A food truck only sells grilled cheeses.  They source their bread for ${bread_cost} a loaf and each loaf makes 10 sandwiches.  They spend ${cheese_condiments_cost} on different cheeses and condiments per 10 sandwiches.  If they sell 10 sandwiches for ${sandwich_revenue} each, what is their net profit?",
+    "templatized_answer": [
+      "They spend ${bread_cost} on bread and ${cheese_condiments_cost} on cheese and condiments for a total of {bread_cost}+{cheese_condiments_cost} = ${total_cost}",
+      "They sell 10 sandwiches at ${sandwich_revenue} apiece for a total of 10*{sandwich_revenue} = ${total_revenue}",
+      "They made ${total_revenue} and spent ${total_cost} for a net profit of {total_revenue}-{total_cost} = ${net_profit} per 10 sandwiches",
+      "#### {net_profit}"
+    ],
+    "factual_assignment": {
+      "bread_cost": 3.0,
+      "cheese_condiments_cost": 30.0,
+      "sandwich_revenue": 7.0,
+      "total_cost": 33.0,
+      "total_revenue": 70.0,
+      "net_profit": 37.0
+    }
+  },
+  "merged_assignment": {
+    "bread_cost": 441.21,
+    "cheese_condiments_cost": 4412.1,
+    "sandwich_revenue": 1029.49,
+    "total_cost": 4853.31,
+    "total_revenue": 10294.9,
+    "net_profit": 5441.59
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bread_cost = 441.21\n    cheese_condiments_cost = 4412.1\n    sandwich_revenue = 1029.49\n\n    total_cost = round(bread_cost + cheese_condiments_cost, 2)\n    total_revenue = round(10 * sandwich_revenue, 2)\n    net_profit = round(total_revenue - total_cost, 2)\n\n    return {\n        \"bread_cost\": bread_cost,\n        \"cheese_condiments_cost\": cheese_condiments_cost,\n        \"sandwich_revenue\": sandwich_revenue,\n        \"total_cost\": total_cost,\n        \"total_revenue\": total_revenue,\n        \"net_profit\": net_profit\n    }\n",
+    "results": {
+      "bread_cost": 441.21,
+      "cheese_condiments_cost": 4412.1,
+      "sandwich_revenue": 1029.49,
+      "total_cost": 4853.31,
+      "total_revenue": 10294.9,
+      "net_profit": 5441.59
+    }
+  },
+  "final": {
+    "question": "A food truck only sells grilled cheeses.  They source their bread for 441.21 yen a loaf and each loaf makes 10 sandwiches.  They spend 4412.1 yen on different cheeses and condiments per 10 sandwiches.  If they sell 10 sandwiches for 1029.49 yen each, what is their net profit?",
+    "answer_lines": [
+      "They spend 441.21 yen on bread and 4412.1 yen on cheese and condiments for a total of 441.21+4412.1 = 4853.31 yen",
+      "They sell 10 sandwiches at 1029.49 yen apiece for a total of 10*1029.49 = 10294.9 yen",
+      "They made 10294.9 yen and spent 4853.31 yen for a net profit of 10294.9-4853.31 = 5441.59 yen per 10 sandwiches",
+      "#### 5441.59"
+    ],
+    "final_scalar": 5441.59,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A food truck only sells Tonkatsu sandwiches.  They source their bread for 441.21 yen a loaf and each loaf makes 10 sandwiches.  They spend 4412.1 yen on different fillings and condiments per 10 sandwiches.  If they sell 10 sandwiches for 1029.49 yen each, what is their net profit?",
+    "adapted_answer": [
+      "They spend 441.21 yen on bread and 4412.1 yen on fillings and condiments for a total of 441.21+4412.1 = 4853.31 yen",
+      "They sell 10 sandwiches at 1029.49 yen apiece for a total of 10*1029.49 = 10294.9 yen",
+      "They made 10294.9 yen and spent 4853.31 yen for a net profit of 10294.9-4853.31 = 5441.59 yen per 10 sandwiches",
+      "#### 5441.59"
+    ],
+    "adaptation_notes": "Replaced 'grilled cheeses' with 'Tonkatsu sandwiches' to adapt to Japanese context."
+  }
+}

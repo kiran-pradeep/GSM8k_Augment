@@ -1,0 +1,185 @@
+{
+  "index": 638,
+  "split": "test",
+  "original": {
+    "question": "In a grocery store, four apples cost $5.20, and three oranges cost $3.30. How much will Clyde pay for 5 apples and 5 oranges?",
+    "answer": "Each apple costs $5.20/4 = $<<5.20/4=1.30>>1.30.\nEach orange cost $3.30/3 = $<<3.30/3=1.10>>1.10.\nSo 5 apples cost $1.30 x 5 = $<<5*1.30=6.50>>6.50.\nAnd 5 oranges cost $1.10 x 5 = $<<5*1.1=5.50>>5.50.\nThus, Clyde will pay $6.50 + $5.50 = $<<6.5+5.5=12>>12 for 5 apples and 5 oranges.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "apples",
+      "oranges",
+      "dollars",
+      "Clyde"
+    ],
+    "notes": "The text contains Western-style names, food items, and currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apples_cost",
+      "value": 5.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "oranges_cost",
+      "value": 3.3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "apple_price",
+      "value": 1.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "orange_price",
+      "value": 1.1,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "five_apples_cost",
+      "value": 6.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "five_oranges_cost",
+      "value": 5.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apples_cost\", \"value\": 5.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"oranges_cost\", \"value\": 3.3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"apple_price\", \"value\": 1.3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"orange_price\", \"value\": 1.1, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"five_apples_cost\", \"value\": 6.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"five_oranges_cost\", \"value\": 5.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apples_cost",
+        "original_value": 5.2,
+        "original_unit": "dollar",
+        "converted_value": 764.76,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "oranges_cost",
+        "original_value": 3.3,
+        "original_unit": "dollar",
+        "converted_value": 485.33,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "apple_price",
+        "original_value": 1.3,
+        "original_unit": "dollar",
+        "converted_value": 191.19,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "orange_price",
+        "original_value": 1.1,
+        "original_unit": "dollar",
+        "converted_value": 161.78,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "five_apples_cost",
+        "original_value": 6.5,
+        "original_unit": "dollar",
+        "converted_value": 955.95,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "five_oranges_cost",
+        "original_value": 5.5,
+        "original_unit": "dollar",
+        "converted_value": 808.88,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1764.84,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "In a grocery store, four apples cost ${apples_cost}, and three oranges cost ${oranges_cost}. How much will Clyde pay for 5 apples and 5 oranges?",
+    "templatized_answer": [
+      "Each apple costs ${apples_cost}/4 = ${apple_price}.",
+      "Each orange cost ${oranges_cost}/3 = ${orange_price}.",
+      "So 5 apples cost ${apple_price} x 5 = ${five_apples_cost}.",
+      "And 5 oranges cost ${orange_price} x 5 = ${five_oranges_cost}.",
+      "Thus, Clyde will pay ${five_apples_cost} + ${five_oranges_cost} = ${total_cost} for 5 apples and 5 oranges.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "apples_cost": 5.2,
+      "oranges_cost": 3.3,
+      "apple_price": 1.3,
+      "orange_price": 1.1,
+      "five_apples_cost": 6.5,
+      "five_oranges_cost": 5.5,
+      "total_cost": 12
+    }
+  },
+  "merged_assignment": {
+    "apples_cost": 764.76,
+    "oranges_cost": 485.33,
+    "apple_price": 191.19,
+    "orange_price": 161.78,
+    "five_apples_cost": 955.95,
+    "five_oranges_cost": 808.88,
+    "total_cost": 1764.84
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apples_cost = 764.76\n    oranges_cost = 485.33\n\n    apple_price = round(apples_cost / 4, 2)\n    orange_price = round(oranges_cost / 3, 2)\n\n    five_apples_cost = round(apple_price * 5, 2)\n    five_oranges_cost = round(orange_price * 5, 2)\n\n    total_cost = round(five_apples_cost + five_oranges_cost, 2)\n\n    return {\n        \"apples_cost\": apples_cost,\n        \"oranges_cost\": oranges_cost,\n        \"apple_price\": apple_price,\n        \"orange_price\": orange_price,\n        \"five_apples_cost\": five_apples_cost,\n        \"five_oranges_cost\": five_oranges_cost,\n        \"total_cost\": total_cost\n    }\n",
+    "results": {
+      "apples_cost": 764.76,
+      "oranges_cost": 485.33,
+      "apple_price": 191.19,
+      "orange_price": 161.78,
+      "five_apples_cost": 955.95,
+      "five_oranges_cost": 808.9,
+      "total_cost": 1764.85
+    }
+  },
+  "final": {
+    "question": "In a grocery store, four apples cost 764.76 yen, and three oranges cost 485.33 yen. How much will Clyde pay for 5 apples and 5 oranges?",
+    "answer_lines": [
+      "Each apple costs 764.76/4 = 191.19.",
+      "Each orange cost 485.33/3 = 161.78.",
+      "So 5 apples cost 191.19 x 5 = 955.95.",
+      "And 5 oranges cost 161.78 x 5 = 808.9.",
+      "Thus, Clyde will pay 955.95 + 808.9 = 1764.85 for 5 apples and 5 oranges.",
+      "#### 1764.85"
+    ],
+    "final_scalar": 1764.85,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "In a grocery store, four mikan cost 764.76 yen, and three satsumaimo cost 485.33 yen. How much will Taro pay for 5 mikan and 5 satsumaimo?",
+    "adapted_answer": [
+      "Each mikan costs 764.76/4 = 191.19.",
+      "Each satsumaimo costs 485.33/3 = 161.78.",
+      "So 5 mikan cost 191.19 x 5 = 955.95.",
+      "And 5 satsumaimo cost 161.78 x 5 = 808.9.",
+      "Thus, Taro will pay 955.95 + 808.9 = 1764.85 for 5 mikan and 5 satsumaimo.",
+      "#### 1764.85"
+    ],
+    "adaptation_notes": "Replaced 'apples' with 'mikan' (Japanese citrus), 'oranges' with 'satsumaimo' (Japanese sweet potato), and 'Clyde' with 'Taro' (common Japanese name)."
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "index": 701,
+  "split": "test",
+  "original": {
+    "question": "Aiden and 12 of his friends are going to see a film at the cinema, and meet up with 7 more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost $2 each, how much money, in dollars, has the group spent overall on snacks and drinks?",
+    "answer": "Including Aiden, the whole group saves 1 + 12 + 7 = <<1+12+7=20>>20 seats.\nIn total, the seats can hold 2 drinks * 20 seats = <<2*20=40>>40 drinks.\nIn total, the seats can hold 3 snacks * 20 seats = <<3*20=60>>60 snacks.\nSo in total, the group buys 40 drinks + 60 snacks = <<40+60=100>>100 items.\nAs snacks and drinks cost $2 each, the group has spent 100 items * $2 = $<<100*2=200>>200 overall.\n#### 200"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Aiden",
+      "dollars",
+      "cinema"
+    ],
+    "notes": "The name Aiden and the unit dollars are culturally specific to regions other than Japan. The term cinema is also more commonly used in Western cultures."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "snack_drink_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 200,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"snack_drink_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 200, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "snack_drink_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 200,
+        "original_unit": "dollar",
+        "converted_value": 29414.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aiden and {number_of_friends} of his friends are going to see a film at the cinema, and meet up with {additional_friends} more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost ${snack_drink_cost} each, how much money, in dollars, has the group spent overall on snacks and drinks?",
+    "templatized_answer": [
+      "Including Aiden, the whole group saves 1 + {number_of_friends} + {additional_friends} = {total_seats} seats.",
+      "In total, the seats can hold 2 drinks * {total_seats} seats = {total_drinks} drinks.",
+      "In total, the seats can hold 3 snacks * {total_seats} seats = {total_snacks} snacks.",
+      "So in total, the group buys {total_drinks} drinks + {total_snacks} snacks = {total_items} items.",
+      "As snacks and drinks cost ${snack_drink_cost} each, the group has spent {total_items} items * ${snack_drink_cost} = ${total_spent} overall.",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "number_of_friends": 12,
+      "additional_friends": 7,
+      "snack_drink_cost": 2,
+      "total_seats": 20,
+      "total_drinks": 40,
+      "total_snacks": 60,
+      "total_items": 100,
+      "total_spent": 200
+    }
+  },
+  "merged_assignment": {
+    "number_of_friends": 12,
+    "additional_friends": 7,
+    "snack_drink_cost": 294.14,
+    "total_seats": 20,
+    "total_drinks": 40,
+    "total_snacks": 60,
+    "total_items": 100,
+    "total_spent": 29414.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_friends = 12\n    additional_friends = 7\n    snack_drink_cost = 294.14\n\n    total_seats = 1 + number_of_friends + additional_friends\n    total_drinks = 2 * total_seats\n    total_snacks = 3 * total_seats\n    total_items = total_drinks + total_snacks\n    total_spent = round(total_items * snack_drink_cost, 2)\n\n    return {\n        \"number_of_friends\": number_of_friends,\n        \"additional_friends\": additional_friends,\n        \"snack_drink_cost\": snack_drink_cost,\n        \"total_seats\": total_seats,\n        \"total_drinks\": total_drinks,\n        \"total_snacks\": total_snacks,\n        \"total_items\": total_items,\n        \"total_spent\": total_spent\n    }\n",
+    "results": {
+      "number_of_friends": 12,
+      "additional_friends": 7,
+      "snack_drink_cost": 294.14,
+      "total_seats": 20,
+      "total_drinks": 40,
+      "total_snacks": 60,
+      "total_items": 100,
+      "total_spent": 29414.0
+    }
+  },
+  "final": {
+    "question": "Aiden and 12 of his friends are going to see a film at the cinema, and meet up with 7 more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost 294.14 yen each, how much money, in yen, has the group spent overall on snacks and drinks?",
+    "answer_lines": [
+      "Including Aiden, the whole group saves 1 + 12 + 7 = 20 seats.",
+      "In total, the seats can hold 2 drinks * 20 seats = 40 drinks.",
+      "In total, the seats can hold 3 snacks * 20 seats = 60 snacks.",
+      "So in total, the group buys 40 drinks + 60 snacks = 100 items.",
+      "As snacks and drinks cost 294.14 yen each, the group has spent 100 items * 294.14 yen = 29414.0 yen overall.",
+      "#### 29414.0"
+    ],
+    "final_scalar": 29414.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro and 12 of his friends are going to see a film at the eiga-kan, and meet up with 7 more friends there. They each save a seat and then buy enough drinks and snacks to fill the seats. Each seat has enough room to hold one person, two drinks, and three snacks. If drinks and snacks cost 294.14 yen each, how much money, in yen, has the group spent overall on snacks and drinks?",
+    "adapted_answer": [
+      "Including Taro, the whole group saves 1 + 12 + 7 = 20 seats.",
+      "In total, the seats can hold 2 drinks * 20 seats = 40 drinks.",
+      "In total, the seats can hold 3 snacks * 20 seats = 60 snacks.",
+      "So in total, the group buys 40 drinks + 60 snacks = 100 items.",
+      "As snacks and drinks cost 294.14 yen each, the group has spent 100 items * 294.14 yen = 29414.0 yen overall.",
+      "#### 29414.0"
+    ],
+    "adaptation_notes": "Replaced 'Aiden' with 'Taro' (Japanese name), 'cinema' with 'eiga-kan' (Japanese term for movie theater)."
+  }
+}

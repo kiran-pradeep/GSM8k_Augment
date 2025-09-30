@@ -1,0 +1,110 @@
+{
+  "index": 492,
+  "split": "test",
+  "original": {
+    "question": "Sally buys one small pizza at $8 and one family-size pizza that costs 3 times as much as the small pizza. How much does she spend in all?",
+    "answer": "The cost of the family-size pizza is 3 x $8 = $<<3*8=24>>24.\nTherefore, Sally spends $8 + $24 = $<<8+24=32>>32 in all.\n#### 32"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sally",
+      "dollars",
+      "pizza"
+    ],
+    "notes": "The name Sally and the use of dollars are culturally specific to Western regions, and pizza is a food item commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "small_pizza_cost",
+      "value": 8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "family_pizza_cost",
+      "value": 24,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 32,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"small_pizza_cost\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"family_pizza_cost\", \"value\": 24, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 32, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "small_pizza_cost",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 11116.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "family_pizza_cost",
+        "original_value": 24,
+        "original_unit": "dollar",
+        "converted_value": 33348.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 32,
+        "original_unit": "dollar",
+        "converted_value": 44464.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Sally buys one small pizza at ${small_pizza_cost} and one family-size pizza that costs 3 times as much as the small pizza. How much does she spend in all?",
+    "templatized_answer": [
+      "The cost of the family-size pizza is 3 x ${small_pizza_cost} = ${family_pizza_cost}.",
+      "Therefore, Sally spends ${small_pizza_cost} + ${family_pizza_cost} = ${total_spent} in all.",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "small_pizza_cost": 8,
+      "family_pizza_cost": 24,
+      "total_spent": 32
+    }
+  },
+  "merged_assignment": {
+    "small_pizza_cost": 11116.0,
+    "family_pizza_cost": 33348.0,
+    "total_spent": 44464.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    small_pizza_cost = 11116.0\n    family_pizza_cost = small_pizza_cost * 3\n    total_spent = small_pizza_cost + family_pizza_cost\n\n    return {\n        \"small_pizza_cost\": round(small_pizza_cost, 2),\n        \"family_pizza_cost\": round(family_pizza_cost, 2),\n        \"total_spent\": round(total_spent, 2)\n    }\n",
+    "results": {
+      "small_pizza_cost": 11116.0,
+      "family_pizza_cost": 33348.0,
+      "total_spent": 44464.0
+    }
+  },
+  "final": {
+    "question": "Sally buys one small pizza at 11116 won and one family-size pizza that costs 3 times as much as the small pizza. How much does she spend in all?",
+    "answer_lines": [
+      "The cost of the family-size pizza is 3 x 11116 won = 33348 won.",
+      "Therefore, Sally spends 11116 won + 33348 won = 44464 won in all.",
+      "#### 44464"
+    ],
+    "final_scalar": 44464.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji buys one small hotteok at 11116 won and one large hotteok that costs 3 times as much as the small hotteok. How much does she spend in all?",
+    "adapted_answer": [
+      "The cost of the large hotteok is 3 x 11116 won = 33348 won.",
+      "Therefore, Min-ji spends 11116 won + 33348 won = 44464 won in all."
+    ],
+    "adaptation_notes": "Replaced 'Sally' with 'Min-ji' (a common Korean name), 'pizza' with 'hotteok' (a popular Korean street food)."
+  }
+}

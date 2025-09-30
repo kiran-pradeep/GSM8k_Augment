@@ -1,0 +1,148 @@
+{
+  "index": 460,
+  "split": "test",
+  "original": {
+    "question": "Grayson recycles cans and bottles for money each week. An aluminum can is worth two cents and a plastic bottle is worth three cents. She drinks three aluminum cans of soda and five plastic bottles of water a week. How many cents does Grayson earn from recycling in a four-week month?",
+    "answer": "Grayson earns 2 * 3 = <<2*3=6>>6 cents from soda cans a week.\nShe earns 3 * 5 = <<3*5=15>>15 cents from water bottles a week.\nThus, she earns 6 + 15 = <<6+15=21>>21 cents from recycling each week.\nIn a four week month, she earns 21 * 4 = <<21*4=84>>84 cents from recycling.\n#### 84"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Grayson",
+      "soda",
+      "cents"
+    ],
+    "notes": "Western name and units of currency"
+  },
+  "metrics_extracted": [
+    {
+      "variable": "can_value",
+      "value": 0.02,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bottle_value",
+      "value": 0.03,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 0.21,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_earnings",
+      "value": 0.84,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"can_value\", \"value\": 0.02, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bottle_value\", \"value\": 0.03, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 0.21, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_earnings\", \"value\": 0.84, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "can_value",
+        "original_value": 0.02,
+        "original_unit": "dollar",
+        "converted_value": 2.94,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "bottle_value",
+        "original_value": 0.03,
+        "original_unit": "dollar",
+        "converted_value": 4.41,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 0.21,
+        "original_unit": "dollar",
+        "converted_value": 30.88,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "monthly_earnings",
+        "original_value": 0.84,
+        "original_unit": "dollar",
+        "converted_value": 123.54,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Grayson recycles cans and bottles for money each week. An aluminum can is worth {can_value_cents} cents and a plastic bottle is worth {bottle_value_cents} cents. She drinks {cans_consumed} aluminum cans of soda and {bottles_consumed} plastic bottles of water a week. How many cents does Grayson earn from recycling in a {weeks_in_month}-week month?",
+    "templatized_answer": [
+      "Grayson earns {can_value_cents} * {cans_consumed} = {can_earnings} cents from soda cans a week.",
+      "She earns {bottle_value_cents} * {bottles_consumed} = {bottle_earnings} cents from water bottles a week.",
+      "Thus, she earns {can_earnings} + {bottle_earnings} = {weekly_earnings_cents} cents from recycling each week.",
+      "In a {weeks_in_month} week month, she earns {weekly_earnings_cents} * {weeks_in_month} = {monthly_earnings_cents} cents from recycling.",
+      "#### {monthly_earnings_cents}"
+    ],
+    "factual_assignment": {
+      "can_value_cents": 2,
+      "bottle_value_cents": 3,
+      "cans_consumed": 3,
+      "bottles_consumed": 5,
+      "can_earnings": 6,
+      "bottle_earnings": 15,
+      "weekly_earnings_cents": 21,
+      "weeks_in_month": 4,
+      "monthly_earnings_cents": 84
+    }
+  },
+  "merged_assignment": {
+    "can_value_cents": 2,
+    "bottle_value_cents": 3,
+    "cans_consumed": 3,
+    "bottles_consumed": 5,
+    "can_earnings": 6,
+    "bottle_earnings": 15,
+    "weekly_earnings_cents": 21,
+    "weeks_in_month": 4,
+    "monthly_earnings_cents": 84
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    can_value_cents = 2\n    bottle_value_cents = 3\n    cans_consumed = 3\n    bottles_consumed = 5\n    weeks_in_month = 4\n\n    can_earnings = can_value_cents * cans_consumed\n    bottle_earnings = bottle_value_cents * bottles_consumed\n    weekly_earnings_cents = can_earnings + bottle_earnings\n    monthly_earnings_cents = weekly_earnings_cents * weeks_in_month\n\n    return {\n        \"can_value_cents\": can_value_cents,\n        \"bottle_value_cents\": bottle_value_cents,\n        \"cans_consumed\": cans_consumed,\n        \"bottles_consumed\": bottles_consumed,\n        \"can_earnings\": can_earnings,\n        \"bottle_earnings\": bottle_earnings,\n        \"weekly_earnings_cents\": weekly_earnings_cents,\n        \"weeks_in_month\": weeks_in_month,\n        \"monthly_earnings_cents\": monthly_earnings_cents\n    }\n\nprint(recompute())\n",
+    "results": {
+      "can_value_cents": 2,
+      "bottle_value_cents": 3,
+      "cans_consumed": 3,
+      "bottles_consumed": 5,
+      "can_earnings": 6,
+      "bottle_earnings": 15,
+      "weekly_earnings_cents": 21,
+      "weeks_in_month": 4,
+      "monthly_earnings_cents": 84
+    }
+  },
+  "final": {
+    "question": "Grayson recycles cans and bottles for money each week. An aluminum can is worth 2.94 yen and a plastic bottle is worth 4.41 yen. She drinks 3 aluminum cans of soda and 5 plastic bottles of water a week. How many yen does Grayson earn from recycling in a 4-week month?",
+    "answer_lines": [
+      "Grayson earns 2.94 * 3 = 8.82 yen from soda cans a week.",
+      "She earns 4.41 * 5 = 22.05 yen from water bottles a week.",
+      "Thus, she earns 8.82 + 22.05 = 30.87 yen from recycling each week.",
+      "In a 4 week month, she earns 30.87 * 4 = 123.48 yen from recycling.",
+      "#### 123.48"
+    ],
+    "final_scalar": 123.48,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui recycles cans and bottles for money each week. An aluminum can is worth 2.94 yen and a plastic bottle is worth 4.41 yen. She drinks 3 aluminum cans of ramune and 5 plastic bottles of green tea a week. How many yen does Yui earn from recycling in a 4-week month?",
+    "adapted_answer": [
+      "Yui earns 2.94 * 3 = 8.82 yen from ramune cans a week.",
+      "She earns 4.41 * 5 = 22.05 yen from green tea bottles a week.",
+      "Thus, she earns 8.82 + 22.05 = 30.87 yen from recycling each week.",
+      "In a 4 week month, she earns 30.87 * 4 = 123.48 yen from recycling.",
+      "#### 123.48"
+    ],
+    "adaptation_notes": "Replaced 'Grayson' with 'Yui', 'soda' with 'ramune', and 'water' with 'green tea' to give the text a Japanese context."
+  }
+}

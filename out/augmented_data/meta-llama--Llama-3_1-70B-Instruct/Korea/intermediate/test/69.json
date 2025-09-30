@@ -1,0 +1,124 @@
+{
+  "index": 69,
+  "split": "test",
+  "original": {
+    "question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of $5 for 8 weeks. At the end of the 8 weeks, if she has a total of $100, how much money did Bailey start with?",
+    "answer": "In 8 weeks, Bailey receives $5 * 8 = $<<5*8=40>>40 in allowance\nBailey started with $100 - $40 = $<<100-40=60>>60\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bailey",
+      "dollars"
+    ],
+    "notes": "Bailey is a Western name and dollars is a unit of currency primarily used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_allowance",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_allowance",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_money",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "initial_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_allowance\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_allowance\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_money\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"initial_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_allowance",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 6947.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_allowance",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 55580.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_money",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 138950.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "initial_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 83370.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of ${initial_allowance} for 8 weeks. At the end of the 8 weeks, if she has a total of ${total_money}, how much money did Bailey start with?",
+    "templatized_answer": [
+      "In 8 weeks, Bailey receives ${initial_allowance} * 8 = ${initial_allowance} * 8 in allowance",
+      "Bailey started with ${total_money} - ${initial_allowance} * 8 = ${total_money} - ${initial_allowance} * 8",
+      "#### {initial_money}"
+    ],
+    "factual_assignment": {
+      "initial_allowance": 5,
+      "total_money": 100,
+      "initial_money": 60
+    }
+  },
+  "merged_assignment": {
+    "initial_allowance": 6947.5,
+    "total_money": 138950.0,
+    "initial_money": 83370.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_allowance = 6947.5\n    total_money = 138950.0\n\n    initial_allowance_8 = round(initial_allowance * 8, 2)\n    initial_money = round(total_money - initial_allowance_8, 2)\n\n    return {\n        \"initial_allowance\": initial_allowance,\n        \"initial_allowance_8\": initial_allowance_8,\n        \"total_money\": total_money,\n        \"initial_money\": initial_money\n    }\n",
+    "results": {
+      "initial_allowance": 6947.5,
+      "initial_allowance_8": 55580.0,
+      "total_money": 138950.0,
+      "initial_money": 83370.0
+    }
+  },
+  "final": {
+    "question": "Bailey starts with a certain amount of money. Then she receives a weekly allowance of 6947.5 won for 8 weeks. At the end of the 8 weeks, if she has a total of 138950.0 won, how much money did Bailey start with?",
+    "answer_lines": [
+      "In 8 weeks, Bailey receives 6947.5 * 8 = 55580.0 won in allowance",
+      "Bailey started with 138950.0 - 55580.0 = 83370.0",
+      "#### 83370.0"
+    ],
+    "final_scalar": 83370.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji starts with a certain amount of money. Then she receives a weekly allowance of 6947.5 won for 8 weeks. At the end of the 8 weeks, if she has a total of 138950.0 won, how much money did Min-ji start with?",
+    "adapted_answer": [
+      "In 8 weeks, Min-ji receives 6947.5 * 8 = 55580.0 won in allowance",
+      "Min-ji started with 138950.0 - 55580.0 = 83370.0",
+      "#### 83370.0"
+    ],
+    "adaptation_notes": "Replaced 'Bailey' with 'Min-ji', a common Korean name."
+  }
+}

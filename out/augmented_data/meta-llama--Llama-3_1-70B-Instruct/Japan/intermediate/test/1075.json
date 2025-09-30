@@ -1,0 +1,174 @@
+{
+  "index": 1075,
+  "split": "test",
+  "original": {
+    "question": "Jenny goes to the florist to buy some flowers. Roses cost $2 each and $15 for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "answer": "Jenny has $25 because 5 x 5 = <<5*5=25>>25\nShe buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = <<15-12-3=0>>0\nShe spends $6 on the single roses because 3 x 2 = <<3*2=6>>6\nShe spends $21 on roses because 15 + 6 = <<15+6=21>>21\nShe gets $4 in change because 25 - 21 = <<25-21=4>>4\nShe gets 16 quarters because 4 x 4 = <<4*4=16>>16\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jenny",
+      "dollars",
+      "quarters"
+    ],
+    "notes": "The name 'Jenny' and the use of US currency units 'dollars' and 'quarters' indicate non-Japanese cultural entities."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "rose_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dozen_rose_cost",
+      "value": 15,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jenny_money",
+      "value": 25,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "single_rose_cost",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_rose_cost",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"rose_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"dozen_rose_cost\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jenny_money\", \"value\": 25, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"single_rose_cost\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_rose_cost\", \"value\": 21, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "rose_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "dozen_rose_cost",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 2206.05,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "jenny_money",
+        "original_value": 25,
+        "original_unit": "dollar",
+        "converted_value": 3676.75,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "single_rose_cost",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_rose_cost",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 3088.47,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "change",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jenny goes to the florist to buy some flowers. Roses cost ${rose_cost} each and ${dozen_rose_cost} for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "templatized_answer": [
+      "Jenny has ${jenny_money} because 5 x 5 = {jenny_money}",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends ${single_rose_cost} on the single roses because 3 x {rose_cost} = {single_rose_cost}",
+      "She spends ${total_rose_cost} on roses because {dozen_rose_cost} + {single_rose_cost} = {total_rose_cost}",
+      "She gets ${change} in change because {jenny_money} - {total_rose_cost} = {change}",
+      "She gets {change} x 4 = {change_in_quarters} quarters because 1 dollar = 4 quarters",
+      "#### {change_in_quarters}"
+    ],
+    "factual_assignment": {
+      "rose_cost": 2,
+      "dozen_rose_cost": 15,
+      "jenny_money": 25,
+      "single_rose_cost": 6,
+      "total_rose_cost": 21,
+      "change": 4,
+      "change_in_quarters": 16
+    }
+  },
+  "merged_assignment": {
+    "rose_cost": 294.14,
+    "dozen_rose_cost": 2206.05,
+    "jenny_money": 3676.75,
+    "single_rose_cost": 882.42,
+    "total_rose_cost": 3088.47,
+    "change": 588.28,
+    "change_in_quarters": 16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    rose_cost = 294.14\n    dozen_rose_cost = 2206.05\n    jenny_money = 3676.75\n\n    single_rose_cost = round(3 * rose_cost, 2)\n    total_rose_cost = round(dozen_rose_cost + single_rose_cost, 2)\n    change = round(jenny_money - total_rose_cost, 2)\n    change_in_quarters = round(change * 4)\n\n    return {\n        \"rose_cost\": rose_cost,\n        \"dozen_rose_cost\": dozen_rose_cost,\n        \"jenny_money\": jenny_money,\n        \"single_rose_cost\": single_rose_cost,\n        \"total_rose_cost\": total_rose_cost,\n        \"change\": change,\n        \"change_in_quarters\": change_in_quarters\n    }\n",
+    "results": {
+      "rose_cost": 294.14,
+      "dozen_rose_cost": 2206.05,
+      "jenny_money": 3676.75,
+      "single_rose_cost": 882.42,
+      "total_rose_cost": 3088.47,
+      "change": 588.28,
+      "change_in_quarters": 2353
+    }
+  },
+  "final": {
+    "question": "Jenny goes to the florist to buy some flowers. Roses cost 294.14 yen each and 2206.05 yen for a dozen. If she bought 15 roses and arrived with five 5 dollar bills and they only have quarters for change, how many quarters does she leave with?",
+    "answer_lines": [
+      "Jenny has 3676.75 yen because 5 x 5 = 25",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends 882.42 yen on the single roses because 3 x 294.14 = 882.42",
+      "She spends 3088.47 yen on roses because 2206.05 + 882.42 = 3088.47",
+      "She gets 588.28 yen in change because 3676.75 - 3088.47 = 588.28",
+      "She gets 2353 quarters because 588.28 / 0.25 = 2353",
+      "#### 2353"
+    ],
+    "final_scalar": 2353,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui goes to the florist to buy some flowers. Roses cost 294.14 yen each and 2206.05 yen for a dozen. If she bought 15 roses and arrived with five 1000 yen bills and they only have 25 yen coins for change, how many 25 yen coins does she leave with?",
+    "adapted_answer": [
+      "Yui has 5000 yen because 5 x 1000 = 5000",
+      "She buys 1 dozen roses and 3 single roses because 15 - 12 - 3 = 0",
+      "She spends 882.42 yen on the single roses because 3 x 294.14 = 882.42",
+      "She spends 3088.47 yen on roses because 2206.05 + 882.42 = 3088.47",
+      "She gets 1911.53 yen in change because 5000 - 3088.47 = 1911.53",
+      "She gets 76.46 25 yen coins because 1911.53 / 25 = 76.46",
+      "#### 76"
+    ],
+    "adaptation_notes": "Replaced 'Jenny' with 'Yui', '5 dollar bills' with 'five 1000 yen bills', and 'quarters' with '25 yen coins'. Adjusted calculations to reflect the change in currency."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "index": 1055,
+  "split": "test",
+  "original": {
+    "question": "James has to buy insurance.  Since he had an accident it was 60% more than normal.  The normal cost is $120 a month.  How much does he pay a year?",
+    "answer": "The insurance is 120*.6=$<<120*.6=72>>72 per month more expensive than normal\nSo he paid 120+72=$<<120+72=192>>192 a month\nThat means he pays 12*192=$<<12*192=2304>>2304\n#### 2304"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "James",
+      "dollars"
+    ],
+    "notes": "The name 'James' is Western and the unit 'dollars' is used in several countries, primarily the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "normal_insurance_cost",
+      "value": 120.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "additional_insurance_cost",
+      "value": 72.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "monthly_insurance_cost",
+      "value": 192.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_insurance_cost",
+      "value": 2304.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"normal_insurance_cost\", \"value\": 120.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"additional_insurance_cost\", \"value\": 72.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"monthly_insurance_cost\", \"value\": 192.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_insurance_cost\", \"value\": 2304.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "normal_insurance_cost",
+        "original_value": 120.0,
+        "original_unit": "dollar",
+        "converted_value": 17648.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "additional_insurance_cost",
+        "original_value": 72.0,
+        "original_unit": "dollar",
+        "converted_value": 10589.04,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "monthly_insurance_cost",
+        "original_value": 192.0,
+        "original_unit": "dollar",
+        "converted_value": 28237.44,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "yearly_insurance_cost",
+        "original_value": 2304.0,
+        "original_unit": "dollar",
+        "converted_value": 338849.28,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "James has to buy insurance. Since he had an accident it was 60% more than normal. The normal cost is ${normal_insurance_cost} a month. How much does he pay a year?",
+    "templatized_answer": [
+      "The insurance is {normal_insurance_cost}*.6=${{normal_insurance_cost}*.6} per month more expensive than normal",
+      "So he paid {normal_insurance_cost}+{normal_insurance_cost}*.6=${{normal_insurance_cost}+{normal_insurance_cost}*.6} a month",
+      "That means he pays 12*({normal_insurance_cost}+{normal_insurance_cost}*.6)=${{12*({normal_insurance_cost}+{normal_insurance_cost}*.6)}}",
+      "#### {yearly_insurance_cost}"
+    ],
+    "factual_assignment": {
+      "normal_insurance_cost": 120.0,
+      "yearly_insurance_cost": 2304.0
+    }
+  },
+  "merged_assignment": {
+    "normal_insurance_cost": 17648.4,
+    "yearly_insurance_cost": 338849.28
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    normal_insurance_cost = 17648.4\n    insurance_cost_increase = normal_insurance_cost * 0.6\n    monthly_insurance_cost = normal_insurance_cost + insurance_cost_increase\n    yearly_insurance_cost = 12 * monthly_insurance_cost\n\n    return {\n        \"normal_insurance_cost\": normal_insurance_cost,\n        \"insurance_cost_increase\": round(insurance_cost_increase, 2),\n        \"monthly_insurance_cost\": round(monthly_insurance_cost, 2),\n        \"yearly_insurance_cost\": round(yearly_insurance_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "normal_insurance_cost": 17648.4,
+      "insurance_cost_increase": 10589.04,
+      "monthly_insurance_cost": 28237.44,
+      "yearly_insurance_cost": 338849.28
+    }
+  },
+  "final": {
+    "question": "James has to buy insurance. Since he had an accident it was 60% more than normal. The normal cost is 17648.4 yen a month. How much does he pay a year?",
+    "answer_lines": [
+      "The insurance is 17648.4*.6=10589.04 yen per month more expensive than normal",
+      "So he paid 17648.4+10589.04=28237.44 yen a month",
+      "That means he pays 12*28237.44=338849.28 yen",
+      "#### 338849.28"
+    ],
+    "final_scalar": 338849.28,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro has to buy insurance. Since he had an accident it was 60% more than normal. The normal cost is 17648.4 yen a month. How much does he pay a year?",
+    "adapted_answer": [
+      "The insurance is 17648.4*.6=10589.04 yen per month more expensive than normal",
+      "So he paid 17648.4+10589.04=28237.44 yen a month",
+      "That means he pays 12*28237.44=338849.28 yen",
+      "#### 338849.28"
+    ],
+    "adaptation_notes": "Replaced 'James' with 'Taro' to give the name a Japanese context."
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "index": 529,
+  "split": "test",
+  "original": {
+    "question": "Tom bought a CD for $4, and a headphone set. In total, he paid $48. How many more CDs would Tom have been able to buy if he had decided not to buy the headphone set?",
+    "answer": "The headphone set cost was 48 - 4 = $<<48-4=44>>44.\nThat means, for that money Tom would be able to buy 44 / 4 = <<44/4=11>>11 more CDs.\n#### 11"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tom",
+      "dollars"
+    ],
+    "notes": "The name 'Tom' and the unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cd_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 48,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "headphone_cost",
+      "value": 44,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cd_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 48, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"headphone_cost\", \"value\": 44, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cd_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 48,
+        "original_unit": "dollar",
+        "converted_value": 7059.36,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "headphone_cost",
+        "original_value": 44,
+        "original_unit": "dollar",
+        "converted_value": 6471.08,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tom bought a CD for ${cd_cost}, and a headphone set. In total, he paid ${total_cost}. How many more CDs would Tom have been able to buy if he had decided not to buy the headphone set?",
+    "templatized_answer": [
+      "The headphone set cost was {total_cost} - {cd_cost} = ${headphone_cost}.",
+      "That means, for that money Tom would be able to buy {headphone_cost} / {cd_cost} = {headphone_cost}/{cd_cost} more CDs.",
+      "#### {headphone_cost}/{cd_cost}"
+    ],
+    "factual_assignment": {
+      "cd_cost": 4,
+      "total_cost": 48,
+      "headphone_cost": 44
+    }
+  },
+  "merged_assignment": {
+    "cd_cost": 588.28,
+    "total_cost": 7059.36,
+    "headphone_cost": 6471.08
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    cd_cost = 588.28\n    total_cost = 7059.36\n    headphone_cost = total_cost - cd_cost\n    headphone_cost_div_cd_cost = headphone_cost / cd_cost\n\n    return {\n        \"cd_cost\": round(cd_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"headphone_cost\": round(headphone_cost, 2),\n        \"headphone_cost_div_cd_cost\": round(headphone_cost_div_cd_cost, 2)\n    }\n",
+    "results": {
+      "cd_cost": 588.28,
+      "total_cost": 7059.36,
+      "headphone_cost": 6471.08,
+      "headphone_cost_div_cd_cost": 11.0
+    }
+  },
+  "final": {
+    "question": "Tom bought a CD for 588.28 yen, and a headphone set. In total, he paid 7059.36 yen. How many more CDs would Tom have been able to buy if he had decided not to buy the headphone set?",
+    "answer_lines": [
+      "The headphone set cost was 7059.36 - 588.28 = 6471.08 yen.",
+      "That means, for that money Tom would be able to buy 6471.08 / 588.28 = 11.0 more CDs.",
+      "#### 11.0"
+    ],
+    "final_scalar": 11.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro bought a CD for 588.28 yen, and a headphone set. In total, he paid 7059.36 yen. How many more CDs would Taro have been able to buy if he had decided not to buy the headphone set?",
+    "adapted_answer": [
+      "The headphone set cost was 7059.36 - 588.28 = 6471.08 yen.",
+      "That means, for that money Taro would be able to buy 6471.08 / 588.28 = 11.0 more CDs."
+    ],
+    "adaptation_notes": "Replaced 'Tom' with 'Taro', a common Japanese name."
+  }
+}

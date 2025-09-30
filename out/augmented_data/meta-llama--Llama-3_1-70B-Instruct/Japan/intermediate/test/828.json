@@ -1,0 +1,166 @@
+{
+  "index": 828,
+  "split": "test",
+  "original": {
+    "question": "Mulan has $40. Her father gave her $100. She buys two pairs of jeans at $30 each and a bag for $20. How much money does Mulan have left?",
+    "answer": "Mulan has a total of $40 + $100 = $<<40+100=140>>140.\nTwo pairs of jeans cost 2 x $30 = $<<2*30=60>>60.\nThus, Mulan spends a total of $60 + $20 = $<<60+20=80>>80.\nTherefore, Mulan has $140 - $80 = $<<140-80=60>>60 left.\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Mulan",
+      "dollars"
+    ],
+    "notes": "Mulan is a Chinese name and dollars is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "mulan_initial_money",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "father_gift",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jeans_cost",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bag_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 80,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "mulan_final_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"mulan_initial_money\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"father_gift\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jeans_cost\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bag_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"mulan_final_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "mulan_initial_money",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 5882.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "father_gift",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "jeans_cost",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 4412.1,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "bag_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 11765.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "mulan_final_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 8824.2,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mulan has ${mulan_initial_money}. Her father gave her ${father_gift}. She buys two pairs of jeans at ${jeans_cost} each and a bag for ${bag_cost}. How much money does Mulan have left?",
+    "templatized_answer": [
+      "Mulan has a total of ${mulan_initial_money} + ${father_gift} = ${mulan_initial_money + father_gift}.",
+      "Two pairs of jeans cost 2 x ${jeans_cost} = ${2 * jeans_cost}.",
+      "Thus, Mulan spends a total of ${2 * jeans_cost} + ${bag_cost} = ${total_spent}.",
+      "Therefore, Mulan has ${mulan_initial_money + father_gift} - ${total_spent} = ${mulan_final_money} left.",
+      "#### {mulan_final_money}"
+    ],
+    "factual_assignment": {
+      "mulan_initial_money": 40,
+      "father_gift": 100,
+      "jeans_cost": 30,
+      "bag_cost": 20,
+      "total_spent": 80,
+      "mulan_final_money": 60
+    }
+  },
+  "merged_assignment": {
+    "mulan_initial_money": 5882.8,
+    "father_gift": 14707.0,
+    "jeans_cost": 4412.1,
+    "bag_cost": 2941.4,
+    "total_spent": 11765.6,
+    "mulan_final_money": 8824.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    mulan_initial_money = 5882.8\n    father_gift = 14707.0\n    jeans_cost = 4412.1\n    bag_cost = 2941.4\n\n    total_spent = 2 * jeans_cost + bag_cost\n    mulan_final_money = mulan_initial_money + father_gift - total_spent\n\n    return {\n        \"mulan_initial_money\": round(mulan_initial_money, 2),\n        \"father_gift\": round(father_gift, 2),\n        \"jeans_cost\": round(jeans_cost, 2),\n        \"bag_cost\": round(bag_cost, 2),\n        \"total_spent\": round(total_spent, 2),\n        \"mulan_final_money\": round(mulan_final_money, 2),\n        \"2 * jeans_cost\": round(2 * jeans_cost, 2),\n        \"mulan_initial_money + father_gift\": round(mulan_initial_money + father_gift, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "mulan_initial_money": 5882.8,
+      "father_gift": 14707.0,
+      "jeans_cost": 4412.1,
+      "bag_cost": 2941.4,
+      "total_spent": 11765.6,
+      "mulan_final_money": 8824.2,
+      "2 * jeans_cost": 8824.2,
+      "mulan_initial_money + father_gift": 20589.8
+    }
+  },
+  "final": {
+    "question": "Mulan has 5882.8 yen. Her father gave her 14707.0 yen. She buys two pairs of jeans at 4412.1 yen each and a bag for 2941.4 yen. How much money does Mulan have left?",
+    "answer_lines": [
+      "Mulan has a total of 5882.8 yen + 14707.0 yen = 20589.8 yen.",
+      "Two pairs of jeans cost 2 x 4412.1 yen = 8824.2 yen.",
+      "Thus, Mulan spends a total of 8824.2 yen + 2941.4 yen = 11765.6 yen.",
+      "Therefore, Mulan has 20589.8 yen - 11765.6 yen = 8824.2 yen left.",
+      "#### 8824.2"
+    ],
+    "final_scalar": 8824.2,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Sakura has 5882.8 yen. Her father gave her 14707.0 yen. She buys two pairs of jeans at 4412.1 yen each and a bag for 2941.4 yen. How much money does Sakura have left?",
+    "adapted_answer": [
+      "Sakura has a total of 5882.8 yen + 14707.0 yen = 20589.8 yen.",
+      "Two pairs of jeans cost 2 x 4412.1 yen = 8824.2 yen.",
+      "Thus, Sakura spends a total of 8824.2 yen + 2941.4 yen = 11765.6 yen.",
+      "Therefore, Sakura has 20589.8 yen - 11765.6 yen = 8824.2 yen left.",
+      "#### 8824.2"
+    ],
+    "adaptation_notes": "Replaced 'Mulan' with 'Sakura' to give the problem a Japanese context."
+  }
+}

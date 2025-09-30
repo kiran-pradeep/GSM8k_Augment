@@ -1,0 +1,250 @@
+{
+  "index": 227,
+  "split": "test",
+  "original": {
+    "question": "Chad ordered a build-your-own burrito for lunch.  The base burrito is $6.50.  He adds extra meat for $2.00, extra cheese for $1.00, avocado for $1.00 and 2 sauces for $0.25 each.  He decides to upgrade his meal for an extra $3.00 which will add chips and a drink.  He has a gift card for $5.00 that he uses at check out.  How much does he still owe?",
+    "answer": "He orders 2 sauces at $0.25 each so 2*.25 = $<<2*.25=0.50>>0.50 for sauce\nHe orders extra meat for $2.00, extra cheese for $1.00, avocado for $1.00 and $0.50 for sauce for a total of 2+1+1+.50 = $<<2+1+1+.5=4.50>>4.50 in extras\nHis burrito cost $6.50 and he adds $4.50 in extras and upgrades his meal for $3.00 so now he owes, 6.50+4.50+3 = $<<6.50+4.50+3=14.00>>14.00\nHe has a $5.00 gift card and his current bill is $14.00 so he will owe 14-5 = $<<14-5=9.00>>9.00\n#### 9"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Chad",
+      "dollars",
+      "burrito",
+      "chips",
+      "sauces",
+      "avocado",
+      "cheese",
+      "meat"
+    ],
+    "notes": "The text contains Western names, food items, and currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "base_burrito_cost",
+      "value": 6.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_meat_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_cheese_cost",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "avocado_cost",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sauce_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "sauce_total_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extras_total_cost",
+      "value": 4.5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "meal_upgrade_cost",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "initial_total_cost",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gift_card_value",
+      "value": 5.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "final_amount_owed",
+      "value": 9.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"base_burrito_cost\", \"value\": 6.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"extra_meat_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"extra_cheese_cost\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"avocado_cost\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sauce_cost\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"sauce_total_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extras_total_cost\", \"value\": 4.5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"meal_upgrade_cost\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"initial_total_cost\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gift_card_value\", \"value\": 5.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"final_amount_owed\", \"value\": 9.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "base_burrito_cost",
+        "original_value": 6.5,
+        "original_unit": "dollar",
+        "converted_value": 955.95,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "extra_meat_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "extra_cheese_cost",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 147.07,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "avocado_cost",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 147.07,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "sauce_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 36.77,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "sauce_total_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 73.53,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "extras_total_cost",
+        "original_value": 4.5,
+        "original_unit": "dollar",
+        "converted_value": 661.81,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "meal_upgrade_cost",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "initial_total_cost",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 2058.98,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gift_card_value",
+        "original_value": 5.0,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "final_amount_owed",
+        "original_value": 9.0,
+        "original_unit": "dollar",
+        "converted_value": 1323.63,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Chad ordered a build-your-own burrito for lunch.  The base burrito is ${base_burrito_cost}.  He adds extra meat for ${extra_meat_cost}, extra cheese for ${extra_cheese_cost}, avocado for ${avocado_cost} and 2 sauces for ${sauce_cost} each.  He decides to upgrade his meal for an extra ${meal_upgrade_cost} which will add chips and a drink.  He has a gift card for ${gift_card_value} that he uses at check out.  How much does he still owe?",
+    "templatized_answer": [
+      "He orders 2 sauces at ${sauce_cost} each so 2*{sauce_cost} = ${sauce_total_cost} for sauce",
+      "He orders extra meat for ${extra_meat_cost}, extra cheese for ${extra_cheese_cost}, avocado for ${avocado_cost} and ${sauce_total_cost} for sauce for a total of {extra_meat_cost}+{extra_cheese_cost}+{avocado_cost}+{sauce_total_cost} = ${extras_total_cost} in extras",
+      "His burrito cost ${base_burrito_cost} and he adds ${extras_total_cost} in extras and upgrades his meal for ${meal_upgrade_cost} so now he owes, {base_burrito_cost}+{extras_total_cost}+{meal_upgrade_cost} = ${initial_total_cost}",
+      "He has a ${gift_card_value} gift card and his current bill is ${initial_total_cost} so he will owe {initial_total_cost}-{gift_card_value} = ${final_amount_owed}",
+      "#### {final_amount_owed}"
+    ],
+    "factual_assignment": {
+      "base_burrito_cost": 6.5,
+      "extra_meat_cost": 2.0,
+      "extra_cheese_cost": 1.0,
+      "avocado_cost": 1.0,
+      "sauce_cost": 0.25,
+      "sauce_total_cost": 0.5,
+      "extras_total_cost": 4.5,
+      "meal_upgrade_cost": 3.0,
+      "initial_total_cost": 14.0,
+      "gift_card_value": 5.0,
+      "final_amount_owed": 9.0
+    }
+  },
+  "merged_assignment": {
+    "base_burrito_cost": 955.95,
+    "extra_meat_cost": 294.14,
+    "extra_cheese_cost": 147.07,
+    "avocado_cost": 147.07,
+    "sauce_cost": 36.77,
+    "sauce_total_cost": 73.53,
+    "extras_total_cost": 661.81,
+    "meal_upgrade_cost": 441.21,
+    "initial_total_cost": 2058.98,
+    "gift_card_value": 735.35,
+    "final_amount_owed": 1323.63
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    base_burrito_cost = 955.95\n    extra_meat_cost = 294.14\n    extra_cheese_cost = 147.07\n    avocado_cost = 147.07\n    sauce_cost = 36.77\n    meal_upgrade_cost = 441.21\n    gift_card_value = 735.35\n\n    sauce_total_cost = round(2 * sauce_cost, 2)\n    extras_total_cost = round(extra_meat_cost + extra_cheese_cost + avocado_cost + sauce_total_cost, 2)\n    initial_total_cost = round(base_burrito_cost + extras_total_cost + meal_upgrade_cost, 2)\n    final_amount_owed = round(initial_total_cost - gift_card_value, 2)\n\n    return {\n        \"base_burrito_cost\": base_burrito_cost,\n        \"extra_meat_cost\": extra_meat_cost,\n        \"extra_cheese_cost\": extra_cheese_cost,\n        \"avocado_cost\": avocado_cost,\n        \"sauce_cost\": sauce_cost,\n        \"sauce_total_cost\": sauce_total_cost,\n        \"extras_total_cost\": extras_total_cost,\n        \"meal_upgrade_cost\": meal_upgrade_cost,\n        \"initial_total_cost\": initial_total_cost,\n        \"gift_card_value\": gift_card_value,\n        \"final_amount_owed\": final_amount_owed\n    }\n",
+    "results": {
+      "base_burrito_cost": 955.95,
+      "extra_meat_cost": 294.14,
+      "extra_cheese_cost": 147.07,
+      "avocado_cost": 147.07,
+      "sauce_cost": 36.77,
+      "sauce_total_cost": 73.54,
+      "extras_total_cost": 661.82,
+      "meal_upgrade_cost": 441.21,
+      "initial_total_cost": 2058.98,
+      "gift_card_value": 735.35,
+      "final_amount_owed": 1323.63
+    }
+  },
+  "final": {
+    "question": "Chad ordered a build-your-own burrito for lunch.  The base burrito is 955.95 yen.  He adds extra meat for 294.14 yen, extra cheese for 147.07 yen, avocado for 147.07 yen and 2 sauces for 36.77 yen each.  He decides to upgrade his meal for an extra 441.21 yen which will add chips and a drink.  He has a gift card for 735.35 yen that he uses at check out.  How much does he still owe?",
+    "answer_lines": [
+      "He orders 2 sauces at 36.77 yen each so 2*36.77 = 73.54 yen for sauce",
+      "He orders extra meat for 294.14 yen, extra cheese for 147.07 yen, avocado for 147.07 yen and 73.54 yen for sauce for a total of 294.14+147.07+147.07+73.54 = 661.82 yen in extras",
+      "His burrito cost 955.95 yen and he adds 661.82 yen in extras and upgrades his meal for 441.21 yen so now he owes, 955.95+661.82+441.21 = 2058.98 yen",
+      "He has a 735.35 yen gift card and his current bill is 2058.98 yen so he will owe 2058.98-735.35 = 1323.63 yen",
+      "#### 1323.63"
+    ],
+    "final_scalar": 1323.63,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro ordered a build-your-own bento for lunch.  The base bento is 955.95 yen.  He adds extra tonkatsu for 294.14 yen, extra mentaiko for 147.07 yen, avocado for 147.07 yen and 2 ponzu sauces for 36.77 yen each.  He decides to upgrade his meal for an extra 441.21 yen which will add senbei and a ramune.  He has a gift card for 735.35 yen that he uses at check out.  How much does he still owe?",
+    "adapted_answer": [
+      "He orders 2 ponzu sauces at 36.77 yen each so 2*36.77 = 73.54 yen for sauce",
+      "He orders extra tonkatsu for 294.14 yen, extra mentaiko for 147.07 yen, avocado for 147.07 yen and 73.54 yen for sauce for a total of 294.14+147.07+147.07+73.54 = 661.82 yen in extras",
+      "His bento cost 955.95 yen and he adds 661.82 yen in extras and upgrades his meal for 441.21 yen so now he owes, 955.95+661.82+441.21 = 2058.98 yen",
+      "He has a 735.35 yen gift card and his current bill is 2058.98 yen so he will owe 2058.98-735.35 = 1323.63 yen",
+      "#### 1323.63"
+    ],
+    "adaptation_notes": "Replaced Chad with Taro, burrito with bento, extra meat with extra tonkatsu, extra cheese with extra mentaiko, avocado remains the same, sauces with ponzu sauces, upgrade meal with senbei and ramune, and chips and drink with senbei and ramune."
+  }
+}

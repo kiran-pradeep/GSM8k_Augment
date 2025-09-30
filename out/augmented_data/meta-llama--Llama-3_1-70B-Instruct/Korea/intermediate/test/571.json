@@ -1,0 +1,160 @@
+{
+  "index": 571,
+  "split": "test",
+  "original": {
+    "question": "Leah just got a new kitten. Spaying her cost $200, her 3 vaccines costs $20 each, and the kitten broke 4 vases that cost $12 each. How much has the kitten cost so far?",
+    "answer": "First find the total cost of the vaccines: $20/vaccine * 3 vaccines = $<<20*3=60>>60\nThen find the total cost of the vases: 4 vases * $12/vase = $<<4*12=48>>48\nThen add the cost of the vaccines and vases to the cost of the spaying to find the total cost: $200 + $48 + $60 = $<<200+48+60=308>>308\n#### 308"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is used, which is not specific to Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "spaying_cost",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "vaccine_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "vase_cost",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_vaccine_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_vase_cost",
+      "value": 48.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 308.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"spaying_cost\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"vaccine_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"vase_cost\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_vaccine_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_vase_cost\", \"value\": 48.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 308.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "spaying_cost",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 277900.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "vaccine_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 27790.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "vase_cost",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 16674.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_vaccine_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 83370.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_vase_cost",
+        "original_value": 48.0,
+        "original_unit": "dollar",
+        "converted_value": 66696.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 308.0,
+        "original_unit": "dollar",
+        "converted_value": 427966.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Leah just got a new kitten. Spaying her cost ${spaying_cost}, her 3 vaccines costs ${vaccine_cost} each, and the kitten broke 4 vases that cost ${vase_cost} each. How much has the kitten cost so far?",
+    "templatized_answer": [
+      "First find the total cost of the vaccines: ${vaccine_cost}/vaccine * 3 vaccines = ${total_vaccine_cost}",
+      "Then find the total cost of the vases: 4 vases * ${vase_cost}/vase = ${total_vase_cost}",
+      "Then add the cost of the vaccines and vases to the cost of the spaying to find the total cost: ${spaying_cost} + ${total_vase_cost} + ${total_vaccine_cost} = ${total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "spaying_cost": 200.0,
+      "vaccine_cost": 20.0,
+      "vase_cost": 12.0,
+      "total_vaccine_cost": 60.0,
+      "total_vase_cost": 48.0,
+      "total_cost": 308.0
+    }
+  },
+  "merged_assignment": {
+    "spaying_cost": 277900.0,
+    "vaccine_cost": 27790.0,
+    "vase_cost": 16674.0,
+    "total_vaccine_cost": 83370.0,
+    "total_vase_cost": 66696.0,
+    "total_cost": 427966.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    spaying_cost = 277900.0\n    vaccine_cost = 27790.0\n    vase_cost = 16674.0\n\n    total_vaccine_cost = vaccine_cost * 3\n    total_vase_cost = vase_cost * 4\n    total_cost = spaying_cost + total_vaccine_cost + total_vase_cost\n\n    return {\n        \"spaying_cost\": round(spaying_cost, 2),\n        \"vaccine_cost\": round(vaccine_cost, 2),\n        \"vase_cost\": round(vase_cost, 2),\n        \"total_vaccine_cost\": round(total_vaccine_cost, 2),\n        \"total_vase_cost\": round(total_vase_cost, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "spaying_cost": 277900.0,
+      "vaccine_cost": 27790.0,
+      "vase_cost": 16674.0,
+      "total_vaccine_cost": 83370.0,
+      "total_vase_cost": 66696.0,
+      "total_cost": 427966.0
+    }
+  },
+  "final": {
+    "question": "Leah just got a new kitten. Spaying her cost 277900 won, her 3 vaccines costs 27790 won each, and the kitten broke 4 vases that cost 16674 won each. How much has the kitten cost so far?",
+    "answer_lines": [
+      "First find the total cost of the vaccines: 27790 won/vaccine * 3 vaccines = 83370 won",
+      "Then find the total cost of the vases: 4 vases * 16674 won/vase = 66696 won",
+      "Then add the cost of the vaccines and vases to the cost of the spaying to find the total cost: 277900 won + 66696 won + 83370 won = 427966 won",
+      "#### 427966"
+    ],
+    "final_scalar": 427966,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Leah just got a new kitten. Spaying her cost 277900 won, her 3 vaccines costs 27790 won each, and the kitten broke 4 buncheong vases that cost 16674 won each. How much has the kitten cost so far?",
+    "adapted_answer": [
+      "First find the total cost of the vaccines: 27790 won/vaccine * 3 vaccines = 83370 won",
+      "Then find the total cost of the vases: 4 buncheong vases * 16674 won/vase = 66696 won",
+      "Then add the cost of the vaccines and vases to the cost of the spaying to find the total cost: 277900 won + 66696 won + 83370 won = 427966 won",
+      "#### 427966"
+    ],
+    "adaptation_notes": "Replaced 'vases' with 'buncheong vases' to give it a Korean context, as buncheong is a type of traditional Korean vase."
+  }
+}

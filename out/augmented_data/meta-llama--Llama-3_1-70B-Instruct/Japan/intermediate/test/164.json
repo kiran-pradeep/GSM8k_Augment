@@ -1,0 +1,126 @@
+{
+  "index": 164,
+  "split": "test",
+  "original": {
+    "question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing $35/hour in missed income. The accountant charges $90. How much more money will she have if she hires the accountant?",
+    "answer": "First find the total lost revenue if Jackie does her taxes herself: $35/hour * 3 hours = $<<35*3=105>>105\nThen subtract the accountant's charge to find how much money Janet saves: $105 - $90 = $<<105-90=15>>15\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_income",
+      "value": 35.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "accountant_charge",
+      "value": 90.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lost_revenue",
+      "value": 105.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "savings",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_income\", \"value\": 35.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"accountant_charge\", \"value\": 90.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lost_revenue\", \"value\": 105.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"savings\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_income",
+        "original_value": 35.0,
+        "original_unit": "dollar",
+        "converted_value": 5147.45,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "accountant_charge",
+        "original_value": 90.0,
+        "original_unit": "dollar",
+        "converted_value": 13236.3,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "lost_revenue",
+        "original_value": 105.0,
+        "original_unit": "dollar",
+        "converted_value": 15442.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "savings",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 2206.05,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do {hours_lost} fewer hours of freelance work, losing ${hourly_income}/hour in missed income. The accountant charges ${accountant_charge}. How much more money will she have if she hires the accountant?",
+    "templatized_answer": [
+      "First find the total lost revenue if Jackie does her taxes herself: ${hourly_income}/hour * {hours_lost} hours = ${hourly_income} * {hours_lost}",
+      "Then subtract the accountant's charge to find how much money Janet saves: ${hourly_income} * {hours_lost} - ${accountant_charge} = ${savings}",
+      "#### {savings}"
+    ],
+    "factual_assignment": {
+      "hourly_income": 35.0,
+      "accountant_charge": 90.0,
+      "hours_lost": 3,
+      "savings": 15.0
+    }
+  },
+  "merged_assignment": {
+    "hourly_income": 5147.45,
+    "accountant_charge": 13236.3,
+    "hours_lost": 3,
+    "savings": 2206.05
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_income = 5147.45\n    accountant_charge = 13236.3\n    hours_lost = 3\n\n    lost_revenue = hourly_income * hours_lost\n    savings = lost_revenue - accountant_charge\n\n    return {\n        \"hourly_income\": round(hourly_income, 2),\n        \"accountant_charge\": round(accountant_charge, 2),\n        \"hours_lost\": hours_lost,\n        \"lost_revenue\": round(lost_revenue, 2),\n        \"savings\": round(savings, 2)\n    }\n",
+    "results": {
+      "hourly_income": 5147.45,
+      "accountant_charge": 13236.3,
+      "hours_lost": 3,
+      "lost_revenue": 15442.35,
+      "savings": 2206.05
+    }
+  },
+  "final": {
+    "question": "Jackie is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing 5147.45 yen/hour in missed income. The accountant charges 13236.3 yen. How much more money will she have if she hires the accountant?",
+    "answer_lines": [
+      "First find the total lost revenue if Jackie does her taxes herself: 5147.45 yen/hour * 3 hours = 15442.35 yen",
+      "Then subtract the accountant's charge to find how much money Janet saves: 15442.35 yen - 13236.3 yen = 2206.05 yen",
+      "#### 2206.05"
+    ],
+    "final_scalar": 2206.05,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is trying to decide whether to do her taxes herself or hire an accountant. If she does the taxes herself, she'll be able to do 3 fewer hours of freelance work, losing 5147.45 yen/hour in missed income. The accountant charges 13236.3 yen. How much more money will she have if she hires the accountant?",
+    "adapted_answer": [
+      "First find the total lost revenue if Yui does her taxes herself: 5147.45 yen/hour * 3 hours = 15442.35 yen",
+      "Then subtract the accountant's charge to find how much money Yui saves: 15442.35 yen - 13236.3 yen = 2206.05 yen",
+      "#### 2206.05"
+    ],
+    "adaptation_notes": "Replaced 'Jackie' with 'Yui' to use a Japanese name."
+  }
+}

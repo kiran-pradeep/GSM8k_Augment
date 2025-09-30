@@ -1,0 +1,144 @@
+{
+  "index": 832,
+  "split": "test",
+  "original": {
+    "question": "Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved $10.00 more than their sister Eva.   Eva has saved $20.00.  How much money does Roy have?",
+    "answer": "Anthony has saved $10.00 more than Eva who has $20.00 so he has 10+20 = $<<10+20=30.00>>30.00\nRoy has saved 40% more than his brother who has $30.00 so Roy has saved .40*30 = $12.00\nAll total, Roy has 12.00 more than his brother, so he has 12+30 = $<<12+30=42.00>>42.00\n#### 42"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "eva_savings",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "anthony_savings",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "anthony_total_savings",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "roy_additional_savings",
+      "value": 12.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "roy_total_savings",
+      "value": 42.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"eva_savings\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"anthony_savings\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"anthony_total_savings\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"roy_additional_savings\", \"value\": 12.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"roy_total_savings\", \"value\": 42.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "eva_savings",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "anthony_savings",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "anthony_total_savings",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 4412.1,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "roy_additional_savings",
+        "original_value": 12.0,
+        "original_unit": "dollar",
+        "converted_value": 1764.84,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "roy_total_savings",
+        "original_value": 42.0,
+        "original_unit": "dollar",
+        "converted_value": 6176.94,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved ${anthony_savings} more than their sister Eva.   Eva has saved ${eva_savings}.  How much money does Roy have?",
+    "templatized_answer": [
+      "Anthony has saved ${anthony_savings} more than Eva who has ${eva_savings} so he has {anthony_savings}+{eva_savings} = ${anthony_total_savings}",
+      "Roy has saved 40% more than his brother who has ${anthony_total_savings} so Roy has saved .40*{anthony_total_savings} = ${roy_additional_savings}",
+      "All total, Roy has {roy_additional_savings} more than his brother, so he has {roy_additional_savings}+{anthony_total_savings} = ${roy_total_savings}",
+      "#### {roy_total_savings}"
+    ],
+    "factual_assignment": {
+      "eva_savings": 20.0,
+      "anthony_savings": 10.0,
+      "anthony_total_savings": 30.0,
+      "roy_additional_savings": 12.0,
+      "roy_total_savings": 42.0
+    }
+  },
+  "merged_assignment": {
+    "eva_savings": 2941.4,
+    "anthony_savings": 1470.7,
+    "anthony_total_savings": 4412.1,
+    "roy_additional_savings": 1764.84,
+    "roy_total_savings": 6176.94
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    eva_savings = 2941.4\n    anthony_savings = 1470.7\n    anthony_total_savings = eva_savings + anthony_savings\n    roy_additional_savings = round(anthony_total_savings * 0.4, 2)\n    roy_total_savings = round(roy_additional_savings + anthony_total_savings, 2)\n\n    return {\n        \"eva_savings\": eva_savings,\n        \"anthony_savings\": anthony_savings,\n        \"anthony_total_savings\": anthony_total_savings,\n        \"roy_additional_savings\": roy_additional_savings,\n        \"roy_total_savings\": roy_total_savings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "eva_savings": 2941.4,
+      "anthony_savings": 1470.7,
+      "anthony_total_savings": 4412.1,
+      "roy_additional_savings": 1764.84,
+      "roy_total_savings": 6176.94
+    }
+  },
+  "final": {
+    "question": "Roy has saved 40% more in money earned by chores than his brother Anthony.  Anthony has saved 1470.7 yen more than their sister Eva.   Eva has saved 2941.4 yen.  How much money does Roy have?",
+    "answer_lines": [
+      "Anthony has saved 1470.7 yen more than Eva who has 2941.4 yen so he has 1470.7+2941.4 = 4412.1 yen",
+      "Roy has saved 40% more than his brother who has 4412.1 yen so Roy has saved .40*4412.1 = 1764.84 yen",
+      "All total, Roy has 1764.84 yen more than his brother, so he has 1764.84+4412.1 = 6176.94 yen",
+      "#### 6176.94"
+    ],
+    "final_scalar": 6176.94,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro has saved 40% more in money earned by chores than his brother Akira.  Akira has saved 1470.7 yen more than their sister Yui.   Yui has saved 2941.4 yen.  How much money does Taro have?",
+    "adapted_answer": [
+      "Akira has saved 1470.7 yen more than Yui who has 2941.4 yen so he has 1470.7+2941.4 = 4412.1 yen",
+      "Taro has saved 40% more than his brother who has 4412.1 yen so Taro has saved .40*4412.1 = 1764.84 yen",
+      "All total, Taro has 1764.84 yen more than his brother, so he has 1764.84+4412.1 = 6176.94 yen",
+      "#### 6176.94"
+    ],
+    "adaptation_notes": "Replaced names with Japanese equivalents: Roy -> Taro, Anthony -> Akira, Eva -> Yui."
+  }
+}

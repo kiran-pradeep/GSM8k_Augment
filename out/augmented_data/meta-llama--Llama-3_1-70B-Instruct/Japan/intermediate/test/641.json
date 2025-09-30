@@ -1,0 +1,166 @@
+{
+  "index": 641,
+  "split": "test",
+  "original": {
+    "question": "Tim gets a promotion that offers him a 5% raise on his $20000 a month salary.  It also gives him a bonus worth half a month's salary. How much money will he make in a year?",
+    "answer": "The promotion increased his monthly salary by 20000*.05=$<<20000*0.05=1000>>1000\nSo his new salary is 20000+1000=$<<20000+1000=21000>>21000 a month\nSo he makes 21000*12=$<<21000*12=252000>>252,000 a year\nThe bonus is worth 21000*.5=$<<21000*.5=10500>>10500\nSo he makes 252,000+10,500=$<<252000+10500=262500>>262,500 for the year\n#### 262500"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_salary",
+      "value": 20000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_salary_increase",
+      "value": 1000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "new_monthly_salary",
+      "value": 21000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_salary",
+      "value": 252000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "bonus",
+      "value": 10500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_yearly_earnings",
+      "value": 262500.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_salary\", \"value\": 20000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_salary_increase\", \"value\": 1000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"new_monthly_salary\", \"value\": 21000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_salary\", \"value\": 252000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"bonus\", \"value\": 10500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_yearly_earnings\", \"value\": 262500.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_salary",
+        "original_value": 20000.0,
+        "original_unit": "dollar",
+        "converted_value": 2941400.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "monthly_salary_increase",
+        "original_value": 1000.0,
+        "original_unit": "dollar",
+        "converted_value": 147070.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "new_monthly_salary",
+        "original_value": 21000.0,
+        "original_unit": "dollar",
+        "converted_value": 3088470.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "yearly_salary",
+        "original_value": 252000.0,
+        "original_unit": "dollar",
+        "converted_value": 37061640.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "bonus",
+        "original_value": 10500.0,
+        "original_unit": "dollar",
+        "converted_value": 1544235.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_yearly_earnings",
+        "original_value": 262500.0,
+        "original_unit": "dollar",
+        "converted_value": 38605875.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tim gets a promotion that offers him a 5% raise on his ${monthly_salary} a month salary.  It also gives him a bonus worth half a month's salary. How much money will he make in a year?",
+    "templatized_answer": [
+      "The promotion increased his monthly salary by {monthly_salary}*.05=${{monthly_salary}*0.05}",
+      "So his new salary is {monthly_salary}+{monthly_salary_increase}=${{monthly_salary}+{monthly_salary_increase}} a month",
+      "So he makes {new_monthly_salary}*12=${{new_monthly_salary}*12} a year",
+      "The bonus is worth {new_monthly_salary}*.5=${{new_monthly_salary}*0.5}",
+      "So he makes {yearly_salary}+{bonus}=${{yearly_salary}+{bonus}} for the year",
+      "#### {total_yearly_earnings}"
+    ],
+    "factual_assignment": {
+      "monthly_salary": 20000.0,
+      "monthly_salary_increase": 1000.0,
+      "new_monthly_salary": 21000.0,
+      "yearly_salary": 252000.0,
+      "bonus": 10500.0,
+      "total_yearly_earnings": 262500.0
+    }
+  },
+  "merged_assignment": {
+    "monthly_salary": 2941400.0,
+    "monthly_salary_increase": 147070.0,
+    "new_monthly_salary": 3088470.0,
+    "yearly_salary": 37061640.0,
+    "bonus": 1544235.0,
+    "total_yearly_earnings": 38605875.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_salary = 2941400.0\n    monthly_salary_increase = round(monthly_salary * 0.05, 2)\n    new_monthly_salary = round(monthly_salary + monthly_salary_increase, 2)\n    yearly_salary = round(new_monthly_salary * 12, 2)\n    bonus = round(new_monthly_salary * 0.5, 2)\n    total_yearly_earnings = round(yearly_salary + bonus, 2)\n\n    return {\n        \"monthly_salary\": monthly_salary,\n        \"monthly_salary_increase\": monthly_salary_increase,\n        \"new_monthly_salary\": new_monthly_salary,\n        \"yearly_salary\": yearly_salary,\n        \"bonus\": bonus,\n        \"total_yearly_earnings\": total_yearly_earnings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "monthly_salary": 2941400.0,
+      "monthly_salary_increase": 147070.0,
+      "new_monthly_salary": 3088470.0,
+      "yearly_salary": 37061640.0,
+      "bonus": 1544235.0,
+      "total_yearly_earnings": 38605875.0
+    }
+  },
+  "final": {
+    "question": "Tim gets a promotion that offers him a 5% raise on his 2941400 yen a month salary.  It also gives him a bonus worth half a month's salary. How much money will he make in a year?",
+    "answer_lines": [
+      "The promotion increased his monthly salary by 2941400*.05=147070",
+      "So his new salary is 2941400+147070=3088470 yen a month",
+      "So he makes 3088470*12=37061640 yen a year",
+      "The bonus is worth 3088470*.5=1544235 yen",
+      "So he makes 37061640+1544235=38605875 yen for the year",
+      "#### 38605875"
+    ],
+    "final_scalar": 38605875,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro gets a promotion that offers him a 5% raise on his 2941400 yen a month salary.  It also gives him a bonus worth half a month's salary. How much money will he make in a year?",
+    "adapted_answer": [
+      "The promotion increased his monthly salary by 2941400*.05=147070",
+      "So his new salary is 2941400+147070=3088470 yen a month",
+      "So he makes 3088470*12=37061640 yen a year",
+      "The bonus is worth 3088470*.5=1544235 yen",
+      "So he makes 37061640+1544235=38605875 yen for the year",
+      "#### 38605875"
+    ],
+    "adaptation_notes": "Replaced 'Tim' with 'Taro' to use a Japanese name."
+  }
+}

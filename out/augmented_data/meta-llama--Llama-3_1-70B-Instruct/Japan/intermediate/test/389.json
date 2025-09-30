@@ -1,0 +1,140 @@
+{
+  "index": 389,
+  "split": "test",
+  "original": {
+    "question": "David and Dasha went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at $2 per ticket.  You can also buy a ride bracelet for $30 which gives you 9 rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all 9 rides, how much money does David save?",
+    "answer": "Each ride cost 2 x $2 = $<<2*2=4>>4.\nAll 9 rides cost $4 x 9 = $<<4*9=36>>36.\nBy bathing the ride bracelet, David saves $36 - $30 = $<<36-30=6>>6.\n#### 6"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "David",
+      "Dasha",
+      "dollars",
+      "carnival"
+    ],
+    "notes": "The names David and Dasha, and the use of dollars as currency are culturally specific to regions other than Japan. Additionally, the concept of a carnival is more commonly associated with Western cultures."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ride_ticket_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_bracelet_cost",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_ride_cost",
+      "value": 36,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "money_saved",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ride_ticket_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ride_bracelet_cost\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_ride_cost\", \"value\": 36, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"money_saved\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ride_ticket_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ride_bracelet_cost",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 4412.1,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_ride_cost",
+        "original_value": 36,
+        "original_unit": "dollar",
+        "converted_value": 5294.52,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "money_saved",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "David and Dasha went to the carnival, where there are {number_of_rides} rides.  Each ride costs {number_of_tickets_per_ride} ride tickets at ${ride_ticket_cost} per ticket.  You can also buy a ride bracelet for ${ride_bracelet_cost} which gives you {number_of_rides} rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all {number_of_rides} rides, how much money does David save?",
+    "templatized_answer": [
+      "Each ride cost {number_of_tickets_per_ride} x ${ride_ticket_cost} = ${cost_per_ride}.",
+      "All {number_of_rides} rides cost ${cost_per_ride} x {number_of_rides} = ${total_ride_cost}.",
+      "By bathing the ride bracelet, David saves ${total_ride_cost} - ${ride_bracelet_cost} = ${money_saved}.",
+      "#### {money_saved}"
+    ],
+    "factual_assignment": {
+      "number_of_rides": 9,
+      "number_of_tickets_per_ride": 2,
+      "ride_ticket_cost": 2,
+      "ride_bracelet_cost": 30,
+      "cost_per_ride": 4,
+      "total_ride_cost": 36,
+      "money_saved": 6
+    }
+  },
+  "merged_assignment": {
+    "number_of_rides": 9,
+    "number_of_tickets_per_ride": 2,
+    "ride_ticket_cost": 294.14,
+    "ride_bracelet_cost": 4412.1,
+    "cost_per_ride": 4,
+    "total_ride_cost": 5294.52,
+    "money_saved": 882.42
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_rides = 9\n    number_of_tickets_per_ride = 2\n    ride_ticket_cost = 294.14\n    ride_bracelet_cost = 4412.1\n\n    cost_per_ride = number_of_tickets_per_ride * ride_ticket_cost\n    cost_per_ride = round(cost_per_ride, 2)\n\n    total_ride_cost = cost_per_ride * number_of_rides\n    total_ride_cost = round(total_ride_cost, 2)\n\n    money_saved = total_ride_cost - ride_bracelet_cost\n    money_saved = round(money_saved, 2)\n\n    return {\n        \"number_of_rides\": number_of_rides,\n        \"number_of_tickets_per_ride\": number_of_tickets_per_ride,\n        \"ride_ticket_cost\": ride_ticket_cost,\n        \"ride_bracelet_cost\": ride_bracelet_cost,\n        \"cost_per_ride\": cost_per_ride,\n        \"total_ride_cost\": total_ride_cost,\n        \"money_saved\": money_saved\n    }\n",
+    "results": {
+      "number_of_rides": 9,
+      "number_of_tickets_per_ride": 2,
+      "ride_ticket_cost": 294.14,
+      "ride_bracelet_cost": 4412.1,
+      "cost_per_ride": 588.28,
+      "total_ride_cost": 5294.52,
+      "money_saved": 882.42
+    }
+  },
+  "final": {
+    "question": "David and Dasha went to the carnival, where there are 9 rides.  Each ride costs 2 ride tickets at 294.14 yen per ticket.  You can also buy a ride bracelet for 4412.1 yen which gives you 9 rides.  If David buys a ride bracelet and Dasha buys tickets, and they ride all 9 rides, how much money does David save?",
+    "answer_lines": [
+      "Each ride cost 2 x 294.14 yen = 588.28 yen.",
+      "All 9 rides cost 588.28 yen x 9 = 5294.52 yen.",
+      "By bathing the ride bracelet, David saves 5294.52 yen - 4412.1 yen = 882.42 yen.",
+      "#### 882.42"
+    ],
+    "final_scalar": 882.42,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro and Yui went to the matsuri, where there are 9 rides.  Each ride costs 2 ride tickets at 294.14 yen per ticket.  You can also buy a ride bracelet for 4412.1 yen which gives you 9 rides.  If Taro buys a ride bracelet and Yui buys tickets, and they ride all 9 rides, how much money does Taro save?",
+    "adapted_answer": [
+      "Each ride cost 2 x 294.14 yen = 588.28 yen.",
+      "All 9 rides cost 588.28 yen x 9 = 5294.52 yen.",
+      "By bathing the ride bracelet, Taro saves 5294.52 yen - 4412.1 yen = 882.42 yen.",
+      "#### 882.42"
+    ],
+    "adaptation_notes": "Replaced 'David' with 'Taro', 'Dasha' with 'Yui', and 'carnival' with 'matsuri'."
+  }
+}

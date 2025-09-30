@@ -1,0 +1,129 @@
+{
+  "index": 426,
+  "split": "test",
+  "original": {
+    "question": "Aleksandra went to a restaurant for dinner. She ordered some soup, a bagel, and a piece of cake. The bagel cost $4, and the soup 25% more. The cake is only half of the price of the bagel. How much did Aleksandra need to pay for the dinner she ordered?",
+    "answer": "The soup cost 4 * 25/100 = $<<4*25/100=1>>1 more than the bagel.\nSo the soup cost is 4 + 1 = $<<4+1=5>>5.\nThe cake is half the price of the bagel, so it is 4 * 0.5 = $<<4*0.5=2>>2.\nAleksandra needed to pay 4 + 5 + 2 = $<<4+5+2=11>>11 for dinner.\n#### 11"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Aleksandra",
+      "dollars",
+      "bagel",
+      "cake"
+    ],
+    "notes": "The text contains a non-Korean name, a unit of currency commonly used in Western countries, and food items not typically associated with Korean cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bagel_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "soup_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "cake_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bagel_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"soup_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"cake_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bagel_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "soup_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 6947.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "cake_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 15284.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Aleksandra went to a restaurant for dinner. She ordered some soup, a bagel, and a piece of cake. The bagel cost ${bagel_cost}, and the soup 25% more. The cake is only half of the price of the bagel. How much did Aleksandra need to pay for the dinner she ordered?",
+    "templatized_answer": [
+      "The soup cost {bagel_cost} * 25/100 = ${bagel_cost * 25/100} more than the bagel.",
+      "So the soup cost is {bagel_cost} + {bagel_cost * 25/100} = ${bagel_cost + bagel_cost * 25/100}.",
+      "The cake is half the price of the bagel, so it is {bagel_cost} * 0.5 = ${bagel_cost * 0.5}.",
+      "Aleksandra needed to pay {bagel_cost} + {bagel_cost + bagel_cost * 25/100} + {bagel_cost * 0.5} = ${bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}.",
+      "#### {bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}"
+    ],
+    "factual_assignment": {
+      "bagel_cost": 4
+    }
+  },
+  "merged_assignment": {
+    "bagel_cost": 5558.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bagel_cost = 5558.0\n\n    soup_cost_diff = bagel_cost * 25/100\n    soup_cost = bagel_cost + soup_cost_diff\n    cake_cost = bagel_cost * 0.5\n    total_cost = bagel_cost + soup_cost + cake_cost\n\n    return {\n        \"{bagel_cost}\": bagel_cost,\n        \"{bagel_cost * 25/100}\": round(soup_cost_diff, 2),\n        \"{bagel_cost + bagel_cost * 25/100}\": round(soup_cost, 2),\n        \"{bagel_cost * 0.5}\": round(cake_cost, 2),\n        \"{bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}\": round(total_cost, 2)\n    }\n",
+    "results": {
+      "{bagel_cost}": 5558.0,
+      "{bagel_cost * 25/100}": 1389.5,
+      "{bagel_cost + bagel_cost * 25/100}": 6947.5,
+      "{bagel_cost * 0.5}": 2779.0,
+      "{bagel_cost + bagel_cost + bagel_cost * 25/100 + bagel_cost * 0.5}": 15284.5
+    }
+  },
+  "final": {
+    "question": "Aleksandra went to a restaurant for dinner. She ordered some soup, a bagel, and a piece of cake. The bagel cost 5558.0 won, and the soup 25% more. The cake is only half of the price of the bagel. How much did Aleksandra need to pay for the dinner she ordered?",
+    "answer_lines": [
+      "The soup cost 5558.0 * 25/100 = 1389.5 more than the bagel.",
+      "So the soup cost is 5558.0 + 1389.5 = 6947.5.",
+      "The cake is half the price of the bagel, so it is 5558.0 * 0.5 = 2779.0.",
+      "Aleksandra needed to pay 5558.0 + 6947.5 + 2779.0 = 15284.5.",
+      "#### 15284.5"
+    ],
+    "final_scalar": 15284.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Aleksandra went to a restaurant for dinner. She ordered some Doenjang Jjigae, a Hotteok, and a piece of Patbingsu. The Hotteok cost 5558.0 won, and the Doenjang Jjigae 25% more. The Patbingsu is only half of the price of the Hotteok. How much did Aleksandra need to pay for the dinner she ordered?",
+    "adapted_answer": [
+      "The Doenjang Jjigae cost 5558.0 * 25/100 = 1389.5 more than the Hotteok.",
+      "So the Doenjang Jjigae cost is 5558.0 + 1389.5 = 6947.5.",
+      "The Patbingsu is half the price of the Hotteok, so it is 5558.0 * 0.5 = 2779.0.",
+      "Aleksandra needed to pay 5558.0 + 6947.5 + 2779.0 = 15284.5.",
+      "#### 15284.5"
+    ],
+    "adaptation_notes": "Replaced 'soup' with 'Doenjang Jjigae', 'bagel' with 'Hotteok', and 'cake' with 'Patbingsu'."
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "index": 448,
+  "split": "test",
+  "original": {
+    "question": "A salesman bought a case of 48 sneakers for $576. He sold 17 of them for $20 at a flash sale on Monday, and the rest were sold to a department store for $25 each throughout the rest of the week. How much money, in dollars, was the salesman's profit?",
+    "answer": "The salesman made 17 × $20 = $<<17*20=340>>340 at the flash sale on Monday.\nThere were 48 - 17 = <<48-17=31>>31 sneakers left.\nAt the department store he made 31 × $25 = $<<31*25=775>>775 throughout the week.\nIn total he made $340 + $775 = $<<340+775=1115>>1115.\nThe profit made by the salesman was $1115 - $576 = $<<1115-576=539>>539.\n#### 539"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 576.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "flash_sale_price",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "flash_sale_revenue",
+      "value": 340.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "department_store_price",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "department_store_revenue",
+      "value": 775.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_revenue",
+      "value": 1115.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "profit",
+      "value": 539.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 576.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"flash_sale_price\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"flash_sale_revenue\", \"value\": 340.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"department_store_price\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"department_store_revenue\", \"value\": 775.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_revenue\", \"value\": 1115.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"profit\", \"value\": 539.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 576.0,
+        "original_unit": "dollar",
+        "converted_value": 84712.32,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "flash_sale_price",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "flash_sale_revenue",
+        "original_value": 340.0,
+        "original_unit": "dollar",
+        "converted_value": 50003.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "department_store_price",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 3676.75,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "department_store_revenue",
+        "original_value": 775.0,
+        "original_unit": "dollar",
+        "converted_value": 113979.25,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_revenue",
+        "original_value": 1115.0,
+        "original_unit": "dollar",
+        "converted_value": 163983.05,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "profit",
+        "original_value": 539.0,
+        "original_unit": "dollar",
+        "converted_value": 79270.73,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A salesman bought a case of {number_of_sneakers} sneakers for ${initial_cost}. He sold {number_of_sneakers_sold_at_flash_sale} of them for ${flash_sale_price} at a flash sale on Monday, and the rest were sold to a department store for ${department_store_price} each throughout the rest of the week. How much money, in dollars, was the salesman's profit?",
+    "templatized_answer": [
+      "The salesman made {number_of_sneakers_sold_at_flash_sale} × ${flash_sale_price} = ${flash_sale_revenue}.",
+      "There were {number_of_sneakers} - {number_of_sneakers_sold_at_flash_sale} = {number_of_sneakers_left} sneakers left.",
+      "At the department store he made {number_of_sneakers_left} × ${department_store_price} = ${department_store_revenue} throughout the week.",
+      "In total he made ${flash_sale_revenue} + ${department_store_revenue} = ${total_revenue}.",
+      "The profit made by the salesman was ${total_revenue} - ${initial_cost} = ${profit}.",
+      "#### {profit}"
+    ],
+    "factual_assignment": {
+      "number_of_sneakers": 48,
+      "number_of_sneakers_sold_at_flash_sale": 17,
+      "number_of_sneakers_left": 31,
+      "initial_cost": 576,
+      "flash_sale_price": 20,
+      "flash_sale_revenue": 340,
+      "department_store_price": 25,
+      "department_store_revenue": 775,
+      "total_revenue": 1115,
+      "profit": 539
+    }
+  },
+  "merged_assignment": {
+    "number_of_sneakers": 48,
+    "number_of_sneakers_sold_at_flash_sale": 17,
+    "number_of_sneakers_left": 31,
+    "initial_cost": 84712.32,
+    "flash_sale_price": 2941.4,
+    "flash_sale_revenue": 50003.8,
+    "department_store_price": 3676.75,
+    "department_store_revenue": 113979.25,
+    "total_revenue": 163983.05,
+    "profit": 79270.73
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_sneakers = 48\n    initial_cost = 84712.32\n    number_of_sneakers_sold_at_flash_sale = 17\n    flash_sale_price = 2941.4\n    department_store_price = 3676.75\n\n    flash_sale_revenue = round(number_of_sneakers_sold_at_flash_sale * flash_sale_price, 2)\n    number_of_sneakers_left = number_of_sneakers - number_of_sneakers_sold_at_flash_sale\n    department_store_revenue = round(number_of_sneakers_left * department_store_price, 2)\n    total_revenue = round(flash_sale_revenue + department_store_revenue, 2)\n    profit = round(total_revenue - initial_cost, 2)\n\n    return {\n        \"number_of_sneakers\": number_of_sneakers,\n        \"number_of_sneakers_sold_at_flash_sale\": number_of_sneakers_sold_at_flash_sale,\n        \"number_of_sneakers_left\": number_of_sneakers_left,\n        \"initial_cost\": round(initial_cost, 2),\n        \"flash_sale_price\": round(flash_sale_price, 2),\n        \"flash_sale_revenue\": flash_sale_revenue,\n        \"department_store_price\": round(department_store_price, 2),\n        \"department_store_revenue\": department_store_revenue,\n        \"total_revenue\": total_revenue,\n        \"profit\": profit\n    }\n",
+    "results": {
+      "number_of_sneakers": 48,
+      "number_of_sneakers_sold_at_flash_sale": 17,
+      "number_of_sneakers_left": 31,
+      "initial_cost": 84712.32,
+      "flash_sale_price": 2941.4,
+      "flash_sale_revenue": 50003.8,
+      "department_store_price": 3676.75,
+      "department_store_revenue": 113979.25,
+      "total_revenue": 163983.05,
+      "profit": 79270.73
+    }
+  },
+  "final": {
+    "question": "A salesman bought a case of 48 sneakers for 84712.32 yen. He sold 17 of them for 2941.4 yen at a flash sale on Monday, and the rest were sold to a department store for 3676.75 yen each throughout the rest of the week. How much money, in yen, was the salesman's profit?",
+    "answer_lines": [
+      "The salesman made 17 × 2941.4 yen = 50003.8 yen.",
+      "There were 48 - 17 = 31 sneakers left.",
+      "At the department store he made 31 × 3676.75 yen = 113979.25 yen throughout the week.",
+      "In total he made 50003.8 yen + 113979.25 yen = 163983.05 yen.",
+      "The profit made by the salesman was 163983.05 yen - 84712.32 yen = 79270.73 yen.",
+      "#### 79270.73"
+    ],
+    "final_scalar": 79270.73,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A salesman bought a case of 48 sneakers for 84712.32 yen. He sold 17 of them for 2941.4 yen at a flash sale on Monday, and the rest were sold to a depāto for 3676.75 yen each throughout the rest of the week. How much money, in yen, was the salesman's profit?",
+    "adapted_answer": [
+      "The salesman made 17 × 2941.4 yen = 50003.8 yen.",
+      "There were 48 - 17 = 31 sneakers left.",
+      "At the depāto he made 31 × 3676.75 yen = 113979.25 yen throughout the week.",
+      "In total he made 50003.8 yen + 113979.25 yen = 163983.05 yen.",
+      "The profit made by the salesman was 163983.05 yen - 84712.32 yen = 79270.73 yen.",
+      "#### 79270.73"
+    ],
+    "adaptation_notes": "Replaced 'department store' with 'depāto', a Japanese term for department store."
+  }
+}

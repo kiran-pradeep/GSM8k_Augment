@@ -1,0 +1,138 @@
+{
+  "index": 822,
+  "split": "test",
+  "original": {
+    "question": "John does 30 cycles of work a day.  Each cycle has 5 different tasks and each task pays $1.20.  How much does he make if he works a full 7 day week?",
+    "answer": "Each cycle pays 5*$1.2=$<<5*1.2=6>>6\nThat means he earns $6*30=$<<6*30=180>>180 a day\nSo he makes $180*7=$<<180*7=1260>>1260 a week\n#### 1260"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is culturally specific to Western regions and the unit 'dollars' is a currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "task_payment",
+      "value": 1.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "cycle_payment",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 180.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 1260.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"task_payment\", \"value\": 1.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"cycle_payment\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"daily_earnings\", \"value\": 180.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 1260.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "task_payment",
+        "original_value": 1.2,
+        "original_unit": "dollar",
+        "converted_value": 1667.4,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "cycle_payment",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 8337.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 180.0,
+        "original_unit": "dollar",
+        "converted_value": 250110.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 1260.0,
+        "original_unit": "dollar",
+        "converted_value": 1750770.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John does {cycles_per_day} cycles of work a day.  Each cycle has {tasks_per_cycle} different tasks and each task pays ${task_payment}.  How much does he make if he works a full {days_per_week} day week?",
+    "templatized_answer": [
+      "Each cycle pays {tasks_per_cycle}*${task_payment}=${cycle_payment}",
+      "That means he earns ${cycle_payment}*{cycles_per_day}=${daily_earnings} a day",
+      "So he makes ${daily_earnings}*{days_per_week}=${weekly_earnings} a week",
+      "#### {weekly_earnings}"
+    ],
+    "factual_assignment": {
+      "task_payment": 1.2,
+      "cycle_payment": 6.0,
+      "daily_earnings": 180.0,
+      "weekly_earnings": 1260.0,
+      "cycles_per_day": 30,
+      "tasks_per_cycle": 5,
+      "days_per_week": 7
+    }
+  },
+  "merged_assignment": {
+    "task_payment": 1667.4,
+    "cycle_payment": 8337.0,
+    "daily_earnings": 250110.0,
+    "weekly_earnings": 1750770.0,
+    "cycles_per_day": 30,
+    "tasks_per_cycle": 5,
+    "days_per_week": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    task_payment = 1667.4\n    tasks_per_cycle = 5\n    cycles_per_day = 30\n    days_per_week = 7\n\n    cycle_payment = tasks_per_cycle * task_payment\n    daily_earnings = cycle_payment * cycles_per_day\n    weekly_earnings = daily_earnings * days_per_week\n\n    return {\n        \"task_payment\": round(task_payment, 2),\n        \"cycle_payment\": round(cycle_payment, 2),\n        \"daily_earnings\": round(daily_earnings, 2),\n        \"weekly_earnings\": round(weekly_earnings, 2),\n        \"cycles_per_day\": cycles_per_day,\n        \"tasks_per_cycle\": tasks_per_cycle,\n        \"days_per_week\": days_per_week\n    }\n",
+    "results": {
+      "task_payment": 1667.4,
+      "cycle_payment": 8337.0,
+      "daily_earnings": 250110.0,
+      "weekly_earnings": 1750770.0,
+      "cycles_per_day": 30,
+      "tasks_per_cycle": 5,
+      "days_per_week": 7
+    }
+  },
+  "final": {
+    "question": "John does 30 cycles of work a day.  Each cycle has 5 different tasks and each task pays 1667.4 won.  How much does he make if he works a full 7 day week?",
+    "answer_lines": [
+      "Each cycle pays 5*1667.4=8337.0 won",
+      "That means he earns 8337.0*30=250110.0 won a day",
+      "So he makes 250110.0*7=1750770.0 won a week",
+      "#### 1750770.0"
+    ],
+    "final_scalar": 1750770.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo does 30 cycles of work a day.  Each cycle has 5 different tasks and each task pays 1667.4 won.  How much does he make if he works a full 7 day week?",
+    "adapted_answer": [
+      "Each cycle pays 5*1667.4=8337.0 won",
+      "That means he earns 8337.0*30=250110.0 won a day",
+      "So he makes 250110.0*7=1750770.0 won a week",
+      "#### 1750770.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Min-soo', a common Korean name."
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "index": 256,
+  "split": "test",
+  "original": {
+    "question": "Brady is counting the money in his piggy bank. He has 100 pennies, 40 nickels, 20 dimes, and 40 pieces of dollar bills. How much does Brady have in his piggy bank in dollars?",
+    "answer": "Since a penny is 1 cent, then 100 pennies is equal to 100 x 1 cent = <<100=100>>100 cents.\nSince nickel is 5 cents, then 40 nickels is equal to 40 x 5 = <<40*5=200>>200 cents.\nSince a dime is equal to 10 cents, then 20 dimes are equal to 20 x 10 = <<20*10=200>>200 cents.\nSo, Brady has a total of 100 + 200 + 200 = <<100+200+200=500>>500 cents.\nSince a dollar is equal to 100 cents, then 500 cents is equal to 500/100 = <<500/100=5>>5 dollars.\nThus, Brady has a total of $40 + $5 = $<<40+5=45>>45 in his piggy bank.\n#### 45"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Brady",
+      "pennies",
+      "nickels",
+      "dimes",
+      "dollar bills",
+      "dollars"
+    ],
+    "notes": "The text contains culturally specific entities such as names and US currency units."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pennies_value",
+      "value": 1.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "nickels_value",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dimes_value",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bills_value",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_savings",
+      "value": 45.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pennies_value\", \"value\": 1.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"nickels_value\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"dimes_value\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bills_value\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_savings\", \"value\": 45.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pennies_value",
+        "original_value": 1.0,
+        "original_unit": "dollar",
+        "converted_value": 147.07,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "nickels_value",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "dimes_value",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "bills_value",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 5882.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_savings",
+        "original_value": 45.0,
+        "original_unit": "dollar",
+        "converted_value": 6618.15,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Brady is counting the money in his piggy bank. He has {pennies_count} pennies, {nickels_count} nickels, {dimes_count} dimes, and {bills_count} pieces of dollar bills. How much does Brady have in his piggy bank in dollars?",
+    "templatized_answer": [
+      "Since a penny is {pennies_value} dollar, then {pennies_count} pennies is equal to {pennies_count} x {pennies_value} = {pennies_count} cents.",
+      "Since nickel is {nickels_value} dollar, then {nickels_count} nickels is equal to {nickels_count} x {nickels_value} = {nickels_count} * {nickels_value} cents.",
+      "Since a dime is equal to {dimes_value} dollar, then {dimes_count} dimes are equal to {dimes_count} x {dimes_value} = {dimes_count} * {dimes_value} cents.",
+      "So, Brady has a total of {pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value} = {pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value} cents.",
+      "Since a dollar is equal to 100 cents, then {pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value} cents is equal to ({pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value})/100 = ({pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value})/100 dollars.",
+      "Thus, Brady has a total of ${bills_value} + ({pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value})/100 = ${bills_value} + ({pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value})/100 dollars.",
+      "#### ({bills_value} + ({pennies_count} + {nickels_count} * {nickels_value} + {dimes_count} * {dimes_value})/100)"
+    ],
+    "factual_assignment": {
+      "pennies_count": 100,
+      "nickels_count": 40,
+      "dimes_count": 20,
+      "bills_count": 40,
+      "pennies_value": 0.01,
+      "nickels_value": 0.05,
+      "dimes_value": 0.1,
+      "bills_value": 40
+    }
+  },
+  "merged_assignment": {
+    "pennies_count": 100,
+    "nickels_count": 40,
+    "dimes_count": 20,
+    "bills_count": 40,
+    "pennies_value": 147.07,
+    "nickels_value": 294.14,
+    "dimes_value": 294.14,
+    "bills_value": 5882.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pennies_count = 100\n    nickels_count = 40\n    dimes_count = 20\n    bills_count = 40\n    pennies_value = 147.07 / 100  # convert to dollars\n    nickels_value = 294.14 / 100  # convert to dollars\n    dimes_value = 294.14 / 100  # convert to dollars\n    bills_value = 5882.8\n\n    pennies_cents = pennies_count * pennies_value\n    nickels_cents = nickels_count * nickels_value\n    dimes_cents = dimes_count * dimes_value\n    total_cents = pennies_cents + nickels_cents + dimes_cents\n    total_dollars = (total_cents / 100) + bills_value\n\n    return {\n        \"pennies_count\": pennies_count,\n        \"nickels_count\": nickels_count,\n        \"dimes_count\": dimes_count,\n        \"bills_count\": bills_count,\n        \"pennies_value\": pennies_value,\n        \"nickels_value\": nickels_value,\n        \"dimes_value\": dimes_value,\n        \"bills_value\": bills_value,\n        \"pennies_cents\": round(pennies_cents, 2),\n        \"nickels_cents\": round(nickels_cents, 2),\n        \"dimes_cents\": round(dimes_cents, 2),\n        \"total_cents\": round(total_cents, 2),\n        \"total_dollars\": round(total_dollars, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "pennies_count": 100,
+      "nickels_count": 40,
+      "dimes_count": 20,
+      "bills_count": 40,
+      "pennies_value": 1.4707,
+      "nickels_value": 2.9414,
+      "dimes_value": 2.9414,
+      "bills_value": 5882.8,
+      "pennies_cents": 147.07,
+      "nickels_cents": 117.66,
+      "dimes_cents": 58.83,
+      "total_cents": 323.55,
+      "total_dollars": 5886.04
+    }
+  },
+  "final": {
+    "question": "Brady is counting the money in his piggy bank. He has 100 pennies, 40 nickels, 20 dimes, and 40 pieces of yen. How much does Brady have in his piggy bank in yen?",
+    "answer_lines": [
+      "Since a penny is 1.4707 yen, then 100 pennies is equal to 100 x 1.4707 yen = 147.07 yen.",
+      "Since nickel is 2.9414 yen, then 40 nickels is equal to 40 x 2.9414 yen = 117.656 yen.",
+      "Since a dime is equal to 2.9414 yen, then 20 dimes are equal to 20 x 2.9414 yen = 58.828 yen.",
+      "So, Brady has a total of 147.07 + 117.656 + 58.828 = 323.554 yen.",
+      "Thus, Brady has a total of 5882.8 + 323.554 = 6206.354 yen.",
+      "#### 6206.354"
+    ],
+    "final_scalar": 6206.354,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro is counting the money in his piggy bank. He has 100 mon, 40 go-en, 20 jū-en, and 40 pieces of yen. How much does Taro have in his piggy bank in yen?",
+    "adapted_answer": [
+      "Since a mon is 1.4707 yen, then 100 mon is equal to 100 x 1.4707 yen = 147.07 yen.",
+      "Since go-en is 2.9414 yen, then 40 go-en is equal to 40 x 2.9414 yen = 117.656 yen.",
+      "Since a jū-en is equal to 2.9414 yen, then 20 jū-en are equal to 20 x 2.9414 yen = 58.828 yen.",
+      "So, Taro has a total of 147.07 + 117.656 + 58.828 = 323.554 yen.",
+      "Thus, Taro has a total of 5882.8 + 323.554 = 6206.354 yen.",
+      "#### 6206.354"
+    ],
+    "adaptation_notes": "Replaced Brady with Taro, pennies with mon, nickels with go-en, and dimes with jū-en to give the text a Japanese context."
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "index": 628,
+  "split": "test",
+  "original": {
+    "question": "Adam really wants to ride the biggest roller coaster at the park. You have to be 4 feet tall to ride it. Adam’s height is 40 inches and he grows 2 inches a year. How many years until he is tall enough to ride it?",
+    "answer": "Adam needs to grow 8 inches because 48 -40= <<48-40=8>>8\nIt will take 4 years because 8/2=<<8/2=4>>4\n#### 4"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "feet",
+      "inches"
+    ],
+    "notes": "The units 'feet' and 'inches' are culturally specific to regions other than Japan, which primarily uses the metric system."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "required_height",
+      "value": 4,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "adam_height",
+      "value": 40,
+      "unit": "inches",
+      "context": "question"
+    },
+    {
+      "variable": "growth_per_year",
+      "value": 2,
+      "unit": "inches",
+      "context": "question"
+    },
+    {
+      "variable": "additional_growth_needed",
+      "value": 8,
+      "unit": "inches",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pounds\": {\"unit\": \"kilograms\", \"factor\": 0.453592},\n        \"ounces\": {\"unit\": \"grams\", \"factor\": 28.3495},\n        \"miles\": {\"unit\": \"kilometers\", \"factor\": 1.60934},\n        \"feet\": {\"unit\": \"meters\", \"factor\": 0.3048},\n        \"inches\": {\"unit\": \"centimeters\", \"factor\": 2.54},\n        \"gallons\": {\"unit\": \"liters\", \"factor\": 3.78541},\n        \"cups\": {\"unit\": \"milliliters\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        original_value = value\n        original_unit = unit\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"required_height\", \"value\": 4, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"adam_height\", \"value\": 40, \"unit\": \"inches\", \"context\": \"question\"},\n    {\"variable\": \"growth_per_year\", \"value\": 2, \"unit\": \"inches\", \"context\": \"question\"},\n    {\"variable\": \"additional_growth_needed\", \"value\": 8, \"unit\": \"inches\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "required_height",
+        "original_value": 4,
+        "original_unit": "feet",
+        "converted_value": 1.22,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "adam_height",
+        "original_value": 40,
+        "original_unit": "inches",
+        "converted_value": 101.6,
+        "converted_unit": "centimeters"
+      },
+      {
+        "variable": "growth_per_year",
+        "original_value": 2,
+        "original_unit": "inches",
+        "converted_value": 5.08,
+        "converted_unit": "centimeters"
+      },
+      {
+        "variable": "additional_growth_needed",
+        "original_value": 8,
+        "original_unit": "inches",
+        "converted_value": 20.32,
+        "converted_unit": "centimeters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Adam really wants to ride the biggest roller coaster at the park. You have to be {required_height} feet tall to ride it. Adam’s height is {adam_height} inches and he grows {growth_per_year} inches a year. How many years until he is tall enough to ride it?",
+    "templatized_answer": [
+      "Adam needs to grow {additional_growth_needed} inches because {required_height_in_inches} - {adam_height} = {additional_growth_needed}",
+      "It will take {years_until_tall_enough} years because {additional_growth_needed} / {growth_per_year} = {years_until_tall_enough}",
+      "#### {years_until_tall_enough}"
+    ],
+    "factual_assignment": {
+      "required_height": 4,
+      "required_height_in_inches": 48,
+      "adam_height": 40,
+      "growth_per_year": 2,
+      "additional_growth_needed": 8,
+      "years_until_tall_enough": 4
+    }
+  },
+  "merged_assignment": {
+    "required_height": 1.22,
+    "required_height_in_inches": 48,
+    "adam_height": 101.6,
+    "growth_per_year": 5.08,
+    "additional_growth_needed": 20.32,
+    "years_until_tall_enough": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    required_height = 1.22  # in meters\n    required_height_in_inches = required_height * 39.37  # convert meters to inches\n    adam_height = 101.6  # in centimeters\n    adam_height_in_inches = adam_height / 2.54  # convert centimeters to inches\n    growth_per_year = 5.08  # in centimeters\n    growth_per_year_in_inches = growth_per_year / 2.54  # convert centimeters to inches\n\n    additional_growth_needed = required_height_in_inches - adam_height_in_inches\n    years_until_tall_enough = round(additional_growth_needed / growth_per_year_in_inches, 2)\n\n    return {\n        \"required_height\": round(required_height * 3.28, 2),  # convert meters to feet\n        \"required_height_in_inches\": round(required_height_in_inches, 2),\n        \"adam_height\": round(adam_height_in_inches, 2),\n        \"growth_per_year\": round(growth_per_year_in_inches, 2),\n        \"additional_growth_needed\": round(additional_growth_needed, 2),\n        \"years_until_tall_enough\": years_until_tall_enough\n    }\n",
+    "results": {
+      "required_height": 4.0,
+      "required_height_in_inches": 48.03,
+      "adam_height": 40.0,
+      "growth_per_year": 2.0,
+      "additional_growth_needed": 8.03,
+      "years_until_tall_enough": 4.02
+    }
+  },
+  "final": {
+    "question": "Adam really wants to ride the biggest roller coaster at the park. You have to be 4.0 meters tall to ride it. Adam’s height is 40.0 centimeters and he grows 2.0 centimeters a year. How many years until he is tall enough to ride it?",
+    "answer_lines": [
+      "Adam needs to grow 8.03 centimeters because 48.03 - 40.0 = 8.03",
+      "It will take 4.02 years because 8.03 / 2.0 = 4.02",
+      "#### 4.02"
+    ],
+    "final_scalar": 4.02,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro really wants to ride the biggest roller coaster at Fuji-Q Highland. You have to be 4.0 meters tall to ride it. Taro’s height is 40.0 centimeters and he grows 2.0 centimeters a year. How many years until he is tall enough to ride it?",
+    "adapted_answer": [
+      "Taro needs to grow 8.03 centimeters because 48.03 - 40.0 = 8.03",
+      "It will take 4.02 years because 8.03 / 2.0 = 4.02",
+      "#### 4.02"
+    ],
+    "adaptation_notes": "Replaced 'Adam' with 'Taro' and 'the park' with 'Fuji-Q Highland' to give the question a Japanese context."
+  }
+}

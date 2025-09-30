@@ -1,0 +1,201 @@
+{
+  "index": 831,
+  "split": "test",
+  "original": {
+    "question": "An interior design firm offers installation for $129.00.  It includes hanging 4 mirrors, 2 shelves, 1 chandelier, and 10 pictures.  They will install additional items for an extra $15.00 per item.  Angela has 6 mirrors and 2 chandeliers and 20 pictures that she needs installed/hung.  How much will this cost her?",
+    "answer": "The service includes 4 mirrors and she has 6 so that's 6-4 = <<6-4=2>>2 extra mirrors\nAn additional item is an extra $15.00 so that's 2*15 = $30.00\nThe service includes 1 chandelier and she has 2 so that's 2-1 = 1 extra chandelier\nAn additional item is an extra $15.00 so that's 1*15 = $<<1*15=15.00>>15.00\nThe service includes 10 pictures and she has 20 to that's 20-10 = <<20-10=10>>10 extra pictures\nAn additional item is an extra $15.00 so that's 10*15 = $<<10*15=150.00>>150.00\nThe service costs $129.00 and the extra mirrors are $30.00, the chandelier is $15.00 and the pictures are $150.00 for a total of 129+30+15+150 = $<<129+30+15+150=324.00>>324.00\n#### 324"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "installation_cost",
+      "value": 129.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_item_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "extra_mirror_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extra_chandelier_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extra_picture_cost",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 324.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"installation_cost\", \"value\": 129.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"extra_item_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"extra_mirror_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extra_chandelier_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extra_picture_cost\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 324.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "installation_cost",
+        "original_value": 129.0,
+        "original_unit": "dollar",
+        "converted_value": 179245.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "extra_item_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 20842.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "extra_mirror_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 41685.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "extra_chandelier_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 20842.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "extra_picture_cost",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 208425.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 324.0,
+        "original_unit": "dollar",
+        "converted_value": 450198.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An interior design firm offers installation for ${installation_cost}.  It includes hanging {mirrors_included} mirrors, {shelves_included} shelves, {chandelier_included} chandelier, and {pictures_included} pictures.  They will install additional items for an extra ${extra_item_cost} per item.  Angela has {mirrors_owned} mirrors and {chandeliers_owned} chandeliers and {pictures_owned} pictures that she needs installed/hung.  How much will this cost her?",
+    "templatized_answer": [
+      "The service includes {mirrors_included} mirrors and she has {mirrors_owned} so that's {mirrors_owned}-{mirrors_included} = {extra_mirrors} extra mirrors",
+      "An additional item is an extra ${extra_item_cost} so that's {extra_mirrors}*${extra_item_cost} = ${extra_mirror_cost}",
+      "The service includes {chandelier_included} chandelier and she has {chandeliers_owned} so that's {chandeliers_owned}-{chandelier_included} = {extra_chandeliers} extra chandelier",
+      "An additional item is an extra ${extra_item_cost} so that's {extra_chandeliers}*${extra_item_cost} = ${extra_chandelier_cost}",
+      "The service includes {pictures_included} pictures and she has {pictures_owned} to that's {pictures_owned}-{pictures_included} = {extra_pictures} extra pictures",
+      "An additional item is an extra ${extra_item_cost} so that's {extra_pictures}*${extra_item_cost} = ${extra_picture_cost}",
+      "The service costs ${installation_cost} and the extra mirrors are ${extra_mirror_cost}, the chandelier is ${extra_chandelier_cost} and the pictures are ${extra_picture_cost} for a total of ${installation_cost}+${extra_mirror_cost}+${extra_chandelier_cost}+${extra_picture_cost} = ${total_cost}"
+    ],
+    "factual_assignment": {
+      "installation_cost": 129.0,
+      "extra_item_cost": 15.0,
+      "mirrors_included": 4,
+      "shelves_included": 2,
+      "chandelier_included": 1,
+      "pictures_included": 10,
+      "mirrors_owned": 6,
+      "chandeliers_owned": 2,
+      "pictures_owned": 20,
+      "extra_mirrors": 2,
+      "extra_mirror_cost": 30.0,
+      "extra_chandeliers": 1,
+      "extra_chandelier_cost": 15.0,
+      "extra_pictures": 10,
+      "extra_picture_cost": 150.0,
+      "total_cost": 324.0
+    }
+  },
+  "merged_assignment": {
+    "installation_cost": 179245.5,
+    "extra_item_cost": 20842.5,
+    "mirrors_included": 4,
+    "shelves_included": 2,
+    "chandelier_included": 1,
+    "pictures_included": 10,
+    "mirrors_owned": 6,
+    "chandeliers_owned": 2,
+    "pictures_owned": 20,
+    "extra_mirrors": 2,
+    "extra_mirror_cost": 41685.0,
+    "extra_chandeliers": 1,
+    "extra_chandelier_cost": 20842.5,
+    "extra_pictures": 10,
+    "extra_picture_cost": 208425.0,
+    "total_cost": 450198.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    installation_cost = 179245.5\n    extra_item_cost = 20842.5\n    mirrors_included = 4\n    shelves_included = 2\n    chandelier_included = 1\n    pictures_included = 10\n    mirrors_owned = 6\n    chandeliers_owned = 2\n    pictures_owned = 20\n\n    extra_mirrors = mirrors_owned - mirrors_included\n    extra_mirror_cost = round(extra_mirrors * extra_item_cost, 2)\n    extra_chandeliers = chandeliers_owned - chandelier_included\n    extra_chandelier_cost = round(extra_chandeliers * extra_item_cost, 2)\n    extra_pictures = pictures_owned - pictures_included\n    extra_picture_cost = round(extra_pictures * extra_item_cost, 2)\n    total_cost = round(installation_cost + extra_mirror_cost + extra_chandelier_cost + extra_picture_cost, 2)\n\n    return {\n        \"installation_cost\": installation_cost,\n        \"extra_item_cost\": extra_item_cost,\n        \"mirrors_included\": mirrors_included,\n        \"shelves_included\": shelves_included,\n        \"chandelier_included\": chandelier_included,\n        \"pictures_included\": pictures_included,\n        \"mirrors_owned\": mirrors_owned,\n        \"chandeliers_owned\": chandeliers_owned,\n        \"pictures_owned\": pictures_owned,\n        \"extra_mirrors\": extra_mirrors,\n        \"extra_mirror_cost\": extra_mirror_cost,\n        \"extra_chandeliers\": extra_chandeliers,\n        \"extra_chandelier_cost\": extra_chandelier_cost,\n        \"extra_pictures\": extra_pictures,\n        \"extra_picture_cost\": extra_picture_cost,\n        \"total_cost\": total_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "installation_cost": 179245.5,
+      "extra_item_cost": 20842.5,
+      "mirrors_included": 4,
+      "shelves_included": 2,
+      "chandelier_included": 1,
+      "pictures_included": 10,
+      "mirrors_owned": 6,
+      "chandeliers_owned": 2,
+      "pictures_owned": 20,
+      "extra_mirrors": 2,
+      "extra_mirror_cost": 41685.0,
+      "extra_chandeliers": 1,
+      "extra_chandelier_cost": 20842.5,
+      "extra_pictures": 10,
+      "extra_picture_cost": 208425.0,
+      "total_cost": 450198.0
+    }
+  },
+  "final": {
+    "question": "An interior design firm offers installation for 179245.5 won.  It includes hanging 4 mirrors, 2 shelves, 1 chandelier, and 10 pictures.  They will install additional items for an extra 20842.5 won per item.  Angela has 6 mirrors and 2 chandeliers and 20 pictures that she needs installed/hung.  How much will this cost her?",
+    "answer_lines": [
+      "The service includes 4 mirrors and she has 6 so that's 6-4 = 2 extra mirrors",
+      "An additional item is an extra 20842.5 won so that's 2*20842.5 = 41685.0 won",
+      "The service includes 1 chandelier and she has 2 so that's 2-1 = 1 extra chandelier",
+      "An additional item is an extra 20842.5 won so that's 1*20842.5 = 20842.5 won",
+      "The service includes 10 pictures and she has 20 to that's 20-10 = 10 extra pictures",
+      "An additional item is an extra 20842.5 won so that's 10*20842.5 = 208425.0 won",
+      "The service costs 179245.5 won and the extra mirrors are 41685.0 won, the chandelier is 20842.5 won and the pictures are 208425.0 won for a total of 179245.5+41685.0+20842.5+208425.0 = 450198.0 won",
+      "#### 450198"
+    ],
+    "final_scalar": 450198.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "An interior design firm offers installation for 179245.5 won.  It includes hanging 4 mirrors, 2 shelves, 1 chandelier, and 10 pictures.  They will install additional items for an extra 20842.5 won per item.  Angela has 6 mirrors and 2 chandeliers and 20 pictures that she needs installed/hung.  How much will this cost her?",
+    "adapted_answer": [
+      "The service includes 4 mirrors and she has 6 so that's 6-4 = 2 extra mirrors",
+      "An additional item is an extra 20842.5 won so that's 2*20842.5 = 41685.0 won",
+      "The service includes 1 chandelier and she has 2 so that's 2-1 = 1 extra chandelier",
+      "An additional item is an extra 20842.5 won so that's 1*20842.5 = 20842.5 won",
+      "The service includes 10 pictures and she has 20 to that's 20-10 = 10 extra pictures",
+      "An additional item is an extra 20842.5 won so that's 10*20842.5 = 208425.0 won",
+      "The service costs 179245.5 won and the extra mirrors are 41685.0 won, the chandelier is 20842.5 won and the pictures are 208425.0 won for a total of 179245.5+41685.0+20842.5+208425.0 = 450198.0 won",
+      "#### 450198"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

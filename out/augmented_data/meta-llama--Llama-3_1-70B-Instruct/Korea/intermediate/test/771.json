@@ -1,0 +1,152 @@
+{
+  "index": 771,
+  "split": "test",
+  "original": {
+    "question": "Bennet is a farmer. He sells 20 of his eggplants for $3 each. He has 25 ears of corn that he can sell as well. If Bennet wants to make a total of $135, how much should he sell each ear of corn for?",
+    "answer": "From his eggplants, Bennet makes 20 * $3 = $<<20*3=60>>60\nBennet needs to make $135 - $60 = $<<135-60=75>>75 from the sale of his corn\nBennet should sell each ear of corn for $75 / 25 = $<<75/25=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bennet",
+      "dollars",
+      "eggplants"
+    ],
+    "notes": "The name Bennet and the use of dollars are culturally specific to Western regions, and eggplants are not exclusive to Korean cuisine but are more commonly associated with Western or Mediterranean cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "eggplant_price",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 135,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "eggplant_earnings",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "corn_earnings",
+      "value": 75,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "corn_price",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"eggplant_price\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 135, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"eggplant_earnings\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"corn_earnings\", \"value\": 75, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"corn_price\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "eggplant_price",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 135,
+        "original_unit": "dollar",
+        "converted_value": 187582.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "eggplant_earnings",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 83370.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "corn_earnings",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 104212.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "corn_price",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bennet is a farmer. He sells {eggplant_quantity} of his eggplants for ${eggplant_price} each. He has {corn_quantity} ears of corn that he can sell as well. If Bennet wants to make a total of ${total_earnings}, how much should he sell each ear of corn for?",
+    "templatized_answer": [
+      "From his eggplants, Bennet makes {eggplant_quantity} * ${eggplant_price} = ${eggplant_earnings}",
+      "Bennet needs to make ${total_earnings} - ${eggplant_earnings} = ${corn_earnings} from the sale of his corn",
+      "Bennet should sell each ear of corn for ${corn_earnings} / {corn_quantity} = ${corn_price}",
+      "#### {corn_price}"
+    ],
+    "factual_assignment": {
+      "eggplant_quantity": 20,
+      "eggplant_price": 3,
+      "total_earnings": 135,
+      "eggplant_earnings": 60,
+      "corn_earnings": 75,
+      "corn_quantity": 25,
+      "corn_price": 3
+    }
+  },
+  "merged_assignment": {
+    "eggplant_quantity": 20,
+    "eggplant_price": 4168.5,
+    "total_earnings": 187582.5,
+    "eggplant_earnings": 83370.0,
+    "corn_earnings": 104212.5,
+    "corn_quantity": 25,
+    "corn_price": 4168.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    eggplant_quantity = 20\n    eggplant_price = 4168.5\n    total_earnings = 187582.5\n    corn_quantity = 25\n\n    eggplant_earnings = eggplant_quantity * eggplant_price\n    corn_earnings = total_earnings - eggplant_earnings\n    corn_price = round(corn_earnings / corn_quantity, 2)\n\n    return {\n        \"eggplant_quantity\": eggplant_quantity,\n        \"eggplant_price\": eggplant_price,\n        \"total_earnings\": total_earnings,\n        \"eggplant_earnings\": round(eggplant_earnings, 2),\n        \"corn_earnings\": round(corn_earnings, 2),\n        \"corn_quantity\": corn_quantity,\n        \"corn_price\": corn_price\n    }\n",
+    "results": {
+      "eggplant_quantity": 20,
+      "eggplant_price": 4168.5,
+      "total_earnings": 187582.5,
+      "eggplant_earnings": 83370.0,
+      "corn_earnings": 104212.5,
+      "corn_quantity": 25,
+      "corn_price": 4168.5
+    }
+  },
+  "final": {
+    "question": "Bennet is a farmer. He sells 20 of his eggplants for 4168.5 won each. He has 25 ears of corn that he can sell as well. If Bennet wants to make a total of 187582.5 won, how much should he sell each ear of corn for?",
+    "answer_lines": [
+      "From his eggplants, Bennet makes 20 * 4168.5 won = 83370.0 won",
+      "Bennet needs to make 187582.5 won - 83370.0 won = 104212.5 won from the sale of his corn",
+      "Bennet should sell each ear of corn for 104212.5 won / 25 = 4168.5 won",
+      "#### 4168.5"
+    ],
+    "final_scalar": 4168.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo is a farmer. He sells 20 of his eggplants for 4168.5 won each. He has 25 ears of corn that he can sell as well. If Min-soo wants to make a total of 187582.5 won, how much should he sell each ear of corn for?",
+    "adapted_answer": [
+      "From his eggplants, Min-soo makes 20 * 4168.5 won = 83370.0 won",
+      "Min-soo needs to make 187582.5 won - 83370.0 won = 104212.5 won from the sale of his corn",
+      "Min-soo should sell each ear of corn for 104212.5 won / 25 = 4168.5 won",
+      "#### 4168.5"
+    ],
+    "adaptation_notes": "Replaced 'Bennet' with 'Min-soo', a common Korean name, and kept other entities unchanged as they are already neutral or Korea-specific."
+  }
+}

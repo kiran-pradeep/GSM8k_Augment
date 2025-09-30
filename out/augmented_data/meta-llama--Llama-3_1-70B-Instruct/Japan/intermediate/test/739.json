@@ -1,0 +1,167 @@
+{
+  "index": 739,
+  "split": "test",
+  "original": {
+    "question": "Cecelia went to the milk store and found out that a gallon jar costs $2 more than a half-gallon jar. If a gallon jar costs $5, calculate the total amount of money she spent on 10-gallon jars and 16 half-gallon jars.",
+    "answer": "If a full gallon costs $2 more than a half-gallon jar, then the cost of a half-gallon jar is $5 - $2 = $3\nIf he bought 10 full gallon jars, she spent 10 jars * $5/jar = $<<10*5=50>>50\nFor the half-gallon jars, she spent $3/jar * 16 jars = $<<3*16=48>>48\nThe total amount she spent at the store is $48 + $50 = $<<48+50=98>>98\n#### 98"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Cecelia",
+      "gallons",
+      "dollars"
+    ],
+    "notes": "The name Cecelia and the units gallons and dollars are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "gallon_jar_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gallon_jar_cost_difference",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "half_gallon_jar_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 98,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gallon_jar_quantity",
+      "value": 10,
+      "unit": "gallon",
+      "context": "question"
+    },
+    {
+      "variable": "half_gallon_jar_quantity",
+      "value": 16,
+      "unit": "gallon",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"gallon_jar_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gallon_jar_cost_difference\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"half_gallon_jar_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 98, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gallon_jar_quantity\", \"value\": 10, \"unit\": \"gallon\", \"context\": \"question\"},\n    {\"variable\": \"half_gallon_jar_quantity\", \"value\": 16, \"unit\": \"gallon\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "gallon_jar_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gallon_jar_cost_difference",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "half_gallon_jar_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 98,
+        "original_unit": "dollar",
+        "converted_value": 14412.86,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gallon_jar_quantity",
+        "original_value": 10,
+        "original_unit": "gallon",
+        "converted_value": 37.85,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "half_gallon_jar_quantity",
+        "original_value": 16,
+        "original_unit": "gallon",
+        "converted_value": 60.57,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Cecelia went to the milk store and found out that a gallon jar costs ${gallon_jar_cost_difference} more than a half-gallon jar. If a gallon jar costs ${gallon_jar_cost}, calculate the total amount of money she spent on {gallon_jar_quantity}-gallon jars and {half_gallon_jar_quantity} half-gallon jars.",
+    "templatized_answer": [
+      "If a full gallon costs ${gallon_jar_cost_difference} more than a half-gallon jar, then the cost of a half-gallon jar is ${gallon_jar_cost} - ${gallon_jar_cost_difference} = ${half_gallon_jar_cost}",
+      "If she bought {gallon_jar_quantity} full gallon jars, she spent {gallon_jar_quantity} jars * ${gallon_jar_cost}/jar = ${gallon_jar_quantity} * ${gallon_jar_cost}",
+      "For the half-gallon jars, she spent ${half_gallon_jar_cost}/jar * {half_gallon_jar_quantity} jars = ${half_gallon_jar_cost} * {half_gallon_jar_quantity}",
+      "The total amount she spent at the store is ${half_gallon_jar_cost} * {half_gallon_jar_quantity} + ${gallon_jar_quantity} * ${gallon_jar_cost} = ${total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "gallon_jar_cost_difference": 2,
+      "gallon_jar_cost": 5,
+      "half_gallon_jar_cost": 3,
+      "total_cost": 98,
+      "gallon_jar_quantity": 10,
+      "half_gallon_jar_quantity": 16
+    }
+  },
+  "merged_assignment": {
+    "gallon_jar_cost_difference": 294.14,
+    "gallon_jar_cost": 735.35,
+    "half_gallon_jar_cost": 441.21,
+    "total_cost": 14412.86,
+    "gallon_jar_quantity": 37.85,
+    "half_gallon_jar_quantity": 60.57
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    gallon_jar_cost_difference = 294.14\n    gallon_jar_cost = 735.35\n    gallon_jar_quantity = 37.85\n    half_gallon_jar_quantity = 60.57\n\n    half_gallon_jar_cost = gallon_jar_cost - gallon_jar_cost_difference\n    half_gallon_jar_cost = round(half_gallon_jar_cost, 2)\n\n    gallon_jar_total_cost = gallon_jar_quantity * gallon_jar_cost\n    gallon_jar_total_cost = round(gallon_jar_total_cost, 2)\n\n    half_gallon_jar_total_cost = half_gallon_jar_cost * half_gallon_jar_quantity\n    half_gallon_jar_total_cost = round(half_gallon_jar_total_cost, 2)\n\n    total_cost = half_gallon_jar_total_cost + gallon_jar_total_cost\n    total_cost = round(total_cost, 2)\n\n    return {\n        \"gallon_jar_cost_difference\": gallon_jar_cost_difference,\n        \"gallon_jar_cost\": gallon_jar_cost,\n        \"half_gallon_jar_cost\": half_gallon_jar_cost,\n        \"total_cost\": total_cost,\n        \"gallon_jar_quantity\": gallon_jar_quantity,\n        \"half_gallon_jar_quantity\": half_gallon_jar_quantity,\n        \"gallon_jar_quantity * gallon_jar_cost\": gallon_jar_total_cost,\n        \"half_gallon_jar_cost * half_gallon_jar_quantity\": half_gallon_jar_total_cost\n    }\n",
+    "results": {
+      "gallon_jar_cost_difference": 294.14,
+      "gallon_jar_cost": 735.35,
+      "half_gallon_jar_cost": 441.21,
+      "total_cost": 54557.09,
+      "gallon_jar_quantity": 37.85,
+      "half_gallon_jar_quantity": 60.57,
+      "gallon_jar_quantity * gallon_jar_cost": 27833.0,
+      "half_gallon_jar_cost * half_gallon_jar_quantity": 26724.09
+    }
+  },
+  "final": {
+    "question": "Cecelia went to the milk store and found out that a liter jar costs 294.14 yen more than a half-liter jar. If a liter jar costs 735.35 yen, calculate the total amount of money she spent on 37.85-liter jars and 60.57 half-liter jars.",
+    "answer_lines": [
+      "If a full liter costs 294.14 yen more than a half-liter jar, then the cost of a half-liter jar is 735.35 yen - 294.14 yen = 441.21 yen",
+      "If she bought 37.85 liter jars, she spent 37.85 jars * 735.35 yen/jar = 27833.0 yen",
+      "For the half-liter jars, she spent 441.21 yen/jar * 60.57 jars = 26724.09 yen",
+      "The total amount she spent at the store is 26724.09 yen + 27833.0 yen = 54557.09 yen",
+      "#### 54557.09"
+    ],
+    "final_scalar": 54557.09,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui went to the milk store and found out that a liter jar costs 294.14 yen more than a half-liter jar. If a liter jar costs 735.35 yen, calculate the total amount of money she spent on 37.85-liter jars and 60.57 half-liter jars.",
+    "adapted_answer": [
+      "If a full liter costs 294.14 yen more than a half-liter jar, then the cost of a half-liter jar is 735.35 yen - 294.14 yen = 441.21 yen",
+      "If she bought 37.85 liter jars, she spent 37.85 jars * 735.35 yen/jar = 27833.0 yen",
+      "For the half-liter jars, she spent 441.21 yen/jar * 60.57 jars = 26724.09 yen",
+      "The total amount she spent at the store is 26724.09 yen + 27833.0 yen = 54557.09 yen",
+      "#### 54557.09"
+    ],
+    "adaptation_notes": "Replaced 'Cecelia' with 'Yui', a Japanese name."
+  }
+}

@@ -1,0 +1,274 @@
+{
+  "index": 926,
+  "split": "test",
+  "original": {
+    "question": "Colby loves going to the movies and every month his parents give him $150 to spend at the movies. Tickets for Fridays and Saturdays cost $10. Tickets for any other day cost $7. Popcorn costs $8 and boxes of candy cost $2. It is the last day of the month and it's a Friday. He wants to make sure he gets a popcorn and box of candy that night. How many movies can he see if he already saw 5 movies on a Friday or Saturday, 8 movies on other days, had 2 tubs of popcorn, and four boxes of candy that month?",
+    "answer": "He has spent $50 on Fri/Sat movies because 5 x 10 = <<50=50>>50\nHe has spent $56 on movies the rest of the day because 8 x 7 = <<8*7=56>>56\nHe has spent $16 on popcorn because 2 x 8 = <<16=16>>16\nHe has spent $8 on candy because 4 x 2 = <<4*2=8>>8\nHe has spent 130 in total because 50 + 56 + 16 + 8 = <<50+56+16+8=130>>130\nHe plans to spend $10 on popcorn and candy because 8 + 2 = <<8+2=10>>10\nHe has $10 left to spend because 150 - 130 - 10 = <<150-130-10=10>>10\nHe can see 1 movie because 10 / 10 = <<10/10=1>>1\n#### 1"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Colby",
+      "dollars",
+      "popcorn",
+      "candy",
+      "movies"
+    ],
+    "notes": "The text contains a Western name, US currency, and Western-style movie snacks."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_allowance",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fri_sat_ticket_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "other_day_ticket_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popcorn_cost",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fri_sat_movie_cost",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "other_day_movie_cost",
+      "value": 56.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "popcorn_spent",
+      "value": 16.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "candy_spent",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 130.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "planned_snack_cost",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "remaining_budget",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_allowance\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fri_sat_ticket_cost\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"other_day_ticket_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"popcorn_cost\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fri_sat_movie_cost\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"other_day_movie_cost\", \"value\": 56.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"popcorn_spent\", \"value\": 16.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"candy_spent\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 130.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"planned_snack_cost\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"remaining_budget\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_allowance",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 208425.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "fri_sat_ticket_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 13895.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "other_day_ticket_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 9726.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "popcorn_cost",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 11116.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "candy_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "fri_sat_movie_cost",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 69475.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "other_day_movie_cost",
+        "original_value": 56.0,
+        "original_unit": "dollar",
+        "converted_value": 77812.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "popcorn_spent",
+        "original_value": 16.0,
+        "original_unit": "dollar",
+        "converted_value": 22232.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "candy_spent",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 11116.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 130.0,
+        "original_unit": "dollar",
+        "converted_value": 180635.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "planned_snack_cost",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 13895.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "remaining_budget",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 13895.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Colby loves going to the movies and every month his parents give him ${monthly_allowance} to spend at the movies. Tickets for Fridays and Saturdays cost ${fri_sat_ticket_cost}. Tickets for any other day cost ${other_day_ticket_cost}. Popcorn costs ${popcorn_cost} and boxes of candy cost ${candy_cost}. It is the last day of the month and it's a Friday. He wants to make sure he gets a popcorn and box of candy that night. How many movies can he see if he already saw {num_fri_sat_movies} movies on a Friday or Saturday, {num_other_day_movies} movies on other days, had {num_popcorn} tubs of popcorn, and {num_candy} boxes of candy that month?",
+    "templatized_answer": [
+      "He has spent ${fri_sat_ticket_cost} * {num_fri_sat_movies} = ${fri_sat_movie_cost} on Fri/Sat movies",
+      "He has spent ${other_day_ticket_cost} * {num_other_day_movies} = ${other_day_movie_cost} on movies the rest of the day",
+      "He has spent ${popcorn_cost} * {num_popcorn} = ${popcorn_spent} on popcorn",
+      "He has spent ${candy_cost} * {num_candy} = ${candy_spent} on candy",
+      "He has spent ${fri_sat_movie_cost} + ${other_day_movie_cost} + ${popcorn_spent} + ${candy_spent} = ${total_spent} in total",
+      "He plans to spend ${popcorn_cost} + ${candy_cost} = ${planned_snack_cost} on popcorn and candy",
+      "He has ${monthly_allowance} - ${total_spent} - ${planned_snack_cost} = ${remaining_budget} left to spend",
+      "He can see ${remaining_budget} / ${fri_sat_ticket_cost} = {remaining_budget / fri_sat_ticket_cost} movie",
+      "#### {remaining_budget / fri_sat_ticket_cost}"
+    ],
+    "factual_assignment": {
+      "monthly_allowance": 150.0,
+      "fri_sat_ticket_cost": 10.0,
+      "other_day_ticket_cost": 7.0,
+      "popcorn_cost": 8.0,
+      "candy_cost": 2.0,
+      "num_fri_sat_movies": 5,
+      "num_other_day_movies": 8,
+      "num_popcorn": 2,
+      "num_candy": 4
+    }
+  },
+  "merged_assignment": {
+    "monthly_allowance": 208425.0,
+    "fri_sat_ticket_cost": 13895.0,
+    "other_day_ticket_cost": 9726.5,
+    "popcorn_cost": 11116.0,
+    "candy_cost": 2779.0,
+    "num_fri_sat_movies": 5,
+    "num_other_day_movies": 8,
+    "num_popcorn": 2,
+    "num_candy": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_allowance = 208425.0\n    fri_sat_ticket_cost = 13895.0\n    other_day_ticket_cost = 9726.5\n    popcorn_cost = 11116.0\n    candy_cost = 2779.0\n    num_fri_sat_movies = 5\n    num_other_day_movies = 8\n    num_popcorn = 2\n    num_candy = 4\n\n    fri_sat_movie_cost = fri_sat_ticket_cost * num_fri_sat_movies\n    other_day_movie_cost = other_day_ticket_cost * num_other_day_movies\n    popcorn_spent = popcorn_cost * num_popcorn\n    candy_spent = candy_cost * num_candy\n    total_spent = fri_sat_movie_cost + other_day_movie_cost + popcorn_spent + candy_spent\n    planned_snack_cost = popcorn_cost + candy_cost\n    remaining_budget = monthly_allowance - total_spent - planned_snack_cost\n\n    return {\n        \"monthly_allowance\": monthly_allowance,\n        \"fri_sat_ticket_cost\": fri_sat_ticket_cost,\n        \"other_day_ticket_cost\": other_day_ticket_cost,\n        \"popcorn_cost\": popcorn_cost,\n        \"candy_cost\": candy_cost,\n        \"num_fri_sat_movies\": num_fri_sat_movies,\n        \"num_other_day_movies\": num_other_day_movies,\n        \"num_popcorn\": num_popcorn,\n        \"num_candy\": num_candy,\n        \"fri_sat_movie_cost\": round(fri_sat_movie_cost, 2),\n        \"other_day_movie_cost\": round(other_day_movie_cost, 2),\n        \"popcorn_spent\": round(popcorn_spent, 2),\n        \"candy_spent\": round(candy_spent, 2),\n        \"total_spent\": round(total_spent, 2),\n        \"planned_snack_cost\": round(planned_snack_cost, 2),\n        \"remaining_budget\": round(remaining_budget, 2),\n        \"remaining_budget / fri_sat_ticket_cost\": round(remaining_budget / fri_sat_ticket_cost, 2)\n    }\n",
+    "results": {
+      "monthly_allowance": 208425.0,
+      "fri_sat_ticket_cost": 13895.0,
+      "other_day_ticket_cost": 9726.5,
+      "popcorn_cost": 11116.0,
+      "candy_cost": 2779.0,
+      "num_fri_sat_movies": 5,
+      "num_other_day_movies": 8,
+      "num_popcorn": 2,
+      "num_candy": 4,
+      "fri_sat_movie_cost": 69475.0,
+      "other_day_movie_cost": 77812.0,
+      "popcorn_spent": 22232.0,
+      "candy_spent": 11116.0,
+      "total_spent": 180635.0,
+      "planned_snack_cost": 13895.0,
+      "remaining_budget": 13895.0,
+      "remaining_budget / fri_sat_ticket_cost": 1.0
+    }
+  },
+  "final": {
+    "question": "Colby loves going to the movies and every month his parents give him 208425 won to spend at the movies. Tickets for Fridays and Saturdays cost 13895 won. Tickets for any other day cost 9726.5 won. Popcorn costs 11116 won and boxes of candy cost 2779 won. It is the last day of the month and it's a Friday. He wants to make sure he gets a popcorn and box of candy that night. How many movies can he see if he already saw 5 movies on a Friday or Saturday, 8 movies on other days, had 2 tubs of popcorn, and 4 boxes of candy that month?",
+    "answer_lines": [
+      "He has spent 13895 * 5 = 69475 won on Fri/Sat movies",
+      "He has spent 9726.5 * 8 = 77812 won on movies the rest of the day",
+      "He has spent 11116 * 2 = 22232 won on popcorn",
+      "He has spent 2779 * 4 = 11116 won on candy",
+      "He has spent 69475 + 77812 + 22232 + 11116 = 180635 won in total",
+      "He plans to spend 11116 + 2779 = 13895 won on popcorn and candy",
+      "He has 208425 - 180635 - 13895 = 13895 won left to spend",
+      "He can see 13895 / 13895 = 1 movie",
+      "#### 1"
+    ],
+    "final_scalar": 1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo loves going to the movies and every month his parents give him 208425 won to spend at the movies. Tickets for Fridays and Saturdays cost 13895 won. Tickets for any other day cost 9726.5 won. Bungeo-ppang costs 11116 won and boxes of pepero cost 2779 won. It is the last day of the month and it's a Friday. He wants to make sure he gets a bungeo-ppang and box of pepero that night. How many movies can he see if he already saw 5 movies on a Friday or Saturday, 8 movies on other days, had 2 bungeo-ppangs, and 4 boxes of pepero that month?",
+    "adapted_answer": [
+      "He has spent 13895 * 5 = 69475 won on Fri/Sat movies",
+      "He has spent 9726.5 * 8 = 77812 won on movies the rest of the day",
+      "He has spent 11116 * 2 = 22232 won on bungeo-ppang",
+      "He has spent 2779 * 4 = 11116 won on pepero",
+      "He has spent 69475 + 77812 + 22232 + 11116 = 180635 won in total",
+      "He plans to spend 11116 + 2779 = 13895 won on bungeo-ppang and pepero",
+      "He has 208425 - 180635 - 13895 = 13895 won left to spend",
+      "He can see 13895 / 13895 = 1 movie",
+      "#### 1"
+    ],
+    "adaptation_notes": "Replaced 'Colby' with 'Min-soo', 'popcorn' with 'bungeo-ppang', and 'candy' with 'pepero'."
+  }
+}

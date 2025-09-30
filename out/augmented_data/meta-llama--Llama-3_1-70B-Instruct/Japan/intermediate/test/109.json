@@ -1,0 +1,162 @@
+{
+  "index": 109,
+  "split": "test",
+  "original": {
+    "question": "A local gas station is selling gas for $3.00 a gallon.  An app company is offering $.20 cashback per gallon if you fill up at this station.  If someone buys 10 gallons of gas, how much with their gas be, after the cashback rewards?",
+    "answer": "Gas is $3.00 a gallon and they buy 10 gallons of gas so that's 3*10 = $<<3*10=30.00>>30.00\nThe app is offering $0.20 cashback per gallon and they buy 10 gallons so that's .20*10 = $<<0.20*10=2.00>>2.00\nThey spent $30.00 on gas and their app is offering them $2.00 cashback so they spent 30-2 = $<<30-2=28.00>>28.00 per gallon\n#### 28"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "gas station",
+      "dollars",
+      "gallons"
+    ],
+    "notes": "The question contains culturally specific entities related to the United States, such as a gas station and units of measurement like dollars and gallons."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "gas_price",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gas_cashback",
+      "value": 0.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gas_total",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gas_cashback_total",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gas_final_cost",
+      "value": 28.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gas_volume",
+      "value": 10.0,
+      "unit": "gallon",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"gas_price\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gas_cashback\", \"value\": 0.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gas_total\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gas_cashback_total\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gas_final_cost\", \"value\": 28.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gas_volume\", \"value\": 10.0, \"unit\": \"gallon\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "gas_price",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gas_cashback",
+        "original_value": 0.2,
+        "original_unit": "dollar",
+        "converted_value": 29.41,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gas_total",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 4412.1,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gas_cashback_total",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gas_final_cost",
+        "original_value": 28.0,
+        "original_unit": "dollar",
+        "converted_value": 4117.96,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gas_volume",
+        "original_value": 10.0,
+        "original_unit": "gallon",
+        "converted_value": 37.85,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A local gas station is selling gas for ${gas_price} a gallon.  An app company is offering ${gas_cashback} cashback per gallon if you fill up at this station.  If someone buys {gas_volume} gallons of gas, how much with their gas be, after the cashback rewards?",
+    "templatized_answer": [
+      "Gas is ${gas_price} a gallon and they buy {gas_volume} gallons of gas so that's {gas_price}*{gas_volume} = ${gas_total}",
+      "The app is offering ${gas_cashback} cashback per gallon and they buy {gas_volume} gallons so that's {gas_cashback}*{gas_volume} = ${gas_cashback_total}",
+      "They spent ${gas_total} on gas and their app is offering them ${gas_cashback_total} cashback so they spent {gas_total}-{gas_cashback_total} = ${gas_final_cost}",
+      "#### {gas_final_cost}"
+    ],
+    "factual_assignment": {
+      "gas_price": 3.0,
+      "gas_cashback": 0.2,
+      "gas_total": 30.0,
+      "gas_cashback_total": 2.0,
+      "gas_final_cost": 28.0,
+      "gas_volume": 10.0
+    }
+  },
+  "merged_assignment": {
+    "gas_price": 441.21,
+    "gas_cashback": 29.41,
+    "gas_total": 4412.1,
+    "gas_cashback_total": 294.14,
+    "gas_final_cost": 4117.96,
+    "gas_volume": 37.85
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    gas_price = 441.21\n    gas_cashback = 29.41\n    gas_volume = 37.85\n\n    gas_total = round(gas_price * gas_volume, 2)\n    gas_cashback_total = round(gas_cashback * gas_volume, 2)\n    gas_final_cost = round(gas_total - gas_cashback_total, 2)\n\n    return {\n        \"gas_price\": gas_price,\n        \"gas_cashback\": gas_cashback,\n        \"gas_total\": gas_total,\n        \"gas_cashback_total\": gas_cashback_total,\n        \"gas_final_cost\": gas_final_cost,\n        \"gas_volume\": gas_volume\n    }\n",
+    "results": {
+      "gas_price": 441.21,
+      "gas_cashback": 29.41,
+      "gas_total": 16699.8,
+      "gas_cashback_total": 1113.17,
+      "gas_final_cost": 15586.63,
+      "gas_volume": 37.85
+    }
+  },
+  "final": {
+    "question": "A local gas station is selling gas for 441.21 yen a liter.  An app company is offering 29.41 yen cashback per liter if you fill up at this station.  If someone buys 37.85 liters of gas, how much with their gas be, after the cashback rewards?",
+    "answer_lines": [
+      "Gas is 441.21 yen a liter and they buy 37.85 liters of gas so that's 441.21*37.85 = 16699.8",
+      "The app is offering 29.41 yen cashback per liter and they buy 37.85 liters so that's 29.41*37.85 = 1113.17",
+      "They spent 16699.8 yen on gas and their app is offering them 1113.17 yen cashback so they spent 16699.8-1113.17 = 15586.63",
+      "#### 15586.63"
+    ],
+    "final_scalar": 15586.63,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A local konbini is selling gas for 441.21 yen a liter.  An app company is offering 29.41 yen cashback per liter if you fill up at this station.  If someone buys 37.85 liters of gas, how much with their gas be, after the cashback rewards?",
+    "adapted_answer": [
+      "Gas is 441.21 yen a liter and they buy 37.85 liters of gas so that's 441.21*37.85 = 16699.8",
+      "The app is offering 29.41 yen cashback per liter and they buy 37.85 liters so that's 29.41*37.85 = 1113.17",
+      "They spent 16699.8 yen on gas and their app is offering them 1113.17 yen cashback so they spent 16699.8-1113.17 = 15586.63",
+      "#### 15586.63"
+    ],
+    "adaptation_notes": "Replaced 'gas station' with 'konbini', a common Japanese term for a convenience store that may also have a gas station."
+  }
+}

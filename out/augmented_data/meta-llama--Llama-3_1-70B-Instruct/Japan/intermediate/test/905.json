@@ -1,0 +1,163 @@
+{
+  "index": 905,
+  "split": "test",
+  "original": {
+    "question": "Harold sleeps for 10 hours a night.  He works 2 hours less than he sleeps and he walks his dog for an hour each day.  How much free time does Harold have left in his day?",
+    "answer": "He works 2 hours less than he sleeps and he sleeps for 10 hours so he works 10-2 = <<10-2=8>>8 hours\nHe sleeps for 10 hours, works for 8 hours and walks his dog for 1 hour for a total of 10+8+1 = <<10+8+1=19>>19 hours\nThere are 24 hours in a day and his busy for 19 hours so that leaves 24-19 = <<24-19=5>>5 hours left of free time\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Harold"
+    ],
+    "notes": "The name 'Harold' is culturally specific to Western regions."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "sleep_time",
+      "value": 10.0,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "work_time",
+      "value": 8.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "walk_time",
+      "value": 1.0,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "total_busy_time",
+      "value": 19.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "day_length",
+      "value": 24.0,
+      "unit": "hour",
+      "context": "answer"
+    },
+    {
+      "variable": "free_time",
+      "value": 5.0,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollar': {'unit': 'yen', 'factor': 147.07},\n        'pound': {'unit': 'kilogram', 'factor': 0.453592},\n        'ounce': {'unit': 'gram', 'factor': 28.3495},\n        'mile': {'unit': 'kilometer', 'factor': 1.60934},\n        'foot': {'unit': 'meter', 'factor': 0.3048},\n        'gallon': {'unit': 'liter', 'factor': 3.78541},\n        'cup': {'unit': 'milliliter', 'factor': 236.588},\n        'hour': {'unit': 'hour', 'factor': 1}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric['value']\n        original_unit = metric['unit']\n        variable = metric['variable']\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit]['unit']\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"sleep_time\", \"value\": 10.0, \"unit\": \"hour\", \"context\": \"question\"},\n    {\"variable\": \"work_time\", \"value\": 8.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"walk_time\", \"value\": 1.0, \"unit\": \"hour\", \"context\": \"question\"},\n    {\"variable\": \"total_busy_time\", \"value\": 19.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"day_length\", \"value\": 24.0, \"unit\": \"hour\", \"context\": \"answer\"},\n    {\"variable\": \"free_time\", \"value\": 5.0, \"unit\": \"hour\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "sleep_time",
+        "original_value": 10.0,
+        "original_unit": "hour",
+        "converted_value": 10.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "work_time",
+        "original_value": 8.0,
+        "original_unit": "hour",
+        "converted_value": 8.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "walk_time",
+        "original_value": 1.0,
+        "original_unit": "hour",
+        "converted_value": 1.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "total_busy_time",
+        "original_value": 19.0,
+        "original_unit": "hour",
+        "converted_value": 19.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "day_length",
+        "original_value": 24.0,
+        "original_unit": "hour",
+        "converted_value": 24.0,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "free_time",
+        "original_value": 5.0,
+        "original_unit": "hour",
+        "converted_value": 5.0,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Harold sleeps for {sleep_time} hours a night.  He works {work_time_difference} hours less than he sleeps and he walks his dog for {walk_time} hours each day.  How much free time does Harold have left in his day?",
+    "templatized_answer": [
+      "He works {work_time_difference} hours less than he sleeps and he sleeps for {sleep_time} hours so he works {sleep_time}-{work_time_difference} = {work_time} hours",
+      "He sleeps for {sleep_time} hours, works for {work_time} hours and walks his dog for {walk_time} hours for a total of {sleep_time}+{work_time}+{walk_time} = {total_busy_time} hours",
+      "There are {day_length} hours in a day and he is busy for {total_busy_time} hours so that leaves {day_length}-{total_busy_time} = {free_time} hours left of free time",
+      "#### {free_time}"
+    ],
+    "factual_assignment": {
+      "sleep_time": 10.0,
+      "work_time_difference": 2.0,
+      "walk_time": 1.0,
+      "work_time": 8.0,
+      "total_busy_time": 19.0,
+      "day_length": 24.0,
+      "free_time": 5.0
+    }
+  },
+  "merged_assignment": {
+    "sleep_time": 10.0,
+    "work_time_difference": 2.0,
+    "walk_time": 1.0,
+    "work_time": 8.0,
+    "total_busy_time": 19.0,
+    "day_length": 24.0,
+    "free_time": 5.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    sleep_time = 10.0\n    work_time_difference = 2.0\n    walk_time = 1.0\n    day_length = 24.0\n\n    work_time = sleep_time - work_time_difference\n    total_busy_time = sleep_time + work_time + walk_time\n    free_time = day_length - total_busy_time\n\n    return {\n        \"sleep_time\": sleep_time,\n        \"work_time_difference\": work_time_difference,\n        \"walk_time\": walk_time,\n        \"work_time\": round(work_time, 2),\n        \"total_busy_time\": round(total_busy_time, 2),\n        \"day_length\": day_length,\n        \"free_time\": round(free_time, 2)\n    }\n",
+    "results": {
+      "sleep_time": 10.0,
+      "work_time_difference": 2.0,
+      "walk_time": 1.0,
+      "work_time": 8.0,
+      "total_busy_time": 19.0,
+      "day_length": 24.0,
+      "free_time": 5.0
+    }
+  },
+  "final": {
+    "question": "Harold sleeps for 10 hours a night.  He works 2 hours less than he sleeps and he walks his dog for 1 hour each day.  How much free time does Harold have left in his day?",
+    "answer_lines": [
+      "He works 2 hours less than he sleeps and he sleeps for 10 hours so he works 10-2 = 8 hours",
+      "He sleeps for 10 hours, works for 8 hours and walks his dog for 1 hour for a total of 10+8+1 = 19 hours",
+      "There are 24 hours in a day and he is busy for 19 hours so that leaves 24-19 = 5 hours left of free time",
+      "#### 5"
+    ],
+    "final_scalar": 5.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Hiroshi sleeps for 10 hours a night.  He works 2 hours less than he sleeps and he walks his dog for 1 hour each day.  How much free time does Hiroshi have left in his day?",
+    "adapted_answer": [
+      "He works 2 hours less than he sleeps and he sleeps for 10 hours so he works 10-2 = 8 hours",
+      "He sleeps for 10 hours, works for 8 hours and walks his dog for 1 hour for a total of 10+8+1 = 19 hours",
+      "There are 24 hours in a day and he is busy for 19 hours so that leaves 24-19 = 5 hours left of free time",
+      "#### 5"
+    ],
+    "adaptation_notes": "Replaced 'Harold' with 'Hiroshi' to give the name a Japanese context."
+  }
+}

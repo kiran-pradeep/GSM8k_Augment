@@ -1,0 +1,193 @@
+{
+  "index": 882,
+  "split": "test",
+  "original": {
+    "question": "Kelly is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her 5 packs of bacon cost $10 in total and she has 6 packets of chicken which each cost twice as much as a pack of bacon. She also has 3 packs of strawberries, priced at $4 each, and 7 packs of apples, each priced at half the price of a pack of strawberries. If Kelly’s budget is $65 then how much money, in dollars, does she have left in her budget?",
+    "answer": "Each pack of bacon costs Kelly $10 total / 5 packs of bacon = $<<10/5=2>>2.\nSo each pack of chicken costs $2 per pack of bacon * 2 = $<<2*2=4>>4.\nAll of the chicken will therefore cost 6 packets of chicken * $4 per pack of chicken = $<<6*4=24>>24.\nThe strawberries will cost her 3 packs of strawberries * $4 per pack of strawberries = $<<3*4=12>>12.\nEach pack of apples costs Kelly $4 per pack of strawberries / 2 = $<<4/2=2>>2.\nSo all of the apples will cost her a combined total of 7 packs of apples * $2 per pack of apples = $<<7*2=14>>14.\nIn total, Kelly’s shopping so far costs $10 for bacon + $24 for chicken + $12 for strawberries + $14 for apples = $<<10+24+12+14=60>>60.\nShe therefore has $65 budget - $60 for shopping = $<<65-60=5>>5 left in the budget.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Kelly",
+      "bacon",
+      "dollars",
+      "strawberries",
+      "apples"
+    ],
+    "notes": "The text contains Western name, food items, and currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bacon_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "strawberries_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "apples_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "budget",
+      "value": 65,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_budget",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bacon_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"strawberries_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"apples_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"budget\", \"value\": 65, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_budget\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bacon_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "strawberries_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "apples_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "budget",
+        "original_value": 65,
+        "original_unit": "dollar",
+        "converted_value": 9559.55,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "remaining_budget",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Kelly is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her {number_of_bacon_packs} packs of bacon cost ${bacon_cost} in total and she has {number_of_chicken_packets} packets of chicken which each cost twice as much as a pack of bacon. She also has {number_of_strawberries_packs} packs of strawberries, priced at ${strawberries_cost} each, and {number_of_apples_packs} packs of apples, each priced at half the price of a pack of strawberries. If Kelly’s budget is ${budget} then how much money, in dollars, does she have left in her budget?",
+    "templatized_answer": [
+      "Each pack of bacon costs Kelly ${bacon_cost} total / {number_of_bacon_packs} packs of bacon = ${bacon_cost_per_pack}.",
+      "So each pack of chicken costs ${bacon_cost_per_pack} per pack of bacon * 2 = ${chicken_cost_per_packet}.",
+      "All of the chicken will therefore cost {number_of_chicken_packets} packets of chicken * ${chicken_cost_per_packet} per pack of chicken = ${total_chicken_cost}.",
+      "The strawberries will cost her {number_of_strawberries_packs} packs of strawberries * ${strawberries_cost} per pack of strawberries = ${total_strawberries_cost}.",
+      "Each pack of apples costs Kelly ${strawberries_cost} per pack of strawberries / 2 = ${apples_cost}.",
+      "So all of the apples will cost her a combined total of {number_of_apples_packs} packs of apples * ${apples_cost} per pack of apples = ${total_apples_cost}.",
+      "In total, Kelly’s shopping so far costs ${bacon_cost} for bacon + ${total_chicken_cost} for chicken + ${total_strawberries_cost} for strawberries + ${total_apples_cost} for apples = ${total_shopping_cost}.",
+      "She therefore has ${budget} budget - ${total_shopping_cost} for shopping = ${remaining_budget} left in the budget.",
+      "#### {remaining_budget}"
+    ],
+    "factual_assignment": {
+      "bacon_cost": 10,
+      "strawberries_cost": 4,
+      "apples_cost": 2,
+      "budget": 65,
+      "remaining_budget": 5,
+      "number_of_bacon_packs": 5,
+      "number_of_chicken_packets": 6,
+      "number_of_strawberries_packs": 3,
+      "number_of_apples_packs": 7,
+      "bacon_cost_per_pack": 2,
+      "chicken_cost_per_packet": 4,
+      "total_chicken_cost": 24,
+      "total_strawberries_cost": 12,
+      "total_apples_cost": 14,
+      "total_shopping_cost": 60
+    }
+  },
+  "merged_assignment": {
+    "bacon_cost": 1470.7,
+    "strawberries_cost": 588.28,
+    "apples_cost": 294.14,
+    "budget": 9559.55,
+    "remaining_budget": 735.35,
+    "number_of_bacon_packs": 5,
+    "number_of_chicken_packets": 6,
+    "number_of_strawberries_packs": 3,
+    "number_of_apples_packs": 7,
+    "bacon_cost_per_pack": 2,
+    "chicken_cost_per_packet": 4,
+    "total_chicken_cost": 24,
+    "total_strawberries_cost": 12,
+    "total_apples_cost": 14,
+    "total_shopping_cost": 60
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    bacon_cost = 1470.7\n    strawberries_cost = 588.28\n    budget = 9559.55\n    number_of_bacon_packs = 5\n    number_of_chicken_packets = 6\n    number_of_strawberries_packs = 3\n    number_of_apples_packs = 7\n\n    # Recompute values\n    bacon_cost_per_pack = round(bacon_cost / number_of_bacon_packs, 2)\n    chicken_cost_per_packet = round(bacon_cost_per_pack * 2, 2)\n    total_chicken_cost = round(number_of_chicken_packets * chicken_cost_per_packet, 2)\n    total_strawberries_cost = round(number_of_strawberries_packs * strawberries_cost, 2)\n    apples_cost = round(strawberries_cost / 2, 2)\n    total_apples_cost = round(number_of_apples_packs * apples_cost, 2)\n    total_shopping_cost = round(bacon_cost + total_chicken_cost + total_strawberries_cost + total_apples_cost, 2)\n    remaining_budget = round(budget - total_shopping_cost, 2)\n\n    return {\n        \"bacon_cost\": bacon_cost,\n        \"strawberries_cost\": strawberries_cost,\n        \"apples_cost\": apples_cost,\n        \"budget\": budget,\n        \"remaining_budget\": remaining_budget,\n        \"number_of_bacon_packs\": number_of_bacon_packs,\n        \"number_of_chicken_packets\": number_of_chicken_packets,\n        \"number_of_strawberries_packs\": number_of_strawberries_packs,\n        \"number_of_apples_packs\": number_of_apples_packs,\n        \"bacon_cost_per_pack\": bacon_cost_per_pack,\n        \"chicken_cost_per_packet\": chicken_cost_per_packet,\n        \"total_chicken_cost\": total_chicken_cost,\n        \"total_strawberries_cost\": total_strawberries_cost,\n        \"total_apples_cost\": total_apples_cost,\n        \"total_shopping_cost\": total_shopping_cost\n    }\n",
+    "results": {
+      "bacon_cost": 1470.7,
+      "strawberries_cost": 588.28,
+      "apples_cost": 294.14,
+      "budget": 9559.55,
+      "remaining_budget": 735.35,
+      "number_of_bacon_packs": 5,
+      "number_of_chicken_packets": 6,
+      "number_of_strawberries_packs": 3,
+      "number_of_apples_packs": 7,
+      "bacon_cost_per_pack": 294.14,
+      "chicken_cost_per_packet": 588.28,
+      "total_chicken_cost": 3529.68,
+      "total_strawberries_cost": 1764.84,
+      "total_apples_cost": 2058.98,
+      "total_shopping_cost": 8824.2
+    }
+  },
+  "final": {
+    "question": "Kelly is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her 5 packs of bacon cost 1470.7 yen in total and she has 6 packets of chicken which each cost twice as much as a pack of bacon. She also has 3 packs of strawberries, priced at 588.28 yen each, and 7 packs of apples, each priced at half the price of a pack of strawberries. If Kelly’s budget is 9559.55 yen then how much money, in yen, does she have left in her budget?",
+    "answer_lines": [
+      "Each pack of bacon costs Kelly 1470.7 yen total / 5 packs of bacon = 294.14 yen.",
+      "So each pack of chicken costs 294.14 yen per pack of bacon * 2 = 588.28 yen.",
+      "All of the chicken will therefore cost 6 packets of chicken * 588.28 yen per pack of chicken = 3529.68 yen.",
+      "The strawberries will cost her 3 packs of strawberries * 588.28 yen per pack of strawberries = 1764.84 yen.",
+      "Each pack of apples costs Kelly 588.28 yen per pack of strawberries / 2 = 294.14 yen.",
+      "So all of the apples will cost her a combined total of 7 packs of apples * 294.14 yen per pack of apples = 2058.98 yen.",
+      "In total, Kelly’s shopping so far costs 1470.7 yen for bacon + 3529.68 yen for chicken + 1764.84 yen for strawberries + 2058.98 yen for apples = 8824.2 yen.",
+      "She therefore has 9559.55 yen budget - 8824.2 yen for shopping = 735.35 yen left in the budget.",
+      "#### 735.35"
+    ],
+    "final_scalar": 735.35,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is grocery shopping at a supermarket and is making sure she has enough in her budget for the items in her cart. Her 5 packs of tonkatsu cost 1470.7 yen in total and she has 6 packets of tori karaage which each cost twice as much as a pack of tonkatsu. She also has 3 packs of ichigo, priced at 588.28 yen each, and 7 packs of ringo, each priced at half the price of a pack of ichigo. If Yui’s budget is 9559.55 yen then how much money, in yen, does she have left in her budget?",
+    "adapted_answer": [
+      "Each pack of tonkatsu costs Yui 1470.7 yen total / 5 packs of tonkatsu = 294.14 yen.",
+      "So each pack of tori karaage costs 294.14 yen per pack of tonkatsu * 2 = 588.28 yen.",
+      "All of the tori karaage will therefore cost 6 packets of tori karaage * 588.28 yen per pack of tori karaage = 3529.68 yen.",
+      "The ichigo will cost her 3 packs of ichigo * 588.28 yen per pack of ichigo = 1764.84 yen.",
+      "Each pack of ringo costs Yui 588.28 yen per pack of ichigo / 2 = 294.14 yen.",
+      "So all of the ringo will cost her a combined total of 7 packs of ringo * 294.14 yen per pack of ringo = 2058.98 yen.",
+      "In total, Yui’s shopping so far costs 1470.7 yen for tonkatsu + 3529.68 yen for tori karaage + 1764.84 yen for ichigo + 2058.98 yen for ringo = 8824.2 yen.",
+      "She therefore has 9559.55 yen budget - 8824.2 yen for shopping = 735.35 yen left in the budget.",
+      "#### 735.35"
+    ],
+    "adaptation_notes": "Replaced Kelly with Yui, bacon with tonkatsu, chicken with tori karaage, strawberries with ichigo, and apples with ringo."
+  }
+}

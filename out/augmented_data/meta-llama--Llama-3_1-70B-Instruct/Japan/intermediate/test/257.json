@@ -1,0 +1,137 @@
+{
+  "index": 257,
+  "split": "test",
+  "original": {
+    "question": "Each solid 10-foot section of a redwood tree weighs 400 pounds. Termites ate 30% of this redwood's wood. If the redwood is 200 feet tall, how much does it weigh?",
+    "answer": "First find how many 10-foot sections are in the redwood: 200 feet / 10 feet/section = <<200/10=20>>20 sections\nThen multiply the number of sections by the weight of each section to find the total weight of the redwood: 20 sections * 400 pounds/section = <<20*400=8000>>8000 pounds\nThen find the amount of the wood the termites ate: 8000 pounds * 30% = <<8000*30*.01=2400>>2400 pounds\nThen subtract that amount from the total weight of the wood: 8000 pounds - 2400 pounds = <<8000-2400=5600>>5600 pounds\n#### 5600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "redwood tree",
+      "pounds",
+      "feet"
+    ],
+    "notes": "The question contains culturally specific entities, including a type of tree native to North America and units of measurement commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "section_weight",
+      "value": 400.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "total_weight",
+      "value": 8000.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "eaten_weight",
+      "value": 2400.0,
+      "unit": "pound",
+      "context": "answer"
+    },
+    {
+      "variable": "final_weight",
+      "value": 5600.0,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"yen\", 147.07),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"section_weight\", \"value\": 400.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"total_weight\", \"value\": 8000.0, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"eaten_weight\", \"value\": 2400.0, \"unit\": \"pound\", \"context\": \"answer\"},\n    {\"variable\": \"final_weight\", \"value\": 5600.0, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "section_weight",
+        "original_value": 400.0,
+        "original_unit": "pound",
+        "converted_value": 181.44,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "total_weight",
+        "original_value": 8000.0,
+        "original_unit": "pound",
+        "converted_value": 3628.74,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "eaten_weight",
+        "original_value": 2400.0,
+        "original_unit": "pound",
+        "converted_value": 1088.62,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "final_weight",
+        "original_value": 5600.0,
+        "original_unit": "pound",
+        "converted_value": 2540.12,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Each solid {section_length}-foot section of a redwood tree weighs {section_weight} pounds. Termites ate {percentage_eaten}% of this redwood's wood. If the redwood is {tree_height} feet tall, how much does it weigh?",
+    "templatized_answer": [
+      "First find how many {section_length}-foot sections are in the redwood: {tree_height} feet / {section_length} feet/section = {tree_height}/{section_length} sections",
+      "Then multiply the number of sections by the weight of each section to find the total weight of the redwood: {tree_height}/{section_length} sections * {section_weight} pounds/section = {tree_height}/{section_length} * {section_weight} pounds",
+      "Then find the amount of the wood the termites ate: {tree_height}/{section_length} * {section_weight} pounds * {percentage_eaten}% = {tree_height}/{section_length} * {section_weight} * {percentage_eaten} * 0.01 pounds",
+      "Then subtract that amount from the total weight of the wood: {tree_height}/{section_length} * {section_weight} pounds - {tree_height}/{section_length} * {section_weight} * {percentage_eaten} * 0.01 pounds = {tree_height}/{section_length} * {section_weight} * (1 - {percentage_eaten} * 0.01) pounds",
+      "#### {tree_height}/{section_length} * {section_weight} * (1 - {percentage_eaten} * 0.01)"
+    ],
+    "factual_assignment": {
+      "section_length": 10,
+      "section_weight": 400,
+      "percentage_eaten": 30,
+      "tree_height": 200
+    }
+  },
+  "merged_assignment": {
+    "section_length": 10,
+    "section_weight": 181.44,
+    "percentage_eaten": 30,
+    "tree_height": 200
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    section_length = 10\n    section_weight = 181.44\n    percentage_eaten = 30\n    tree_height = 200\n\n    num_sections = tree_height / section_length\n    total_weight = num_sections * section_weight\n    weight_eaten = total_weight * (percentage_eaten / 100)\n    final_weight = total_weight - weight_eaten\n\n    return {\n        \"section_length\": section_length,\n        \"section_weight\": section_weight,\n        \"percentage_eaten\": percentage_eaten,\n        \"tree_height\": tree_height,\n        \"tree_height/{section_length}\": num_sections,\n        \"tree_height/{section_length} * {section_weight}\": total_weight,\n        \"tree_height/{section_length} * {section_weight} * {percentage_eaten} * 0.01\": weight_eaten,\n        \"tree_height/{section_length} * {section_weight} * (1 - {percentage_eaten} * 0.01)\": final_weight\n    }\n\nprint(recompute())\n",
+    "results": {
+      "section_length": 10,
+      "section_weight": 181.44,
+      "percentage_eaten": 30,
+      "tree_height": 200,
+      "tree_height/{section_length}": 20.0,
+      "tree_height/{section_length} * {section_weight}": 3628.8,
+      "tree_height/{section_length} * {section_weight} * {percentage_eaten} * 0.01": 1088.64,
+      "tree_height/{section_length} * {section_weight} * (1 - {percentage_eaten} * 0.01)": 2540.16
+    }
+  },
+  "final": {
+    "question": "Each solid 10-meter section of a redwood tree weighs 181.44 kilograms. Termites ate 30% of this redwood's wood. If the redwood is 200 meters tall, how much does it weigh?",
+    "answer_lines": [
+      "First find how many 10-meter sections are in the redwood: 200 meters / 10 meters/section = 20.0 sections",
+      "Then multiply the number of sections by the weight of each section to find the total weight of the redwood: 20.0 sections * 181.44 kilograms/section = 3628.8 kilograms",
+      "Then find the amount of the wood the termites ate: 3628.8 kilograms * 30% = 1088.64 kilograms",
+      "Then subtract that amount from the total weight of the wood: 3628.8 kilograms - 1088.64 kilograms = 2540.16 kilograms",
+      "#### 2540.16"
+    ],
+    "final_scalar": 2540.16,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Each solid 10-meter section of a Japanese cedar tree weighs 181.44 kilograms. Termites ate 30% of this Japanese cedar's wood. If the Japanese cedar is 200 meters tall, how much does it weigh?",
+    "adapted_answer": [
+      "First find how many 10-meter sections are in the Japanese cedar: 200 meters / 10 meters/section = 20.0 sections",
+      "Then multiply the number of sections by the weight of each section to find the total weight of the Japanese cedar: 20.0 sections * 181.44 kilograms/section = 3628.8 kilograms",
+      "Then find the amount of the wood the termites ate: 3628.8 kilograms * 30% = 1088.64 kilograms",
+      "Then subtract that amount from the total weight of the wood: 3628.8 kilograms - 1088.64 kilograms = 2540.16 kilograms",
+      "#### 2540.16"
+    ],
+    "adaptation_notes": "Replaced 'redwood tree' with 'Japanese cedar tree' to provide a Japanese equivalent."
+  }
+}

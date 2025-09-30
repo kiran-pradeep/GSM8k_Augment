@@ -1,0 +1,101 @@
+{
+  "index": 1293,
+  "split": "test",
+  "original": {
+    "question": "A company produces chocolate in bars. In one day, it can produce 5000 bars. The company sells all the produced bars for $2 per bar. How much money will the company receive for selling produced chocolate bars during two weeks?",
+    "answer": "During two weeks the company can produce 14 * 5000 = <<14*5000=70000>>70000.\nIf the price of 1 bar is $2, the company will be able to make 70000 * 2 = $<<70000*2=140000>>140000 from the sales.\n#### 140000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "chocolate"
+    ],
+    "notes": "The use of dollars as currency and chocolate as a food item are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bar_price",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_sales",
+      "value": 140000,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bar_price\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_sales\", \"value\": 140000, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bar_price",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_sales",
+        "original_value": 140000,
+        "original_unit": "dollar",
+        "converted_value": 20589800.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A company produces chocolate in bars. In one day, it can produce {daily_production} bars. The company sells all the produced bars for ${bar_price} per bar. How much money will the company receive for selling produced chocolate bars during two weeks?",
+    "templatized_answer": [
+      "During two weeks the company can produce {days_in_two_weeks} * {daily_production} = {days_in_two_weeks} * {daily_production}.",
+      "If the price of 1 bar is ${bar_price}, the company will be able to make {days_in_two_weeks} * {daily_production} * {bar_price} = ${days_in_two_weeks} * {daily_production} * {bar_price}.",
+      "#### {total_sales}"
+    ],
+    "factual_assignment": {
+      "bar_price": 2,
+      "total_sales": 140000,
+      "daily_production": 5000,
+      "days_in_two_weeks": 14
+    }
+  },
+  "merged_assignment": {
+    "bar_price": 294.14,
+    "total_sales": 20589800.0,
+    "daily_production": 5000,
+    "days_in_two_weeks": 14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"bar_price\": 294.14,\n        \"total_sales\": 20589800.0,\n        \"daily_production\": 5000,\n        \"days_in_two_weeks\": 14\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"days_in_two_weeks\"] = factual_assignment[\"days_in_two_weeks\"]\n    recomputed_values[\"daily_production\"] = factual_assignment[\"daily_production\"]\n    recomputed_values[\"bar_price\"] = factual_assignment[\"bar_price\"]\n\n    recomputed_values[\"total_production\"] = recomputed_values[\"days_in_two_weeks\"] * recomputed_values[\"daily_production\"]\n    recomputed_values[\"total_sales\"] = round(recomputed_values[\"total_production\"] * recomputed_values[\"bar_price\"], 2)\n\n    return recomputed_values\n",
+    "results": {
+      "days_in_two_weeks": 14,
+      "daily_production": 5000,
+      "bar_price": 294.14,
+      "total_production": 70000,
+      "total_sales": 20589800.0
+    }
+  },
+  "final": {
+    "question": "A company produces chocolate in bars. In one day, it can produce 5000 bars. The company sells all the produced bars for 294.14 yen per bar. How much money will the company receive for selling produced chocolate bars during two weeks?",
+    "answer_lines": [
+      "During two weeks the company can produce 14 * 5000 = 70000.",
+      "If the price of 1 bar is 294.14 yen, the company will be able to make 70000 * 294.14 = 20589800.",
+      "#### 20589800"
+    ],
+    "final_scalar": 20589800.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A company produces manju in bars. In one day, it can produce 5000 bars. The company sells all the produced bars for 294.14 yen per bar. How much money will the company receive for selling produced manju bars during two weeks?",
+    "adapted_answer": [
+      "During two weeks the company can produce 14 * 5000 = 70000.",
+      "If the price of 1 bar is 294.14 yen, the company will be able to make 70000 * 294.14 = 20589800.",
+      "#### 20589800"
+    ],
+    "adaptation_notes": "Replaced 'chocolate' with 'manju', a traditional Japanese steamed cake."
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "index": 542,
+  "split": "test",
+  "original": {
+    "question": "Verna loves to eat fruit. She bought three apples at $1.50 each, five oranges at $0.80 each, and six peaches at $0.75 each.  If she gave $20, how much change did she receive?",
+    "answer": "Three apples cost 3 x $1.50 = $<<3*1.5=4.50>>4.50.\nFive oranges cost 5 x $0.80 = $<<5*0.8=4>>4.\nFour peaches cost 6 x $0.75 = $<<6*0.75=4.50>>4.50.\nThus, Verna paid a total of $4.50 +$4+ $4.50 = $<<4.5+4+4.5=13>>13.\nTherefore, Verna received $20 - $13 = $<<20-13=7>>7.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Verna",
+      "dollars",
+      "apples",
+      "oranges",
+      "peaches"
+    ],
+    "notes": "The text contains a Western name and units of currency, as well as fruit items that are not exclusive to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apple_cost",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "orange_cost",
+      "value": 0.8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "peach_cost",
+      "value": 0.75,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 13.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "payment",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apple_cost\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"orange_cost\", \"value\": 0.8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"peach_cost\", \"value\": 0.75, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 13.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"payment\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apple_cost",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 220.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "orange_cost",
+        "original_value": 0.8,
+        "original_unit": "dollar",
+        "converted_value": 117.66,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "peach_cost",
+        "original_value": 0.75,
+        "original_unit": "dollar",
+        "converted_value": 110.3,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 13.0,
+        "original_unit": "dollar",
+        "converted_value": 1911.91,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "payment",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "change",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Verna loves to eat fruit. She bought three apples at ${apple_cost} each, five oranges at ${orange_cost} each, and six peaches at ${peach_cost} each.  If she gave ${payment}, how much change did she receive?",
+    "templatized_answer": [
+      "Three apples cost 3 x ${apple_cost} = ${3*apple_cost}.",
+      "Five oranges cost 5 x ${orange_cost} = ${5*orange_cost}.",
+      "Six peaches cost 6 x ${peach_cost} = ${6*peach_cost}.",
+      "Thus, Verna paid a total of ${3*apple_cost} + ${5*orange_cost} + ${6*peach_cost} = ${3*apple_cost+5*orange_cost+6*peach_cost}.",
+      "Therefore, Verna received ${payment} - ${3*apple_cost+5*orange_cost+6*peach_cost} = ${payment-(3*apple_cost+5*orange_cost+6*peach_cost)}.",
+      "#### ${payment-(3*apple_cost+5*orange_cost+6*peach_cost)}"
+    ],
+    "factual_assignment": {
+      "apple_cost": 1.5,
+      "orange_cost": 0.8,
+      "peach_cost": 0.75,
+      "payment": 20.0
+    }
+  },
+  "merged_assignment": {
+    "apple_cost": 220.6,
+    "orange_cost": 117.66,
+    "peach_cost": 110.3,
+    "payment": 2941.4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    apple_cost = 220.6\n    orange_cost = 117.66\n    peach_cost = 110.3\n    payment = 2941.4\n\n    three_apple_cost = round(3 * apple_cost, 2)\n    five_orange_cost = round(5 * orange_cost, 2)\n    six_peach_cost = round(6 * peach_cost, 2)\n    total_cost = round(three_apple_cost + five_orange_cost + six_peach_cost, 2)\n    change = round(payment - total_cost, 2)\n\n    return {\n        \"apple_cost\": apple_cost,\n        \"orange_cost\": orange_cost,\n        \"peach_cost\": peach_cost,\n        \"payment\": payment,\n        \"3*apple_cost\": three_apple_cost,\n        \"5*orange_cost\": five_orange_cost,\n        \"6*peach_cost\": six_peach_cost,\n        \"3*apple_cost+5*orange_cost+6*peach_cost\": total_cost,\n        \"payment-(3*apple_cost+5*orange_cost+6*peach_cost)\": change\n    }\n\nprint(recompute())\n",
+    "results": {
+      "apple_cost": 220.6,
+      "orange_cost": 117.66,
+      "peach_cost": 110.3,
+      "payment": 2941.4,
+      "3*apple_cost": 661.8,
+      "5*orange_cost": 588.3,
+      "6*peach_cost": 661.8,
+      "3*apple_cost+5*orange_cost+6*peach_cost": 1911.9,
+      "payment-(3*apple_cost+5*orange_cost+6*peach_cost)": 1029.5
+    }
+  },
+  "final": {
+    "question": "Verna loves to eat fruit. She bought three apples at 220.6 yen each, five oranges at 117.66 yen each, and six peaches at 110.3 yen each.  If she gave 2941.4 yen, how much change did she receive?",
+    "answer_lines": [
+      "Three apples cost 3 x 220.6 = 661.8.",
+      "Five oranges cost 5 x 117.66 = 588.3.",
+      "Six peaches cost 6 x 110.3 = 661.8.",
+      "Thus, Verna paid a total of 661.8 + 588.3 + 661.8 = 1911.9.",
+      "Therefore, Verna received 2941.4 - 1911.9 = 1029.5.",
+      "#### 1029.5"
+    ],
+    "final_scalar": 1029.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui loves to eat fruit. She bought three mikan at 220.6 yen each, five iyokan at 117.66 yen each, and six momo at 110.3 yen each.  If she gave 2941.4 yen, how much change did she receive?",
+    "adapted_answer": [
+      "Three mikan cost 3 x 220.6 = 661.8.",
+      "Five iyokan cost 5 x 117.66 = 588.3.",
+      "Six momo cost 6 x 110.3 = 661.8.",
+      "Thus, Yui paid a total of 661.8 + 588.3 + 661.8 = 1911.9.",
+      "Therefore, Yui received 2941.4 - 1911.9 = 1029.5.",
+      "#### 1029.5"
+    ],
+    "adaptation_notes": "Replaced 'Verna' with 'Yui', 'apples' with 'mikan', 'oranges' with 'iyokan', and 'peaches' with 'momo'."
+  }
+}

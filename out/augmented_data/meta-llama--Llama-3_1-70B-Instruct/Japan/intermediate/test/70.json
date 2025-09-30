@@ -1,0 +1,115 @@
+{
+  "index": 70,
+  "split": "test",
+  "original": {
+    "question": "Judy teaches 5 dance classes, every day, on the weekdays and 8 classes on Saturday.  If each class has 15 students and she charges $15.00 per student, how much money does she make in 1 week?",
+    "answer": "She teaches 5 dance classes 5 days a week so that's 5*5 = <<5*5=25>>25 classes\nShe teaches 25 classes during the week and 8 classes on Saturday for a total of 25+8 = <<25+8=33>>33 classes\nThere are 15 students in each of the 33 classes so there are 15*33 = <<15*33=495>>495 students\nEach student pays $15.00 per class and there are 495 students so Judy makes 15*495 = $<<15*495=7425>>7,425\n#### 7425"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Judy",
+      "dollars"
+    ],
+    "notes": "Name 'Judy' and unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "class_cost",
+      "value": 15.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 7425.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"class_cost\", \"value\": 15.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 7425.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "class_cost",
+        "original_value": 15.0,
+        "original_unit": "dollar",
+        "converted_value": 2206.05,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 7425.0,
+        "original_unit": "dollar",
+        "converted_value": 1091994.75,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Judy teaches {num_classes_per_day} dance classes, every day, on the weekdays and {num_classes_saturday} classes on Saturday.  If each class has {num_students_per_class} students and she charges ${class_cost} per student, how much money does she make in 1 week?",
+    "templatized_answer": [
+      "She teaches {num_classes_per_day} dance classes {num_days_per_week} days a week so that's {num_classes_per_day}*{num_days_per_week} = {num_classes_per_day}*{num_days_per_week} classes",
+      "She teaches {num_classes_per_day}*{num_days_per_week} classes during the week and {num_classes_saturday} classes on Saturday for a total of {num_classes_per_day}*{num_days_per_week}+{num_classes_saturday} = {num_classes_per_day}*{num_days_per_week}+{num_classes_saturday} classes",
+      "There are {num_students_per_class} students in each of the {num_classes_per_day}*{num_days_per_week}+{num_classes_saturday} classes so there are {num_students_per_class}*({num_classes_per_day}*{num_days_per_week}+{num_classes_saturday}) = {num_students_per_class}*({num_classes_per_day}*{num_days_per_week}+{num_classes_saturday}) students",
+      "Each student pays ${class_cost} per class and there are {num_students_per_class}*({num_classes_per_day}*{num_days_per_week}+{num_classes_saturday}) students so Judy makes {class_cost}*{num_students_per_class}*({num_classes_per_day}*{num_days_per_week}+{num_classes_saturday}) = ${class_cost}*{num_students_per_class}*({num_classes_per_day}*{num_days_per_week}+{num_classes_saturday})",
+      "#### {weekly_earnings}"
+    ],
+    "factual_assignment": {
+      "num_classes_per_day": 5,
+      "num_classes_saturday": 8,
+      "num_students_per_class": 15,
+      "class_cost": 15.0,
+      "num_days_per_week": 5,
+      "weekly_earnings": 7425.0
+    }
+  },
+  "merged_assignment": {
+    "num_classes_per_day": 5,
+    "num_classes_saturday": 8,
+    "num_students_per_class": 15,
+    "class_cost": 2206.05,
+    "num_days_per_week": 5,
+    "weekly_earnings": 1091994.75
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    num_classes_per_day = 5\n    num_classes_saturday = 8\n    num_students_per_class = 15\n    class_cost = 2206.05\n    num_days_per_week = 5\n\n    classes_per_week = num_classes_per_day * num_days_per_week\n    total_classes = classes_per_week + num_classes_saturday\n    total_students = num_students_per_class * total_classes\n    weekly_earnings = round(class_cost * total_students, 2)\n\n    return {\n        \"num_classes_per_day\": num_classes_per_day,\n        \"num_classes_saturday\": num_classes_saturday,\n        \"num_students_per_class\": num_students_per_class,\n        \"class_cost\": round(class_cost, 2),\n        \"num_days_per_week\": num_days_per_week,\n        \"classes_per_week\": classes_per_week,\n        \"total_classes\": total_classes,\n        \"total_students\": total_students,\n        \"weekly_earnings\": weekly_earnings\n    }\n",
+    "results": {
+      "num_classes_per_day": 5,
+      "num_classes_saturday": 8,
+      "num_students_per_class": 15,
+      "class_cost": 2206.05,
+      "num_days_per_week": 5,
+      "classes_per_week": 25,
+      "total_classes": 33,
+      "total_students": 495,
+      "weekly_earnings": 1091994.75
+    }
+  },
+  "final": {
+    "question": "Judy teaches 5 dance classes, every day, on the weekdays and 8 classes on Saturday.  If each class has 15 students and she charges 2206.05 yen per student, how much money does she make in 1 week?",
+    "answer_lines": [
+      "She teaches 5 dance classes 5 days a week so that's 5*5 = 25 classes",
+      "She teaches 25 classes during the week and 8 classes on Saturday for a total of 25+8 = 33 classes",
+      "There are 15 students in each of the 33 classes so there are 15*33 = 495 students",
+      "Each student pays 2206.05 yen per class and there are 495 students so Judy makes 2206.05*495 = 1091994.75 yen",
+      "#### 1091994.75"
+    ],
+    "final_scalar": 1091994.75,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui teaches 5 dance classes, every day, on the weekdays and 8 classes on Saturday.  If each class has 15 students and she charges 2206.05 yen per student, how much money does she make in 1 week?",
+    "adapted_answer": [
+      "She teaches 5 dance classes 5 days a week so that's 5*5 = 25 classes",
+      "She teaches 25 classes during the week and 8 classes on Saturday for a total of 25+8 = 33 classes",
+      "There are 15 students in each of the 33 classes so there are 15*33 = 495 students",
+      "Each student pays 2206.05 yen per class and there are 495 students so Yui makes 2206.05*495 = 1091994.75 yen",
+      "#### 1091994.75"
+    ],
+    "adaptation_notes": "Replaced 'Judy' with 'Yui', a Japanese name."
+  }
+}

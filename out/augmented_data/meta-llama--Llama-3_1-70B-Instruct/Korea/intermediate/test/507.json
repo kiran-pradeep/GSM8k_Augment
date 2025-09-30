@@ -1,0 +1,131 @@
+{
+  "index": 507,
+  "split": "test",
+  "original": {
+    "question": "Janet takes two bus trips five days a week. If each bus trip costs her $2.20, how much would she save by buying a weekly bus pass for $20?",
+    "answer": "First find the total number of trips Janet takes during the week: 2 trips/day * 5 days/week = <<2*5=10>>10 trips/week\nThen multiply this number by the cost per trip to find her current weekly spending: 10 trips/week * $2.20/trip = $<<10*2.20=22>>22/week\nThen subtract the cost of the weekly bus pass from this number to find her savings: $22/week - $20/week = $<<22-20=2>>2\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Janet"
+    ],
+    "notes": "The text contains the name 'Janet' and the unit 'dollars', which are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "bus_trip_cost",
+      "value": 2.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_bus_pass_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_spending",
+      "value": 22,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "savings",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"bus_trip_cost\", \"value\": 2.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_bus_pass_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_spending\", \"value\": 22, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"savings\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "bus_trip_cost",
+        "original_value": 2.2,
+        "original_unit": "dollar",
+        "converted_value": 3056.9,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "weekly_bus_pass_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 27790.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "weekly_spending",
+        "original_value": 22,
+        "original_unit": "dollar",
+        "converted_value": 30569.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "savings",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Janet takes two bus trips five days a week. If each bus trip costs her ${bus_trip_cost}, how much would she save by buying a weekly bus pass for ${weekly_bus_pass_cost}?",
+    "templatized_answer": [
+      "First find the total number of trips Janet takes during the week: 2 trips/day * 5 days/week = {trips_per_week} trips/week",
+      "Then multiply this number by the cost per trip to find her current weekly spending: {trips_per_week} trips/week * ${bus_trip_cost}/trip = ${weekly_spending}/week",
+      "Then subtract the cost of the weekly bus pass from this number to find her savings: ${weekly_spending}/week - ${weekly_bus_pass_cost}/week = ${savings}"
+    ],
+    "factual_assignment": {
+      "bus_trip_cost": 2.2,
+      "weekly_bus_pass_cost": 20,
+      "trips_per_week": 10,
+      "weekly_spending": 22,
+      "savings": 2
+    }
+  },
+  "merged_assignment": {
+    "bus_trip_cost": 3056.9,
+    "weekly_bus_pass_cost": 27790.0,
+    "trips_per_week": 10,
+    "weekly_spending": 30569.0,
+    "savings": 2779.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    bus_trip_cost = 3056.9\n    weekly_bus_pass_cost = 27790.0\n    trips_per_week = 2 * 5\n    weekly_spending = trips_per_week * bus_trip_cost\n    savings = weekly_spending - weekly_bus_pass_cost\n\n    return {\n        \"bus_trip_cost\": bus_trip_cost,\n        \"weekly_bus_pass_cost\": weekly_bus_pass_cost,\n        \"trips_per_week\": trips_per_week,\n        \"weekly_spending\": round(weekly_spending, 2),\n        \"savings\": round(savings, 2)\n    }\n",
+    "results": {
+      "bus_trip_cost": 3056.9,
+      "weekly_bus_pass_cost": 27790.0,
+      "trips_per_week": 10,
+      "weekly_spending": 30569.0,
+      "savings": 2779.0
+    }
+  },
+  "final": {
+    "question": "Janet takes two bus trips five days a week. If each bus trip costs her 3056.9 won, how much would she save by buying a weekly bus pass for 27790.0 won?",
+    "answer_lines": [
+      "First find the total number of trips Janet takes during the week: 2 trips/day * 5 days/week = 10 trips/week",
+      "Then multiply this number by the cost per trip to find her current weekly spending: 10 trips/week * 3056.9 won/trip = 30569.0 won/week",
+      "Then subtract the cost of the weekly bus pass from this number to find her savings: 30569.0 won/week - 27790.0 won/week = 2779.0 won",
+      "#### 2779.0"
+    ],
+    "final_scalar": 2779.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji takes two bus trips five days a week. If each bus trip costs her 3056.9 won, how much would she save by buying a weekly bus pass for 27790.0 won?",
+    "adapted_answer": [
+      "First find the total number of trips Min-ji takes during the week: 2 trips/day * 5 days/week = 10 trips/week",
+      "Then multiply this number by the cost per trip to find her current weekly spending: 10 trips/week * 3056.9 won/trip = 30569.0 won/week",
+      "Then subtract the cost of the weekly bus pass from this number to find her savings: 30569.0 won/week - 27790.0 won/week = 2779.0 won",
+      "#### 2779.0"
+    ],
+    "adaptation_notes": "Replaced 'Janet' with 'Min-ji', a common Korean name."
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "index": 397,
+  "split": "test",
+  "original": {
+    "question": "Mark has $50 in his bank account. He earns $10 per day at his work. If he wants to buy a bike that costs $300, how many days does Mark have to save his money?",
+    "answer": "Mike has $50 in his bank account, so the amount he needs to save to reach the bike goal is $300 - $50 = $250\nHe earns $10 per day, so $250 / $10/day = <<250/10=25>>25 days\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_savings",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "bike_cost",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "savings_needed",
+      "value": 250.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_savings\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_earnings\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"bike_cost\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"savings_needed\", \"value\": 250.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_savings",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 7353.5,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "bike_cost",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 44121.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "savings_needed",
+        "original_value": 250.0,
+        "original_unit": "dollar",
+        "converted_value": 36767.5,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mark has ${initial_savings} in his bank account. He earns ${daily_earnings} per day at his work. If he wants to buy a bike that costs ${bike_cost}, how many days does Mark have to save his money?",
+    "templatized_answer": [
+      "Mark has ${initial_savings} in his bank account, so the amount he needs to save to reach the bike goal is ${bike_cost} - ${initial_savings} = ${savings_needed}",
+      "He earns ${daily_earnings} per day, so ${savings_needed} / ${daily_earnings}/day = ${savings_needed} / ${daily_earnings} days",
+      "#### {savings_needed} / {daily_earnings}"
+    ],
+    "factual_assignment": {
+      "initial_savings": 50.0,
+      "daily_earnings": 10.0,
+      "bike_cost": 300.0,
+      "savings_needed": 250.0
+    }
+  },
+  "merged_assignment": {
+    "initial_savings": 7353.5,
+    "daily_earnings": 1470.7,
+    "bike_cost": 44121.0,
+    "savings_needed": 36767.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_savings = 7353.5\n    daily_earnings = 1470.7\n    bike_cost = 44121.0\n\n    savings_needed = bike_cost - initial_savings\n    savings_needed = round(savings_needed, 2)\n\n    days_to_save = savings_needed / daily_earnings\n    days_to_save = round(days_to_save, 2)\n\n    return {\n        \"initial_savings\": initial_savings,\n        \"daily_earnings\": daily_earnings,\n        \"bike_cost\": bike_cost,\n        \"savings_needed\": savings_needed,\n        \"days_to_save\": days_to_save\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_savings": 7353.5,
+      "daily_earnings": 1470.7,
+      "bike_cost": 44121.0,
+      "savings_needed": 36767.5,
+      "days_to_save": 25.0
+    }
+  },
+  "final": {
+    "question": "Mark has 7353.5 yen in his bank account. He earns 1470.7 yen per day at his work. If he wants to buy a bike that costs 44121.0 yen, how many days does Mark have to save his money?",
+    "answer_lines": [
+      "Mark has 7353.5 yen in his bank account, so the amount he needs to save to reach the bike goal is 44121.0 yen - 7353.5 yen = 36767.5 yen",
+      "He earns 1470.7 yen per day, so 36767.5 yen / 1470.7 yen/day = 25.0 days",
+      "#### 25.0"
+    ],
+    "final_scalar": 25.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro has 7353.5 yen in his bank account. He earns 1470.7 yen per day at his work. If he wants to buy a mamachari that costs 44121.0 yen, how many days does Taro have to save his money?",
+    "adapted_answer": [
+      "Taro has 7353.5 yen in his bank account, so the amount he needs to save to reach the mamachari goal is 44121.0 yen - 7353.5 yen = 36767.5 yen",
+      "He earns 1470.7 yen per day, so 36767.5 yen / 1470.7 yen/day = 25.0 days",
+      "#### 25.0"
+    ],
+    "adaptation_notes": "Replaced 'Mark' with 'Taro' (a common Japanese name) and 'bike' with 'mamachari' (a type of Japanese bicycle)."
+  }
+}

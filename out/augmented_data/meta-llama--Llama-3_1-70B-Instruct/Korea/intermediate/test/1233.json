@@ -1,0 +1,110 @@
+{
+  "index": 1233,
+  "split": "test",
+  "original": {
+    "question": "Walter bought 60 apples from the store. He ate 2/5 of them and gave his sister 25% of the remaining number. If he then sold the remaining apples to his uncle at $3 each, how much money did he receive?",
+    "answer": "From the 60 apples that Walter bought, he ate 2/5*60=<<2/5*60=24>>24 apples\nThe number of apples remaining was 60-24=<<60-24=36>>36\nWalter gave 25/100*36=<<25/100*36=9>>9 apples to his sister.\nHe remained with 36-9=<<36-9=27>>27 apples.\nHe then sold the apples for 27*$3=$<<27*3=81>>81 to his uncle.\n#### 81"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Walter",
+      "dollars"
+    ],
+    "notes": "The name 'Walter' and the unit 'dollars' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "apple_price",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 81,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"apple_price\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 81, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "apple_price",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 81,
+        "original_unit": "dollar",
+        "converted_value": 112549.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Walter bought {total_apples} apples from the store. He ate 2/5 of them and gave his sister 25% of the remaining number. If he then sold the remaining apples to his uncle at ${apple_price} each, how much money did he receive?",
+    "templatized_answer": [
+      "From the {total_apples} apples that Walter bought, he ate 2/5*{total_apples}={2/5*total_apples} apples",
+      "The number of apples remaining was {total_apples}-{2/5*total_apples}={total_apples}-{2/5*total_apples}",
+      "Walter gave 25/100*({total_apples}-{2/5*total_apples})={25/100*({total_apples}-{2/5*total_apples})} apples to his sister.",
+      "He remained with ({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}=({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})} apples.",
+      "He then sold the apples for ({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}*${apple_price}=${({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}*apple_price}",
+      "#### {({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}*apple_price}"
+    ],
+    "factual_assignment": {
+      "total_apples": 60,
+      "apple_price": 3,
+      "total_earnings": 81
+    }
+  },
+  "merged_assignment": {
+    "total_apples": 60,
+    "apple_price": 4168.5,
+    "total_earnings": 112549.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_apples = 60\n    apple_price = 4168.5\n\n    ate_apples = 2/5 * total_apples\n    remaining_apples = total_apples - ate_apples\n    gave_sister = 25/100 * remaining_apples\n    remaining_after_sister = remaining_apples - gave_sister\n    total_earnings = remaining_after_sister * apple_price\n\n    return {\n        \"total_apples\": total_apples,\n        \"2/5*total_apples\": round(ate_apples, 2),\n        \"total_apples-{2/5*total_apples}\": round(remaining_apples, 2),\n        \"25/100*({total_apples}-{2/5*total_apples})\": round(gave_sister, 2),\n        \"({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}\": round(remaining_after_sister, 2),\n        \"({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}*apple_price\": round(total_earnings, 2),\n        \"apple_price\": apple_price\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_apples": 60,
+      "2/5*total_apples": 24.0,
+      "total_apples-{2/5*total_apples}": 36.0,
+      "25/100*({total_apples}-{2/5*total_apples})": 9.0,
+      "({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}": 27.0,
+      "({total_apples}-{2/5*total_apples})-{25/100*({total_apples}-{2/5*total_apples})}*apple_price": 112549.5,
+      "apple_price": 4168.5
+    }
+  },
+  "final": {
+    "question": "Walter bought 60 apples from the store. He ate 2/5 of them and gave his sister 25% of the remaining number. If he then sold the remaining apples to his uncle at 4168.5 won each, how much money did he receive?",
+    "answer_lines": [
+      "From the 60 apples that Walter bought, he ate 2/5*60=24.0 apples",
+      "The number of apples remaining was 60-24.0=36.0",
+      "Walter gave 25/100*(60-24.0)=9.0 apples to his sister.",
+      "He remained with (60-24.0)-9.0=27.0 apples.",
+      "He then sold the apples for 27.0*4168.5=112549.5 won",
+      "#### 112549.5"
+    ],
+    "final_scalar": 112549.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo bought 60 apples from the store. He ate 2/5 of them and gave his sister 25% of the remaining number. If he then sold the remaining apples to his uncle at 4168.5 won each, how much money did he receive?",
+    "adapted_answer": [
+      "From the 60 apples that Min-soo bought, he ate 2/5*60=24.0 apples",
+      "The number of apples remaining was 60-24.0=36.0",
+      "Min-soo gave 25/100*(60-24.0)=9.0 apples to his sister.",
+      "He remained with (60-24.0)-9.0=27.0 apples.",
+      "He then sold the apples for 27.0*4168.5=112549.5 won",
+      "#### 112549.5"
+    ],
+    "adaptation_notes": "Replaced 'Walter' with 'Min-soo' to give the problem a Korean context."
+  }
+}

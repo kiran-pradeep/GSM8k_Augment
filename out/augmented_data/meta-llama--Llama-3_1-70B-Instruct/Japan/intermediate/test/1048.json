@@ -1,0 +1,138 @@
+{
+  "index": 1048,
+  "split": "test",
+  "original": {
+    "question": "Ben bought a car for $20000 in 2007. The price of the car depreciates at a constant rate of 21% per year. Find the price of the car in the year 2010.",
+    "answer": "The price of the car depreciates of 20000 * 21% = $<<20000*21*.01=4200>>4200 per year.\nBen had the car for 2010 - 2007 = <<2010-2007=3>>3 years.\nThe price of the car depreciates 4200 * 3 = $<<4200*3=12600>>12600 from 2007 to 2010.\nSo the price of the car in the year 2010 is $20000 - $12600 = $<<20000-12600=7400>>7400.\n#### 7400"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Ben"
+    ],
+    "notes": "The text contains a name (Ben) and a unit of currency (dollars) that are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_car_price",
+      "value": 20000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "annual_depreciation",
+      "value": 4200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_depreciation",
+      "value": 12600.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "car_price_2010",
+      "value": 7400.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_car_price\", \"value\": 20000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"annual_depreciation\", \"value\": 4200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_depreciation\", \"value\": 12600.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"car_price_2010\", \"value\": 7400.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_car_price",
+        "original_value": 20000.0,
+        "original_unit": "dollar",
+        "converted_value": 2941400.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "annual_depreciation",
+        "original_value": 4200.0,
+        "original_unit": "dollar",
+        "converted_value": 617694.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_depreciation",
+        "original_value": 12600.0,
+        "original_unit": "dollar",
+        "converted_value": 1853082.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "car_price_2010",
+        "original_value": 7400.0,
+        "original_unit": "dollar",
+        "converted_value": 1088318.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ben bought a car for ${initial_car_price} in 2007. The price of the car depreciates at a constant rate of {annual_depreciation_rate}% per year. Find the price of the car in the year 2010.",
+    "templatized_answer": [
+      "The price of the car depreciates of {initial_car_price} * {annual_depreciation_rate}% = ${annual_depreciation} per year.",
+      "Ben had the car for 2010 - 2007 = {number_of_years} years.",
+      "The price of the car depreciates {annual_depreciation} * {number_of_years} = ${total_depreciation} from 2007 to 2010.",
+      "So the price of the car in the year 2010 is ${initial_car_price} - ${total_depreciation} = ${car_price_2010}.",
+      "#### {car_price_2010}"
+    ],
+    "factual_assignment": {
+      "initial_car_price": 20000.0,
+      "annual_depreciation_rate": 21,
+      "annual_depreciation": 4200.0,
+      "total_depreciation": 12600.0,
+      "car_price_2010": 7400.0,
+      "number_of_years": 3
+    }
+  },
+  "merged_assignment": {
+    "initial_car_price": 2941400.0,
+    "annual_depreciation_rate": 21,
+    "annual_depreciation": 617694.0,
+    "total_depreciation": 1853082.0,
+    "car_price_2010": 1088318.0,
+    "number_of_years": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_car_price = 2941400.0\n    annual_depreciation_rate = 21\n    number_of_years = 3\n\n    annual_depreciation = (initial_car_price * annual_depreciation_rate) / 100\n    total_depreciation = annual_depreciation * number_of_years\n    car_price_2010 = initial_car_price - total_depreciation\n\n    return {\n        \"initial_car_price\": round(initial_car_price, 2),\n        \"annual_depreciation_rate\": annual_depreciation_rate,\n        \"annual_depreciation\": round(annual_depreciation, 2),\n        \"total_depreciation\": round(total_depreciation, 2),\n        \"car_price_2010\": round(car_price_2010, 2),\n        \"number_of_years\": number_of_years\n    }\n",
+    "results": {
+      "initial_car_price": 2941400.0,
+      "annual_depreciation_rate": 21,
+      "annual_depreciation": 617694.0,
+      "total_depreciation": 1853082.0,
+      "car_price_2010": 1088318.0,
+      "number_of_years": 3
+    }
+  },
+  "final": {
+    "question": "Ben bought a car for 2941400 yen in 2007. The price of the car depreciates at a constant rate of 21% per year. Find the price of the car in the year 2010.",
+    "answer_lines": [
+      "The price of the car depreciates of 2941400 * 21% = 617694 yen per year.",
+      "Ben had the car for 2010 - 2007 = 3 years.",
+      "The price of the car depreciates 617694 * 3 = 1853082 yen from 2007 to 2010.",
+      "So the price of the car in the year 2010 is 2941400 - 1853082 = 1088318 yen.",
+      "#### 1088318"
+    ],
+    "final_scalar": 1088318,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro bought a car for 2941400 yen in 2007. The price of the car depreciates at a constant rate of 21% per year. Find the price of the car in the year 2010.",
+    "adapted_answer": [
+      "The price of the car depreciates of 2941400 * 21% = 617694 yen per year.",
+      "Taro had the car for 2010 - 2007 = 3 years.",
+      "The price of the car depreciates 617694 * 3 = 1853082 yen from 2007 to 2010.",
+      "So the price of the car in the year 2010 is 2941400 - 1853082 = 1088318 yen.",
+      "#### 1088318"
+    ],
+    "adaptation_notes": "Replaced 'Ben' with 'Taro' to give the name a Japanese context."
+  }
+}

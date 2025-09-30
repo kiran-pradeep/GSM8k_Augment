@@ -1,0 +1,131 @@
+{
+  "index": 1095,
+  "split": "test",
+  "original": {
+    "question": "If two trains depart from a station in opposite directions, and one train is traveling 60 miles an hour while the other is traveling half that distance per hour, how far apart are they from each other after 3 hours?",
+    "answer": "Since one train is traveling half the speed of the train traveling 60 miles an hour, that means that train is traveling 60/2= <<60/2=30>>30 miles an hour.\nTherefore, to find the distance traveled each hour in total we add both trains' speed together for a total of 60+30=<<90=90>>90 miles traveled each hour.\nThis means that in 3 hours they will have traveled 90*3= <<90*3=270>>270 miles away from each other.\n#### 270"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles"
+    ],
+    "notes": "The unit 'miles' is commonly used in the United States and other Western countries, but not in Korea, where kilometers are more commonly used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "train1_speed",
+      "value": 60,
+      "unit": "mile_per_hour",
+      "context": "question"
+    },
+    {
+      "variable": "train2_speed",
+      "value": 30,
+      "unit": "mile_per_hour",
+      "context": "answer"
+    },
+    {
+      "variable": "total_distance",
+      "value": 270,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "combined_speed",
+      "value": 90,
+      "unit": "mile_per_hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile_per_hour\": {\"unit\": \"kilometer_per_hour\", \"factor\": 1.60934},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"train1_speed\", \"value\": 60, \"unit\": \"mile_per_hour\", \"context\": \"question\"},\n    {\"variable\": \"train2_speed\", \"value\": 30, \"unit\": \"mile_per_hour\", \"context\": \"answer\"},\n    {\"variable\": \"total_distance\", \"value\": 270, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"combined_speed\", \"value\": 90, \"unit\": \"mile_per_hour\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "train1_speed",
+        "original_value": 60,
+        "original_unit": "mile_per_hour",
+        "converted_value": 96.56,
+        "converted_unit": "kilometer_per_hour"
+      },
+      {
+        "variable": "train2_speed",
+        "original_value": 30,
+        "original_unit": "mile_per_hour",
+        "converted_value": 48.28,
+        "converted_unit": "kilometer_per_hour"
+      },
+      {
+        "variable": "total_distance",
+        "original_value": 270,
+        "original_unit": "mile",
+        "converted_value": 434.52,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "combined_speed",
+        "original_value": 90,
+        "original_unit": "mile_per_hour",
+        "converted_value": 144.84,
+        "converted_unit": "kilometer_per_hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "If two trains depart from a station in opposite directions, and one train is traveling {train1_speed} miles an hour while the other is traveling half that distance per hour, how far apart are they from each other after {time_hours} hours?",
+    "templatized_answer": [
+      "Since one train is traveling half the speed of the train traveling {train1_speed} miles an hour, that means that train is traveling {train1_speed}/2={train2_speed} miles an hour.",
+      "Therefore, to find the distance traveled each hour in total we add both trains' speed together for a total of {train1_speed}+{train2_speed}={combined_speed} miles traveled each hour.",
+      "This means that in {time_hours} hours they will have traveled {combined_speed}*{time_hours}={total_distance} miles away from each other.",
+      "#### {total_distance}"
+    ],
+    "factual_assignment": {
+      "train1_speed": 60,
+      "train2_speed": 30,
+      "combined_speed": 90,
+      "total_distance": 270,
+      "time_hours": 3
+    }
+  },
+  "merged_assignment": {
+    "train1_speed": 96.56,
+    "train2_speed": 48.28,
+    "combined_speed": 144.84,
+    "total_distance": 434.52,
+    "time_hours": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    train1_speed = 96.56\n    train2_speed = train1_speed / 2\n    combined_speed = train1_speed + train2_speed\n    time_hours = 3\n    total_distance = combined_speed * time_hours\n\n    return {\n        \"train1_speed\": round(train1_speed, 2),\n        \"train2_speed\": round(train2_speed, 2),\n        \"combined_speed\": round(combined_speed, 2),\n        \"total_distance\": round(total_distance, 2),\n        \"time_hours\": time_hours\n    }\n",
+    "results": {
+      "train1_speed": 96.56,
+      "train2_speed": 48.28,
+      "combined_speed": 144.84,
+      "total_distance": 434.52,
+      "time_hours": 3
+    }
+  },
+  "final": {
+    "question": "If two trains depart from a station in opposite directions, and one train is traveling 96.56 kilometers an hour while the other is traveling half that distance per hour, how far apart are they from each other after 3 hours?",
+    "answer_lines": [
+      "Since one train is traveling half the speed of the train traveling 96.56 kilometers an hour, that means that train is traveling 96.56/2=48.28 kilometers an hour.",
+      "Therefore, to find the distance traveled each hour in total we add both trains' speed together for a total of 96.56+48.28=144.84 kilometers traveled each hour.",
+      "This means that in 3 hours they will have traveled 144.84*3=434.52 kilometers away from each other.",
+      "#### 434.52"
+    ],
+    "final_scalar": 434.52,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "If two KTX trains depart from Seoul Station in opposite directions, and one train is traveling 96.56 kilometers an hour while the other is traveling half that distance per hour, how far apart are they from each other after 3 hours?",
+    "adapted_answer": [
+      "Since one train is traveling half the speed of the train traveling 96.56 kilometers an hour, that means that train is traveling 96.56/2=48.28 kilometers an hour.",
+      "Therefore, to find the distance traveled each hour in total we add both trains' speed together for a total of 96.56+48.28=144.84 kilometers traveled each hour.",
+      "This means that in 3 hours they will have traveled 144.84*3=434.52 kilometers away from each other.",
+      "#### 434.52"
+    ],
+    "adaptation_notes": "Replaced 'trains' with 'KTX trains' and 'station' with 'Seoul Station' to give the question a Korean context."
+  }
+}

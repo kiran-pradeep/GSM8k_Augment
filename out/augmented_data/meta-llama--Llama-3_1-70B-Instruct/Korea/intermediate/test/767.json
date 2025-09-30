@@ -1,0 +1,101 @@
+{
+  "index": 767,
+  "split": "test",
+  "original": {
+    "question": "To make 1 liter of juice, Sam needs 5 kilograms of oranges. Each kilogram of oranges costs $3. How much money would Sam have to spend to make 4 liters of juice?",
+    "answer": "To make 4 liters of juice, Sam needs 4 * 5 = <<4*5=20>>20 kilograms of oranges.\nIf one kilogram of oranges costs $3, then 20 kilograms would cost 20 * 3 = $<<20*3=60>>60.\n#### 60"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Sam",
+      "dollars"
+    ],
+    "notes": "The name 'Sam' is culturally specific to Western regions and the unit 'dollars' is a currency commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "orange_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"orange_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "orange_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 83370.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To make 1 liter of juice, Sam needs {oranges_per_liter} kilograms of oranges. Each kilogram of oranges costs ${orange_cost}. How much money would Sam have to spend to make {liters_of_juice} liters of juice?",
+    "templatized_answer": [
+      "To make {liters_of_juice} liters of juice, Sam needs {liters_of_juice} * {oranges_per_liter} = {liters_of_juice} * {oranges_per_liter} kilograms of oranges.",
+      "If one kilogram of oranges costs ${orange_cost}, then {liters_of_juice} * {oranges_per_liter} kilograms would cost ({liters_of_juice} * {oranges_per_liter}) * {orange_cost} = ${liters_of_juice} * {oranges_per_liter} * {orange_cost}.",
+      "#### {liters_of_juice} * {oranges_per_liter} * {orange_cost}"
+    ],
+    "factual_assignment": {
+      "orange_cost": 3,
+      "total_cost": 60,
+      "oranges_per_liter": 5,
+      "liters_of_juice": 4
+    }
+  },
+  "merged_assignment": {
+    "orange_cost": 4168.5,
+    "total_cost": 83370.0,
+    "oranges_per_liter": 5,
+    "liters_of_juice": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    orange_cost = 4168.5\n    oranges_per_liter = 5\n    liters_of_juice = 4\n\n    total_kilograms = liters_of_juice * oranges_per_liter\n    total_cost = total_kilograms * orange_cost\n\n    return {\n        \"orange_cost\": round(orange_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"oranges_per_liter\": oranges_per_liter,\n        \"liters_of_juice\": liters_of_juice,\n        \"total_kilograms\": total_kilograms\n    }\n\nprint(recompute())\n",
+    "results": {
+      "orange_cost": 4168.5,
+      "total_cost": 83370.0,
+      "oranges_per_liter": 5,
+      "liters_of_juice": 4,
+      "total_kilograms": 20
+    }
+  },
+  "final": {
+    "question": "To make 1 liter of juice, Sam needs 5 kilograms of oranges. Each kilogram of oranges costs 4168.5 won. How much money would Sam have to spend to make 4 liters of juice?",
+    "answer_lines": [
+      "To make 4 liters of juice, Sam needs 4 * 5 = 20 kilograms of oranges.",
+      "If one kilogram of oranges costs 4168.5 won, then 20 kilograms would cost 20 * 4168.5 = 83370 won.",
+      "#### 83370"
+    ],
+    "final_scalar": 83370,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "1리터의 주스를 만들기 위해, 민수는 5킬로그램의 귤이 필요합니다. 귤 1킬로그램의 가격은 4168.5원이면, 민수가 4리터의 주스를 만들기 위해 얼마의 돈을 써야 할까요?",
+    "adapted_answer": [
+      "4리터의 주스를 만들기 위해, 민수는 4 * 5 = 20킬로그램의 귤이 필요합니다.",
+      "1킬로그램의 귤 가격이 4168.5원이면, 20킬로그램의 귤 가격은 20 * 4168.5 = 83370원이 될 것입니다.",
+      "#### 83370"
+    ],
+    "adaptation_notes": "Replaced 'Sam' with '민수' (a common Korean name) and 'oranges' with '귤' (a type of citrus fruit commonly consumed in Korea)."
+  }
+}

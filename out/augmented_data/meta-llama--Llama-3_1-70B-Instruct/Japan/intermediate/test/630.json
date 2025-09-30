@@ -1,0 +1,100 @@
+{
+  "index": 630,
+  "split": "test",
+  "original": {
+    "question": "Tiffany is measuring how many surfers can ride a big wave without falling. She sees that when a wave over 30 feet arrives, only 25% of the riders can stay upright. Of these riders, 60% are women. If there are 100 riders, how many men can stay upright on the wave?",
+    "answer": "25 riders stayed upright because 100 x .25 = <<100*.25=25>>25\nOf these riders 10 were men because 25 x .4 = <<25*.4=10>>10\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tiffany",
+      "feet"
+    ],
+    "notes": "Name 'Tiffany' and unit 'feet' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "wave_height",
+      "value": 30,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "total_riders",
+      "value": 100,
+      "unit": "",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pounds\": {\"factor\": 0.453592, \"unit\": \"kilograms\"},\n        \"ounces\": {\"factor\": 28.3495, \"unit\": \"grams\"},\n        \"miles\": {\"factor\": 1.60934, \"unit\": \"kilometers\"},\n        \"feet\": {\"factor\": 0.3048, \"unit\": \"meters\"},\n        \"gallons\": {\"factor\": 3.78541, \"unit\": \"liters\"},\n        \"cups\": {\"factor\": 236.588, \"unit\": \"milliliters\"}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"unit\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"wave_height\", \"value\": 30, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"total_riders\", \"value\": 100, \"unit\": \"\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "wave_height",
+        "original_value": 30,
+        "original_unit": "feet",
+        "converted_value": 9.14,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "total_riders",
+        "original_value": 100,
+        "original_unit": "",
+        "converted_value": 100,
+        "converted_unit": ""
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Tiffany is measuring how many surfers can ride a big wave without falling. She sees that when a wave over {wave_height} feet arrives, only 25% of the riders can stay upright. Of these riders, 60% are women. If there are {total_riders} riders, how many men can stay upright on the wave?",
+    "templatized_answer": [
+      "{total_riders} x .25 = {total_riders} x .25 = {upright_riders}",
+      "Of these riders {upright_riders} x .4 = {upright_riders} x .4 = {men_upright}",
+      "#### {men_upright}"
+    ],
+    "factual_assignment": {
+      "wave_height": 30,
+      "total_riders": 100,
+      "upright_riders": 25,
+      "men_upright": 10
+    }
+  },
+  "merged_assignment": {
+    "wave_height": 9.14,
+    "total_riders": 100,
+    "upright_riders": 25,
+    "men_upright": 10
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    wave_height = 9.14\n    total_riders = 100\n    upright_riders = total_riders * 0.25\n    men_upright = upright_riders * 0.4\n\n    return {\n        \"wave_height\": wave_height,\n        \"total_riders\": total_riders,\n        \"upright_riders\": round(upright_riders, 2),\n        \"men_upright\": round(men_upright, 2)\n    }\n",
+    "results": {
+      "wave_height": 9.14,
+      "total_riders": 100,
+      "upright_riders": 25.0,
+      "men_upright": 10.0
+    }
+  },
+  "final": {
+    "question": "Tiffany is measuring how many surfers can ride a big wave without falling. She sees that when a wave over 9.14 meters arrives, only 25% of the riders can stay upright. Of these riders, 60% are women. If there are 100 riders, how many men can stay upright on the wave?",
+    "answer_lines": [
+      "25.0 riders stayed upright because 100 x .25 = 25.0",
+      "Of these riders 10.0 were men because 25.0 x .4 = 10.0",
+      "#### 10.0"
+    ],
+    "final_scalar": 10.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is measuring how many surfers can ride a big wave without falling. She sees that when a wave over 9.14 meters arrives, only 25% of the riders can stay upright. Of these riders, 60% are women. If there are 100 riders, how many men can stay upright on the wave?",
+    "adapted_answer": [
+      "25.0 riders stayed upright because 100 x .25 = 25.0",
+      "Of these riders 10.0 were men because 25.0 x .4 = 10.0",
+      "#### 10.0"
+    ],
+    "adaptation_notes": "Replaced 'Tiffany' with 'Yui' to give the name a Japanese context."
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "index": 689,
+  "split": "test",
+  "original": {
+    "question": "Manolo bought five lollipops and four candies that cost $3.20. If each lollipop costs $0.40, how much will 10 lollipops and 10 candies cost him?",
+    "answer": "Five lollipops cost $0.4 x 5 = $<<0.4*5=2>>2.\nSo four candies cost $3.20 - $2 = $1.20.\nThus, each candy costs $1.20/4 = $<<1.20/4=0.30>>0.30.\nTen lollipops cost $0.4 x 10 = $<<0.4*10=4>>4.\nTen candies cost $0.30 x 10 = $<<0.30*10=3>>3.\nHence, 10 lollipops and 10 candies will cost $4 + $3 = $7.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "lollipops",
+      "Manolo"
+    ],
+    "notes": "The text contains a non-Japanese name, a non-Japanese currency unit, and a Western-style food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_cost",
+      "value": 3.2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lollipop_cost",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_cost",
+      "value": 0.3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_cost\", \"value\": 3.2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lollipop_cost\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_cost\", \"value\": 0.3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_cost",
+        "original_value": 3.2,
+        "original_unit": "dollar",
+        "converted_value": 470.62,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "lollipop_cost",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 58.83,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "candy_cost",
+        "original_value": 0.3,
+        "original_unit": "dollar",
+        "converted_value": 44.12,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Manolo bought {initial_lollipops} lollipops and {initial_candies} candies that cost ${initial_cost}. If each lollipop costs ${lollipop_cost}, how much will {final_lollipops} lollipops and {final_candies} candies cost him?",
+    "templatized_answer": [
+      "{initial_lollipops} lollipops cost ${lollipop_cost} x {initial_lollipops} = ${lollipop_cost * initial_lollipops}.",
+      "So {initial_candies} candies cost ${initial_cost} - ${lollipop_cost * initial_lollipops} = ${initial_cost - lollipop_cost * initial_lollipops}.",
+      "Thus, each candy costs ${initial_cost - lollipop_cost * initial_lollipops}/{initial_candies} = ${candy_cost}.",
+      "{final_lollipops} lollipops cost ${lollipop_cost} x {final_lollipops} = ${lollipop_cost * final_lollipops}.",
+      "{final_candies} candies cost ${candy_cost} x {final_candies} = ${candy_cost * final_candies}.",
+      "Hence, {final_lollipops} lollipops and {final_candies} candies will cost ${lollipop_cost * final_lollipops} + ${candy_cost * final_candies} = ${lollipop_cost * final_lollipops + candy_cost * final_candies}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "initial_lollipops": 5,
+      "initial_candies": 4,
+      "initial_cost": 3.2,
+      "lollipop_cost": 0.4,
+      "candy_cost": 0.3,
+      "final_lollipops": 10,
+      "final_candies": 10,
+      "total_cost": 7
+    }
+  },
+  "merged_assignment": {
+    "initial_lollipops": 5,
+    "initial_candies": 4,
+    "initial_cost": 470.62,
+    "lollipop_cost": 58.83,
+    "candy_cost": 44.12,
+    "final_lollipops": 10,
+    "final_candies": 10,
+    "total_cost": 1029.49
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_lollipops = 5\n    initial_candies = 4\n    initial_cost = 470.62\n    lollipop_cost = 58.83\n    final_lollipops = 10\n    final_candies = 10\n\n    lollipop_total_cost = round(lollipop_cost * initial_lollipops, 2)\n    candy_total_cost = round(initial_cost - lollipop_total_cost, 2)\n    candy_cost = round(candy_total_cost / initial_candies, 2)\n    final_lollipop_total_cost = round(lollipop_cost * final_lollipops, 2)\n    final_candy_total_cost = round(candy_cost * final_candies, 2)\n    total_cost = round(final_lollipop_total_cost + final_candy_total_cost, 2)\n\n    return {\n        \"initial_lollipops\": initial_lollipops,\n        \"initial_candies\": initial_candies,\n        \"initial_cost\": initial_cost,\n        \"lollipop_cost\": lollipop_cost,\n        \"candy_cost\": candy_cost,\n        \"final_lollipops\": final_lollipops,\n        \"final_candies\": final_candies,\n        \"total_cost\": total_cost,\n        \"lollipop_total_cost\": lollipop_total_cost,\n        \"candy_total_cost\": candy_total_cost,\n        \"final_lollipop_total_cost\": final_lollipop_total_cost,\n        \"final_candy_total_cost\": final_candy_total_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_lollipops": 5,
+      "initial_candies": 4,
+      "initial_cost": 470.62,
+      "lollipop_cost": 58.83,
+      "candy_cost": 44.12,
+      "final_lollipops": 10,
+      "final_candies": 10,
+      "total_cost": 1029.5,
+      "lollipop_total_cost": 294.15,
+      "candy_total_cost": 176.47,
+      "final_lollipop_total_cost": 588.3,
+      "final_candy_total_cost": 441.2
+    }
+  },
+  "final": {
+    "question": "Manolo bought 5 lollipops and 4 candies that cost 470.62 yen. If each lollipop costs 58.83 yen, how much will 10 lollipops and 10 candies cost him?",
+    "answer_lines": [
+      "5 lollipops cost 58.83 yen x 5 = 294.15 yen.",
+      "So 4 candies cost 470.62 yen - 294.15 yen = 176.47 yen.",
+      "Thus, each candy costs 176.47 yen/4 = 44.12 yen.",
+      "10 lollipops cost 58.83 yen x 10 = 588.3 yen.",
+      "10 candies cost 44.12 yen x 10 = 441.2 yen.",
+      "Hence, 10 lollipops and 10 candies will cost 588.3 yen + 441.2 yen = 1029.5 yen.",
+      "#### 1029.5"
+    ],
+    "final_scalar": 1029.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro bought 5 ichigo ame and 4 dagashi that cost 470.62 yen. If each ichigo ame costs 58.83 yen, how much will 10 ichigo ame and 10 dagashi cost him?",
+    "adapted_answer": [
+      "5 ichigo ame cost 58.83 yen x 5 = 294.15 yen.",
+      "So 4 dagashi cost 470.62 yen - 294.15 yen = 176.47 yen.",
+      "Thus, each dagashi costs 176.47 yen/4 = 44.12 yen.",
+      "10 ichigo ame cost 58.83 yen x 10 = 588.3 yen.",
+      "10 dagashi cost 44.12 yen x 10 = 441.2 yen.",
+      "Hence, 10 ichigo ame and 10 dagashi will cost 588.3 yen + 441.2 yen = 1029.5 yen.",
+      "#### 1029.5"
+    ],
+    "adaptation_notes": "Replaced 'Manolo' with 'Taro', 'lollipops' with 'ichigo ame', and 'candies' with 'dagashi' to provide a Japanese context."
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "index": 1219,
+  "split": "test",
+  "original": {
+    "question": "John is a carpenter. For his friend Ali, he manufactured 4 wooden tables for $20 each and 2 roof frames for $10 each. How much does Ali have to pay John?",
+    "answer": "For the wooden table, Ali should pay: $20 * 4 = $<<20*4=80>>80\nFor the roof frames, Ali should pay: $10 * 2 = $<<10*2=20>>20\nCombining the wooden table and the roof frames, Ali should pay: $20 + $80 = $<<20+80=100>>100\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "Ali",
+      "dollars"
+    ],
+    "notes": "The names John and Ali, and the unit dollars are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "table_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "table_total_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "roof_frame_cost",
+      "value": 10,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "roof_frame_total_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"table_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"table_total_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"roof_frame_cost\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"roof_frame_total_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "table_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "table_total_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 11765.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "roof_frame_cost",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "roof_frame_total_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John is a carpenter. For his friend Ali, he manufactured {number_of_tables} wooden tables for {table_cost} each and {number_of_roof_frames} roof frames for {roof_frame_cost} each. How much does Ali have to pay John?",
+    "templatized_answer": [
+      "For the wooden table, Ali should pay: {table_cost} * {number_of_tables} = {table_total_cost}",
+      "For the roof frames, Ali should pay: {roof_frame_cost} * {number_of_roof_frames} = {roof_frame_total_cost}",
+      "Combining the wooden table and the roof frames, Ali should pay: {roof_frame_total_cost} + {table_total_cost} = {total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "table_cost": 20,
+      "number_of_tables": 4,
+      "roof_frame_cost": 10,
+      "number_of_roof_frames": 2,
+      "table_total_cost": 80,
+      "roof_frame_total_cost": 20,
+      "total_cost": 100
+    }
+  },
+  "merged_assignment": {
+    "table_cost": 2941.4,
+    "number_of_tables": 4,
+    "roof_frame_cost": 1470.7,
+    "number_of_roof_frames": 2,
+    "table_total_cost": 11765.6,
+    "roof_frame_total_cost": 2941.4,
+    "total_cost": 14707.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    table_cost = 2941.4\n    number_of_tables = 4\n    roof_frame_cost = 1470.7\n    number_of_roof_frames = 2\n\n    table_total_cost = round(table_cost * number_of_tables, 2)\n    roof_frame_total_cost = round(roof_frame_cost * number_of_roof_frames, 2)\n    total_cost = round(roof_frame_total_cost + table_total_cost, 2)\n\n    return {\n        \"table_cost\": table_cost,\n        \"number_of_tables\": number_of_tables,\n        \"roof_frame_cost\": roof_frame_cost,\n        \"number_of_roof_frames\": number_of_roof_frames,\n        \"table_total_cost\": table_total_cost,\n        \"roof_frame_total_cost\": roof_frame_total_cost,\n        \"total_cost\": total_cost\n    }\n\nprint(recompute())\n",
+    "results": {
+      "table_cost": 2941.4,
+      "number_of_tables": 4,
+      "roof_frame_cost": 1470.7,
+      "number_of_roof_frames": 2,
+      "table_total_cost": 11765.6,
+      "roof_frame_total_cost": 2941.4,
+      "total_cost": 14707.0
+    }
+  },
+  "final": {
+    "question": "John is a carpenter. For his friend Ali, he manufactured 4 wooden tables for 2941.4 yen each and 2 roof frames for 1470.7 yen each. How much does Ali have to pay John?",
+    "answer_lines": [
+      "For the wooden table, Ali should pay: 2941.4 * 4 = 11765.6",
+      "For the roof frames, Ali should pay: 1470.7 * 2 = 2941.4",
+      "Combining the wooden table and the roof frames, Ali should pay: 2941.4 + 11765.6 = 14707.0",
+      "#### 14707.0"
+    ],
+    "final_scalar": 14707.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro is a carpenter. For his friend Kenji, he manufactured 4 wooden tables for 2941.4 yen each and 2 roof frames for 1470.7 yen each. How much does Kenji have to pay Taro?",
+    "adapted_answer": [
+      "For the wooden table, Kenji should pay: 2941.4 * 4 = 11765.6",
+      "For the roof frames, Kenji should pay: 1470.7 * 2 = 2941.4",
+      "Combining the wooden table and the roof frames, Kenji should pay: 2941.4 + 11765.6 = 14707.0",
+      "#### 14707.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro' and 'Ali' with 'Kenji' to give the names a Japanese context."
+  }
+}

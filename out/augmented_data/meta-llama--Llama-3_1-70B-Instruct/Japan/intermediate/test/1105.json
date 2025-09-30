@@ -1,0 +1,135 @@
+{
+  "index": 1105,
+  "split": "test",
+  "original": {
+    "question": "Lauren is saving 20% of every paycheck. How many more years does Lauren need to work if she plans to save for a retirement period of 20 years, live with 40% of her current annual salary, and her current salary is $100,000?",
+    "answer": "Lauren plans to live in retirement with 40% of her current salary ($100,000), therefore 40%*$100,000 = $<<40*.01*100000=40000>>40,000\nIf she wants to save for 20 years, then she will need to save 20 * $40,000 = $<<20*40000=800000>>800,000 to retire\nIf her current salary is $100,00 and she's saving 20%, then she's able to save $100,000 * 20% = $<<100000*20*.01=20000>>20,000 every year\nTo reach her desired savings goal ($800,000) she will need to work for another $800,000/$20,000 = <<800000/20000=40>>40 years\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Lauren",
+      "dollars"
+    ],
+    "notes": "The name Lauren and the unit dollars are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "annual_salary",
+      "value": 100000,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "retirement_annual_salary",
+      "value": 40000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "retirement_savings",
+      "value": 800000,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "annual_savings",
+      "value": 20000,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"annual_salary\", \"value\": 100000, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"retirement_annual_salary\", \"value\": 40000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"retirement_savings\", \"value\": 800000, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"annual_savings\", \"value\": 20000, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "annual_salary",
+        "original_value": 100000,
+        "original_unit": "dollar",
+        "converted_value": 14707000.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "retirement_annual_salary",
+        "original_value": 40000,
+        "original_unit": "dollar",
+        "converted_value": 5882800.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "retirement_savings",
+        "original_value": 800000,
+        "original_unit": "dollar",
+        "converted_value": 117656000.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "annual_savings",
+        "original_value": 20000,
+        "original_unit": "dollar",
+        "converted_value": 2941400.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Lauren is saving 20% of every paycheck. How many more years does Lauren need to work if she plans to save for a retirement period of 20 years, live with 40% of her current annual salary, and her current salary is ${annual_salary}?",
+    "templatized_answer": [
+      "Lauren plans to live in retirement with 40% of her current salary (${annual_salary}), therefore 40%*${annual_salary} = ${retirement_annual_salary}",
+      "If she wants to save for 20 years, then she will need to save 20 * ${retirement_annual_salary} = ${retirement_savings} to retire",
+      "If her current salary is ${annual_salary} and she's saving 20%, then she's able to save ${annual_salary} * 20% = ${annual_savings} every year",
+      "To reach her desired savings goal (${retirement_savings}) she will need to work for another ${retirement_savings}/${annual_savings} = {retirement_years} years",
+      "#### {retirement_years}"
+    ],
+    "factual_assignment": {
+      "annual_salary": 100000,
+      "retirement_annual_salary": 40000,
+      "retirement_savings": 800000,
+      "annual_savings": 20000,
+      "retirement_years": 40
+    }
+  },
+  "merged_assignment": {
+    "annual_salary": 14707000.0,
+    "retirement_annual_salary": 5882800.0,
+    "retirement_savings": 117656000.0,
+    "annual_savings": 2941400.0,
+    "retirement_years": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    annual_salary = 14707000.0\n    retirement_annual_salary = annual_salary * 0.4\n    retirement_savings = retirement_annual_salary * 20\n    annual_savings = annual_salary * 0.2\n    retirement_years = retirement_savings / annual_savings\n\n    return {\n        \"annual_salary\": annual_salary,\n        \"retirement_annual_salary\": round(retirement_annual_salary, 2),\n        \"retirement_savings\": round(retirement_savings, 2),\n        \"annual_savings\": round(annual_savings, 2),\n        \"retirement_years\": round(retirement_years, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "annual_salary": 14707000.0,
+      "retirement_annual_salary": 5882800.0,
+      "retirement_savings": 117656000.0,
+      "annual_savings": 2941400.0,
+      "retirement_years": 40.0
+    }
+  },
+  "final": {
+    "question": "Lauren is saving 20% of every paycheck. How many more years does Lauren need to work if she plans to save for a retirement period of 20 years, live with 40% of her current annual salary, and her current salary is 14707000.0 yen?",
+    "answer_lines": [
+      "Lauren plans to live in retirement with 40% of her current salary (14707000.0 yen), therefore 40%*14707000.0 = 5882800.0 yen",
+      "If she wants to save for 20 years, then she will need to save 20 * 5882800.0 = 117656000.0 yen to retire",
+      "If her current salary is 14707000.0 yen and she's saving 20%, then she's able to save 14707000.0 * 20% = 2941400.0 yen every year",
+      "To reach her desired savings goal (117656000.0 yen) she will need to work for another 117656000.0/2941400.0 = 40.0 years",
+      "#### 40.0"
+    ],
+    "final_scalar": 40.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is saving 20% of every paycheck. How many more years does Yui need to work if she plans to save for a retirement period of 20 years, live with 40% of her current annual salary, and her current salary is 14707000.0 yen?",
+    "adapted_answer": [
+      "Yui plans to live in retirement with 40% of her current salary (14707000.0 yen), therefore 40%*14707000.0 = 5882800.0 yen",
+      "If she wants to save for 20 years, then she will need to save 20 * 5882800.0 = 117656000.0 yen to retire",
+      "If her current salary is 14707000.0 yen and she's saving 20%, then she's able to save 14707000.0 * 20% = 2941400.0 yen every year",
+      "To reach her desired savings goal (117656000.0 yen) she will need to work for another 117656000.0/2941400.0 = 40.0 years",
+      "#### 40.0"
+    ],
+    "adaptation_notes": "Replaced 'Lauren' with 'Yui', a common Japanese name."
+  }
+}

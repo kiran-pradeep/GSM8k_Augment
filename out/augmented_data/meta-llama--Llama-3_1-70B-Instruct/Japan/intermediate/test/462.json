@@ -1,0 +1,127 @@
+{
+  "index": 462,
+  "split": "test",
+  "original": {
+    "question": "Ali had $21. Leila gave him half of her $100. How much does Ali have now?",
+    "answer": "Leila gave 100/2 = $<<100/2=50>>50 to Ali.\nAli now has $21+ $50 = $<<21+50=71>>71.\n#### 71"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Ali",
+      "Leila"
+    ],
+    "notes": "The text contains non-Japanese names and a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 21.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "leila_money",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "leila_gift",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "ali_total",
+      "value": 71.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 21.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"leila_money\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"leila_gift\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"ali_total\", \"value\": 71.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 21.0,
+        "original_unit": "dollar",
+        "converted_value": 3088.47,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "leila_money",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "leila_gift",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 7353.5,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ali_total",
+        "original_value": 71.0,
+        "original_unit": "dollar",
+        "converted_value": 10441.97,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ali had ${initial_money}. Leila gave him half of her ${leila_money}. How much does Ali have now?",
+    "templatized_answer": [
+      "Leila gave {leila_money}/2 = ${leila_gift} to Ali.",
+      "Ali now has ${initial_money} + ${leila_gift} = ${ali_total}.",
+      "#### {ali_total}"
+    ],
+    "factual_assignment": {
+      "initial_money": 21.0,
+      "leila_money": 100.0,
+      "leila_gift": 50.0,
+      "ali_total": 71.0
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 3088.47,
+    "leila_money": 14707.0,
+    "leila_gift": 7353.5,
+    "ali_total": 10441.97
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 3088.47\n    leila_money = 14707.0\n    leila_gift = leila_money / 2\n    ali_total = initial_money + leila_gift\n\n    return {\n        \"initial_money\": round(initial_money, 2),\n        \"leila_money\": round(leila_money, 2),\n        \"leila_gift\": round(leila_gift, 2),\n        \"ali_total\": round(ali_total, 2)\n    }\n",
+    "results": {
+      "initial_money": 3088.47,
+      "leila_money": 14707.0,
+      "leila_gift": 7353.5,
+      "ali_total": 10441.97
+    }
+  },
+  "final": {
+    "question": "Ali had 3088.47. Leila gave him half of her 14707.0. How much does Ali have now?",
+    "answer_lines": [
+      "Leila gave 14707.0/2 = 7353.5 to Ali.",
+      "Ali now has 3088.47 + 7353.5 = 10441.97.",
+      "#### 10441.97"
+    ],
+    "final_scalar": 10441.97,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro had 3088.47. Yui gave him half of her 14707.0. How much does Taro have now?",
+    "adapted_answer": [
+      "Yui gave 14707.0/2 = 7353.5 to Taro.",
+      "Taro now has 3088.47 + 7353.5 = 10441.97.",
+      "#### 10441.97"
+    ],
+    "adaptation_notes": "Replaced 'Ali' with 'Taro' and 'Leila' with 'Yui' to give the names a Japanese context."
+  }
+}

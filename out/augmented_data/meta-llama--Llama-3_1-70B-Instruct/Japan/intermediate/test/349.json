@@ -1,0 +1,145 @@
+{
+  "index": 349,
+  "split": "test",
+  "original": {
+    "question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs $25 per week. Treats cost $20 per month. Medicine costs $100 per month. How much money does Madeline spend on her dog per year if there are 4 weeks in a month?",
+    "answer": "Madeline spends$25*4=$<<25*4=100>>100 on food for her dog per month.\nShe spends $100+$20+$100=$<<100+20+100=220>>220 on her dog per month.\nShe will spend $220*12=$<<220*12=2640>>2640 on her dog per year\n#### 2640"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Madeline"
+    ],
+    "notes": "The text contains the name 'Madeline' and the unit 'dollars', which are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "food_cost",
+      "value": 25.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "treats_cost",
+      "value": 20.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "medicine_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_cost",
+      "value": 220.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "yearly_cost",
+      "value": 2640.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"food_cost\", \"value\": 25.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"treats_cost\", \"value\": 20.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"medicine_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_cost\", \"value\": 220.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"yearly_cost\", \"value\": 2640.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "food_cost",
+        "original_value": 25.0,
+        "original_unit": "dollar",
+        "converted_value": 3676.75,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "treats_cost",
+        "original_value": 20.0,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "medicine_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "monthly_cost",
+        "original_value": 220.0,
+        "original_unit": "dollar",
+        "converted_value": 32355.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "yearly_cost",
+        "original_value": 2640.0,
+        "original_unit": "dollar",
+        "converted_value": 388264.8,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs ${food_cost} per week. Treats cost ${treats_cost} per month. Medicine costs ${medicine_cost} per month. How much money does Madeline spend on her dog per year if there are {weeks_in_month} weeks in a month?",
+    "templatized_answer": [
+      "Madeline spends ${food_cost}*{weeks_in_month}=${food_cost}*{weeks_in_month} on food for her dog per month.",
+      "She spends ${medicine_cost}+${treats_cost}+${medicine_cost}=${medicine_cost}+${treats_cost}+${medicine_cost} on her dog per month.",
+      "She will spend (${medicine_cost}+${treats_cost}+${medicine_cost})*12=({medicine_cost}+{treats_cost}+{medicine_cost})*12 on her dog per year",
+      "#### ({medicine_cost}+{treats_cost}+{medicine_cost})*12"
+    ],
+    "factual_assignment": {
+      "food_cost": 25.0,
+      "treats_cost": 20.0,
+      "medicine_cost": 100.0,
+      "weeks_in_month": 4
+    }
+  },
+  "merged_assignment": {
+    "food_cost": 3676.75,
+    "treats_cost": 2941.4,
+    "medicine_cost": 14707.0,
+    "weeks_in_month": 4
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    food_cost = 3676.75\n    treats_cost = 2941.4\n    medicine_cost = 14707.0\n    weeks_in_month = 4\n\n    food_cost_per_month = food_cost * weeks_in_month\n    total_cost_per_month = medicine_cost + treats_cost + medicine_cost\n    total_cost_per_year = total_cost_per_month * 12\n\n    return {\n        \"food_cost\": food_cost,\n        \"treats_cost\": treats_cost,\n        \"medicine_cost\": medicine_cost,\n        \"weeks_in_month\": weeks_in_month,\n        \"food_cost_per_month\": round(food_cost_per_month, 2),\n        \"total_cost_per_month\": round(total_cost_per_month, 2),\n        \"total_cost_per_year\": round(total_cost_per_year, 2)\n    }\n",
+    "results": {
+      "food_cost": 3676.75,
+      "treats_cost": 2941.4,
+      "medicine_cost": 14707.0,
+      "weeks_in_month": 4,
+      "food_cost_per_month": 14707.0,
+      "total_cost_per_month": 32355.4,
+      "total_cost_per_year": 388264.8
+    }
+  },
+  "final": {
+    "question": "Every month, Madeline has to buy food, treats, and medicine for her dog. Food costs 3676.75 yen per week. Treats cost 2941.4 yen per month. Medicine costs 14707.0 yen per month. How much money does Madeline spend on her dog per year if there are 4 weeks in a month?",
+    "answer_lines": [
+      "Madeline spends 3676.75*4=14707.0 on food for her dog per month.",
+      "She spends 14707.0+2941.4+14707.0=32355.4 on her dog per month.",
+      "She will spend 32355.4*12=388264.8 on her dog per year",
+      "#### 388264.8"
+    ],
+    "final_scalar": 388264.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Every month, Yumi has to buy food, treats, and medicine for her dog. Food costs 3676.75 yen per week. Treats cost 2941.4 yen per month. Medicine costs 14707.0 yen per month. How much money does Yumi spend on her dog per year if there are 4 weeks in a month?",
+    "adapted_answer": [
+      "Yumi spends 3676.75*4=14707.0 on food for her dog per month.",
+      "She spends 14707.0+2941.4+14707.0=32355.4 on her dog per month.",
+      "She will spend 32355.4*12=388264.8 on her dog per year",
+      "#### 388264.8"
+    ],
+    "adaptation_notes": "Replaced 'Madeline' with 'Yumi', a common Japanese name."
+  }
+}

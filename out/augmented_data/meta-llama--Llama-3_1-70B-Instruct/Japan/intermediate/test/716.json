@@ -1,0 +1,119 @@
+{
+  "index": 716,
+  "split": "test",
+  "original": {
+    "question": "John makes himself a 6 egg omelet with 2 oz of cheese and an equal amount of ham.  Eggs are 75 calories each.  Cheese is 120 calories per ounce.  Ham is 40 calories per ounce.  How many calories is the omelet?",
+    "answer": "The eggs contributed 6*75=<<6*75=450>>450 calories\nHe eats 2*120=<<2*120=240>>240 calories of cheese\nHe eats 2*40=<<2*40=80>>80 calories of ham\nSo in total he eats 450+240+80=<<450+240+80=770>>770 calories\n#### 770"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "omelet",
+      "oz",
+      "cheese",
+      "ham"
+    ],
+    "notes": "The text contains Western name, food items, and units not commonly associated with Japanese cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cheese_weight",
+      "value": 2.0,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "ham_weight",
+      "value": 2.0,
+      "unit": "ounce",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"unit\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cheese_weight\", \"value\": 2.0, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"ham_weight\", \"value\": 2.0, \"unit\": \"ounce\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cheese_weight",
+        "original_value": 2.0,
+        "original_unit": "ounce",
+        "converted_value": 56.7,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "ham_weight",
+        "original_value": 2.0,
+        "original_unit": "ounce",
+        "converted_value": 56.7,
+        "converted_unit": "gram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John makes himself a {egg_count} egg omelet with {cheese_weight} oz of cheese and an equal amount of ham.  Eggs are {egg_calories} calories each.  Cheese is {cheese_calories} calories per ounce.  Ham is {ham_calories} calories per ounce.  How many calories is the omelet?",
+    "templatized_answer": [
+      "The eggs contributed {egg_count}*{egg_calories}={egg_count}*{egg_calories} calories",
+      "He eats {cheese_weight}*{cheese_calories}={cheese_weight}*{cheese_calories} calories of cheese",
+      "He eats {ham_weight}*{ham_calories}={ham_weight}*{ham_calories} calories of ham",
+      "So in total he eats {egg_count}*{egg_calories}+{cheese_weight}*{cheese_calories}+{ham_weight}*{ham_calories}={egg_count}*{egg_calories}+{cheese_weight}*{cheese_calories}+{ham_weight}*{ham_calories} calories",
+      "#### {egg_count}*{egg_calories}+{cheese_weight}*{cheese_calories}+{ham_weight}*{ham_calories}"
+    ],
+    "factual_assignment": {
+      "egg_count": 6,
+      "cheese_weight": 2.0,
+      "ham_weight": 2.0,
+      "egg_calories": 75,
+      "cheese_calories": 120,
+      "ham_calories": 40
+    }
+  },
+  "merged_assignment": {
+    "egg_count": 6,
+    "cheese_weight": 56.7,
+    "ham_weight": 56.7,
+    "egg_calories": 75,
+    "cheese_calories": 120,
+    "ham_calories": 40
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"egg_count\": 6,\n        \"cheese_weight\": 56.7,\n        \"ham_weight\": 56.7,\n        \"egg_calories\": 75,\n        \"cheese_calories\": 120,\n        \"ham_calories\": 40\n    }\n\n    recompute_dict = {}\n\n    recompute_dict[\"egg_count\"] = factual_assignment[\"egg_count\"]\n    recompute_dict[\"cheese_weight\"] = factual_assignment[\"cheese_weight\"]\n    recompute_dict[\"ham_weight\"] = factual_assignment[\"ham_weight\"]\n    recompute_dict[\"egg_calories\"] = factual_assignment[\"egg_calories\"]\n    recompute_dict[\"cheese_calories\"] = factual_assignment[\"cheese_calories\"]\n    recompute_dict[\"ham_calories\"] = factual_assignment[\"ham_calories\"]\n\n    recompute_dict[\"egg_count*egg_calories\"] = round(recompute_dict[\"egg_count\"] * recompute_dict[\"egg_calories\"], 2)\n    recompute_dict[\"cheese_weight*cheese_calories\"] = round(recompute_dict[\"cheese_weight\"] * recompute_dict[\"cheese_calories\"], 2)\n    recompute_dict[\"ham_weight*ham_calories\"] = round(recompute_dict[\"ham_weight\"] * recompute_dict[\"ham_calories\"], 2)\n\n    recompute_dict[\"egg_count*egg_calories+cheese_weight*cheese_calories+ham_weight*ham_calories\"] = round(\n        recompute_dict[\"egg_count*egg_calories\"] + recompute_dict[\"cheese_weight*cheese_calories\"] + recompute_dict[\"ham_weight*ham_calories\"], 2)\n\n    return recompute_dict\n\nprint(recompute())\n",
+    "results": {
+      "egg_count": 6,
+      "cheese_weight": 56.7,
+      "ham_weight": 56.7,
+      "egg_calories": 75,
+      "cheese_calories": 120,
+      "ham_calories": 40,
+      "egg_count*egg_calories": 450,
+      "cheese_weight*cheese_calories": 6804.0,
+      "ham_weight*ham_calories": 2268.0,
+      "egg_count*egg_calories+cheese_weight*cheese_calories+ham_weight*ham_calories": 9522.0
+    }
+  },
+  "final": {
+    "question": "John makes himself a 6 egg omelet with 56.7g of cheese and an equal amount of ham.  Eggs are 75 calories each.  Cheese is 120 calories per gram.  Ham is 40 calories per gram.  How many calories is the omelet?",
+    "answer_lines": [
+      "The eggs contributed 6*75=450 calories",
+      "He eats 56.7*120=6804 calories of cheese",
+      "He eats 56.7*40=2268 calories of ham",
+      "So in total he eats 450+6804+2268=9522 calories",
+      "#### 9522"
+    ],
+    "final_scalar": 9522.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro makes himself a 6 egg tamagoyaki with 56.7g of cheese and an equal amount of tonkatsu.  Eggs are 75 calories each.  Cheese is 120 calories per gram.  Tonkatsu is 40 calories per gram.  How many calories is the tamagoyaki?",
+    "adapted_answer": [
+      "The eggs contributed 6*75=450 calories",
+      "He eats 56.7*120=6804 calories of cheese",
+      "He eats 56.7*40=2268 calories of tonkatsu",
+      "So in total he eats 450+6804+2268=9522 calories",
+      "#### 9522"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro', 'omelet' with 'tamagoyaki', 'cheese' remains the same, 'ham' with 'tonkatsu'."
+  }
+}

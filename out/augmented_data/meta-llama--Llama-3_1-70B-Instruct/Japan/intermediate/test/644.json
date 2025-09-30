@@ -1,0 +1,128 @@
+{
+  "index": 644,
+  "split": "test",
+  "original": {
+    "question": "Steve is 60 years old. His wife is 4 years older than him. Their son is currently half as old as his mom and their son's wife is 3 years younger than her husband. How old is Steve's son's wife?",
+    "answer": "Steve's wife is 60+4=<<60+4=64>>64 years old.\nSteve's son is 64/2=<<64/2=32>>32 years old.\nHis wife is 32-3=<<32-3=29>>29 years old.\n#### 29"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Steve"
+    ],
+    "notes": "The name 'Steve' is culturally specific to Western regions."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "steve_age",
+      "value": 60.0,
+      "unit": "year",
+      "context": "question"
+    },
+    {
+      "variable": "steve_wife_age",
+      "value": 64.0,
+      "unit": "year",
+      "context": "answer"
+    },
+    {
+      "variable": "steve_son_age",
+      "value": 32.0,
+      "unit": "year",
+      "context": "answer"
+    },
+    {
+      "variable": "steve_son_wife_age",
+      "value": 29.0,
+      "unit": "year",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"year\": {\"factor\": 1, \"unit\": \"year\"},\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            factor = conversions[original_unit][\"factor\"]\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * factor, 2)\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"steve_age\", \"value\": 60.0, \"unit\": \"year\", \"context\": \"question\"},\n    {\"variable\": \"steve_wife_age\", \"value\": 64.0, \"unit\": \"year\", \"context\": \"answer\"},\n    {\"variable\": \"steve_son_age\", \"value\": 32.0, \"unit\": \"year\", \"context\": \"answer\"},\n    {\"variable\": \"steve_son_wife_age\", \"value\": 29.0, \"unit\": \"year\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "steve_age",
+        "original_value": 60.0,
+        "original_unit": "year",
+        "converted_value": 60.0,
+        "converted_unit": "year"
+      },
+      {
+        "variable": "steve_wife_age",
+        "original_value": 64.0,
+        "original_unit": "year",
+        "converted_value": 64.0,
+        "converted_unit": "year"
+      },
+      {
+        "variable": "steve_son_age",
+        "original_value": 32.0,
+        "original_unit": "year",
+        "converted_value": 32.0,
+        "converted_unit": "year"
+      },
+      {
+        "variable": "steve_son_wife_age",
+        "original_value": 29.0,
+        "original_unit": "year",
+        "converted_value": 29.0,
+        "converted_unit": "year"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Steve is {steve_age} years old. His wife is 4 years older than him. Their son is currently half as old as his mom and their son's wife is 3 years younger than her husband. How old is Steve's son's wife?",
+    "templatized_answer": [
+      "Steve's wife is {steve_age}+4={steve_age+4} years old.",
+      "Steve's son is {steve_age+4}/2={steve_age/2+2} years old.",
+      "His wife is {steve_age/2+2}-3={steve_age/2-1} years old.",
+      "#### {steve_age/2-1}"
+    ],
+    "factual_assignment": {
+      "steve_age": 60.0,
+      "steve_age+4": 64.0,
+      "steve_age/2+2": 32.0,
+      "steve_age/2-1": 29.0
+    }
+  },
+  "merged_assignment": {
+    "steve_age": 60.0,
+    "steve_age+4": 64.0,
+    "steve_age/2+2": 32.0,
+    "steve_age/2-1": 29.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    steve_age = 60.0\n    steve_age_plus_4 = steve_age + 4\n    steve_age_plus_4 = round(steve_age_plus_4, 2)\n    steve_age_div_2_plus_2 = steve_age / 2 + 2\n    steve_age_div_2_plus_2 = round(steve_age_div_2_plus_2, 2)\n    steve_age_div_2_minus_1 = steve_age / 2 - 1\n    steve_age_div_2_minus_1 = round(steve_age_div_2_minus_1, 2)\n\n    return {\n        \"steve_age\": steve_age,\n        \"steve_age+4\": steve_age_plus_4,\n        \"steve_age/2+2\": steve_age_div_2_plus_2,\n        \"steve_age/2-1\": steve_age_div_2_minus_1\n    }\n\nprint(recompute())\n",
+    "results": {
+      "steve_age": 60.0,
+      "steve_age+4": 64.0,
+      "steve_age/2+2": 32.0,
+      "steve_age/2-1": 29.0
+    }
+  },
+  "final": {
+    "question": "Steve is 60 years old. His wife is 4 years older than him. Their son is currently half as old as his mom and their son's wife is 3 years younger than her husband. How old is Steve's son's wife?",
+    "answer_lines": [
+      "Steve's wife is 60+4=64 years old.",
+      "Steve's son is 64/2=32 years old.",
+      "His wife is 32-3=29 years old.",
+      "#### 29"
+    ],
+    "final_scalar": 29.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro is 60 years old. His wife is 4 years older than him. Their son is currently half as old as his mom and their son's wife is 3 years younger than her husband. How old is Taro's son's wife?",
+    "adapted_answer": [
+      "Taro's wife is 60+4=64 years old.",
+      "Taro's son is 64/2=32 years old.",
+      "His wife is 32-3=29 years old.",
+      "#### 29"
+    ],
+    "adaptation_notes": "Replaced 'Steve' with 'Taro' to give the name a Japanese context."
+  }
+}

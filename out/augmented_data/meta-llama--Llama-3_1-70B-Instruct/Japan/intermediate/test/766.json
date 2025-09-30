@@ -1,0 +1,127 @@
+{
+  "index": 766,
+  "split": "test",
+  "original": {
+    "question": "Marissa bought a ball at the store for $20. If she had $80 on her and used the rest of the money to buy her brother Jimmy, candy bars sold at $5 each, how many candy bars did Marissa buy for Jimmy?",
+    "answer": "If Marissa had $80 on her and used $20 to buy a ball, she remained with $80-$20=$<<80-20=60>>60\nIf she used the rest of the money to buy candy bars for her brother sold ad $5 each, she bought $60/$5=<<60/5=12>>12 candy bars.\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Marissa",
+      "Jimmy"
+    ],
+    "notes": "The text contains Western names and a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_money",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ball_cost",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_bar_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_money",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_money\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ball_cost\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_bar_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_money\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_money",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 11765.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ball_cost",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "candy_bar_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "remaining_money",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 8824.2,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Marissa bought a ball at the store for ${ball_cost}. If she had ${initial_money} on her and used the rest of the money to buy her brother Jimmy, candy bars sold at ${candy_bar_cost} each, how many candy bars did Marissa buy for Jimmy?",
+    "templatized_answer": [
+      "If Marissa had ${initial_money} on her and used ${ball_cost} to buy a ball, she remained with ${initial_money}-${ball_cost}=${{initial_money-ball_cost}}",
+      "If she used the rest of the money to buy candy bars for her brother sold at ${candy_bar_cost} each, she bought ${initial_money}-${ball_cost}/${candy_bar_cost}=#### {candy_bars_bought}"
+    ],
+    "factual_assignment": {
+      "initial_money": 80,
+      "ball_cost": 20,
+      "candy_bar_cost": 5,
+      "candy_bars_bought": 12
+    }
+  },
+  "merged_assignment": {
+    "initial_money": 11765.6,
+    "ball_cost": 2941.4,
+    "candy_bar_cost": 735.35,
+    "candy_bars_bought": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_money = 11765.6\n    ball_cost = 2941.4\n    candy_bar_cost = 735.35\n    candy_bars_bought = round((initial_money - ball_cost) / candy_bar_cost)\n\n    recomputed_values = {\n        \"initial_money\": initial_money,\n        \"ball_cost\": ball_cost,\n        \"candy_bar_cost\": candy_bar_cost,\n        \"candy_bars_bought\": candy_bars_bought,\n        \"initial_money-ball_cost\": round(initial_money - ball_cost, 2)\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "initial_money": 11765.6,
+      "ball_cost": 2941.4,
+      "candy_bar_cost": 735.35,
+      "candy_bars_bought": 12,
+      "initial_money-ball_cost": 8824.2
+    }
+  },
+  "final": {
+    "question": "Marissa bought a ball at the store for 2941.4 yen. If she had 11765.6 yen on her and used the rest of the money to buy her brother Jimmy, candy bars sold at 735.35 yen each, how many candy bars did Marissa buy for Jimmy?",
+    "answer_lines": [
+      "If Marissa had 11765.6 yen on her and used 2941.4 yen to buy a ball, she remained with 11765.6-2941.4=8824.2 yen",
+      "If she used the rest of the money to buy candy bars for her brother sold at 735.35 yen each, she bought 8824.2/735.35=12 candy bars.",
+      "#### 12"
+    ],
+    "final_scalar": 12,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui bought a ball at the store for 2941.4 yen. If she had 11765.6 yen on her and used the rest of the money to buy her brother Taro, manju sold at 735.35 yen each, how many manju did Yui buy for Taro?",
+    "adapted_answer": [
+      "If Yui had 11765.6 yen on her and used 2941.4 yen to buy a ball, she remained with 11765.6-2941.4=8824.2 yen",
+      "If she used the rest of the money to buy manju for her brother sold at 735.35 yen each, she bought 8824.2/735.35=12 manju.",
+      "#### 12"
+    ],
+    "adaptation_notes": "Replaced 'Marissa' with 'Yui', 'Jimmy' with 'Taro', and 'candy bars' with 'manju'."
+  }
+}

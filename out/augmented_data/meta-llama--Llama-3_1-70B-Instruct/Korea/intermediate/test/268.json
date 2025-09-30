@@ -1,0 +1,150 @@
+{
+  "index": 268,
+  "split": "test",
+  "original": {
+    "question": "A real estate agent has spent $5 on each newspaper ad and spent $75 on each television ad. He bought 50 newspaper ads and 15 television ads. How much did the real estate agent spend on buying all the ads?",
+    "answer": "He spent a total of $5 x 50 = $<<5*50=250>>250 for the newspaper ads.\nHe spent a total of $75 x 15 = $<<75*15=1125>>1125 for the television ads.\nTherefore, the real estate agent spent $250 + $1125 = $<<250+1125=1375>>1375 on buying all the ads.\n#### 1375"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "newspaper_ad_cost",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "television_ad_cost",
+      "value": 75,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "newspaper_ad_total",
+      "value": 250,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "television_ad_total",
+      "value": 1125,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_ad_cost",
+      "value": 1375,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"newspaper_ad_cost\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"television_ad_cost\", \"value\": 75, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"newspaper_ad_total\", \"value\": 250, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"television_ad_total\", \"value\": 1125, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_ad_cost\", \"value\": 1375, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "newspaper_ad_cost",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 6947.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "television_ad_cost",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 104212.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "newspaper_ad_total",
+        "original_value": 250,
+        "original_unit": "dollar",
+        "converted_value": 347375.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "television_ad_total",
+        "original_value": 1125,
+        "original_unit": "dollar",
+        "converted_value": 1563187.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_ad_cost",
+        "original_value": 1375,
+        "original_unit": "dollar",
+        "converted_value": 1910562.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A real estate agent has spent ${newspaper_ad_cost} on each newspaper ad and spent ${television_ad_cost} on each television ad. He bought {newspaper_ad_count} newspaper ads and {television_ad_count} television ads. How much did the real estate agent spend on buying all the ads?",
+    "templatized_answer": [
+      "He spent a total of ${newspaper_ad_cost} x {newspaper_ad_count} = ${newspaper_ad_total} for the newspaper ads.",
+      "He spent a total of ${television_ad_cost} x {television_ad_count} = ${television_ad_total} for the television ads.",
+      "Therefore, the real estate agent spent ${newspaper_ad_total} + ${television_ad_total} = ${total_ad_cost} on buying all the ads.",
+      "#### {total_ad_cost}"
+    ],
+    "factual_assignment": {
+      "newspaper_ad_cost": 5,
+      "television_ad_cost": 75,
+      "newspaper_ad_total": 250,
+      "television_ad_total": 1125,
+      "total_ad_cost": 1375,
+      "newspaper_ad_count": 50,
+      "television_ad_count": 15
+    }
+  },
+  "merged_assignment": {
+    "newspaper_ad_cost": 6947.5,
+    "television_ad_cost": 104212.5,
+    "newspaper_ad_total": 347375.0,
+    "television_ad_total": 1563187.5,
+    "total_ad_cost": 1910562.5,
+    "newspaper_ad_count": 50,
+    "television_ad_count": 15
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    newspaper_ad_cost = 6947.50\n    television_ad_cost = 104212.50\n    newspaper_ad_count = 50\n    television_ad_count = 15\n\n    newspaper_ad_total = round(newspaper_ad_cost * newspaper_ad_count, 2)\n    television_ad_total = round(television_ad_cost * television_ad_count, 2)\n    total_ad_cost = round(newspaper_ad_total + television_ad_total, 2)\n\n    return {\n        \"newspaper_ad_cost\": newspaper_ad_cost,\n        \"television_ad_cost\": television_ad_cost,\n        \"newspaper_ad_total\": newspaper_ad_total,\n        \"television_ad_total\": television_ad_total,\n        \"total_ad_cost\": total_ad_cost,\n        \"newspaper_ad_count\": newspaper_ad_count,\n        \"television_ad_count\": television_ad_count\n    }\n",
+    "results": {
+      "newspaper_ad_cost": 6947.5,
+      "television_ad_cost": 104212.5,
+      "newspaper_ad_total": 347375.0,
+      "television_ad_total": 1563187.5,
+      "total_ad_cost": 1910562.5,
+      "newspaper_ad_count": 50,
+      "television_ad_count": 15
+    }
+  },
+  "final": {
+    "question": "A real estate agent has spent 6947.5 won on each newspaper ad and spent 104212.5 won on each television ad. He bought 50 newspaper ads and 15 television ads. How much did the real estate agent spend on buying all the ads?",
+    "answer_lines": [
+      "He spent a total of 6947.5 x 50 = 347375.0 for the newspaper ads.",
+      "He spent a total of 104212.5 x 15 = 1563187.5 for the television ads.",
+      "Therefore, the real estate agent spent 347375.0 + 1563187.5 = 1910562.5 on buying all the ads.",
+      "#### 1910562.5"
+    ],
+    "final_scalar": 1910562.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A real estate agent has spent 6947.5 won on each newspaper ad and spent 104212.5 won on each television ad. He bought 50 newspaper ads and 15 television ads. How much did the real estate agent spend on buying all the ads?",
+    "adapted_answer": [
+      "He spent a total of 6947.5 x 50 = 347375.0 for the newspaper ads.",
+      "He spent a total of 104212.5 x 15 = 1563187.5 for the television ads.",
+      "Therefore, the real estate agent spent 347375.0 + 1563187.5 = 1910562.5 on buying all the ads.",
+      "#### 1910562.5"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

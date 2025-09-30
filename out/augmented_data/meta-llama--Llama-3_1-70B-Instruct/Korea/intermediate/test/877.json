@@ -1,0 +1,132 @@
+{
+  "index": 877,
+  "split": "test",
+  "original": {
+    "question": "To make a profit of $2000, Isaias has to sell the chickens he planned to take to the market from his farm at $50 per chicken. If Isaias has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "answer": "Isaias plans to sell 3/5*300 = <<3/5*300=180>>180 chickens from his farm.\nTo make his profit, Isaias sells all the chicken he took to the market for $50*180 = $<<50*180=9000>>9000\nThe price at which Isaias bought the chicken is $9000-$2000 = $<<9000-2000=7000>>7000.\n#### 7000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Isaias",
+      "dollars"
+    ],
+    "notes": "The name 'Isaias' is culturally specific to regions other than Korea, and the unit 'dollars' is also non-Korean."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "profit",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "chicken_price",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_sales",
+      "value": 9000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "purchase_price",
+      "value": 7000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"profit\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"chicken_price\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_sales\", \"value\": 9000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"purchase_price\", \"value\": 7000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "profit",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 2779000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "chicken_price",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 69475.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_sales",
+        "original_value": 9000.0,
+        "original_unit": "dollar",
+        "converted_value": 12505500.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "purchase_price",
+        "original_value": 7000.0,
+        "original_unit": "dollar",
+        "converted_value": 9726500.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "To make a profit of ${profit}, Isaias has to sell the chickens he planned to take to the market from his farm at ${chicken_price} per chicken. If Isaias has {number_of_chickens} chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "templatized_answer": [
+      "Isaias plans to sell 3/5*{number_of_chickens} = {number_of_chickens_to_sell} chickens from his farm.",
+      "To make his profit, Isaias sells all the chicken he took to the market for ${chicken_price}*{number_of_chickens_to_sell} = ${total_sales}",
+      "The price at which Isaias bought the chicken is ${total_sales}-${profit} = ${purchase_price}.",
+      "#### {purchase_price}"
+    ],
+    "factual_assignment": {
+      "profit": 2000.0,
+      "chicken_price": 50.0,
+      "total_sales": 9000.0,
+      "purchase_price": 7000.0,
+      "number_of_chickens": 300,
+      "number_of_chickens_to_sell": 180
+    }
+  },
+  "merged_assignment": {
+    "profit": 2779000.0,
+    "chicken_price": 69475.0,
+    "total_sales": 12505500.0,
+    "purchase_price": 9726500.0,
+    "number_of_chickens": 300,
+    "number_of_chickens_to_sell": 180
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"profit\": 2779000.0,\n        \"chicken_price\": 69475.0,\n        \"total_sales\": 12505500.0,\n        \"purchase_price\": 9726500.0,\n        \"number_of_chickens\": 300,\n        \"number_of_chickens_to_sell\": 180\n    }\n\n    recomputed_values = {}\n\n    recomputed_values[\"number_of_chickens_to_sell\"] = factual_assignment[\"number_of_chickens\"] * 3 / 5\n    recomputed_values[\"total_sales\"] = factual_assignment[\"chicken_price\"] * recomputed_values[\"number_of_chickens_to_sell\"]\n    recomputed_values[\"purchase_price\"] = recomputed_values[\"total_sales\"] - factual_assignment[\"profit\"]\n\n    recomputed_values[\"number_of_chickens_to_sell\"] = round(recomputed_values[\"number_of_chickens_to_sell\"])\n    recomputed_values[\"total_sales\"] = round(recomputed_values[\"total_sales\"], 2)\n    recomputed_values[\"purchase_price\"] = round(recomputed_values[\"purchase_price\"], 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "number_of_chickens_to_sell": 180,
+      "total_sales": 12505500.0,
+      "purchase_price": 9726500.0
+    }
+  },
+  "final": {
+    "question": "To make a profit of 2779000 won, Isaias has to sell the chickens he planned to take to the market from his farm at 69475 won per chicken. If Isaias has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Isaias buy the chicken he took to the market for sale?",
+    "answer_lines": [
+      "Isaias plans to sell 3/5*300 = 180 chickens from his farm.",
+      "To make his profit, Isaias sells all the chicken he took to the market for 69475*180 = 12505500 won",
+      "The price at which Isaias bought the chicken is 12505500-2779000 = 9726500 won.",
+      "#### 9726500"
+    ],
+    "final_scalar": 9726500,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "To make a profit of 2779000 won, Min-soo has to sell the chickens he planned to take to the market from his farm at 69475 won per chicken. If Min-soo has 300 chickens on his farm and plans to sell 3/5 of them, for how much money did Min-soo buy the chicken he took to the market for sale?",
+    "adapted_answer": [
+      "Min-soo plans to sell 3/5*300 = 180 chickens from his farm.",
+      "To make his profit, Min-soo sells all the chicken he took to the market for 69475*180 = 12505500 won",
+      "The price at which Min-soo bought the chicken is 12505500-2779000 = 9726500 won.",
+      "#### 9726500"
+    ],
+    "adaptation_notes": "Replaced 'Isaias' with 'Min-soo', a common Korean name."
+  }
+}

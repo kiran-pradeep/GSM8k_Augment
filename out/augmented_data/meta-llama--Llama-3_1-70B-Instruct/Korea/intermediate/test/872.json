@@ -1,0 +1,195 @@
+{
+  "index": 872,
+  "split": "test",
+  "original": {
+    "question": "Seven bottles of soda cost $21.00 while 4 bottles of water cost $8. If David wants to buy 3 bottles of soda and 2 bottles of water, how much will that cost?",
+    "answer": "One bottle of soda costs $21.00/7 = $<<21/7=3.00>>3.00.\nThree bottles of soda cost $3.00 x 3 = $<<3*3=9.00>>9.00.\nOne bottle of water costs $8.00/4 = $<<8/4=2.00>>2.00.\nTwo bottles of water cost $2.00x 2 = $<<2*2=4.00>>4.00.\nTherefore, 3 bottles of soda and 2 bottles of water cost $9.00 + $4.00 = $13.00.\n#### 13"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "soda"
+    ],
+    "notes": "The text contains 'dollars' which is a unit of currency commonly used in the US, and 'soda' which is a beverage commonly consumed in Western cultures."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "soda_cost",
+      "value": 21.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "water_cost",
+      "value": 8.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "soda_price",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "soda_total",
+      "value": 9.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "water_price",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "water_total",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 13.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"soda_cost\", \"value\": 21.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"water_cost\", \"value\": 8.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"soda_price\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"soda_total\", \"value\": 9.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"water_price\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"water_total\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 13.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "soda_cost",
+        "original_value": 21.0,
+        "original_unit": "dollar",
+        "converted_value": 29179.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "water_cost",
+        "original_value": 8.0,
+        "original_unit": "dollar",
+        "converted_value": 11116.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "soda_price",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "soda_total",
+        "original_value": 9.0,
+        "original_unit": "dollar",
+        "converted_value": 12505.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "water_price",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "water_total",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 13.0,
+        "original_unit": "dollar",
+        "converted_value": 18063.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Seven bottles of soda cost ${soda_cost} while 4 bottles of water cost ${water_cost}. If David wants to buy 3 bottles of soda and 2 bottles of water, how much will that cost?",
+    "templatized_answer": [
+      "One bottle of soda costs ${soda_cost}/{soda_bottles} = ${soda_price}.",
+      "{soda_bottles_wanted} bottles of soda cost ${soda_price} x {soda_bottles_wanted} = ${soda_total}.",
+      "One bottle of water costs ${water_cost}/{water_bottles} = ${water_price}.",
+      "{water_bottles_wanted} bottles of water cost ${water_price}x {water_bottles_wanted} = ${water_total}.",
+      "Therefore, {soda_bottles_wanted} bottles of soda and {water_bottles_wanted} bottles of water cost ${soda_total} + ${water_total} = ${total_cost}.",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "soda_cost": 21.0,
+      "water_cost": 8.0,
+      "soda_price": 3.0,
+      "soda_total": 9.0,
+      "water_price": 2.0,
+      "water_total": 4.0,
+      "total_cost": 13.0,
+      "soda_bottles": 7,
+      "soda_bottles_wanted": 3,
+      "water_bottles": 4,
+      "water_bottles_wanted": 2
+    }
+  },
+  "merged_assignment": {
+    "soda_cost": 29179.5,
+    "water_cost": 11116.0,
+    "soda_price": 4168.5,
+    "soda_total": 12505.5,
+    "water_price": 2779.0,
+    "water_total": 5558.0,
+    "total_cost": 18063.5,
+    "soda_bottles": 7,
+    "soda_bottles_wanted": 3,
+    "water_bottles": 4,
+    "water_bottles_wanted": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    soda_cost = 29179.5\n    water_cost = 11116.0\n    soda_bottles = 7\n    soda_bottles_wanted = 3\n    water_bottles = 4\n    water_bottles_wanted = 2\n\n    soda_price = round(soda_cost / soda_bottles, 2)\n    soda_total = round(soda_price * soda_bottles_wanted, 2)\n    water_price = round(water_cost / water_bottles, 2)\n    water_total = round(water_price * water_bottles_wanted, 2)\n    total_cost = round(soda_total + water_total, 2)\n\n    return {\n        \"soda_cost\": soda_cost,\n        \"water_cost\": water_cost,\n        \"soda_price\": soda_price,\n        \"soda_total\": soda_total,\n        \"water_price\": water_price,\n        \"water_total\": water_total,\n        \"total_cost\": total_cost,\n        \"soda_bottles\": soda_bottles,\n        \"soda_bottles_wanted\": soda_bottles_wanted,\n        \"water_bottles\": water_bottles,\n        \"water_bottles_wanted\": water_bottles_wanted\n    }\n",
+    "results": {
+      "soda_cost": 29179.5,
+      "water_cost": 11116.0,
+      "soda_price": 4168.5,
+      "soda_total": 12505.5,
+      "water_price": 2779.0,
+      "water_total": 5558.0,
+      "total_cost": 18063.5,
+      "soda_bottles": 7,
+      "soda_bottles_wanted": 3,
+      "water_bottles": 4,
+      "water_bottles_wanted": 2
+    }
+  },
+  "final": {
+    "question": "Seven bottles of soda cost 29179.5 won while 4 bottles of water cost 11116.0 won. If David wants to buy 3 bottles of soda and 2 bottles of water, how much will that cost?",
+    "answer_lines": [
+      "One bottle of soda costs 29179.5/7 = 4168.5.",
+      "3 bottles of soda cost 4168.5 x 3 = 12505.5.",
+      "One bottle of water costs 11116.0/4 = 2779.0.",
+      "2 bottles of water cost 2779.0 x 2 = 5558.0.",
+      "Therefore, 3 bottles of soda and 2 bottles of water cost 12505.5 + 5558.0 = 18063.5.",
+      "#### 18063.5"
+    ],
+    "final_scalar": 18063.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Seven bottles of sikhye cost 29179.5 won while 4 bottles of sujeonggwa cost 11116.0 won. If David wants to buy 3 bottles of sikhye and 2 bottles of sujeonggwa, how much will that cost?",
+    "adapted_answer": [
+      "One bottle of sikhye costs 29179.5/7 = 4168.5.",
+      "3 bottles of sikhye cost 4168.5 x 3 = 12505.5.",
+      "One bottle of sujeonggwa costs 11116.0/4 = 2779.0.",
+      "2 bottles of sujeonggwa cost 2779.0 x 2 = 5558.0.",
+      "Therefore, 3 bottles of sikhye and 2 bottles of sujeonggwa cost 12505.5 + 5558.0 = 18063.5.",
+      "#### 18063.5"
+    ],
+    "adaptation_notes": "Replaced 'soda' with 'sikhye' (a traditional Korean sweet drink) and left other entities unchanged as they were not detected as non-Korean."
+  }
+}

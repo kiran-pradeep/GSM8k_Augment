@@ -1,0 +1,114 @@
+{
+  "index": 288,
+  "split": "test",
+  "original": {
+    "question": "A landscaping company is delivering flagstones to a customer’s yard. Each flagstone weighs 75 pounds. If the delivery trucks can carry a total weight of 2000 pounds, how many trucks will be needed to transport 80 flagstones in one trip?",
+    "answer": "The 80 flagstones weight 75 * 80 = <<75*80=6000>>6000 pounds.\nThus, the landscaping company will need 6000 / 2000 = <<6000/2000=3>>3 trucks to transport the flagstones in one trip.\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "pounds"
+    ],
+    "notes": "The unit 'pounds' is commonly used in the United States and other Western countries, but not in Japan, where the metric system is primarily used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "flagstone_weight",
+      "value": 75.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "truck_capacity",
+      "value": 2000.0,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "total_weight",
+      "value": 6000.0,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"yen\", 147.07),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"flagstone_weight\", \"value\": 75.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"truck_capacity\", \"value\": 2000.0, \"unit\": \"pound\", \"context\": \"question\"},\n    {\"variable\": \"total_weight\", \"value\": 6000.0, \"unit\": \"pound\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "flagstone_weight",
+        "original_value": 75.0,
+        "original_unit": "pound",
+        "converted_value": 34.02,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "truck_capacity",
+        "original_value": 2000.0,
+        "original_unit": "pound",
+        "converted_value": 907.18,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "total_weight",
+        "original_value": 6000.0,
+        "original_unit": "pound",
+        "converted_value": 2721.55,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A landscaping company is delivering flagstones to a customer’s yard. Each flagstone weighs {flagstone_weight} pounds. If the delivery trucks can carry a total weight of {truck_capacity} pounds, how many trucks will be needed to transport {number_of_flagstones} flagstones in one trip?",
+    "templatized_answer": [
+      "The {number_of_flagstones} flagstones weight {flagstone_weight} * {number_of_flagstones} = {total_weight} pounds.",
+      "Thus, the landscaping company will need {total_weight} / {truck_capacity} = {number_of_trucks} trucks to transport the flagstones in one trip.",
+      "#### {number_of_trucks}"
+    ],
+    "factual_assignment": {
+      "flagstone_weight": 75.0,
+      "truck_capacity": 2000.0,
+      "total_weight": 6000.0,
+      "number_of_flagstones": 80,
+      "number_of_trucks": 3
+    }
+  },
+  "merged_assignment": {
+    "flagstone_weight": 34.02,
+    "truck_capacity": 907.18,
+    "total_weight": 2721.55,
+    "number_of_flagstones": 80,
+    "number_of_trucks": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    flagstone_weight = 34.02  # kg\n    truck_capacity = 907.18  # kg\n    number_of_flagstones = 80\n\n    # Recompute total weight\n    total_weight = flagstone_weight * number_of_flagstones\n\n    # Recompute number of trucks\n    number_of_trucks = round(total_weight / truck_capacity + 0.5)\n\n    return {\n        \"flagstone_weight\": flagstone_weight,\n        \"truck_capacity\": truck_capacity,\n        \"total_weight\": round(total_weight, 2),\n        \"number_of_flagstones\": number_of_flagstones,\n        \"number_of_trucks\": number_of_trucks\n    }\n",
+    "results": {
+      "flagstone_weight": 34.02,
+      "truck_capacity": 907.18,
+      "total_weight": 2721.6,
+      "number_of_flagstones": 80,
+      "number_of_trucks": 4
+    }
+  },
+  "final": {
+    "question": "A landscaping company is delivering flagstones to a customer’s yard. Each flagstone weighs 34.02 kilograms. If the delivery trucks can carry a total weight of 907.18 kilograms, how many trucks will be needed to transport 80 flagstones in one trip?",
+    "answer_lines": [
+      "The 80 flagstones weight 34.02 * 80 = 2721.6 kilograms.",
+      "Thus, the landscaping company will need 2721.6 / 907.18 = 3 trucks to transport the flagstones in one trip.",
+      "#### 3"
+    ],
+    "final_scalar": 3,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A Japanese gardening company is delivering ishi-ita to a customer’s yard. Each ishi-ita weighs 34.02 kilograms. If the delivery trucks can carry a total weight of 907.18 kilograms, how many trucks will be needed to transport 80 ishi-ita in one trip?",
+    "adapted_answer": [
+      "The 80 ishi-ita weigh 34.02 * 80 = 2721.6 kilograms.",
+      "Thus, the Japanese gardening company will need 2721.6 / 907.18 = 3 trucks to transport the ishi-ita in one trip."
+    ],
+    "adaptation_notes": "Replaced 'flagstones' with 'ishi-ita' (Japanese term for flagstones or stone slabs) and 'landscaping company' with 'Japanese gardening company'."
+  }
+}

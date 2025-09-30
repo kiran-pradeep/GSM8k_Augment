@@ -1,0 +1,117 @@
+{
+  "index": 151,
+  "split": "test",
+  "original": {
+    "question": "Shawnda decides that her neighborhood kids could really use a bike inflation service. She decides the best way to charge is by the tire. Each tire costs 25 cents to inflate. On the first day, 5 people on bicycles came by to get both tires inflated. 3 people came by to get all their tricycle tires inflated. Finally, one person actually came by on a unicycle. How many dollars did she make that day?",
+    "answer": "There were 10 bike tires to fill up because 2 times 5 equals <<2*5=10>>10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals <<3*3=9>>9.\nThere was one unicycle tire to fill up because 1 times 1 equals 1.\nThere were 20 total tires to fill up because 10 plus 9 plus 1 equals <<10+9+1=20>>20.\nShe made $5 because 20 times .25 equals <<20*.25=5>>5.\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tire_inflation_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tire_inflation_cost\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tire_inflation_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 347.38,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 6947.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Shawnda decides that her neighborhood kids could really use a bike inflation service. She decides the best way to charge is by the tire. Each tire costs {tire_inflation_cost} dollars to inflate. On the first day, {number_of_bicycles} people on bicycles came by to get both tires inflated. {number_of_tricycles} people came by to get all their tricycle tires inflated. Finally, one person actually came by on a unicycle. How many dollars did she make that day?",
+    "templatized_answer": [
+      "There were {number_of_bicycles} times 2 equals {number_of_bicycle_tires} bike tires to fill up because {number_of_bicycles} times 2 equals {number_of_bicycle_tires}.",
+      "There were {number_of_tricycles} times 3 equals {number_of_tricycle_tires} tricycle tires to fill up because {number_of_tricycles} times 3 equals {number_of_tricycle_tires}.",
+      "There was one unicycle tire to fill up because 1 times 1 equals 1.",
+      "There were {number_of_bicycle_tires} plus {number_of_tricycle_tires} plus 1 equals {total_tires} total tires to fill up because {number_of_bicycle_tires} plus {number_of_tricycle_tires} plus 1 equals {total_tires}.",
+      "She made {total_earnings} dollars because {total_tires} times {tire_inflation_cost} equals {total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "tire_inflation_cost": 0.25,
+      "total_earnings": 5,
+      "number_of_bicycles": 5,
+      "number_of_bicycle_tires": 10,
+      "number_of_tricycles": 3,
+      "number_of_tricycle_tires": 9,
+      "total_tires": 20
+    }
+  },
+  "merged_assignment": {
+    "tire_inflation_cost": 347.38,
+    "total_earnings": 6947.5,
+    "number_of_bicycles": 5,
+    "number_of_bicycle_tires": 10,
+    "number_of_tricycles": 3,
+    "number_of_tricycle_tires": 9,
+    "total_tires": 20
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tire_inflation_cost = 347.38\n    number_of_bicycles = 5\n    number_of_tricycles = 3\n\n    number_of_bicycle_tires = number_of_bicycles * 2\n    number_of_tricycle_tires = number_of_tricycles * 3\n    total_tires = number_of_bicycle_tires + number_of_tricycle_tires + 1\n    total_earnings = round(total_tires * tire_inflation_cost, 2)\n\n    return {\n        \"tire_inflation_cost\": tire_inflation_cost,\n        \"number_of_bicycles\": number_of_bicycles,\n        \"number_of_bicycle_tires\": number_of_bicycle_tires,\n        \"number_of_tricycles\": number_of_tricycles,\n        \"number_of_tricycle_tires\": number_of_tricycle_tires,\n        \"total_tires\": total_tires,\n        \"total_earnings\": total_earnings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "tire_inflation_cost": 347.38,
+      "number_of_bicycles": 5,
+      "number_of_bicycle_tires": 10,
+      "number_of_tricycles": 3,
+      "number_of_tricycle_tires": 9,
+      "total_tires": 20,
+      "total_earnings": 6947.6
+    }
+  },
+  "final": {
+    "question": "Shawnda decides that her neighborhood kids could really use a bike inflation service. She decides the best way to charge is by the tire. Each tire costs 347.38 won to inflate. On the first day, 5 people on bicycles came by to get both tires inflated. 3 people came by to get all their tricycle tires inflated. Finally, one person actually came by on a unicycle. How many won did she make that day?",
+    "answer_lines": [
+      "There were 5 times 2 equals 10 bike tires to fill up because 5 times 2 equals 10.",
+      "There were 3 times 3 equals 9 tricycle tires to fill up because 3 times 3 equals 9.",
+      "There was one unicycle tire to fill up because 1 times 1 equals 1.",
+      "There were 10 plus 9 plus 1 equals 20 total tires to fill up because 10 plus 9 plus 1 equals 20.",
+      "She made 6947.6 won because 20 times 347.38 equals 6947.6.",
+      "#### 6947.6"
+    ],
+    "final_scalar": 6947.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji decides that her neighborhood kids in Seoul could really use a bike inflation service. She decides the best way to charge is by the tire. Each tire costs 347.38 won to inflate. On the first day, 5 people on bicycles came by to get both tires inflated. 3 people came by to get all their tricycle tires inflated. Finally, one person actually came by on a unicycle. How many won did she make that day?",
+    "adapted_answer": [
+      "There were 5 times 2 equals 10 bike tires to fill up because 5 times 2 equals 10.",
+      "There were 3 times 3 equals 9 tricycle tires to fill up because 3 times 3 equals 9.",
+      "There was one unicycle tire to fill up because 1 times 1 equals 1.",
+      "There were 10 plus 9 plus 1 equals 20 total tires to fill up because 10 plus 9 plus 1 equals 20.",
+      "She made 6947.6 won because 20 times 347.38 equals 6947.6.",
+      "#### 6947.6"
+    ],
+    "adaptation_notes": "Replaced 'Shawnda' with 'Min-ji' and added 'in Seoul' to give the question a Korean context."
+  }
+}

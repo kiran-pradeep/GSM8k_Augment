@@ -1,0 +1,104 @@
+{
+  "index": 168,
+  "split": "test",
+  "original": {
+    "question": "Jimmy has $2 more than twice the money Ethel has. If Ethal has $8, how much money is Jimmy having?",
+    "answer": "The total amount of money jimmy has 2*$8 = $<<2*8=16>>16 more than Ethel.\nIf Jimmy has $2 more than twice the money Ethel has, he has 2+16 = $<<2+16=18>>18\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "Jimmy",
+      "Ethel"
+    ],
+    "notes": "The text contains Western names and a unit of currency commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ethel_money",
+      "value": 8,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "jimmy_money",
+      "value": 18,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ethel_money\", \"value\": 8, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"jimmy_money\", \"value\": 18, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ethel_money",
+        "original_value": 8,
+        "original_unit": "dollar",
+        "converted_value": 11116.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "jimmy_money",
+        "original_value": 18,
+        "original_unit": "dollar",
+        "converted_value": 25011.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jimmy has ${2} more than twice the money Ethel has. If Ethal has ${ethel_money}, how much money is Jimmy having?",
+    "templatized_answer": [
+      "The total amount of money jimmy has 2*${ethel_money} = ${2*ethel_money} more than Ethel.",
+      "If Jimmy has ${2} more than twice the money Ethel has, he has ${2}+${2*ethel_money} = ${2+2*ethel_money}",
+      "#### {jimmy_money}"
+    ],
+    "factual_assignment": {
+      "ethel_money": 8,
+      "jimmy_money": 18,
+      "2*ethel_money": 16,
+      "2+2*ethel_money": 18,
+      "2": 2
+    }
+  },
+  "merged_assignment": {
+    "ethel_money": 11116.0,
+    "jimmy_money": 25011.0,
+    "2*ethel_money": 16,
+    "2+2*ethel_money": 18,
+    "2": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"ethel_money\": 11116.0,\n        \"jimmy_money\": 25011.0,\n        \"2*ethel_money\": 16,\n        \"2+2*ethel_money\": 18,\n        \"2\": 2\n    }\n\n    # Recompute placeholders\n    ethel_money = factual_assignment[\"ethel_money\"]\n    two_ethel_money = 2 * ethel_money\n    two = factual_assignment[\"2\"]\n    two_plus_two_ethel_money = two + two_ethel_money\n\n    # Round to 2 decimal places where appropriate\n    two_ethel_money = round(two_ethel_money, 2)\n    two_plus_two_ethel_money = round(two_plus_two_ethel_money, 2)\n\n    # Create a dictionary mapping placeholder to numeric value\n    recomputed_values = {\n        \"${ethel_money}\": ethel_money,\n        \"${2*ethel_money}\": two_ethel_money,\n        \"${2}\": two,\n        \"${2+2*ethel_money}\": two_plus_two_ethel_money,\n        \"${jimmy_money}\": factual_assignment[\"jimmy_money\"]\n    }\n\n    return recomputed_values\n",
+    "results": {
+      "${ethel_money}": 11116.0,
+      "${2*ethel_money}": 22232.0,
+      "${2}": 2,
+      "${2+2*ethel_money}": 22234.0,
+      "${jimmy_money}": 25011.0
+    }
+  },
+  "final": {
+    "question": "Jimmy has 2 more than twice the money Ethel has. If Ethal has 11116.0 won, how much money is Jimmy having?",
+    "answer_lines": [
+      "The total amount of money jimmy has 2*11116.0 = 22232.0 more than Ethel.",
+      "If Jimmy has 2 more than twice the money Ethel has, he has 2+22232.0 = 22234.0",
+      "#### 25011.0"
+    ],
+    "final_scalar": 25011.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo has 2 more than twice the money Ji-hyun has. If Ji-hyun has 11116.0 won, how much money is Min-soo having?",
+    "adapted_answer": [
+      "The total amount of money Min-soo has 2*11116.0 = 22232.0 more than Ji-hyun.",
+      "If Min-soo has 2 more than twice the money Ji-hyun has, he has 2+22232.0 = 22234.0",
+      "#### 25011.0"
+    ],
+    "adaptation_notes": "Replaced 'Jimmy' with 'Min-soo' and 'Ethel' with 'Ji-hyun' to provide a Korean context."
+  }
+}

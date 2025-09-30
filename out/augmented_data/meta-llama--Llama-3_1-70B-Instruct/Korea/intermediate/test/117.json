@@ -1,0 +1,102 @@
+{
+  "index": 117,
+  "split": "test",
+  "original": {
+    "question": "John buys 2 pairs of shoes for each of his 3 children.  They cost $60 each.  How much did he pay?",
+    "answer": "He bought 3*2=<<3*2=6>>6 pairs of shoes\nSo he spent 60*6=$<<60*6=360>>360\n#### 360"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "The name 'John' is culturally specific to Western regions and the unit 'dollars' is commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shoe_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 360.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shoe_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 360.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shoe_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 83370.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 360.0,
+        "original_unit": "dollar",
+        "converted_value": 500220.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John buys 2 pairs of shoes for each of his 3 children.  They cost ${shoe_cost} each.  How much did he pay?",
+    "templatized_answer": [
+      "He bought 3*2={children}*{shoes_per_child}={children*shoes_per_child} pairs of shoes",
+      "So he spent {shoe_cost}*{children*shoes_per_child}=${shoe_cost*children*shoes_per_child}",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "shoe_cost": 60.0,
+      "total_spent": 360.0,
+      "children": 3,
+      "shoes_per_child": 2
+    }
+  },
+  "merged_assignment": {
+    "shoe_cost": 83370.0,
+    "total_spent": 500220.0,
+    "children": 3,
+    "shoes_per_child": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    shoe_cost = 83370.0\n    children = 3\n    shoes_per_child = 2\n\n    children_shoes_per_child = children * shoes_per_child\n    total_spent = shoe_cost * children_shoes_per_child\n\n    return {\n        \"shoe_cost\": shoe_cost,\n        \"total_spent\": round(total_spent, 2),\n        \"children\": children,\n        \"shoes_per_child\": shoes_per_child,\n        \"children*shoes_per_child\": children_shoes_per_child,\n        \"shoe_cost*children*shoes_per_child\": round(total_spent, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "shoe_cost": 83370.0,
+      "total_spent": 500220.0,
+      "children": 3,
+      "shoes_per_child": 2,
+      "children*shoes_per_child": 6,
+      "shoe_cost*children*shoes_per_child": 500220.0
+    }
+  },
+  "final": {
+    "question": "John buys 2 pairs of shoes for each of his 3 children.  They cost 83370 won each.  How much did he pay?",
+    "answer_lines": [
+      "He bought 3*2=3*2=6 pairs of shoes",
+      "So he spent 83370*6=500220 won",
+      "#### 500220"
+    ],
+    "final_scalar": 500220.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo buys 2 pairs of shoes for each of his 3 children.  They cost 83370 won each.  How much did he pay?",
+    "adapted_answer": [
+      "He bought 3*2=3*2=6 pairs of shoes",
+      "So he spent 83370*6=500220 won",
+      "#### 500220"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Min-soo', a common Korean name."
+  }
+}

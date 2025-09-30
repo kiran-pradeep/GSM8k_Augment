@@ -1,0 +1,156 @@
+{
+  "index": 526,
+  "split": "test",
+  "original": {
+    "question": "Ada's daily electric consumption is 12 kilowatts per hour. She is planning to add a device that will consume 2 kilowatts per hour a day. If a kilowatt per hour is $1.50, how much is the difference between Ada's weekly electric bill before and after she adds the new device?",
+    "answer": "Ada's weekly electric consumption before adding the new device is 12 x 7 = <<12*7=84>>84.\nSo, her weekly electric bill is 84 x $1.50 = $<<84*1.5=126>>126.\nAda's daily electric consumption after adding the new device is 12 + 2 = <<12+2=14>>14.\nSo her weekly electric consumption after adding the new device is 14 x 7= <<14*7=98>>98 kilowatts per hour.\nAda's new electric bill per week will be 98 x $1.50 = $<<98*1.5=147>>147\nTherefore, the difference between the bill before and after she adds the new device is $147 - $126 = $<<147-126=21>>21.\n#### 21"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ada",
+      "dollars"
+    ],
+    "notes": "The name 'Ada' is culturally specific to Western regions and the unit 'dollars' is a currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "electric_cost_per_hour",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_electric_bill_before",
+      "value": 126.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_electric_bill_after",
+      "value": 147.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "difference_in_electric_bill",
+      "value": 21.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        converted_value = original_value\n        converted_unit = original_unit\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n            converted_unit = conversions[original_unit][\"to\"]\n\n        result.append({\n            \"variable\": metric[\"variable\"],\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"electric_cost_per_hour\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_electric_bill_before\", \"value\": 126.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_electric_bill_after\", \"value\": 147.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"difference_in_electric_bill\", \"value\": 21.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "electric_cost_per_hour",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 2084.25,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "weekly_electric_bill_before",
+        "original_value": 126.0,
+        "original_unit": "dollar",
+        "converted_value": 175077.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "weekly_electric_bill_after",
+        "original_value": 147.0,
+        "original_unit": "dollar",
+        "converted_value": 204256.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "difference_in_electric_bill",
+        "original_value": 21.0,
+        "original_unit": "dollar",
+        "converted_value": 29179.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ada's daily electric consumption is {daily_electric_consumption} kilowatts per hour. She is planning to add a device that will consume {additional_device_consumption} kilowatts per hour a day. If a kilowatt per hour is ${electric_cost_per_hour}, how much is the difference between Ada's weekly electric bill before and after she adds the new device?",
+    "templatized_answer": [
+      "Ada's weekly electric consumption before adding the new device is {daily_electric_consumption} x {days_in_week} = {weekly_electric_consumption_before}.",
+      "So, her weekly electric bill is {weekly_electric_consumption_before} x ${electric_cost_per_hour} = ${weekly_electric_bill_before}.",
+      "Ada's daily electric consumption after adding the new device is {daily_electric_consumption} + {additional_device_consumption} = {daily_electric_consumption_after}.",
+      "So her weekly electric consumption after adding the new device is {daily_electric_consumption_after} x {days_in_week} = {weekly_electric_consumption_after} kilowatts per hour.",
+      "Ada's new electric bill per week will be {weekly_electric_consumption_after} x ${electric_cost_per_hour} = ${weekly_electric_bill_after}",
+      "Therefore, the difference between the bill before and after she adds the new device is ${weekly_electric_bill_after} - ${weekly_electric_bill_before} = ${difference_in_electric_bill}.",
+      "#### {difference_in_electric_bill}"
+    ],
+    "factual_assignment": {
+      "daily_electric_consumption": 12,
+      "additional_device_consumption": 2,
+      "electric_cost_per_hour": 1.5,
+      "days_in_week": 7,
+      "weekly_electric_consumption_before": 84,
+      "weekly_electric_bill_before": 126,
+      "daily_electric_consumption_after": 14,
+      "weekly_electric_consumption_after": 98,
+      "weekly_electric_bill_after": 147,
+      "difference_in_electric_bill": 21
+    }
+  },
+  "merged_assignment": {
+    "daily_electric_consumption": 12,
+    "additional_device_consumption": 2,
+    "electric_cost_per_hour": 2084.25,
+    "days_in_week": 7,
+    "weekly_electric_consumption_before": 84,
+    "weekly_electric_bill_before": 175077.0,
+    "daily_electric_consumption_after": 14,
+    "weekly_electric_consumption_after": 98,
+    "weekly_electric_bill_after": 204256.5,
+    "difference_in_electric_bill": 29179.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    daily_electric_consumption = 12\n    additional_device_consumption = 2\n    electric_cost_per_hour = 2084.25\n    days_in_week = 7\n\n    weekly_electric_consumption_before = daily_electric_consumption * days_in_week\n    weekly_electric_bill_before = weekly_electric_consumption_before * electric_cost_per_hour\n\n    daily_electric_consumption_after = daily_electric_consumption + additional_device_consumption\n    weekly_electric_consumption_after = daily_electric_consumption_after * days_in_week\n    weekly_electric_bill_after = weekly_electric_consumption_after * electric_cost_per_hour\n\n    difference_in_electric_bill = weekly_electric_bill_after - weekly_electric_bill_before\n\n    return {\n        \"daily_electric_consumption\": daily_electric_consumption,\n        \"additional_device_consumption\": additional_device_consumption,\n        \"electric_cost_per_hour\": electric_cost_per_hour,\n        \"days_in_week\": days_in_week,\n        \"weekly_electric_consumption_before\": weekly_electric_consumption_before,\n        \"weekly_electric_bill_before\": round(weekly_electric_bill_before, 2),\n        \"daily_electric_consumption_after\": daily_electric_consumption_after,\n        \"weekly_electric_consumption_after\": weekly_electric_consumption_after,\n        \"weekly_electric_bill_after\": round(weekly_electric_bill_after, 2),\n        \"difference_in_electric_bill\": round(difference_in_electric_bill, 2)\n    }\n",
+    "results": {
+      "daily_electric_consumption": 12,
+      "additional_device_consumption": 2,
+      "electric_cost_per_hour": 2084.25,
+      "days_in_week": 7,
+      "weekly_electric_consumption_before": 84,
+      "weekly_electric_bill_before": 175077.0,
+      "daily_electric_consumption_after": 14,
+      "weekly_electric_consumption_after": 98,
+      "weekly_electric_bill_after": 204256.5,
+      "difference_in_electric_bill": 29179.5
+    }
+  },
+  "final": {
+    "question": "Ada's daily electric consumption is 12 kilowatts per hour. She is planning to add a device that will consume 2 kilowatts per hour a day. If a kilowatt per hour is 2084.25 won, how much is the difference between Ada's weekly electric bill before and after she adds the new device?",
+    "answer_lines": [
+      "Ada's weekly electric consumption before adding the new device is 12 x 7 = 84.",
+      "So, her weekly electric bill is 84 x 2084.25 won = 175077.0 won.",
+      "Ada's daily electric consumption after adding the new device is 12 + 2 = 14.",
+      "So her weekly electric consumption after adding the new device is 14 x 7 = 98 kilowatts per hour.",
+      "Ada's new electric bill per week will be 98 x 2084.25 won = 204256.5 won",
+      "Therefore, the difference between the bill before and after she adds the new device is 204256.5 won - 175077.0 won = 29179.5 won.",
+      "#### 29179.5"
+    ],
+    "final_scalar": 29179.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ju's daily electric consumption is 12 kilowatts per hour. She is planning to add a device that will consume 2 kilowatts per hour a day. If a kilowatt per hour is 2084.25 won, how much is the difference between Min-ju's weekly electric bill before and after she adds the new device?",
+    "adapted_answer": [
+      "Min-ju's weekly electric consumption before adding the new device is 12 x 7 = 84.",
+      "So, her weekly electric bill is 84 x 2084.25 won = 175077.0 won.",
+      "Min-ju's daily electric consumption after adding the new device is 12 + 2 = 14.",
+      "So her weekly electric consumption after adding the new device is 14 x 7 = 98 kilowatts per hour.",
+      "Min-ju's new electric bill per week will be 98 x 2084.25 won = 204256.5 won",
+      "Therefore, the difference between the bill before and after she adds the new device is 204256.5 won - 175077.0 won = 29179.5 won.",
+      "#### 29179.5"
+    ],
+    "adaptation_notes": "Replaced 'Ada' with 'Min-ju', a common Korean name."
+  }
+}

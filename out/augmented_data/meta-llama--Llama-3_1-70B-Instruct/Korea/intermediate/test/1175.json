@@ -1,0 +1,98 @@
+{
+  "index": 1175,
+  "split": "test",
+  "original": {
+    "question": "In the first half of a soccer match, team A scores 4 goals while team B scores 2 goals fewer than team A. In the second half, team A scores 1/4 of the number of goals scored by team B, which scores 4 times the number of goals it scored in the first half. What's the total number of goals scored in the match?",
+    "answer": "In the first half, team B scores 4 goals - 2 goals = <<4-2=2>>2 goals.\nThe total number of goals scored in the first half is 2 goals + 4 goals = <<2+4=6>>6 goals\nDuring the second half, team B scores 4 goals * 2 = <<4*2=8>>8 goals.\nTeam A 1/4 * 8 goals = <<1/4*8=2>>2 goals in the second half.\nThe total number of goals in the second half is 8 goals + 2 goals = <<8+2=10>>10 goals\nThe total number of goals in the match is 6 goals + 10 goals = <<6+10=16>>16 goals\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "soccer"
+    ],
+    "notes": "soccer is a culturally specific term commonly used in regions other than Korea, where the sport is more commonly referred to as football"
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 1389.5, 'unit': 'won'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit]['factor'], 2)\n            converted_unit = conversions[unit]['unit']\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "In the first half of a soccer match, team A scores {team_a_first_half_goals} goals while team B scores {team_b_first_half_goals_difference} goals fewer than team A. In the second half, team A scores 1/4 of the number of goals scored by team B, which scores {team_b_second_half_multiplier} times the number of goals it scored in the first half. What's the total number of goals scored in the match?",
+    "templatized_answer": [
+      "In the first half, team B scores {team_a_first_half_goals} goals - {team_b_first_half_goals_difference} goals = {team_b_first_half_goals}.",
+      "The total number of goals scored in the first half is {team_b_first_half_goals} goals + {team_a_first_half_goals} goals = {total_first_half_goals}.",
+      "During the second half, team B scores {team_b_first_half_goals} goals * {team_b_second_half_multiplier} = {team_b_second_half_goals} goals.",
+      "Team A 1/4 * {team_b_second_half_goals} goals = {team_a_second_half_goals} goals in the second half.",
+      "The total number of goals in the second half is {team_b_second_half_goals} goals + {team_a_second_half_goals} goals = {total_second_half_goals}.",
+      "The total number of goals in the match is {total_first_half_goals} goals + {total_second_half_goals} goals = {total_match_goals}.",
+      "#### {total_match_goals}"
+    ],
+    "factual_assignment": {
+      "team_a_first_half_goals": 4,
+      "team_b_first_half_goals_difference": 2,
+      "team_b_first_half_goals": 2,
+      "total_first_half_goals": 6,
+      "team_b_second_half_multiplier": 4,
+      "team_b_second_half_goals": 8,
+      "team_a_second_half_goals": 2,
+      "total_second_half_goals": 10,
+      "total_match_goals": 16
+    }
+  },
+  "merged_assignment": {
+    "team_a_first_half_goals": 4,
+    "team_b_first_half_goals_difference": 2,
+    "team_b_first_half_goals": 2,
+    "total_first_half_goals": 6,
+    "team_b_second_half_multiplier": 4,
+    "team_b_second_half_goals": 8,
+    "team_a_second_half_goals": 2,
+    "total_second_half_goals": 10,
+    "total_match_goals": 16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    team_a_first_half_goals = 4\n    team_b_first_half_goals_difference = 2\n    team_b_first_half_goals = team_a_first_half_goals - team_b_first_half_goals_difference\n    total_first_half_goals = team_b_first_half_goals + team_a_first_half_goals\n    team_b_second_half_multiplier = 4\n    team_b_second_half_goals = team_b_first_half_goals * team_b_second_half_multiplier\n    team_a_second_half_goals = team_b_second_half_goals / 4\n    total_second_half_goals = team_b_second_half_goals + team_a_second_half_goals\n    total_match_goals = total_first_half_goals + total_second_half_goals\n\n    return {\n        \"team_a_first_half_goals\": team_a_first_half_goals,\n        \"team_b_first_half_goals_difference\": team_b_first_half_goals_difference,\n        \"team_b_first_half_goals\": team_b_first_half_goals,\n        \"total_first_half_goals\": total_first_half_goals,\n        \"team_b_second_half_multiplier\": team_b_second_half_multiplier,\n        \"team_b_second_half_goals\": team_b_second_half_goals,\n        \"team_a_second_half_goals\": round(team_a_second_half_goals, 2),\n        \"total_second_half_goals\": total_second_half_goals,\n        \"total_match_goals\": total_match_goals\n    }\n",
+    "results": {
+      "team_a_first_half_goals": 4,
+      "team_b_first_half_goals_difference": 2,
+      "team_b_first_half_goals": 2,
+      "total_first_half_goals": 6,
+      "team_b_second_half_multiplier": 4,
+      "team_b_second_half_goals": 8,
+      "team_a_second_half_goals": 2.0,
+      "total_second_half_goals": 10.0,
+      "total_match_goals": 16.0
+    }
+  },
+  "final": {
+    "question": "In the first half of a soccer match, team A scores 4 goals while team B scores 2 goals fewer than team A. In the second half, team A scores 1/4 of the number of goals scored by team B, which scores 4 times the number of goals it scored in the first half. What's the total number of goals scored in the match?",
+    "answer_lines": [
+      "In the first half, team B scores 4 goals - 2 goals = 2 goals.",
+      "The total number of goals scored in the first half is 2 goals + 4 goals = 6 goals.",
+      "During the second half, team B scores 2 goals * 4 = 8 goals.",
+      "Team A 1/4 * 8 goals = 2.0 goals in the second half.",
+      "The total number of goals in the second half is 8 goals + 2.0 goals = 10.0 goals.",
+      "The total number of goals in the match is 6 goals + 10.0 goals = 16.0 goals.",
+      "#### 16.0"
+    ],
+    "final_scalar": 16.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "In the first half of a football match, team A scores 4 goals while team B scores 2 goals fewer than team A. In the second half, team A scores 1/4 of the number of goals scored by team B, which scores 4 times the number of goals it scored in the first half. What's the total number of goals scored in the match?",
+    "adapted_answer": [
+      "In the first half, team B scores 4 goals - 2 goals = 2 goals.",
+      "The total number of goals scored in the first half is 2 goals + 4 goals = 6 goals.",
+      "During the second half, team B scores 2 goals * 4 = 8 goals.",
+      "Team A 1/4 * 8 goals = 2.0 goals in the second half.",
+      "The total number of goals in the second half is 8 goals + 2.0 goals = 10.0 goals.",
+      "The total number of goals in the match is 6 goals + 10.0 goals = 16.0 goals.",
+      "#### 16.0"
+    ],
+    "adaptation_notes": "Replaced 'soccer' with 'football' to better suit a Korean context, although 'soccer' is widely understood in Korea."
+  }
+}

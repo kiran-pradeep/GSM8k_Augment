@@ -1,0 +1,100 @@
+{
+  "index": 849,
+  "split": "test",
+  "original": {
+    "question": "A farmer has 900 eggs. He placed them on a tray, which holds 30 eggs each. How much will the farmer earn if he sells it for $2.5 per tray?",
+    "answer": "There are 900 / 30 = <<900/30=30>>30 trays that hold 900 eggs.\nSo, the farmer will earn 30 x $2.5 = $<<30*2.5=75>>75 if he sells it per tray.\n#### 75"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tray_price",
+      "value": 2.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 75,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tray_price\", \"value\": 2.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 75, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tray_price",
+        "original_value": 2.5,
+        "original_unit": "dollar",
+        "converted_value": 367.67,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 75,
+        "original_unit": "dollar",
+        "converted_value": 11030.25,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A farmer has {total_eggs} eggs. He placed them on a tray, which holds {eggs_per_tray} eggs each. How much will the farmer earn if he sells it for ${tray_price} per tray?",
+    "templatized_answer": [
+      "There are {total_eggs} / {eggs_per_tray} = {total_eggs}/{eggs_per_tray} trays that hold {total_eggs} eggs.",
+      "So, the farmer will earn {total_eggs}/{eggs_per_tray} x ${tray_price} = ${total_eggs}/{eggs_per_tray} * {tray_price} if he sells it per tray.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "total_eggs": 900,
+      "eggs_per_tray": 30,
+      "tray_price": 2.5,
+      "total_earnings": 75
+    }
+  },
+  "merged_assignment": {
+    "total_eggs": 900,
+    "eggs_per_tray": 30,
+    "tray_price": 367.67,
+    "total_earnings": 11030.25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_eggs = 900\n    eggs_per_tray = 30\n    tray_price = 367.67\n    total_eggs_per_tray = total_eggs / eggs_per_tray\n    total_earnings = round(total_eggs_per_tray * tray_price, 2)\n    return {\n        \"total_eggs\": total_eggs,\n        \"eggs_per_tray\": eggs_per_tray,\n        \"tray_price\": tray_price,\n        \"total_eggs_per_tray\": round(total_eggs_per_tray, 2),\n        \"total_earnings\": total_earnings\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_eggs": 900,
+      "eggs_per_tray": 30,
+      "tray_price": 367.67,
+      "total_eggs_per_tray": 30.0,
+      "total_earnings": 11030.1
+    }
+  },
+  "final": {
+    "question": "A farmer has 900 eggs. He placed them on a tray, which holds 30 eggs each. How much will the farmer earn if he sells it for 367.67 yen per tray?",
+    "answer_lines": [
+      "There are 900 / 30 = 900/30 trays that hold 900 eggs.",
+      "So, the farmer will earn 900/30 x 367.67 = 900/30 * 367.67 if he sells it per tray.",
+      "#### 11030.1"
+    ],
+    "final_scalar": 11030.1,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A farmer has 900 eggs. He placed them on a tray, which holds 30 eggs each. How much will the farmer earn if he sells it for 367.67 yen per tray?",
+    "adapted_answer": [
+      "There are 900 / 30 = 900/30 trays that hold 900 eggs.",
+      "So, the farmer will earn 900/30 x 367.67 = 900/30 * 367.67 if he sells it per tray.",
+      "#### 11030.1"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

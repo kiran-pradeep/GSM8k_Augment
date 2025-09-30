@@ -1,0 +1,139 @@
+{
+  "index": 788,
+  "split": "test",
+  "original": {
+    "question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has $50 and the trip costs $300?",
+    "answer": "John's school has decided to pay 300 / 2 = $<<300/2=150>>150 for his trip.\nIn total John has covered 150 + 50 = $<<150+50=200>>200 for his trip\nTherefore, John needs 300 - 200 = $<<300-200=100>>100 more for the trip.\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "Name 'John' and unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "trip_cost",
+      "value": 300.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "johns_money",
+      "value": 50.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "school_contribution",
+      "value": 150.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_covered",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "missing_money",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"trip_cost\", \"value\": 300.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"johns_money\", \"value\": 50.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"school_contribution\", \"value\": 150.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_covered\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"missing_money\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "trip_cost",
+        "original_value": 300.0,
+        "original_unit": "dollar",
+        "converted_value": 44121.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "johns_money",
+        "original_value": 50.0,
+        "original_unit": "dollar",
+        "converted_value": 7353.5,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "school_contribution",
+        "original_value": 150.0,
+        "original_unit": "dollar",
+        "converted_value": 22060.5,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_covered",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 29414.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "missing_money",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has ${johns_money} and the trip costs ${trip_cost}?",
+    "templatized_answer": [
+      "John's school has decided to pay {trip_cost} / 2 = ${trip_cost / 2} for his trip.",
+      "In total John has covered {trip_cost / 2} + {johns_money} = ${trip_cost / 2 + johns_money} for his trip",
+      "Therefore, John needs {trip_cost} - {trip_cost / 2 + johns_money} = ${trip_cost - (trip_cost / 2 + johns_money)} more for the trip.",
+      "#### {trip_cost - (trip_cost / 2 + johns_money)}"
+    ],
+    "factual_assignment": {
+      "trip_cost": 300.0,
+      "johns_money": 50.0
+    }
+  },
+  "merged_assignment": {
+    "trip_cost": 44121.0,
+    "johns_money": 7353.5
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    trip_cost = 44121.0\n    johns_money = 7353.5\n\n    school_contribution = trip_cost / 2\n    total_covered = school_contribution + johns_money\n    missing_amount = trip_cost - total_covered\n\n    return {\n        \"trip_cost\": trip_cost,\n        \"johns_money\": johns_money,\n        \"trip_cost / 2\": round(school_contribution, 2),\n        \"trip_cost / 2 + johns_money\": round(total_covered, 2),\n        \"trip_cost - (trip_cost / 2 + johns_money)\": round(missing_amount, 2)\n    }\n",
+    "results": {
+      "trip_cost": 44121.0,
+      "johns_money": 7353.5,
+      "trip_cost / 2": 22060.5,
+      "trip_cost / 2 + johns_money": 29414.0,
+      "trip_cost - (trip_cost / 2 + johns_money)": 14707.0
+    }
+  },
+  "final": {
+    "question": "John is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is John missing if he has 7353.5 yen and the trip costs 44121.0 yen?",
+    "answer_lines": [
+      "John's school has decided to pay 44121.0 / 2 = 22060.5 yen for his trip.",
+      "In total John has covered 22060.5 + 7353.5 = 29414.0 yen for his trip",
+      "Therefore, John needs 44121.0 - 29414.0 = 14707.0 yen more for the trip.",
+      "#### 14707.0"
+    ],
+    "final_scalar": 14707.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro is raising money for a school trip. He has applied for help from the school, which has decided to cover half the cost of the trip. How much money is Taro missing if he has 7353.5 yen and the trip costs 44121.0 yen?",
+    "adapted_answer": [
+      "Taro's school has decided to pay 44121.0 / 2 = 22060.5 yen for his trip.",
+      "In total Taro has covered 22060.5 + 7353.5 = 29414.0 yen for his trip",
+      "Therefore, Taro needs 44121.0 - 29414.0 = 14707.0 yen more for the trip.",
+      "#### 14707.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro', a common Japanese name."
+  }
+}

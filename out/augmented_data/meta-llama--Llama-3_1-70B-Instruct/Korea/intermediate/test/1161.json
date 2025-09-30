@@ -1,0 +1,169 @@
+{
+  "index": 1161,
+  "split": "test",
+  "original": {
+    "question": "Abraham owns 80 square meters of unused land. He sold half of the land for $50, and after a month, he sold another 1/4 of his land for $30. He then sold the remaining land for $3 per square meter. How much money will he be able to earn after selling all his unused land?",
+    "answer": "Abraham sold 1/2 x 80= <<1/2*80=40>>40 square meters of his unused land.\nAfter a month, he sold 1/4 x 40 = <<1/4*40=10>>10 square meters of his land.\nSo, the total land he already sold is 40+10= <<50=50>>50 square meters of his land.\nHe has 80 - 50 = <<80-50=30>>30 remaining land to be sold at $3 per square meter.\nSo he earned $3 x 30 = $<<3*30=90>>90 for that land.\nTherefore, he earned a total of $50 + $30 + $90 = $<<50+30+90=170>>170.\n#### 170"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Abraham",
+      "dollars"
+    ],
+    "notes": "The name Abraham and the unit dollars are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "first_sale",
+      "value": 50,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_sale",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_land_sale",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "remaining_land_earnings",
+      "value": 90,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 170,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"first_sale\", \"value\": 50, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_sale\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_land_sale\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"remaining_land_earnings\", \"value\": 90, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_earnings\", \"value\": 170, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "first_sale",
+        "original_value": 50,
+        "original_unit": "dollar",
+        "converted_value": 69475.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "second_sale",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 41685.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "remaining_land_sale",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "remaining_land_earnings",
+        "original_value": 90,
+        "original_unit": "dollar",
+        "converted_value": 125055.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 170,
+        "original_unit": "dollar",
+        "converted_value": 236215.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Abraham owns {total_land} square meters of unused land. He sold half of the land for ${first_sale}, and after a month, he sold another 1/4 of his land for ${second_sale}. He then sold the remaining land for ${remaining_land_sale} per square meter. How much money will he be able to earn after selling all his unused land?",
+    "templatized_answer": [
+      "Abraham sold 1/2 x {total_land} = {land_sold_first} square meters of his unused land.",
+      "After a month, he sold 1/4 x {land_sold_first} = {land_sold_second} square meters of his land.",
+      "So, the total land he already sold is {land_sold_first} + {land_sold_second} = {total_land_sold} square meters of his land.",
+      "He has {total_land} - {total_land_sold} = {remaining_land} remaining land to be sold at ${remaining_land_sale} per square meter.",
+      "So he earned ${remaining_land_sale} x {remaining_land} = ${remaining_land_earnings} for that land.",
+      "Therefore, he earned a total of ${first_sale} + ${second_sale} + ${remaining_land_earnings} = ${total_earnings}.",
+      "#### {total_earnings}"
+    ],
+    "factual_assignment": {
+      "total_land": 80,
+      "first_sale": 50,
+      "second_sale": 30,
+      "remaining_land_sale": 3,
+      "remaining_land_earnings": 90,
+      "total_earnings": 170,
+      "land_sold_first": 40,
+      "land_sold_second": 10,
+      "total_land_sold": 50,
+      "remaining_land": 30
+    }
+  },
+  "merged_assignment": {
+    "total_land": 80,
+    "first_sale": 69475.0,
+    "second_sale": 41685.0,
+    "remaining_land_sale": 4168.5,
+    "remaining_land_earnings": 125055.0,
+    "total_earnings": 236215.0,
+    "land_sold_first": 40,
+    "land_sold_second": 10,
+    "total_land_sold": 50,
+    "remaining_land": 30
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_land = 80\n    first_sale = 69475.0\n    second_sale = 41685.0\n    remaining_land_sale = 4168.5\n\n    land_sold_first = total_land / 2\n    land_sold_second = land_sold_first / 4\n    total_land_sold = land_sold_first + land_sold_second\n    remaining_land = total_land - total_land_sold\n    remaining_land_earnings = remaining_land * remaining_land_sale\n    total_earnings = first_sale + second_sale + remaining_land_earnings\n\n    return {\n        \"total_land\": total_land,\n        \"first_sale\": round(first_sale, 2),\n        \"second_sale\": round(second_sale, 2),\n        \"remaining_land_sale\": round(remaining_land_sale, 2),\n        \"remaining_land_earnings\": round(remaining_land_earnings, 2),\n        \"total_earnings\": round(total_earnings, 2),\n        \"land_sold_first\": round(land_sold_first, 2),\n        \"land_sold_second\": round(land_sold_second, 2),\n        \"total_land_sold\": round(total_land_sold, 2),\n        \"remaining_land\": round(remaining_land, 2)\n    }\n",
+    "results": {
+      "total_land": 80,
+      "first_sale": 69475.0,
+      "second_sale": 41685.0,
+      "remaining_land_sale": 4168.5,
+      "remaining_land_earnings": 125055.0,
+      "total_earnings": 236215.0,
+      "land_sold_first": 40.0,
+      "land_sold_second": 10.0,
+      "total_land_sold": 50.0,
+      "remaining_land": 30.0
+    }
+  },
+  "final": {
+    "question": "Abraham owns 80 square meters of unused land. He sold half of the land for 69475.0 won, and after a month, he sold another 1/4 of his land for 41685.0 won. He then sold the remaining land for 4168.5 won per square meter. How much money will he be able to earn after selling all his unused land?",
+    "answer_lines": [
+      "Abraham sold 1/2 x 80 = 40 square meters of his unused land.",
+      "After a month, he sold 1/4 x 40 = 10 square meters of his land.",
+      "So, the total land he already sold is 40 + 10 = 50 square meters of his land.",
+      "He has 80 - 50 = 30 remaining land to be sold at 4168.5 won per square meter.",
+      "So he earned 4168.5 x 30 = 125055.0 won for that land.",
+      "Therefore, he earned a total of 69475.0 + 41685.0 + 125055.0 = 236215.0 won.",
+      "#### 236215.0"
+    ],
+    "final_scalar": 236215.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo owns 80 square meters of unused land. He sold half of the land for 69475.0 won, and after a month, he sold another 1/4 of his land for 41685.0 won. He then sold the remaining land for 4168.5 won per square meter. How much money will he be able to earn after selling all his unused land?",
+    "adapted_answer": [
+      "Min-soo sold 1/2 x 80 = 40 square meters of his unused land.",
+      "After a month, he sold 1/4 x 40 = 10 square meters of his land.",
+      "So, the total land he already sold is 40 + 10 = 50 square meters of his land.",
+      "He has 80 - 50 = 30 remaining land to be sold at 4168.5 won per square meter.",
+      "So he earned 4168.5 x 30 = 125055.0 won for that land.",
+      "Therefore, he earned a total of 69475.0 + 41685.0 + 125055.0 = 236215.0 won.",
+      "#### 236215.0"
+    ],
+    "adaptation_notes": "Replaced 'Abraham' with 'Min-soo', a common Korean name."
+  }
+}

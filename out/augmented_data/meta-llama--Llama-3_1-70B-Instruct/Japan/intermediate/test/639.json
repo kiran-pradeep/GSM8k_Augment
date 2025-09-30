@@ -1,0 +1,115 @@
+{
+  "index": 639,
+  "split": "test",
+  "original": {
+    "question": "Bob wants to dig a hole 6 feet long by 4 feet wide by 3 feet deep. If it takes him 3 seconds to shovel a cubic foot of earth, how long will it take him to dig the hole?",
+    "answer": "The hole is 6 feet long by 4 feet wide by 3 feet deep or 6 * 4 * 3 = <<6*4*3=72>>72 cubic feet.\nBob shovels a cubic foot of earth every 3 seconds so it will take 72 * 3 = <<72*3=216>>216 seconds to dig the hole.\n#### 216"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bob",
+      "feet"
+    ],
+    "notes": "Name 'Bob' is culturally specific to Western regions and unit 'feet' is commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hole_length",
+      "value": 6,
+      "unit": "foot",
+      "context": "question"
+    },
+    {
+      "variable": "hole_width",
+      "value": 4,
+      "unit": "foot",
+      "context": "question"
+    },
+    {
+      "variable": "hole_depth",
+      "value": 3,
+      "unit": "foot",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"].lower()\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"unit\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hole_length\", \"value\": 6, \"unit\": \"foot\", \"context\": \"question\"},\n    {\"variable\": \"hole_width\", \"value\": 4, \"unit\": \"foot\", \"context\": \"question\"},\n    {\"variable\": \"hole_depth\", \"value\": 3, \"unit\": \"foot\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hole_length",
+        "original_value": 6,
+        "original_unit": "foot",
+        "converted_value": 1.83,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "hole_width",
+        "original_value": 4,
+        "original_unit": "foot",
+        "converted_value": 1.22,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "hole_depth",
+        "original_value": 3,
+        "original_unit": "foot",
+        "converted_value": 0.91,
+        "converted_unit": "meter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob wants to dig a hole {hole_length} feet long by {hole_width} feet wide by {hole_depth} feet deep. If it takes him {shovel_time} seconds to shovel a cubic foot of earth, how long will it take him to dig the hole?",
+    "templatized_answer": [
+      "The hole is {hole_length} feet long by {hole_width} feet wide by {hole_depth} feet deep or {hole_length} * {hole_width} * {hole_depth} = {hole_length} * {hole_width} * {hole_depth} cubic feet.",
+      "Bob shovels a cubic foot of earth every {shovel_time} seconds so it will take {hole_length} * {hole_width} * {hole_depth} * {shovel_time} = {hole_length} * {hole_width} * {hole_depth} * {shovel_time} seconds to dig the hole.",
+      "#### {hole_length} * {hole_width} * {hole_depth} * {shovel_time}"
+    ],
+    "factual_assignment": {
+      "hole_length": 6,
+      "hole_width": 4,
+      "hole_depth": 3,
+      "shovel_time": 3
+    }
+  },
+  "merged_assignment": {
+    "hole_length": 1.83,
+    "hole_width": 1.22,
+    "hole_depth": 0.91,
+    "shovel_time": 3
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"hole_length\": 1.83,\n        \"hole_width\": 1.22,\n        \"hole_depth\": 0.91,\n        \"shovel_time\": 3\n    }\n\n    hole_volume = factual_assignment[\"hole_length\"] * factual_assignment[\"hole_width\"] * factual_assignment[\"hole_depth\"]\n    total_time = hole_volume * factual_assignment[\"shovel_time\"]\n\n    return {\n        \"hole_length\": round(factual_assignment[\"hole_length\"], 2),\n        \"hole_width\": round(factual_assignment[\"hole_width\"], 2),\n        \"hole_depth\": round(factual_assignment[\"hole_depth\"], 2),\n        \"shovel_time\": factual_assignment[\"shovel_time\"],\n        \"hole_length * hole_width * hole_depth\": round(hole_volume, 2),\n        \"hole_length * hole_width * hole_depth * shovel_time\": round(total_time, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hole_length": 1.83,
+      "hole_width": 1.22,
+      "hole_depth": 0.91,
+      "shovel_time": 3,
+      "hole_length * hole_width * hole_depth": 2.03,
+      "hole_length * hole_width * hole_depth * shovel_time": 6.09
+    }
+  },
+  "final": {
+    "question": "Bob wants to dig a hole 1.83 meters long by 1.22 meters wide by 0.91 meters deep. If it takes him 3 seconds to shovel a cubic meter of earth, how long will it take him to dig the hole?",
+    "answer_lines": [
+      "The hole is 1.83 meters long by 1.22 meters wide by 0.91 meters deep or 1.83 * 1.22 * 0.91 = 2.03 cubic meters.",
+      "Bob shovels a cubic meter of earth every 3 seconds so it will take 2.03 * 3 = 6.09 seconds to dig the hole.",
+      "#### 6.09"
+    ],
+    "final_scalar": 6.09,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro wants to dig a hole 1.83 meters long by 1.22 meters wide by 0.91 meters deep. If it takes him 3 seconds to shovel a cubic meter of earth, how long will it take him to dig the hole?",
+    "adapted_answer": [
+      "The hole is 1.83 meters long by 1.22 meters wide by 0.91 meters deep or 1.83 * 1.22 * 0.91 = 2.03 cubic meters.",
+      "Taro shovels a cubic meter of earth every 3 seconds so it will take 2.03 * 3 = 6.09 seconds to dig the hole.",
+      "#### 6.09"
+    ],
+    "adaptation_notes": "Replaced 'Bob' with 'Taro' to give the problem a Japanese context."
+  }
+}

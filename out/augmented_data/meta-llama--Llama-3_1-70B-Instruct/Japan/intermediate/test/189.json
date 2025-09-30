@@ -1,0 +1,170 @@
+{
+  "index": 189,
+  "split": "test",
+  "original": {
+    "question": "Three friends spent $20.25 on 3 tickets to the fair. They also spent $4.50 less on food than on the tickets. They also went on 2 different rides which costs $33 for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "answer": "They spent $20.25 - $4.50 = $<<20.25-4.5=15.75>>15.75 on food.\nThey spent $33 x 2 = $<<33*2=66>>66 for the rides.\nThey spent a total of $20.25 + $15.75 + $66 = $102.\nSo each of them paid $102/3 = $<<102/3=34>>34.\n#### 34"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tickets_cost",
+      "value": 20.25,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_savings",
+      "value": 4.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ride_cost",
+      "value": 33.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "food_cost",
+      "value": 15.75,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_ride_cost",
+      "value": 66.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 102.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "individual_cost",
+      "value": 34.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"tickets_cost\", \"value\": 20.25, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_savings\", \"value\": 4.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ride_cost\", \"value\": 33.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"food_cost\", \"value\": 15.75, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_ride_cost\", \"value\": 66.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 102.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"individual_cost\", \"value\": 34.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tickets_cost",
+        "original_value": 20.25,
+        "original_unit": "dollar",
+        "converted_value": 2978.17,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "food_savings",
+        "original_value": 4.5,
+        "original_unit": "dollar",
+        "converted_value": 661.81,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ride_cost",
+        "original_value": 33.0,
+        "original_unit": "dollar",
+        "converted_value": 4853.31,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "food_cost",
+        "original_value": 15.75,
+        "original_unit": "dollar",
+        "converted_value": 2316.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_ride_cost",
+        "original_value": 66.0,
+        "original_unit": "dollar",
+        "converted_value": 9706.62,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 102.0,
+        "original_unit": "dollar",
+        "converted_value": 15001.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "individual_cost",
+        "original_value": 34.0,
+        "original_unit": "dollar",
+        "converted_value": 5000.38,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Three friends spent ${tickets_cost} on 3 tickets to the fair. They also spent ${food_savings} less on food than on the tickets. They also went on 2 different rides which costs ${ride_cost} for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "templatized_answer": [
+      "They spent ${tickets_cost} - ${food_savings} = ${tickets_cost} - ${food_savings} on food.",
+      "They spent ${ride_cost} x 2 = ${ride_cost} x 2 for the rides.",
+      "They spent a total of ${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2) = ${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2).",
+      "So each of them paid (${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2)) / 3 = (${tickets_cost} + (${tickets_cost} - ${food_savings}) + (${ride_cost} x 2)) / 3."
+    ],
+    "factual_assignment": {
+      "tickets_cost": 20.25,
+      "food_savings": 4.5,
+      "ride_cost": 33.0
+    }
+  },
+  "merged_assignment": {
+    "tickets_cost": 2978.17,
+    "food_savings": 661.81,
+    "ride_cost": 4853.31
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"tickets_cost\": 2978.17,\n        \"food_savings\": 661.81,\n        \"ride_cost\": 4853.31\n    }\n\n    recomputed_values = {\n        \"tickets_cost\": factual_assignment[\"tickets_cost\"],\n        \"food_savings\": factual_assignment[\"food_savings\"],\n        \"ride_cost\": factual_assignment[\"ride_cost\"],\n        \"tickets_cost - food_savings\": factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"],\n        \"ride_cost x 2\": factual_assignment[\"ride_cost\"] * 2,\n        \"tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)\": \n            factual_assignment[\"tickets_cost\"] + (factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"]) + (factual_assignment[\"ride_cost\"] * 2),\n        \"(tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)) / 3\": \n            (factual_assignment[\"tickets_cost\"] + (factual_assignment[\"tickets_cost\"] - factual_assignment[\"food_savings\"]) + (factual_assignment[\"ride_cost\"] * 2)) / 3\n    }\n\n    return {key: round(value, 2) for key, value in recomputed_values.items()}\n\nprint(recompute())\n",
+    "results": {
+      "tickets_cost": 2978.17,
+      "food_savings": 661.81,
+      "ride_cost": 4853.31,
+      "tickets_cost - food_savings": 2316.36,
+      "ride_cost x 2": 9706.62,
+      "tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)": 15001.15,
+      "(tickets_cost + (tickets_cost - food_savings) + (ride_cost x 2)) / 3": 5000.38
+    }
+  },
+  "final": {
+    "question": "Three friends spent 2978.17 yen on 3 tickets to the fair. They also spent 661.81 yen less on food than on the tickets. They also went on 2 different rides which costs 4853.31 yen for each ride. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "answer_lines": [
+      "They spent 2978.17 yen - 661.81 yen = 2316.36 yen on food.",
+      "They spent 4853.31 yen x 2 = 9706.62 yen for the rides.",
+      "They spent a total of 2978.17 yen + 2316.36 yen + 9706.62 yen = 15001.15 yen.",
+      "So each of them paid 15001.15 yen / 3 = 5000.38 yen.",
+      "#### 5000.38"
+    ],
+    "final_scalar": 5000.38,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Three friends spent 2978.17 yen on 3 tickets to the matsuri. They also spent 661.81 yen less on bento than on the tickets. They also went on 2 different attractions which costs 4853.31 yen for each attraction. If they agreed to split all the costs evenly, how much did each of them pay?",
+    "adapted_answer": [
+      "They spent 2978.17 yen - 661.81 yen = 2316.36 yen on bento.",
+      "They spent 4853.31 yen x 2 = 9706.62 yen for the attractions.",
+      "They spent a total of 2978.17 yen + 2316.36 yen + 9706.62 yen = 15001.15 yen.",
+      "So each of them paid 15001.15 yen / 3 = 5000.38 yen.",
+      "#### 5000.38"
+    ],
+    "adaptation_notes": "Replaced 'fair' with 'matsuri', 'food' with 'bento', and 'rides' with 'attractions' to provide a Japanese context."
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "index": 621,
+  "split": "test",
+  "original": {
+    "question": "John injured his back and needs to go to physical therapy.  He went to physical therapy for 6 weeks.  Each week he went twice for 2 hours at a time.  If the sessions cost $125 per hour how much did the physical therapy cost?",
+    "answer": "Each week he did 2*2=<<2*2=4>>4 hours of physical therapy\nSo it cost 4*125=$<<4*125=500>>500 per week\nThis means he spent 500*6=$<<500*6=3000>>3000\n#### 3000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "Name 'John' and unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "session_cost",
+      "value": 125.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 3000.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"session_cost\", \"value\": 125.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 3000.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "session_cost",
+        "original_value": 125.0,
+        "original_unit": "dollar",
+        "converted_value": 18383.75,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "weekly_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 73535.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 3000.0,
+        "original_unit": "dollar",
+        "converted_value": 441210.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John injured his back and needs to go to physical therapy.  He went to physical therapy for {number_of_weeks} weeks.  Each week he went {number_of_sessions_per_week} times for {number_of_hours_per_session} hours at a time.  If the sessions cost ${session_cost} per hour how much did the physical therapy cost?",
+    "templatized_answer": [
+      "Each week he did {number_of_sessions_per_week}*{number_of_hours_per_session}={number_of_sessions_per_week}*{number_of_hours_per_session} hours of physical therapy",
+      "So it cost {number_of_sessions_per_week}*{number_of_hours_per_session}*{session_cost}=${number_of_sessions_per_week}*{number_of_hours_per_session}*{session_cost} per week",
+      "This means he spent {number_of_sessions_per_week}*{number_of_hours_per_session}*{session_cost}*{number_of_weeks}=${number_of_sessions_per_week}*{number_of_hours_per_session}*{session_cost}*{number_of_weeks}",
+      "#### {number_of_sessions_per_week}*{number_of_hours_per_session}*{session_cost}*{number_of_weeks}"
+    ],
+    "factual_assignment": {
+      "session_cost": 125.0,
+      "number_of_weeks": 6,
+      "number_of_sessions_per_week": 2,
+      "number_of_hours_per_session": 2
+    }
+  },
+  "merged_assignment": {
+    "session_cost": 18383.75,
+    "number_of_weeks": 6,
+    "number_of_sessions_per_week": 2,
+    "number_of_hours_per_session": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    session_cost = 18383.75\n    number_of_weeks = 6\n    number_of_sessions_per_week = 2\n    number_of_hours_per_session = 2\n\n    hours_per_week = number_of_sessions_per_week * number_of_hours_per_session\n    cost_per_week = hours_per_week * session_cost\n    total_cost = cost_per_week * number_of_weeks\n\n    return {\n        \"number_of_sessions_per_week\": number_of_sessions_per_week,\n        \"number_of_hours_per_session\": number_of_hours_per_session,\n        \"number_of_sessions_per_week*number_of_hours_per_session\": hours_per_week,\n        \"number_of_sessions_per_week*number_of_hours_per_session*session_cost\": cost_per_week,\n        \"number_of_sessions_per_week*number_of_hours_per_session*session_cost*number_of_weeks\": total_cost,\n        \"session_cost\": session_cost,\n        \"number_of_weeks\": number_of_weeks\n    }\n\nprint(recompute())\n",
+    "results": {
+      "number_of_sessions_per_week": 2,
+      "number_of_hours_per_session": 2,
+      "number_of_sessions_per_week*number_of_hours_per_session": 4,
+      "number_of_sessions_per_week*number_of_hours_per_session*session_cost": 73535.0,
+      "number_of_sessions_per_week*number_of_hours_per_session*session_cost*number_of_weeks": 441210.0,
+      "session_cost": 18383.75,
+      "number_of_weeks": 6
+    }
+  },
+  "final": {
+    "question": "John injured his back and needs to go to physical therapy.  He went to physical therapy for 6 weeks.  Each week he went 2 times for 2 hours at a time.  If the sessions cost 18383.75 yen per hour how much did the physical therapy cost?",
+    "answer_lines": [
+      "Each week he did 2*2=4 hours of physical therapy",
+      "So it cost 4*18383.75=73535 yen per week",
+      "This means he spent 73535*6=441210 yen",
+      "#### 441210"
+    ],
+    "final_scalar": 441210,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro injured his back and needs to go to physical therapy.  He went to physical therapy for 6 weeks.  Each week he went 2 times for 2 hours at a time.  If the sessions cost 18383.75 yen per hour how much did the physical therapy cost?",
+    "adapted_answer": [
+      "Each week he did 2*2=4 hours of physical therapy",
+      "So it cost 4*18383.75=73535 yen per week",
+      "This means he spent 73535*6=441210 yen",
+      "#### 441210"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro', a common Japanese name."
+  }
+}

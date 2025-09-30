@@ -1,0 +1,137 @@
+{
+  "index": 1191,
+  "split": "test",
+  "original": {
+    "question": "May is getting her hair cut and colored. It costs $40 for the color and $30 per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "answer": "She had 2 inches cut because 10-8=<<10-8=2>>2\nIt cost $60 for the cut because 2 x 30 =<<2*30=60>>60\nIt cost $100 total because 40+60=<<40+60=100>>100\n#### 100"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hair_color_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hair_cut_cost_per_inch",
+      "value": 30,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "hair_cut_cost",
+      "value": 60,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hair_color_cost\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hair_cut_cost_per_inch\", \"value\": 30, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"hair_cut_cost\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hair_color_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 5882.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "hair_cut_cost_per_inch",
+        "original_value": 30,
+        "original_unit": "dollar",
+        "converted_value": 4412.1,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "hair_cut_cost",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 8824.2,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "May is getting her hair cut and colored. It costs ${hair_color_cost} for the color and ${hair_cut_cost_per_inch} per inch of haircut. If her hair started at {initial_hair_length} inches and ended at {final_hair_length}, how much did her cut and color cost?",
+    "templatized_answer": [
+      "She had {hair_length_cut} inches cut because {initial_hair_length}-{final_hair_length}={hair_length_cut}",
+      "It cost ${hair_cut_cost} for the cut because {hair_length_cut} x {hair_cut_cost_per_inch}={hair_cut_cost}",
+      "It cost ${total_cost} total because {hair_color_cost}+{hair_cut_cost}={total_cost}",
+      "#### {total_cost}"
+    ],
+    "factual_assignment": {
+      "hair_color_cost": 40,
+      "hair_cut_cost_per_inch": 30,
+      "hair_cut_cost": 60,
+      "total_cost": 100,
+      "initial_hair_length": 10,
+      "final_hair_length": 8,
+      "hair_length_cut": 2
+    }
+  },
+  "merged_assignment": {
+    "hair_color_cost": 5882.8,
+    "hair_cut_cost_per_inch": 4412.1,
+    "hair_cut_cost": 8824.2,
+    "total_cost": 14707.0,
+    "initial_hair_length": 10,
+    "final_hair_length": 8,
+    "hair_length_cut": 2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hair_color_cost = 5882.8\n    hair_cut_cost_per_inch = 4412.1\n    initial_hair_length = 10\n    final_hair_length = 8\n\n    hair_length_cut = initial_hair_length - final_hair_length\n    hair_cut_cost = hair_length_cut * hair_cut_cost_per_inch\n    total_cost = hair_color_cost + hair_cut_cost\n\n    return {\n        \"hair_color_cost\": round(hair_color_cost, 2),\n        \"hair_cut_cost_per_inch\": round(hair_cut_cost_per_inch, 2),\n        \"hair_cut_cost\": round(hair_cut_cost, 2),\n        \"total_cost\": round(total_cost, 2),\n        \"initial_hair_length\": initial_hair_length,\n        \"final_hair_length\": final_hair_length,\n        \"hair_length_cut\": hair_length_cut\n    }\n",
+    "results": {
+      "hair_color_cost": 5882.8,
+      "hair_cut_cost_per_inch": 4412.1,
+      "hair_cut_cost": 8824.2,
+      "total_cost": 14707.0,
+      "initial_hair_length": 10,
+      "final_hair_length": 8,
+      "hair_length_cut": 2
+    }
+  },
+  "final": {
+    "question": "May is getting her hair cut and colored. It costs 5882.8 yen for the color and 4412.1 yen per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "answer_lines": [
+      "She had 2 inches cut because 10-8=2",
+      "It cost 8824.2 yen for the cut because 2 x 4412.1=8824.2",
+      "It cost 14707.0 yen total because 5882.8+8824.2=14707.0",
+      "#### 14707.0"
+    ],
+    "final_scalar": 14707.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui is getting her hair cut and colored. It costs 5882.8 yen for the color and 4412.1 yen per inch of haircut. If her hair started at 10 inches and ended at 8, how much did her cut and color cost?",
+    "adapted_answer": [
+      "She had 2 inches cut because 10-8=2",
+      "It cost 8824.2 yen for the cut because 2 x 4412.1=8824.2",
+      "It cost 14707.0 yen total because 5882.8+8824.2=14707.0",
+      "#### 14707.0"
+    ],
+    "adaptation_notes": "Replaced 'May' with 'Yui' to use a Japanese name."
+  }
+}

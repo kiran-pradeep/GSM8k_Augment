@@ -1,0 +1,194 @@
+{
+  "index": 764,
+  "split": "test",
+  "original": {
+    "question": "Leila buys 3 cucumbers from the market. Cucumbers are $2 each. Jack buys 5 tomatoes from the grocery store.  Tomatoes are $1 each. Chase buys 1 head of lettuce from the farmer’s market.  Lettuce cost $3 each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "answer": "Leila spends 3 x $2 = $<<3*2=6>>6.\nJack spends 5 x $1 = $<<5*1=5>>5.\nChase spends 1 x $3 = $<<1*3=3>>3.\nTogether, they spend a total of $6 + $5 + $3 = $<<6+5+3=14>>14.\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Leila",
+      "Jack",
+      "Chase",
+      "cucumbers",
+      "tomatoes",
+      "lettuce",
+      "dollars"
+    ],
+    "notes": "Names and food items are culturally specific to regions other than Korea, and the unit of currency is dollars."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cucumber_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tomato_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "lettuce_cost",
+      "value": 3,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "leila_spent",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "jack_spent",
+      "value": 5,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "chase_spent",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 14,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cucumber_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tomato_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"lettuce_cost\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"leila_spent\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"jack_spent\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"chase_spent\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 14, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cucumber_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "tomato_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 1389.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "lettuce_cost",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "leila_spent",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 8337.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "jack_spent",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 6947.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "chase_spent",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 4168.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 14,
+        "original_unit": "dollar",
+        "converted_value": 19453.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Leila buys {number_of_cucumbers} cucumbers from the market. Cucumbers are ${cucumber_cost} each. Jack buys {number_of_tomatoes} tomatoes from the grocery store.  Tomatoes are ${tomato_cost} each. Chase buys {number_of_lettuce} head of lettuce from the farmer’s market.  Lettuce cost ${lettuce_cost} each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "templatized_answer": [
+      "Leila spends {number_of_cucumbers} x ${cucumber_cost} = ${leila_spent}.",
+      "Jack spends {number_of_tomatoes} x ${tomato_cost} = ${jack_spent}.",
+      "Chase spends {number_of_lettuce} x ${lettuce_cost} = ${chase_spent}.",
+      "Together, they spend a total of ${leila_spent} + ${jack_spent} + ${chase_spent} = ${total_spent}.",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "number_of_cucumbers": 3,
+      "cucumber_cost": 2,
+      "number_of_tomatoes": 5,
+      "tomato_cost": 1,
+      "number_of_lettuce": 1,
+      "lettuce_cost": 3,
+      "leila_spent": 6,
+      "jack_spent": 5,
+      "chase_spent": 3,
+      "total_spent": 14
+    }
+  },
+  "merged_assignment": {
+    "number_of_cucumbers": 3,
+    "cucumber_cost": 2779.0,
+    "number_of_tomatoes": 5,
+    "tomato_cost": 1389.5,
+    "number_of_lettuce": 1,
+    "lettuce_cost": 4168.5,
+    "leila_spent": 8337.0,
+    "jack_spent": 6947.5,
+    "chase_spent": 4168.5,
+    "total_spent": 19453.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_cucumbers = 3\n    cucumber_cost = 2779.0\n    number_of_tomatoes = 5\n    tomato_cost = 1389.5\n    number_of_lettuce = 1\n    lettuce_cost = 4168.5\n\n    leila_spent = round(number_of_cucumbers * cucumber_cost, 2)\n    jack_spent = round(number_of_tomatoes * tomato_cost, 2)\n    chase_spent = round(number_of_lettuce * lettuce_cost, 2)\n    total_spent = round(leila_spent + jack_spent + chase_spent, 2)\n\n    return {\n        \"number_of_cucumbers\": number_of_cucumbers,\n        \"cucumber_cost\": cucumber_cost,\n        \"number_of_tomatoes\": number_of_tomatoes,\n        \"tomato_cost\": tomato_cost,\n        \"number_of_lettuce\": number_of_lettuce,\n        \"lettuce_cost\": lettuce_cost,\n        \"leila_spent\": leila_spent,\n        \"jack_spent\": jack_spent,\n        \"chase_spent\": chase_spent,\n        \"total_spent\": total_spent\n    }\n",
+    "results": {
+      "number_of_cucumbers": 3,
+      "cucumber_cost": 2779.0,
+      "number_of_tomatoes": 5,
+      "tomato_cost": 1389.5,
+      "number_of_lettuce": 1,
+      "lettuce_cost": 4168.5,
+      "leila_spent": 8337.0,
+      "jack_spent": 6947.5,
+      "chase_spent": 4168.5,
+      "total_spent": 19453.0
+    }
+  },
+  "final": {
+    "question": "Leila buys 3 cucumbers from the market. Cucumbers are 2779.0 won each. Jack buys 5 tomatoes from the grocery store.  Tomatoes are 1389.5 won each. Chase buys 1 head of lettuce from the farmer’s market.  Lettuce cost 4168.5 won each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "answer_lines": [
+      "Leila spends 3 x 2779.0 won = 8337.0 won.",
+      "Jack spends 5 x 1389.5 won = 6947.5 won.",
+      "Chase spends 1 x 4168.5 won = 4168.5 won.",
+      "Together, they spend a total of 8337.0 won + 6947.5 won + 4168.5 won = 19453.0 won.",
+      "#### 19453.0"
+    ],
+    "final_scalar": 19453.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yoon-ah buys 3 from the market.  are 2779.0 won each. Min-soo buys 5 from the grocery store.  are 1389.5 won each. Joon-oh buys 1 head of from the farmer’s market.  cost 4168.5 won each. Together, how much did the three of them spend to make a salad for the potluck?",
+    "adapted_answer": [
+      "Yoon-ah spends 3 x 2779.0 won = 8337.0 won.",
+      "Min-soo spends 5 x 1389.5 won = 6947.5 won.",
+      "Joon-oh spends 1 x 4168.5 won = 4168.5 won.",
+      "Together, they spend a total of 8337.0 won + 6947.5 won + 4168.5 won = 19453.0 won.",
+      "#### 19453.0"
+    ],
+    "adaptation_notes": "Replaced 'Leila' with 'Yoon-ah', 'Jack' with 'Min-soo', 'Chase' with 'Joon-oh', 'cucumbers' with '', 'tomatoes' with '', and 'lettuce' with '' to give the text a Korean context."
+  }
+}

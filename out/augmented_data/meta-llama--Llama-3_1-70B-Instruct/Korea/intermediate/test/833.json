@@ -1,0 +1,133 @@
+{
+  "index": 833,
+  "split": "test",
+  "original": {
+    "question": "Naruto can lift a mountain ten times higher than Kagiyami can.  But Kagiyami can lift a mountain 4 times higher than Saskay can.  And Saskay can lift a mountain 12 times higher than Pompei can.  If Pompei can lift a mountain 1 inch, how high can Naruto lift a mountain, in feet?",
+    "answer": "If Pompei can lift a mountain 1 inch, and Saskay can lift a mountain 12 times higher than Pompei can, then Saskay can lift a mountain 12*1=12 inches=1 foot.\nSince Kagiyami can lift a mountain 4 times higher than Saskay, then Kagiyami can lift a mountain 4*1=<<4*1=4>>4 feet.\nAnd since Naruto can lift a mountain ten times higher than Kagiyami. then Naruto can lift a mountain 10*4=<<10*4=40>>40 feet.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Naruto",
+      "Kagiyami",
+      "Saskay",
+      "Pompei",
+      "inches",
+      "feet"
+    ],
+    "notes": "The names are of Japanese and possibly other non-Korean origins, and the units are imperial units commonly used in the US."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pompei_lift",
+      "value": 1,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "saskay_lift",
+      "value": 1,
+      "unit": "foot",
+      "context": "answer"
+    },
+    {
+      "variable": "kagiyami_lift",
+      "value": 4,
+      "unit": "feet",
+      "context": "answer"
+    },
+    {
+      "variable": "naruto_lift",
+      "value": 40,
+      "unit": "feet",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"inch\": {\"unit\": \"meters\", \"factor\": 0.0254},\n        \"foot\": {\"unit\": \"meters\", \"factor\": 0.3048},\n        \"feet\": {\"unit\": \"meters\", \"factor\": 0.3048},\n        \"mile\": {\"unit\": \"kilometers\", \"factor\": 1.60934},\n        \"miles\": {\"unit\": \"kilometers\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilograms\", \"factor\": 0.453592},\n        \"pounds\": {\"unit\": \"kilograms\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"grams\", \"factor\": 28.3495},\n        \"ounces\": {\"unit\": \"grams\", \"factor\": 28.3495},\n        \"gallon\": {\"unit\": \"liters\", \"factor\": 3.78541},\n        \"gallons\": {\"unit\": \"liters\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliters\", \"factor\": 236.588},\n        \"cups\": {\"unit\": \"milliliters\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"dollars\": {\"unit\": \"won\", \"factor\": 1389.5},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pompei_lift\", \"value\": 1, \"unit\": \"inch\", \"context\": \"question\"},\n    {\"variable\": \"saskay_lift\", \"value\": 1, \"unit\": \"foot\", \"context\": \"answer\"},\n    {\"variable\": \"kagiyami_lift\", \"value\": 4, \"unit\": \"feet\", \"context\": \"answer\"},\n    {\"variable\": \"naruto_lift\", \"value\": 40, \"unit\": \"feet\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pompei_lift",
+        "original_value": 1,
+        "original_unit": "inch",
+        "converted_value": 0.03,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "saskay_lift",
+        "original_value": 1,
+        "original_unit": "foot",
+        "converted_value": 0.3,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "kagiyami_lift",
+        "original_value": 4,
+        "original_unit": "feet",
+        "converted_value": 1.22,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "naruto_lift",
+        "original_value": 40,
+        "original_unit": "feet",
+        "converted_value": 12.19,
+        "converted_unit": "meters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Naruto can lift a mountain ten times higher than Kagiyami can.  But Kagiyami can lift a mountain 4 times higher than Saskay can.  And Saskay can lift a mountain 12 times higher than Pompei can.  If Pompei can lift a mountain {pompei_lift} inch, how high can Naruto lift a mountain, in feet?",
+    "templatized_answer": [
+      "If Pompei can lift a mountain {pompei_lift} inch, and Saskay can lift a mountain 12 times higher than Pompei can, then Saskay can lift a mountain 12*{pompei_lift}={saskay_lift} inches={saskay_lift} foot.",
+      "Since Kagiyami can lift a mountain 4 times higher than Saskay, then Kagiyami can lift a mountain 4*{saskay_lift}={kagiyami_lift} feet.",
+      "And since Naruto can lift a mountain ten times higher than Kagiyami. then Naruto can lift a mountain 10*{kagiyami_lift}={naruto_lift} feet.",
+      "#### {naruto_lift}"
+    ],
+    "factual_assignment": {
+      "pompei_lift": 1,
+      "saskay_lift": 1,
+      "kagiyami_lift": 4,
+      "naruto_lift": 40
+    }
+  },
+  "merged_assignment": {
+    "pompei_lift": 0.03,
+    "saskay_lift": 0.3,
+    "kagiyami_lift": 1.22,
+    "naruto_lift": 12.19
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pompei_lift = 0.03  # inches\n    saskay_lift_inches = 12 * pompei_lift\n    saskay_lift = round(saskay_lift_inches / 12, 2)  # feet\n    kagiyami_lift = round(4 * saskay_lift, 2)  # feet\n    naruto_lift = round(10 * kagiyami_lift, 2)  # feet\n\n    return {\n        \"pompei_lift\": pompei_lift,\n        \"saskay_lift\": saskay_lift,\n        \"kagiyami_lift\": kagiyami_lift,\n        \"naruto_lift\": naruto_lift\n    }\n\nprint(recompute())\n",
+    "results": {
+      "pompei_lift": 0.03,
+      "saskay_lift": 0.03,
+      "kagiyami_lift": 0.12,
+      "naruto_lift": 1.2
+    }
+  },
+  "final": {
+    "question": "Naruto can lift a mountain ten times higher than Kagiyami can.  But Kagiyami can lift a mountain 4 times higher than Saskay can.  And Saskay can lift a mountain 12 times higher than Pompei can.  If Pompei can lift a mountain 0.03 meters, how high can Naruto lift a mountain, in meters?",
+    "answer_lines": [
+      "If Pompei can lift a mountain 0.03 meters, and Saskay can lift a mountain 12 times higher than Pompei can, then Saskay can lift a mountain 12*0.03=0.36 meters.",
+      "Since Kagiyami can lift a mountain 4 times higher than Saskay, then Kagiyami can lift a mountain 4*0.36=1.44 meters.",
+      "And since Naruto can lift a mountain ten times higher than Kagiyami. then Naruto can lift a mountain 10*1.44=14.4 meters.",
+      "#### 14.4"
+    ],
+    "final_scalar": 14.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Seunggi can lift a mountain ten times higher than Jiwon can.  But Jiwon can lift a mountain 4 times higher than Minju can.  And Minju can lift a mountain 12 times higher than Haneul can.  If Haneul can lift a mountain 0.03 meters, how high can Seunggi lift a mountain, in meters?",
+    "adapted_answer": [
+      "If Haneul can lift a mountain 0.03 meters, and Minju can lift a mountain 12 times higher than Haneul can, then Minju can lift a mountain 12*0.03=0.36 meters.",
+      "Since Jiwon can lift a mountain 4 times higher than Minju, then Jiwon can lift a mountain 4*0.36=1.44 meters.",
+      "And since Seunggi can lift a mountain ten times higher than Jiwon. then Seunggi can lift a mountain 10*1.44=14.4 meters.",
+      "#### 14.4"
+    ],
+    "adaptation_notes": "Replaced names with Korean equivalents: Naruto -> Seunggi, Kagiyami -> Jiwon, Saskay -> Minju, Pompei -> Haneul."
+  }
+}

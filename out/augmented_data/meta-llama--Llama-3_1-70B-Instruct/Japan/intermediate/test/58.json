@@ -1,0 +1,159 @@
+{
+  "index": 58,
+  "split": "test",
+  "original": {
+    "question": "Stephen placed an online order for groceries.  His final bill came to $40.00.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him $3.00 in delivery fees.  Stephen also added a $4.00 tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "answer": "He spent $40.00 on groceries but they charged him a 25% fee so that's 40*.25 = $10.00\nThere is also a $3.00 delivery fee and a $4.00 tip for an extra $3 + $4 = $<<3+4=7.00>>7.00 in fees\nHis groceries were $40.00, there's a $10.00 fee plus another $7.00 in delivery/tip fees for a final total of $40 + $10 + $7 = $<<40+10+7=57.00>>57.00\n#### 57"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_bill",
+      "value": 40.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "delivery_fee",
+      "value": 3.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "tip",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "fee",
+      "value": 10.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "extra_fees",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "final_total",
+      "value": 57.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_bill\", \"value\": 40.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"delivery_fee\", \"value\": 3.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"tip\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"fee\", \"value\": 10.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"extra_fees\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"final_total\", \"value\": 57.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_bill",
+        "original_value": 40.0,
+        "original_unit": "dollar",
+        "converted_value": 5882.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "delivery_fee",
+        "original_value": 3.0,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "tip",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "fee",
+        "original_value": 10.0,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "extra_fees",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "final_total",
+        "original_value": 57.0,
+        "original_unit": "dollar",
+        "converted_value": 8382.99,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Stephen placed an online order for groceries.  His final bill came to ${initial_bill}.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him ${delivery_fee} in delivery fees.  Stephen also added a ${tip} tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "templatized_answer": [
+      "He spent ${initial_bill} on groceries but they charged him a 25% fee so that's {initial_bill} * 0.25 = ${fee}",
+      "There is also a ${delivery_fee} delivery fee and a ${tip} tip for an extra ${delivery_fee} + ${tip} = ${extra_fees} in fees",
+      "His groceries were ${initial_bill}, there's a ${fee} fee plus another ${extra_fees} in delivery/tip fees for a final total of ${initial_bill} + ${fee} + ${extra_fees} = ${final_total}"
+    ],
+    "factual_assignment": {
+      "initial_bill": 40.0,
+      "delivery_fee": 3.0,
+      "tip": 4.0,
+      "fee": 10.0,
+      "extra_fees": 7.0,
+      "final_total": 57.0
+    }
+  },
+  "merged_assignment": {
+    "initial_bill": 5882.8,
+    "delivery_fee": 441.21,
+    "tip": 588.28,
+    "fee": 1470.7,
+    "extra_fees": 1029.49,
+    "final_total": 8382.99
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_bill = 5882.8\n    delivery_fee = 441.21\n    tip = 588.28\n\n    fee = round(initial_bill * 0.25, 2)\n    extra_fees = round(delivery_fee + tip, 2)\n    final_total = round(initial_bill + fee + extra_fees, 2)\n\n    return {\n        \"initial_bill\": initial_bill,\n        \"delivery_fee\": delivery_fee,\n        \"tip\": tip,\n        \"fee\": fee,\n        \"extra_fees\": extra_fees,\n        \"final_total\": final_total\n    }\n",
+    "results": {
+      "initial_bill": 5882.8,
+      "delivery_fee": 441.21,
+      "tip": 588.28,
+      "fee": 1470.7,
+      "extra_fees": 1029.49,
+      "final_total": 8382.99
+    }
+  },
+  "final": {
+    "question": "Stephen placed an online order for groceries.  His final bill came to 5882.8 yen.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him 441.21 yen in delivery fees.  Stephen also added a 588.28 yen tip.  After the extra fees, what was the final price of Stephen's groceries?",
+    "answer_lines": [
+      "He spent 5882.8 yen on groceries but they charged him a 25% fee so that's 5882.8 * 0.25 = 1470.7 yen",
+      "There is also a 441.21 yen delivery fee and a 588.28 yen tip for an extra 441.21 + 588.28 = 1029.49 yen in fees",
+      "His groceries were 5882.8 yen, there's a 1470.7 yen fee plus another 1029.49 yen in delivery/tip fees for a final total of 5882.8 + 1470.7 + 1029.49 = 8382.99 yen",
+      "#### 8382.99"
+    ],
+    "final_scalar": 8382.99,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro placed an online order for groceries.  His final bill came to 5882.8 yen.  Because this was through a delivery vendor, they tacked on a 25% fee to his final total and charged him 441.21 yen in delivery fees.  Taro also added a 588.28 yen tip.  After the extra fees, what was the final price of Taro's groceries?",
+    "adapted_answer": [
+      "He spent 5882.8 yen on groceries but they charged him a 25% fee so that's 5882.8 * 0.25 = 1470.7 yen",
+      "There is also a 441.21 yen delivery fee and a 588.28 yen tip for an extra 441.21 + 588.28 = 1029.49 yen in fees",
+      "His groceries were 5882.8 yen, there's a 1470.7 yen fee plus another 1029.49 yen in delivery/tip fees for a final total of 5882.8 + 1470.7 + 1029.49 = 8382.99 yen",
+      "#### 8382.99"
+    ],
+    "adaptation_notes": "Replaced 'Stephen' with 'Taro' to give the name a Japanese context."
+  }
+}

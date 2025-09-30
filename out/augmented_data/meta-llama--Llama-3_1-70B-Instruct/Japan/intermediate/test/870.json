@@ -1,0 +1,109 @@
+{
+  "index": 870,
+  "split": "test",
+  "original": {
+    "question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about $400 per month. In a four-week month, how many dollars does Keenan spend per week if Madeline pays 60% of the cost?",
+    "answer": "They spend $400/4=$<<400/4=100>>100 per week.\nKeenan pays for 100-60=<<100-60=40>>40% of the groceries.\nThus, she spends $100*(40/100)=$<<100*40/100=40>>40 per week.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_grocery_cost",
+      "value": 400,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_grocery_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "keenan_weekly_grocery_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"yen\": 147.07},\n        \"pound\": {\"kilogram\": 0.453592},\n        \"ounce\": {\"gram\": 28.3495},\n        \"mile\": {\"kilometer\": 1.60934},\n        \"foot\": {\"meter\": 0.3048},\n        \"gallon\": {\"liter\": 3.78541},\n        \"cup\": {\"milliliter\": 236.588}\n    }\n\n    def convert(value, unit):\n        if unit in conversions:\n            for new_unit, factor in conversions[unit].items():\n                return round(value * factor, 2), new_unit\n        return value, unit\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] not in [\"yen\", \"kilogram\", \"gram\", \"kilometer\", \"meter\", \"liter\", \"milliliter\"]:\n            converted_value, converted_unit = convert(metric[\"value\"], metric[\"unit\"])\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": converted_unit\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"monthly_grocery_cost\",\n    \"value\": 400,\n    \"unit\": \"dollar\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"weekly_grocery_cost\",\n    \"value\": 100,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"keenan_weekly_grocery_cost\",\n    \"value\": 40,\n    \"unit\": \"dollar\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_grocery_cost",
+        "original_value": 400,
+        "original_unit": "dollar",
+        "converted_value": 58828.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "weekly_grocery_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "keenan_weekly_grocery_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 5882.8,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about ${monthly_grocery_cost} per month. In a four-week month, how many dollars does Keenan spend per week if Madeline pays 60% of the cost?",
+    "templatized_answer": [
+      "They spend ${monthly_grocery_cost}/4=${monthly_grocery_cost}/4 per week.",
+      "Keenan pays for {monthly_grocery_cost}/4-60={monthly_grocery_cost}/4-60% of the groceries.",
+      "Thus, she spends ${monthly_grocery_cost}/4*(40/100)=${monthly_grocery_cost}/4*(40/100) per week.",
+      "#### ${monthly_grocery_cost}/4*(40/100)"
+    ],
+    "factual_assignment": {
+      "monthly_grocery_cost": 400
+    }
+  },
+  "merged_assignment": {
+    "monthly_grocery_cost": 58828.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_grocery_cost = 58828.0\n\n    monthly_grocery_cost_per_week = monthly_grocery_cost / 4\n    keenan_monthly_grocery_cost_percentage = 40 / 100\n    keenan_weekly_grocery_cost = monthly_grocery_cost_per_week * keenan_monthly_grocery_cost_percentage\n\n    return {\n        \"monthly_grocery_cost\": monthly_grocery_cost,\n        \"monthly_grocery_cost/4\": round(monthly_grocery_cost_per_week, 2),\n        \"monthly_grocery_cost/4-60\": round(monthly_grocery_cost_per_week * (1 - 0.6), 2),\n        \"monthly_grocery_cost/4*(40/100)\": round(keenan_weekly_grocery_cost, 2)\n    }\n",
+    "results": {
+      "monthly_grocery_cost": 58828.0,
+      "monthly_grocery_cost/4": 14707.0,
+      "monthly_grocery_cost/4-60": 5882.8,
+      "monthly_grocery_cost/4*(40/100)": 5882.8
+    }
+  },
+  "final": {
+    "question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about 58828.0 yen per month. In a four-week month, how many yen does Keenan spend per week if Madeline pays 60% of the cost?",
+    "answer_lines": [
+      "They spend 58828.0/4=14707.0 yen per week.",
+      "Keenan pays for 14707.0-60=5882.8 yen of the groceries.",
+      "Thus, she spends 14707.0*(40/100)=5882.8 yen per week.",
+      "#### 5882.8"
+    ],
+    "final_scalar": 5882.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui and her roommate, Akira, share the cost of groceries. In total, they spend about 58828.0 yen per month. In a four-week month, how many yen does Akira spend per week if Yui pays 60% of the cost?",
+    "adapted_answer": [
+      "They spend 58828.0/4=14707.0 yen per week.",
+      "Akira pays for 14707.0-60=5882.8 yen of the groceries.",
+      "Thus, she spends 14707.0*(40/100)=5882.8 yen per week.",
+      "#### 5882.8"
+    ],
+    "adaptation_notes": "Replaced Madeline with Yui and Keenan with Akira to use Japanese names."
+  }
+}

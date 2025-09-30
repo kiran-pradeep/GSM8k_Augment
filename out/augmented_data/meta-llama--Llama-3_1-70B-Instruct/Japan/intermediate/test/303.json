@@ -1,0 +1,113 @@
+{
+  "index": 303,
+  "split": "test",
+  "original": {
+    "question": "Elise has been selling her Dad's collection of 250 books for three years. Each book sells at 20$, and she sold twice as many books in the first year as she has sold in the current year. There are currently 50 unsold books, and her sales number this year is 45. What's the total amount of money she earned in the second year?",
+    "answer": "If her sales in the current year are 45, she sold 45*2 = <<45*2=90>>90 books in the first year.\nThe total number of books sold in the first and current year is 90+45 = <<90+45=135>>135.\nThe total number of books sold in the second year is 250 of the original number of books - 135 sold books - 50 unsold books = <<250-135-50=65>>65 books.\nIf each book sells at 20$, then she earned 20*65 = $<<20*65=1300>>1300 in the second year\n#### 1300"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Elise",
+      "Dad",
+      "dollars"
+    ],
+    "notes": "The name 'Elise' and the term 'Dad' are Western cultural references, and 'dollars' is a unit of currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "book_price",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "second_year_earnings",
+      "value": 1300,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"book_price\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"second_year_earnings\", \"value\": 1300, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "book_price",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 2941.4,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "second_year_earnings",
+        "original_value": 1300,
+        "original_unit": "dollar",
+        "converted_value": 191191.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Elise has been selling her Dad's collection of {initial_books} books for three years. Each book sells at {book_price}$, and she sold twice as many books in the first year as she has sold in the current year. There are currently {unsold_books} unsold books, and her sales number this year is {current_year_sales}. What's the total amount of money she earned in the second year?",
+    "templatized_answer": [
+      "If her sales in the current year are {current_year_sales}, she sold {current_year_sales}*2 = {current_year_sales}*2 books in the first year.",
+      "The total number of books sold in the first and current year is {current_year_sales}*2+{current_year_sales} = {current_year_sales}*2+{current_year_sales}.",
+      "The total number of books sold in the second year is {initial_books} of the original number of books - {current_year_sales}*2+{current_year_sales} sold books - {unsold_books} unsold books = {initial_books}-{current_year_sales}*2-{current_year_sales}-{unsold_books} books.",
+      "If each book sells at {book_price}$, then she earned {book_price}*({initial_books}-{current_year_sales}*2-{current_year_sales}-{unsold_books}) = {book_price}*({initial_books}-{current_year_sales}*2-{current_year_sales}-{unsold_books}) in the second year",
+      "#### {second_year_earnings}"
+    ],
+    "factual_assignment": {
+      "initial_books": 250,
+      "book_price": 20,
+      "unsold_books": 50,
+      "current_year_sales": 45,
+      "second_year_earnings": 1300
+    }
+  },
+  "merged_assignment": {
+    "initial_books": 250,
+    "book_price": 2941.4,
+    "unsold_books": 50,
+    "current_year_sales": 45,
+    "second_year_earnings": 191191.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_books = 250\n    book_price = 2941.4\n    unsold_books = 50\n    current_year_sales = 45\n\n    first_year_sales = current_year_sales * 2\n    total_first_and_current_year_sales = first_year_sales + current_year_sales\n    second_year_sales = initial_books - total_first_and_current_year_sales - unsold_books\n    second_year_earnings = book_price * second_year_sales\n\n    return {\n        \"initial_books\": initial_books,\n        \"book_price\": book_price,\n        \"unsold_books\": unsold_books,\n        \"current_year_sales\": current_year_sales,\n        \"first_year_sales\": first_year_sales,\n        \"total_first_and_current_year_sales\": total_first_and_current_year_sales,\n        \"second_year_sales\": second_year_sales,\n        \"second_year_earnings\": round(second_year_earnings, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_books": 250,
+      "book_price": 2941.4,
+      "unsold_books": 50,
+      "current_year_sales": 45,
+      "first_year_sales": 90,
+      "total_first_and_current_year_sales": 135,
+      "second_year_sales": 65,
+      "second_year_earnings": 191191.0
+    }
+  },
+  "final": {
+    "question": "Elise has been selling her Dad's collection of 250 books for three years. Each book sells at 2941.4 yen, and she sold twice as many books in the first year as she has sold in the current year. There are currently 50 unsold books, and her sales number this year is 45. What's the total amount of money she earned in the second year?",
+    "answer_lines": [
+      "If her sales in the current year are 45, she sold 45*2 = 90 books in the first year.",
+      "The total number of books sold in the first and current year is 90+45 = 135.",
+      "The total number of books sold in the second year is 250 of the original number of books - 135 sold books - 50 unsold books = 65 books.",
+      "If each book sells at 2941.4 yen, then she earned 2941.4*(250-135-50) = 191191.0 yen in the second year",
+      "#### 191191.0"
+    ],
+    "final_scalar": 191191.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui has been selling her Otousan's collection of 250 books for three years. Each book sells at 2941.4 yen, and she sold twice as many books in the first year as she has sold in the current year. There are currently 50 unsold books, and her sales number this year is 45. What's the total amount of money she earned in the second year?",
+    "adapted_answer": [
+      "If her sales in the current year are 45, she sold 45*2 = 90 books in the first year.",
+      "The total number of books sold in the first and current year is 90+45 = 135.",
+      "The total number of books sold in the second year is 250 of the original number of books - 135 sold books - 50 unsold books = 65 books.",
+      "If each book sells at 2941.4 yen, then she earned 2941.4*(250-135-50) = 191191.0 yen in the second year",
+      "#### 191191.0"
+    ],
+    "adaptation_notes": "Replaced 'Elise' with 'Yui' and 'Dad' with 'Otosan' to give the text a Japanese context."
+  }
+}

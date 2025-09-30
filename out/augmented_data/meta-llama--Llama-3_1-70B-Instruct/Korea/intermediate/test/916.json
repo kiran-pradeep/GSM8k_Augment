@@ -1,0 +1,164 @@
+{
+  "index": 916,
+  "split": "test",
+  "original": {
+    "question": "Julia and Nadine were given the same amount of allowance by their mother. The two girls decided to combine their allowance to surprise their father on his birthday. They bought a cake which costs $11. They also bought 1 dozen balloons which were sold for $0.5 for 2 balloons. The remaining money was used to buy 2 tubs of ice cream for $7 each. How much did Julia and Nadine's mother give each one of them?",
+    "answer": "There are 12/2 = <<12/2=6>>6 pairs of balloons in 1 dozen.\nThe cost for buying a dozen balloons was $0.5 x 6 = $<<0.5*6=3>>3.\nThe cost of 2 tubs of ice cream was $7 x 2 = $<<7*2=14>>14.\nThe total cost of their purchases is $11 + $3 +$14 = $<<11+3+14=28>>28.\nSo their mother gave each of them $28/2 = $<<28/2=14>>14.\n#### 14"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Julia",
+      "Nadine",
+      "dollars",
+      "cake",
+      "balloons",
+      "ice cream"
+    ],
+    "notes": "The text contains Western names, units of currency, and food items not commonly associated with Korean cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "cake_cost",
+      "value": 11,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "balloon_cost",
+      "value": 0.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ice_cream_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 28,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "allowance",
+      "value": 14,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"cake_cost\", \"value\": 11, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"balloon_cost\", \"value\": 0.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ice_cream_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 28, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"allowance\", \"value\": 14, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "cake_cost",
+        "original_value": 11,
+        "original_unit": "dollar",
+        "converted_value": 15284.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "balloon_cost",
+        "original_value": 0.5,
+        "original_unit": "dollar",
+        "converted_value": 694.75,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "ice_cream_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 9726.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 28,
+        "original_unit": "dollar",
+        "converted_value": 38906.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "allowance",
+        "original_value": 14,
+        "original_unit": "dollar",
+        "converted_value": 19453.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Julia and Nadine were given the same amount of allowance by their mother. The two girls decided to combine their allowance to surprise their father on his birthday. They bought a cake which costs ${cake_cost}. They also bought 1 dozen balloons which were sold for ${balloon_cost} for 2 balloons. The remaining money was used to buy 2 tubs of ice cream for ${ice_cream_cost} each. How much did Julia and Nadine's mother give each one of them?",
+    "templatized_answer": [
+      "There are 12/2 = {number_of_balloon_pairs} pairs of balloons in 1 dozen.",
+      "The cost for buying a dozen balloons was ${balloon_cost} x {number_of_balloon_pairs} = ${total_balloon_cost}.",
+      "The cost of 2 tubs of ice cream was ${ice_cream_cost} x 2 = ${total_ice_cream_cost}.",
+      "The total cost of their purchases is ${cake_cost} + ${total_balloon_cost} + ${total_ice_cream_cost} = ${total_cost}.",
+      "So their mother gave each of them ${total_cost}/2 = ${allowance}.",
+      "#### {allowance}"
+    ],
+    "factual_assignment": {
+      "cake_cost": 11,
+      "balloon_cost": 0.5,
+      "ice_cream_cost": 7,
+      "number_of_balloon_pairs": 6,
+      "total_balloon_cost": 3,
+      "total_ice_cream_cost": 14,
+      "total_cost": 28,
+      "allowance": 14
+    }
+  },
+  "merged_assignment": {
+    "cake_cost": 15284.5,
+    "balloon_cost": 694.75,
+    "ice_cream_cost": 9726.5,
+    "number_of_balloon_pairs": 6,
+    "total_balloon_cost": 3,
+    "total_ice_cream_cost": 14,
+    "total_cost": 38906.0,
+    "allowance": 19453.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    cake_cost = 15284.5\n    balloon_cost = 694.75\n    ice_cream_cost = 9726.5\n\n    # Recompute intermediate steps\n    number_of_balloon_pairs = 12 / 2\n    total_balloon_cost = balloon_cost * number_of_balloon_pairs\n    total_ice_cream_cost = ice_cream_cost * 2\n    total_cost = cake_cost + total_balloon_cost + total_ice_cream_cost\n    allowance = total_cost / 2\n\n    # Round to 2 decimal places where appropriate\n    total_balloon_cost = round(total_balloon_cost, 2)\n    total_ice_cream_cost = round(total_ice_cream_cost, 2)\n    total_cost = round(total_cost, 2)\n    allowance = round(allowance, 2)\n\n    # Return a dict mapping placeholder -> numeric value\n    return {\n        \"cake_cost\": cake_cost,\n        \"balloon_cost\": balloon_cost,\n        \"ice_cream_cost\": ice_cream_cost,\n        \"number_of_balloon_pairs\": number_of_balloon_pairs,\n        \"total_balloon_cost\": total_balloon_cost,\n        \"total_ice_cream_cost\": total_ice_cream_cost,\n        \"total_cost\": total_cost,\n        \"allowance\": allowance\n    }\n",
+    "results": {
+      "cake_cost": 15284.5,
+      "balloon_cost": 694.75,
+      "ice_cream_cost": 9726.5,
+      "number_of_balloon_pairs": 6.0,
+      "total_balloon_cost": 4168.5,
+      "total_ice_cream_cost": 19453.0,
+      "total_cost": 38906.0,
+      "allowance": 19453.0
+    }
+  },
+  "final": {
+    "question": "Julia and Nadine were given the same amount of allowance by their mother. The two girls decided to combine their allowance to surprise their father on his birthday. They bought a cake which costs 15284.5 won. They also bought 1 dozen balloons which were sold for 694.75 won for 2 balloons. The remaining money was used to buy 2 tubs of ice cream for 9726.5 won each. How much did Julia and Nadine's mother give each one of them?",
+    "answer_lines": [
+      "There are 12/2 = 6.0 pairs of balloons in 1 dozen.",
+      "The cost for buying a dozen balloons was 694.75 won x 6.0 = 4168.5 won.",
+      "The cost of 2 tubs of ice cream was 9726.5 won x 2 = 19453.0 won.",
+      "The total cost of their purchases is 15284.5 won + 4168.5 won + 19453.0 won = 38906.0 won.",
+      "So their mother gave each of them 38906.0 won/2 = 19453.0 won.",
+      "#### 19453.0"
+    ],
+    "final_scalar": 19453.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Ji-hyun and Soo-young were given the same amount of allowance by their mother. The two girls decided to combine their allowance to surprise their father on his birthday. They bought a patbingsu which costs 15284.5 won. They also bought 1 dozen balloons which were sold for 694.75 won for 2 balloons. The remaining money was used to buy 2 tubs of bingsu for 9726.5 won each. How much did Ji-hyun and Soo-young's mother give each one of them?",
+    "adapted_answer": [
+      "There are 12/2 = 6.0 pairs of balloons in 1 dozen.",
+      "The cost for buying a dozen balloons was 694.75 won x 6.0 = 4168.5 won.",
+      "The cost of 2 tubs of bingsu was 9726.5 won x 2 = 19453.0 won.",
+      "The total cost of their purchases is 15284.5 won + 4168.5 won + 19453.0 won = 38906.0 won.",
+      "So their mother gave each of them 38906.0 won/2 = 19453.0 won.",
+      "#### 19453.0"
+    ],
+    "adaptation_notes": "Replaced names 'Julia' and 'Nadine' with Korean names 'Ji-hyun' and 'Soo-young', replaced 'cake' with 'patbingsu', and replaced 'ice cream' with 'bingsu'."
+  }
+}

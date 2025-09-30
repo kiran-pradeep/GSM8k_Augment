@@ -1,0 +1,105 @@
+{
+  "index": 575,
+  "split": "test",
+  "original": {
+    "question": "At the end of the school year, Kate asked her teacher if she could have the 3 boxes of 64 crayons since they were all worn down to small pieces.  The teacher agreed.  Kate took the crayons home and decided to make crayon muffins by melting 8 small pieces of crayons together in a muffin tin that she placed in an oven for a few minutes. If she can sell her muffin crayons for $1.50 each, how much money can Kate make?",
+    "answer": "She was able to get 3 boxes of 64 crayons so she has 3*64 = <<3*64=192>>192 crayons\nEach crayon muffin needs 8 crayons and she has 192 crayons so she can make 192/8 = <<192/8=24>>24 crayon muffins\nIf she makes 24 crayon muffins and sells them for $1.50 apiece, she can make 24*1.5 = $<<24*1.5=36.00>>36.00\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "crayon_muffin_price",
+      "value": 1.5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_earnings",
+      "value": 36.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"crayon_muffin_price\", \"value\": 1.5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_earnings\", \"value\": 36.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "crayon_muffin_price",
+        "original_value": 1.5,
+        "original_unit": "dollar",
+        "converted_value": 220.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_earnings",
+        "original_value": 36.0,
+        "original_unit": "dollar",
+        "converted_value": 5294.52,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "At the end of the school year, Kate asked her teacher if she could have the {number_of_boxes} boxes of {number_of_crayons_per_box} crayons since they were all worn down to small pieces.  The teacher agreed.  Kate took the crayons home and decided to make crayon muffins by melting {number_of_crayons_per_muffin} small pieces of crayons together in a muffin tin that she placed in an oven for a few minutes. If she can sell her muffin crayons for ${crayon_muffin_price} each, how much money can Kate make?",
+    "templatized_answer": [
+      "She was able to get {number_of_boxes} boxes of {number_of_crayons_per_box} crayons so she has {number_of_boxes}*{number_of_crayons_per_box} = {number_of_boxes}*{number_of_crayons_per_box} crayons",
+      "Each crayon muffin needs {number_of_crayons_per_muffin} crayons and she has {number_of_boxes}*{number_of_crayons_per_box} crayons so she can make ({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin} = ({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin} crayon muffins",
+      "If she makes ({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin} crayon muffins and sells them for ${crayon_muffin_price} apiece, she can make (({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin})*{crayon_muffin_price} = $(({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin})*{crayon_muffin_price}",
+      "#### $(({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin})*{crayon_muffin_price}"
+    ],
+    "factual_assignment": {
+      "number_of_boxes": 3,
+      "number_of_crayons_per_box": 64,
+      "number_of_crayons_per_muffin": 8,
+      "crayon_muffin_price": 1.5
+    }
+  },
+  "merged_assignment": {
+    "number_of_boxes": 3,
+    "number_of_crayons_per_box": 64,
+    "number_of_crayons_per_muffin": 8,
+    "crayon_muffin_price": 220.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_boxes = 3\n    number_of_crayons_per_box = 64\n    number_of_crayons_per_muffin = 8\n    crayon_muffin_price = 220.6\n\n    total_crayons = number_of_boxes * number_of_crayons_per_box\n    total_crayon_muffins = total_crayons / number_of_crayons_per_muffin\n    total_earnings = total_crayon_muffins * crayon_muffin_price\n\n    return {\n        \"number_of_boxes\": number_of_boxes,\n        \"number_of_crayons_per_box\": number_of_crayons_per_box,\n        \"number_of_crayons_per_muffin\": number_of_crayons_per_muffin,\n        \"crayon_muffin_price\": round(crayon_muffin_price, 2),\n        \"number_of_boxes*number_of_crayons_per_box\": total_crayons,\n        \"({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin}\": round(total_crayon_muffins, 2),\n        \"(({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin})*{crayon_muffin_price}\": round(total_earnings, 2)\n    }\n",
+    "results": {
+      "number_of_boxes": 3,
+      "number_of_crayons_per_box": 64,
+      "number_of_crayons_per_muffin": 8,
+      "crayon_muffin_price": 220.6,
+      "number_of_boxes*number_of_crayons_per_box": 192,
+      "({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin}": 24.0,
+      "(({number_of_boxes}*{number_of_crayons_per_box})/{number_of_crayons_per_muffin})*{crayon_muffin_price}": 5294.4
+    }
+  },
+  "final": {
+    "question": "At the end of the school year, Kate asked her teacher if she could have the 3 boxes of 64 crayons since they were all worn down to small pieces.  The teacher agreed.  Kate took the crayons home and decided to make crayon muffins by melting 8 small pieces of crayons together in a muffin tin that she placed in an oven for a few minutes. If she can sell her muffin crayons for 220.6 yen each, how much money can Kate make?",
+    "answer_lines": [
+      "She was able to get 3 boxes of 64 crayons so she has 3*64 = 192 crayons",
+      "Each crayon muffin needs 8 crayons and she has 192 crayons so she can make 192/8 = 24.0 crayon muffins",
+      "If she makes 24.0 crayon muffins and sells them for 220.6 yen apiece, she can make 24.0*220.6 = 5294.4 yen",
+      "#### 5294.4"
+    ],
+    "final_scalar": 5294.4,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "At the end of the school year, Yui asked her teacher if she could have the 3 boxes of 64 crayons since they were all worn down to small pieces.  The teacher agreed.  Yui took the crayons home and decided to make crayon manju by melting 8 small pieces of crayons together in a manju tin that she placed in an oven for a few minutes. If she can sell her manju crayons for 220.6 yen each, how much money can Yui make?",
+    "adapted_answer": [
+      "She was able to get 3 boxes of 64 crayons so she has 3*64 = 192 crayons",
+      "Each crayon manju needs 8 crayons and she has 192 crayons so she can make 192/8 = 24.0 crayon manju",
+      "If she makes 24.0 crayon manju and sells them for 220.6 yen apiece, she can make 24.0*220.6 = 5294.4 yen",
+      "#### 5294.4"
+    ],
+    "adaptation_notes": "Replaced 'Kate' with 'Yui', 'muffin' with 'manju', and assumed 'yen' was already Japan-specific."
+  }
+}

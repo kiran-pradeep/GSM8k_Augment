@@ -1,0 +1,161 @@
+{
+  "index": 1034,
+  "split": "test",
+  "original": {
+    "question": "Ted starts with $200. He buys 3 books for 16 dollars each and 3 pencils for 6 dollars each. How much did he spend in total?",
+    "answer": "Ted spent a total of 3*16 = <<3*16=48>>48 dollars on books.\nTed spent a total of 3*6 = <<3*6=18>>18 dollars on pencils.\nIn total Ted spent 48+18 = <<48+18=66>>66 dollars.\n#### 66"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Ted",
+      "dollars"
+    ],
+    "notes": "The name 'Ted' and the unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_funds",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "book_cost",
+      "value": 16.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "pencil_cost",
+      "value": 6.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_book_cost",
+      "value": 48.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_pencil_cost",
+      "value": 18.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spent",
+      "value": 66.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_funds\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"book_cost\", \"value\": 16.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"pencil_cost\", \"value\": 6.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_book_cost\", \"value\": 48.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_pencil_cost\", \"value\": 18.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spent\", \"value\": 66.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_funds",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 29414.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "book_cost",
+        "original_value": 16.0,
+        "original_unit": "dollar",
+        "converted_value": 2353.12,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "pencil_cost",
+        "original_value": 6.0,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_book_cost",
+        "original_value": 48.0,
+        "original_unit": "dollar",
+        "converted_value": 7059.36,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_pencil_cost",
+        "original_value": 18.0,
+        "original_unit": "dollar",
+        "converted_value": 2647.26,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 66.0,
+        "original_unit": "dollar",
+        "converted_value": 9706.62,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ted starts with ${initial_funds}. He buys 3 books for {book_cost} dollars each and 3 pencils for {pencil_cost} dollars each. How much did he spend in total?",
+    "templatized_answer": [
+      "Ted spent a total of 3*{book_cost} = {total_book_cost} dollars on books.",
+      "Ted spent a total of 3*{pencil_cost} = {total_pencil_cost} dollars on pencils.",
+      "In total Ted spent {total_book_cost}+{total_pencil_cost} = {total_spent} dollars.",
+      "#### {total_spent}"
+    ],
+    "factual_assignment": {
+      "initial_funds": 200.0,
+      "book_cost": 16.0,
+      "pencil_cost": 6.0,
+      "total_book_cost": 48.0,
+      "total_pencil_cost": 18.0,
+      "total_spent": 66.0
+    }
+  },
+  "merged_assignment": {
+    "initial_funds": 29414.0,
+    "book_cost": 2353.12,
+    "pencil_cost": 882.42,
+    "total_book_cost": 7059.36,
+    "total_pencil_cost": 2647.26,
+    "total_spent": 9706.62
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_funds = 29414.0\n    book_cost = 2353.12\n    pencil_cost = 882.42\n\n    total_book_cost = round(3 * book_cost, 2)\n    total_pencil_cost = round(3 * pencil_cost, 2)\n    total_spent = round(total_book_cost + total_pencil_cost, 2)\n\n    return {\n        \"initial_funds\": initial_funds,\n        \"book_cost\": book_cost,\n        \"pencil_cost\": pencil_cost,\n        \"total_book_cost\": total_book_cost,\n        \"total_pencil_cost\": total_pencil_cost,\n        \"total_spent\": total_spent\n    }\n",
+    "results": {
+      "initial_funds": 29414.0,
+      "book_cost": 2353.12,
+      "pencil_cost": 882.42,
+      "total_book_cost": 7059.36,
+      "total_pencil_cost": 2647.26,
+      "total_spent": 9706.62
+    }
+  },
+  "final": {
+    "question": "Ted starts with 29414. He buys 3 books for 2353.12 yen each and 3 pencils for 882.42 yen each. How much did he spend in total?",
+    "answer_lines": [
+      "Ted spent a total of 3*2353.12 = 7059.36 yen on books.",
+      "Ted spent a total of 3*882.42 = 2647.26 yen on pencils.",
+      "In total Ted spent 7059.36+2647.26 = 9706.62 yen.",
+      "#### 9706.62"
+    ],
+    "final_scalar": 9706.62,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro starts with 29414. He buys 3 books for 2353.12 yen each and 3 pencils for 882.42 yen each. How much did he spend in total?",
+    "adapted_answer": [
+      "Taro spent a total of 3*2353.12 = 7059.36 yen on books.",
+      "Taro spent a total of 3*882.42 = 2647.26 yen on pencils.",
+      "In total Taro spent 7059.36+2647.26 = 9706.62 yen.",
+      "#### 9706.62"
+    ],
+    "adaptation_notes": "Replaced 'Ted' with 'Taro', a common Japanese name."
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "index": 485,
+  "split": "test",
+  "original": {
+    "question": "Jillian's handbag cost $20 less than 3 times as much as her shoes cost. If her shoes cost $80, how much did her bag cost?",
+    "answer": "First triple the cost of the shoes: $80 * 3 = $<<80*3=240>>240\nThen subtract $20 to find the cost of the handbag: $240 - $20 = $<<240-20=220>>220\n#### 220"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jillian",
+      "dollars"
+    ],
+    "notes": "The name Jillian and the unit dollars are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shoes_cost",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "triple_shoes_cost",
+      "value": 240,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "handbag_cost",
+      "value": 220,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount",
+      "value": 20,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shoes_cost\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"triple_shoes_cost\", \"value\": 240, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"handbag_cost\", \"value\": 220, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount\", \"value\": 20, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shoes_cost",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 111160.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "triple_shoes_cost",
+        "original_value": 240,
+        "original_unit": "dollar",
+        "converted_value": 333480.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "handbag_cost",
+        "original_value": 220,
+        "original_unit": "dollar",
+        "converted_value": 305690.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "discount",
+        "original_value": 20,
+        "original_unit": "dollar",
+        "converted_value": 27790.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jillian's handbag cost ${discount} less than 3 times as much as her shoes cost. If her shoes cost ${shoes_cost}, how much did her bag cost?",
+    "templatized_answer": [
+      "First triple the cost of the shoes: ${shoes_cost} * 3 = ${triple_shoes_cost}",
+      "Then subtract ${discount} to find the cost of the handbag: ${triple_shoes_cost} - ${discount} = ${handbag_cost}",
+      "#### {handbag_cost}"
+    ],
+    "factual_assignment": {
+      "shoes_cost": 80,
+      "triple_shoes_cost": 240,
+      "handbag_cost": 220,
+      "discount": 20
+    }
+  },
+  "merged_assignment": {
+    "shoes_cost": 111160.0,
+    "triple_shoes_cost": 333480.0,
+    "handbag_cost": 305690.0,
+    "discount": 27790.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    # Given values\n    shoes_cost = 111160.0\n    handbag_cost = 305690.0\n    discount = 27790.0\n\n    # Recompute triple_shoes_cost\n    triple_shoes_cost = shoes_cost * 3\n\n    # Recompute discount (to ensure consistency)\n    discount = triple_shoes_cost - handbag_cost\n\n    # Round to 2 decimal places where appropriate\n    shoes_cost = round(shoes_cost, 2)\n    triple_shoes_cost = round(triple_shoes_cost, 2)\n    handbag_cost = round(handbag_cost, 2)\n    discount = round(discount, 2)\n\n    return {\n        \"shoes_cost\": shoes_cost,\n        \"triple_shoes_cost\": triple_shoes_cost,\n        \"handbag_cost\": handbag_cost,\n        \"discount\": discount\n    }\n",
+    "results": {
+      "shoes_cost": 111160.0,
+      "triple_shoes_cost": 333480.0,
+      "handbag_cost": 305690.0,
+      "discount": 27790.0
+    }
+  },
+  "final": {
+    "question": "Jillian's handbag cost 27790 won less than 3 times as much as her shoes cost. If her shoes cost 111160 won, how much did her bag cost?",
+    "answer_lines": [
+      "First triple the cost of the shoes: 111160 * 3 = 333480",
+      "Then subtract 27790 to find the cost of the handbag: 333480 - 27790 = 305690",
+      "#### 305690"
+    ],
+    "final_scalar": 305690,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji's handbag cost 27790 won less than 3 times as much as her shoes cost. If her shoes cost 111160 won, how much did her bag cost?",
+    "adapted_answer": [
+      "First triple the cost of the shoes: 111160 * 3 = 333480",
+      "Then subtract 27790 to find the cost of the handbag: 333480 - 27790 = 305690",
+      "#### 305690"
+    ],
+    "adaptation_notes": "Replaced 'Jillian' with 'Min-ji', a common Korean name."
+  }
+}

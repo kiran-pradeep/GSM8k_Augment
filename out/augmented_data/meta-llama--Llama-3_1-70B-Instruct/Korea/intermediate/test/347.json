@@ -1,0 +1,129 @@
+{
+  "index": 347,
+  "split": "test",
+  "original": {
+    "question": "Davos bought 2 shirts from the mall that cost $30 each. If he bought them with a 40% discount, how much did Davos pay for the 2 shirts?",
+    "answer": "The total price of the 2 shirts is $30 x 2 = $<<30*2=60>>60.\nThe total discount on the 2 shirts is $60 x 0.40 = $<<60*0.40=24>>24.\nTherefore, the total amount Davos paid for the 2 shirts is $60 - $24 = $<<60-24=36>>36.\n#### 36"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Davos",
+      "dollars"
+    ],
+    "notes": "The name 'Davos' and the unit 'dollars' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "shirt_cost",
+      "value": 30.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_shirt_cost",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "discount_amount",
+      "value": 24.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_paid",
+      "value": 36.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"shirt_cost\", \"value\": 30.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_shirt_cost\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"discount_amount\", \"value\": 24.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_paid\", \"value\": 36.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "shirt_cost",
+        "original_value": 30.0,
+        "original_unit": "dollar",
+        "converted_value": 41685.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_shirt_cost",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 83370.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "discount_amount",
+        "original_value": 24.0,
+        "original_unit": "dollar",
+        "converted_value": 33348.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_paid",
+        "original_value": 36.0,
+        "original_unit": "dollar",
+        "converted_value": 50022.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Davos bought 2 shirts from the mall that cost ${shirt_cost} each. If he bought them with a 40% discount, how much did Davos pay for the 2 shirts?",
+    "templatized_answer": [
+      "The total price of the 2 shirts is ${shirt_cost} x 2 = ${total_shirt_cost}.",
+      "The total discount on the 2 shirts is ${total_shirt_cost} x 0.40 = ${discount_amount}.",
+      "Therefore, the total amount Davos paid for the 2 shirts is ${total_shirt_cost} - ${discount_amount} = ${total_paid}.",
+      "#### {total_paid}"
+    ],
+    "factual_assignment": {
+      "shirt_cost": 30.0,
+      "total_shirt_cost": 60.0,
+      "discount_amount": 24.0,
+      "total_paid": 36.0
+    }
+  },
+  "merged_assignment": {
+    "shirt_cost": 41685.0,
+    "total_shirt_cost": 83370.0,
+    "discount_amount": 33348.0,
+    "total_paid": 50022.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    shirt_cost = 41685.0\n    total_shirt_cost = shirt_cost * 2\n    discount_amount = total_shirt_cost * 0.40\n    total_paid = total_shirt_cost - discount_amount\n\n    return {\n        \"shirt_cost\": shirt_cost,\n        \"total_shirt_cost\": total_shirt_cost,\n        \"discount_amount\": round(discount_amount, 2),\n        \"total_paid\": round(total_paid, 2)\n    }\n",
+    "results": {
+      "shirt_cost": 41685.0,
+      "total_shirt_cost": 83370.0,
+      "discount_amount": 33348.0,
+      "total_paid": 50022.0
+    }
+  },
+  "final": {
+    "question": "Davos bought 2 shirts from the mall that cost 41685 won each. If he bought them with a 40% discount, how much did Davos pay for the 2 shirts?",
+    "answer_lines": [
+      "The total price of the 2 shirts is 41685 x 2 = 83370.",
+      "The total discount on the 2 shirts is 83370 x 0.40 = 33348.",
+      "Therefore, the total amount Davos paid for the 2 shirts is 83370 - 33348 = 50022.",
+      "#### 50022"
+    ],
+    "final_scalar": 50022.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo bought 2 shirts from the mall that cost 41685 won each. If he bought them with a 40% discount, how much did Min-soo pay for the 2 shirts?",
+    "adapted_answer": [
+      "The total price of the 2 shirts is 41685 x 2 = 83370.",
+      "The total discount on the 2 shirts is 83370 x 0.40 = 33348.",
+      "Therefore, the total amount Min-soo paid for the 2 shirts is 83370 - 33348 = 50022.",
+      "#### 50022"
+    ],
+    "adaptation_notes": "Replaced 'Davos' with 'Min-soo' to give the name a Korean context."
+  }
+}

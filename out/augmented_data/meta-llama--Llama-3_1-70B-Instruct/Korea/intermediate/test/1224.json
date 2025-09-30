@@ -1,0 +1,94 @@
+{
+  "index": 1224,
+  "split": "test",
+  "original": {
+    "question": "It rained 2 inches on Monday and is expected to rain 1 more inch than twice of Monday’s total on Tuesday. How many inches of rain will there be on Tuesday?",
+    "answer": "Twice as much rain as Monday is 2 inches * 2 = <<2*2=4>>4 inches\nIt will rain 1 more inch than this value on Tuesday so 4 inches + 1 = <<4+1=5>>5 inches on Tuesday\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "inches"
+    ],
+    "notes": "The unit 'inches' is commonly used in the US and other Western countries, but not in Korea, where the metric system is primarily used."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monday_rain",
+      "value": 2.0,
+      "unit": "inch",
+      "context": "question"
+    },
+    {
+      "variable": "tuesday_rain",
+      "value": 5.0,
+      "unit": "inch",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"inch\": {\"unit\": \"cm\", \"factor\": 2.54},\n        \"pound\": {\"unit\": \"kg\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"g\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"km\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"m\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"L\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"mL\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"monday_rain\",\n    \"value\": 2.0,\n    \"unit\": \"inch\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"tuesday_rain\",\n    \"value\": 5.0,\n    \"unit\": \"inch\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monday_rain",
+        "original_value": 2.0,
+        "original_unit": "inch",
+        "converted_value": 5.08,
+        "converted_unit": "cm"
+      },
+      {
+        "variable": "tuesday_rain",
+        "original_value": 5.0,
+        "original_unit": "inch",
+        "converted_value": 12.7,
+        "converted_unit": "cm"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "It rained {monday_rain} inches on Monday and is expected to rain 1 more inch than twice of Monday’s total on Tuesday. How many inches of rain will there be on Tuesday?",
+    "templatized_answer": [
+      "Twice as much rain as Monday is {monday_rain} inches * 2 = {monday_rain} * 2",
+      "It will rain 1 more inch than this value on Tuesday so {monday_rain} * 2 + 1 = {tuesday_rain}",
+      "#### {tuesday_rain}"
+    ],
+    "factual_assignment": {
+      "monday_rain": 2.0,
+      "tuesday_rain": 5.0
+    }
+  },
+  "merged_assignment": {
+    "monday_rain": 5.08,
+    "tuesday_rain": 12.7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"monday_rain\": 5.08,\n        \"tuesday_rain\": 12.7\n    }\n\n    recomputed_values = {}\n\n    # Recompute monday_rain * 2\n    monday_rain_times_two = factual_assignment[\"monday_rain\"] * 2\n    recomputed_values[\"monday_rain * 2\"] = round(monday_rain_times_two, 2)\n\n    # Recompute tuesday_rain\n    tuesday_rain = monday_rain_times_two + 1\n    recomputed_values[\"tuesday_rain\"] = round(tuesday_rain, 2)\n\n    # Update factual_assignment with recomputed values\n    factual_assignment[\"monday_rain * 2\"] = recomputed_values[\"monday_rain * 2\"]\n    factual_assignment[\"tuesday_rain\"] = recomputed_values[\"tuesday_rain\"]\n\n    return factual_assignment\n\nprint(recompute())\n",
+    "results": {
+      "monday_rain": 5.08,
+      "tuesday_rain": 11.16,
+      "monday_rain * 2": 10.16
+    }
+  },
+  "final": {
+    "question": "It rained 5.08 cm on Monday and is expected to rain 1 more cm than twice of Monday’s total on Tuesday. How many cm of rain will there be on Tuesday?",
+    "answer_lines": [
+      "Twice as much rain as Monday is 5.08 cm * 2 = 10.16 cm",
+      "It will rain 1 more cm than this value on Tuesday so 10.16 cm + 1 = 11.16 cm",
+      "#### 11.16"
+    ],
+    "final_scalar": 11.16,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "월요일에 5.08 cm 비가 내렸고, 화요일에는 월요일의 총량의 2배보다 1cm 더 비가 올 것으로 예상된다. 화요일에 비가 몇 cm 올까?",
+    "adapted_answer": [
+      "월요일의 비의 2배는 5.08 cm * 2 = 10.16 cm",
+      "화요일에는 이 값보다 1cm 더 비가 올 예정이므로 10.16 cm + 1 = 11.16 cm",
+      "#### 11.16"
+    ],
+    "adaptation_notes": "no changes needed, as the original text was already neutral and did not contain any non-Korean entities that needed replacement."
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "index": 434,
+  "split": "test",
+  "original": {
+    "question": "The vending machines sell chips for 40 cents and candy bars for 75 cents. George spent $5 and got 3 bags of chips and had 1% of his money left. How many candy bars did he buy?",
+    "answer": "George got $.05 in change because 5 x .01 = <<5*.01=.05>>.05\nGeorge spent $4.95 because 5 - .05 = <<5-.05=4.95>>4.95\nGeorge spent $1.2 on chips because 3 x .4 = <<3*.4=1.2>>1.2\nGeorge spent 3.75 on candy bars because 4.95 - 1.2 = <<4.95-1.2=3.75>>3.75\nGeorge bought 5 candy bars because 3.75 / .75 = <<5=5>>5\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "George",
+      "dollars",
+      "chips",
+      "candy bars"
+    ],
+    "notes": "The text contains a Western name, US currency, and Western-style snacks."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "chip_cost",
+      "value": 0.4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "candy_bar_cost",
+      "value": 0.75,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_spent",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "change",
+      "value": 0.05,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "actual_spent",
+      "value": 4.95,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "chip_expense",
+      "value": 1.2,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "candy_bar_expense",
+      "value": 3.75,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"chip_cost\", \"value\": 0.4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"candy_bar_cost\", \"value\": 0.75, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_spent\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"change\", \"value\": 0.05, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"actual_spent\", \"value\": 4.95, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"chip_expense\", \"value\": 1.2, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"candy_bar_expense\", \"value\": 3.75, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "chip_cost",
+        "original_value": 0.4,
+        "original_unit": "dollar",
+        "converted_value": 58.83,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "candy_bar_cost",
+        "original_value": 0.75,
+        "original_unit": "dollar",
+        "converted_value": 110.3,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_spent",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "change",
+        "original_value": 0.05,
+        "original_unit": "dollar",
+        "converted_value": 7.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "actual_spent",
+        "original_value": 4.95,
+        "original_unit": "dollar",
+        "converted_value": 728.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "chip_expense",
+        "original_value": 1.2,
+        "original_unit": "dollar",
+        "converted_value": 176.48,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "candy_bar_expense",
+        "original_value": 3.75,
+        "original_unit": "dollar",
+        "converted_value": 551.51,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The vending machines sell chips for {chip_cost} dollars and candy bars for {candy_bar_cost} dollars. George spent {total_spent} dollars and got 3 bags of chips and had 1% of his money left. How many candy bars did he buy?",
+    "templatized_answer": [
+      "George got {change} dollars in change because {total_spent} x 0.01 = {change}.",
+      "George spent {actual_spent} dollars because {total_spent} - {change} = {actual_spent}.",
+      "George spent {chip_expense} dollars on chips because 3 x {chip_cost} = {chip_expense}.",
+      "George spent {candy_bar_expense} dollars on candy bars because {actual_spent} - {chip_expense} = {candy_bar_expense}.",
+      "George bought {candy_bar_expense} / {candy_bar_cost} candy bars because {candy_bar_expense} / {candy_bar_cost} = {candy_bar_expense} / {candy_bar_cost}",
+      "#### {candy_bar_expense} / {candy_bar_cost}"
+    ],
+    "factual_assignment": {
+      "chip_cost": 0.4,
+      "candy_bar_cost": 0.75,
+      "total_spent": 5,
+      "change": 0.05,
+      "actual_spent": 4.95,
+      "chip_expense": 1.2,
+      "candy_bar_expense": 3.75
+    }
+  },
+  "merged_assignment": {
+    "chip_cost": 58.83,
+    "candy_bar_cost": 110.3,
+    "total_spent": 735.35,
+    "change": 7.35,
+    "actual_spent": 728.0,
+    "chip_expense": 176.48,
+    "candy_bar_expense": 551.51
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    chip_cost = 58.83\n    candy_bar_cost = 110.3\n    total_spent = 735.35\n\n    change = round(total_spent * 0.01, 2)\n    actual_spent = round(total_spent - change, 2)\n    chip_expense = round(3 * chip_cost, 2)\n    candy_bar_expense = round(actual_spent - chip_expense, 2)\n\n    return {\n        \"chip_cost\": chip_cost,\n        \"candy_bar_cost\": candy_bar_cost,\n        \"total_spent\": total_spent,\n        \"change\": change,\n        \"actual_spent\": actual_spent,\n        \"chip_expense\": chip_expense,\n        \"candy_bar_expense\": candy_bar_expense\n    }\n\nprint(recompute())\n",
+    "results": {
+      "chip_cost": 58.83,
+      "candy_bar_cost": 110.3,
+      "total_spent": 735.35,
+      "change": 7.35,
+      "actual_spent": 728.0,
+      "chip_expense": 176.49,
+      "candy_bar_expense": 551.51
+    }
+  },
+  "final": {
+    "question": "The vending machines sell chips for 58.83 yen and candy bars for 110.3 yen. George spent 735.35 yen and got 3 bags of chips and had 1% of his money left. How many candy bars did he buy?",
+    "answer_lines": [
+      "George got 7.35 yen in change because 735.35 x 0.01 = 7.35.",
+      "George spent 728.0 yen because 735.35 - 7.35 = 728.0.",
+      "George spent 176.49 yen on chips because 3 x 58.83 = 176.49.",
+      "George spent 551.51 yen on candy bars because 728.0 - 176.49 = 551.51.",
+      "George bought 551.51 / 110.3 candy bars because 551.51 / 110.3 = 5.",
+      "#### 5"
+    ],
+    "final_scalar": 5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The vending machines sell senbei for 58.83 yen and manju for 110.3 yen. Taro spent 735.35 yen and got 3 bags of senbei and had 1% of his money left. How many manju did he buy?",
+    "adapted_answer": [
+      "Taro got 7.35 yen in change because 735.35 x 0.01 = 7.35.",
+      "Taro spent 728.0 yen because 735.35 - 7.35 = 728.0.",
+      "Taro spent 176.49 yen on senbei because 3 x 58.83 = 176.49.",
+      "Taro spent 551.51 yen on manju because 728.0 - 176.49 = 551.51.",
+      "Taro bought 551.51 / 110.3 manju because 551.51 / 110.3 = 5.",
+      "#### 5"
+    ],
+    "adaptation_notes": "Replaced 'George' with 'Taro', 'chips' with 'senbei', and 'candy bars' with 'manju' to give the text a Japanese context."
+  }
+}

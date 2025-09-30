@@ -1,0 +1,146 @@
+{
+  "index": 504,
+  "split": "test",
+  "original": {
+    "question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, strawberry. She paid $2 for a pack of grape gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of green apple gum. If she paid $7 in all, how many dollars did each pack of strawberry gum cost?",
+    "answer": "The green apple gum cost half as much as the $2 grape gum, so it cost 2 / 2 = $<<2/2=1>>1.\nThus, the two packs of strawberry gum cost 7 - 2 - 1 = $<<7-2-1=4>>4.\nTherefore, each pack of strawberry gum cost 4 / 2 = $<<4/2=2>>2.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars",
+      "strawberry",
+      "grape",
+      "green apple"
+    ],
+    "notes": "The text contains culturally specific entities such as US currency (dollars) and Western-style fruit flavors (strawberry, grape, green apple)."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "grape_gum_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 7,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "green_apple_gum_cost",
+      "value": 1,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "strawberry_gum_cost",
+      "value": 4,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "strawberry_gum_pack_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if unit in conversions:\n            converted_unit = conversions[unit][\"unit\"]\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"grape_gum_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 7, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"green_apple_gum_cost\", \"value\": 1, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"strawberry_gum_cost\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"strawberry_gum_pack_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "grape_gum_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 7,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "green_apple_gum_cost",
+        "original_value": 1,
+        "original_unit": "dollar",
+        "converted_value": 147.07,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "strawberry_gum_cost",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "strawberry_gum_pack_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, strawberry. She paid ${grape_gum_cost} for a pack of grape gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of green apple gum. If she paid ${total_cost} in all, how many dollars did each pack of strawberry gum cost?",
+    "templatized_answer": [
+      "The green apple gum cost half as much as the ${grape_gum_cost} grape gum, so it cost {grape_gum_cost} / 2 = ${green_apple_gum_cost}.",
+      "Thus, the two packs of strawberry gum cost {total_cost} - {grape_gum_cost} - {green_apple_gum_cost} = ${strawberry_gum_cost}.",
+      "Therefore, each pack of strawberry gum cost {strawberry_gum_cost} / 2 = ${strawberry_gum_pack_cost}.",
+      "#### {strawberry_gum_pack_cost}"
+    ],
+    "factual_assignment": {
+      "grape_gum_cost": 2,
+      "total_cost": 7,
+      "green_apple_gum_cost": 1,
+      "strawberry_gum_cost": 4,
+      "strawberry_gum_pack_cost": 2
+    }
+  },
+  "merged_assignment": {
+    "grape_gum_cost": 294.14,
+    "total_cost": 1029.49,
+    "green_apple_gum_cost": 147.07,
+    "strawberry_gum_cost": 588.28,
+    "strawberry_gum_pack_cost": 294.14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    grape_gum_cost = 294.14\n    total_cost = 1029.49\n\n    green_apple_gum_cost = grape_gum_cost / 2\n    strawberry_gum_cost = total_cost - grape_gum_cost - green_apple_gum_cost\n    strawberry_gum_pack_cost = strawberry_gum_cost / 2\n\n    return {\n        \"grape_gum_cost\": round(grape_gum_cost, 2),\n        \"green_apple_gum_cost\": round(green_apple_gum_cost, 2),\n        \"strawberry_gum_cost\": round(strawberry_gum_cost, 2),\n        \"strawberry_gum_pack_cost\": round(strawberry_gum_pack_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "grape_gum_cost": 294.14,
+      "green_apple_gum_cost": 147.07,
+      "strawberry_gum_cost": 588.28,
+      "strawberry_gum_pack_cost": 294.14
+    }
+  },
+  "final": {
+    "question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, strawberry. She paid 294.14 yen for a pack of grape gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of green apple gum. If she paid 1029.49 yen in all, how many yen did each pack of strawberry gum cost?",
+    "answer_lines": [
+      "The green apple gum cost half as much as the 294.14 yen grape gum, so it cost 294.14 / 2 = 147.07 yen.",
+      "Thus, the two packs of strawberry gum cost 1029.49 - 294.14 - 147.07 = 588.28 yen.",
+      "Therefore, each pack of strawberry gum cost 588.28 / 2 = 294.14 yen.",
+      "#### 294.14"
+    ],
+    "final_scalar": 294.14,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Suzie loves to chew fruit-flavored gum. She bought four packs of gum the last time she was at the store. She got two packs of her favorite flavor, ichigo. She paid 294.14 yen for a pack of budō gum that she also liked. She wanted to try something new, so she paid half as much for a small pack of ringo gum. If she paid 1029.49 yen in all, how many yen did each pack of ichigo gum cost?",
+    "adapted_answer": [
+      "The ringo gum cost half as much as the 294.14 yen budō gum, so it cost 294.14 / 2 = 147.07 yen.",
+      "Thus, the two packs of ichigo gum cost 1029.49 - 294.14 - 147.07 = 588.28 yen.",
+      "Therefore, each pack of ichigo gum cost 588.28 / 2 = 294.14 yen.",
+      "#### 294.14"
+    ],
+    "adaptation_notes": "Replaced 'strawberry' with 'ichigo', 'grape' with 'budō', and 'green apple' with 'ringo' to provide Japanese equivalents."
+  }
+}

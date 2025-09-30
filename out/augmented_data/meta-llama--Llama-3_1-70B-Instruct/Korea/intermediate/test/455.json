@@ -1,0 +1,125 @@
+{
+  "index": 455,
+  "split": "test",
+  "original": {
+    "question": "Bob needs to buy potting soil to fill the raised beds in his vegetable garden. He has 10 raised beds, and each bed is 2 feet wide by 8 feet long by 2 feet tall. Each bag of potting soil holds 2 cubic feet of soil and costs $12. How much will the potting soil cost him?",
+    "answer": "Each bed is 2 feet wide by 8 feet long by 2 feet high, so they each hold 2 * 8 * 2 = <<2*8*2=32>>32 cubic feet of dirt.\nHe has 10 beds, so he will need 10 * 32 = <<10*32=320>>320 cubic feet of dirt.\nEach bag of soil is 0.75 cubic feet, so Bob will need 320 / 2 = <<320/2=160>>160 bags of soil.\nEach bag is $12, so all the soil will cost him $12 * 160 = $<<12*160=1920>>1920.\n#### 1920"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Bob",
+      "feet",
+      "dollars"
+    ],
+    "notes": "The name 'Bob' is culturally specific to Western regions, and the units 'feet' and 'dollars' are commonly used in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "soil_bag_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_soil_cost",
+      "value": 1920,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"soil_bag_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_soil_cost\", \"value\": 1920, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "soil_bag_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 16674.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_soil_cost",
+        "original_value": 1920,
+        "original_unit": "dollar",
+        "converted_value": 2667840.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Bob needs to buy potting soil to fill the raised beds in his vegetable garden. He has {number_of_raised_beds} raised beds, and each bed is {bed_width} feet wide by {bed_length} feet long by {bed_height} feet tall. Each bag of potting soil holds {soil_bag_volume} cubic feet of soil and costs ${soil_bag_cost}. How much will the potting soil cost him?",
+    "templatized_answer": [
+      "Each bed is {bed_width} feet wide by {bed_length} feet long by {bed_height} feet high, so they each hold {bed_width} * {bed_length} * {bed_height} = {bed_volume} cubic feet of dirt.",
+      "He has {number_of_raised_beds} beds, so he will need {number_of_raised_beds} * {bed_volume} = {total_soil_volume} cubic feet of dirt.",
+      "Each bag of soil is {soil_bag_volume} cubic feet, so Bob will need {total_soil_volume} / {soil_bag_volume} = {number_of_soil_bags} bags of soil.",
+      "Each bag is ${soil_bag_cost}, so all the soil will cost him ${soil_bag_cost} * {number_of_soil_bags} = ${total_soil_cost}.",
+      "#### {total_soil_cost}"
+    ],
+    "factual_assignment": {
+      "number_of_raised_beds": 10,
+      "bed_width": 2,
+      "bed_length": 8,
+      "bed_height": 2,
+      "soil_bag_volume": 2,
+      "soil_bag_cost": 12,
+      "bed_volume": 32,
+      "total_soil_volume": 320,
+      "number_of_soil_bags": 160,
+      "total_soil_cost": 1920
+    }
+  },
+  "merged_assignment": {
+    "number_of_raised_beds": 10,
+    "bed_width": 2,
+    "bed_length": 8,
+    "bed_height": 2,
+    "soil_bag_volume": 2,
+    "soil_bag_cost": 16674.0,
+    "bed_volume": 32,
+    "total_soil_volume": 320,
+    "number_of_soil_bags": 160,
+    "total_soil_cost": 2667840.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_raised_beds = 10\n    bed_width = 2\n    bed_length = 8\n    bed_height = 2\n    soil_bag_volume = 2\n    soil_bag_cost = 16674.0\n\n    bed_volume = bed_width * bed_length * bed_height\n    total_soil_volume = number_of_raised_beds * bed_volume\n    number_of_soil_bags = total_soil_volume / soil_bag_volume\n    total_soil_cost = round(soil_bag_cost * number_of_soil_bags, 2)\n\n    return {\n        \"number_of_raised_beds\": number_of_raised_beds,\n        \"bed_width\": bed_width,\n        \"bed_length\": bed_length,\n        \"bed_height\": bed_height,\n        \"soil_bag_volume\": soil_bag_volume,\n        \"soil_bag_cost\": soil_bag_cost,\n        \"bed_volume\": bed_volume,\n        \"total_soil_volume\": total_soil_volume,\n        \"number_of_soil_bags\": round(number_of_soil_bags, 2),\n        \"total_soil_cost\": total_soil_cost\n    }\n",
+    "results": {
+      "number_of_raised_beds": 10,
+      "bed_width": 2,
+      "bed_length": 8,
+      "bed_height": 2,
+      "soil_bag_volume": 2,
+      "soil_bag_cost": 16674.0,
+      "bed_volume": 32,
+      "total_soil_volume": 320,
+      "number_of_soil_bags": 160.0,
+      "total_soil_cost": 2667840.0
+    }
+  },
+  "final": {
+    "question": "Bob needs to buy potting soil to fill the raised beds in his vegetable garden. He has 10 raised beds, and each bed is 2 feet wide by 8 feet long by 2 feet tall. Each bag of potting soil holds 2 cubic feet of soil and costs 16674.0 won. How much will the potting soil cost him?",
+    "answer_lines": [
+      "Each bed is 2 feet wide by 8 feet long by 2 feet high, so they each hold 2 * 8 * 2 = 32 cubic feet of dirt.",
+      "He has 10 beds, so he will need 10 * 32 = 320 cubic feet of dirt.",
+      "Each bag of soil is 2 cubic feet, so Bob will need 320 / 2 = 160.0 bags of soil.",
+      "Each bag is 16674.0 won, so all the soil will cost him 16674.0 * 160.0 = 2667840.0 won.",
+      "#### 2667840.0"
+    ],
+    "final_scalar": 2667840.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo needs to buy potting soil to fill the raised beds in his vegetable garden. He has 10 raised beds, and each bed is 2 feet wide by 8 feet long by 2 feet tall. Each bag of potting soil holds 2 cubic feet of soil and costs 16674.0 won. How much will the potting soil cost him?",
+    "adapted_answer": [
+      "Each bed is 2 feet wide by 8 feet long by 2 feet high, so they each hold 2 * 8 * 2 = 32 cubic feet of dirt.",
+      "He has 10 beds, so he will need 10 * 32 = 320 cubic feet of dirt.",
+      "Each bag of soil is 2 cubic feet, so Min-soo will need 320 / 2 = 160.0 bags of soil.",
+      "Each bag is 16674.0 won, so all the soil will cost him 16674.0 * 160.0 = 2667840.0 won.",
+      "#### 2667840.0"
+    ],
+    "adaptation_notes": "Replaced 'Bob' with 'Min-soo', a common Korean name."
+  }
+}

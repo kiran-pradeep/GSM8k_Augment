@@ -1,0 +1,76 @@
+{
+  "index": 145,
+  "split": "test",
+  "original": {
+    "question": "John has 10 hectares of a pineapple field. There are 100 pineapples per hectare. John can harvest his pineapples every 3 months. How many pineapples can John harvest within a year?",
+    "answer": "John has 100 x 10= <<100*10=1000>>1000 pineapples on his field.\nJohn can harvest his Pineapple 12 ÷ 3 = <<12/3=4>>4 times per year\nTherefore John can harvest 1000 x 4 = <<1000*4=4000>>4000 pineapples per year.\n#### 4000"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "hectares",
+      "pineapples"
+    ],
+    "notes": "Name 'John' is Western, 'hectares' is a metric unit used globally but not unique to Japan, and 'pineapples' are a tropical fruit not native to Japan."
+  },
+  "metrics_extracted": [],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollars': {'factor': 147.07, 'unit': 'yen'},\n        'pounds': {'factor': 0.453592, 'unit': 'kilograms'},\n        'ounces': {'factor': 28.3495, 'unit': 'grams'},\n        'miles': {'factor': 1.60934, 'unit': 'kilometers'},\n        'feet': {'factor': 0.3048, 'unit': 'meters'},\n        'gallons': {'factor': 3.78541, 'unit': 'liters'},\n        'cups': {'factor': 236.588, 'unit': 'milliliters'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        original_value = metric['value']\n        original_unit = metric['unit']\n\n        if original_unit in conversions:\n            converted_value = round(original_value * conversions[original_unit]['factor'], 2)\n            converted_unit = conversions[original_unit]['unit']\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            'variable': variable,\n            'original_value': original_value,\n            'original_unit': original_unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n",
+    "results": []
+  },
+  "templatization": {
+    "templatized_question": "John has {hectares_of_field} hectares of a pineapple field. There are {pineapples_per_hectare} pineapples per hectare. John can harvest his pineapples every {months_per_harvest} months. How many pineapples can John harvest within a year?",
+    "templatized_answer": [
+      "John has {pineapples_per_hectare} x {hectares_of_field} = {pineapples_per_hectare} x {hectares_of_field} pineapples on his field.",
+      "John can harvest his Pineapple {months_in_year} ÷ {months_per_harvest} = {months_in_year} ÷ {months_per_harvest} times per year",
+      "Therefore John can harvest {pineapples_per_hectare} x {hectares_of_field} x ({months_in_year} ÷ {months_per_harvest}) = {pineapples_per_hectare} x {hectares_of_field} x ({months_in_year} ÷ {months_per_harvest}) pineapples per year.",
+      "#### {pineapples_per_hectare} x {hectares_of_field} x ({months_in_year} ÷ {months_per_harvest})"
+    ],
+    "factual_assignment": {
+      "hectares_of_field": 10,
+      "pineapples_per_hectare": 100,
+      "months_per_harvest": 3,
+      "months_in_year": 12
+    }
+  },
+  "merged_assignment": {
+    "hectares_of_field": 10,
+    "pineapples_per_hectare": 100,
+    "months_per_harvest": 3,
+    "months_in_year": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"hectares_of_field\": 10,\n        \"pineapples_per_hectare\": 100,\n        \"months_per_harvest\": 3,\n        \"months_in_year\": 12\n    }\n\n    recomputed_values = {}\n\n    # Step 1: Calculate total pineapples on the field\n    total_pineapples_on_field = factual_assignment[\"pineapples_per_hectare\"] * factual_assignment[\"hectares_of_field\"]\n    recomputed_values[\"pineapples_per_hectare\"] = factual_assignment[\"pineapples_per_hectare\"]\n    recomputed_values[\"hectares_of_field\"] = factual_assignment[\"hectares_of_field\"]\n    recomputed_values[\"pineapples_per_hectare\"] = factual_assignment[\"pineapples_per_hectare\"] * factual_assignment[\"hectares_of_field\"]\n\n    # Step 2: Calculate number of harvests per year\n    harvests_per_year = factual_assignment[\"months_in_year\"] / factual_assignment[\"months_per_harvest\"]\n    recomputed_values[\"months_in_year\"] = factual_assignment[\"months_in_year\"]\n    recomputed_values[\"months_per_harvest\"] = factual_assignment[\"months_per_harvest\"]\n    recomputed_values[\"months_in_year\"] = factual_assignment[\"months_in_year\"]\n    recomputed_values[\"months_per_harvest\"] = factual_assignment[\"months_in_year\"] / factual_assignment[\"months_per_harvest\"]\n\n    # Step 3: Calculate total pineapples harvested per year\n    total_pineapples_harvested_per_year = total_pineapples_on_field * harvests_per_year\n    recomputed_values[\"pineapples_per_hectare\"] = factual_assignment[\"pineapples_per_hectare\"]\n    recomputed_values[\"hectares_of_field\"] = factual_assignment[\"hectares_of_field\"]\n    recomputed_values[\"months_in_year\"] = factual_assignment[\"months_in_year\"]\n    recomputed_values[\"months_per_harvest\"] = factual_assignment[\"months_in_year\"] / factual_assignment[\"months_per_harvest\"]\n    recomputed_values[\"pineapples_per_hectare\"] = factual_assignment[\"pineapples_per_hectare\"] * factual_assignment[\"hectares_of_field\"] * (factual_assignment[\"months_in_year\"] / factual_assignment[\"months_per_harvest\"])\n\n    recomputed_values[\"pineapples_per_hectare\"] = factual_assignment[\"pineapples_per_hectare\"]\n    recomputed_values[\"hectares_of_field\"] = factual_assignment[\"hectares_of_field\"]\n    recomputed_values[\"months_in_year\"] = factual_assignment[\"months_in_year\"]\n    recomputed_values[\"months_per_harvest\"] = factual_assignment[\"months_per_harvest\"]\n    recomputed_values[\"pineapples_per_hectare\"] = factual_assignment[\"pineapples_per_hectare\"] * factual_assignment[\"hectares_of_field\"] * (factual_assignment[\"months_in_year\"] / factual_assignment[\"months_per_harvest\"])\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "pineapples_per_hectare": 4000.0,
+      "hectares_of_field": 10,
+      "months_in_year": 12,
+      "months_per_harvest": 3
+    }
+  },
+  "final": {
+    "question": "John has 10 hectares of a pineapple field. There are 4000.0 pineapples per hectare. John can harvest his pineapples every 3 months. How many pineapples can John harvest within a year?",
+    "answer_lines": [
+      "John has 4000.0 x 10 = 4000.0 x 10 pineapples on his field.",
+      "John can harvest his Pineapple 12 ÷ 3 = 12 ÷ 3 times per year",
+      "Therefore John can harvest 4000.0 x 10 x (12 ÷ 3) = 4000.0 x 10 x (12 ÷ 3) pineapples per year.",
+      "#### 40000.0"
+    ],
+    "final_scalar": 40000.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro has 10 hectares of a mikan field. There are 4000.0 mikans per hectare. Taro can harvest his mikans every 3 months. How many mikans can Taro harvest within a year?",
+    "adapted_answer": [
+      "Taro has 4000.0 x 10 = 4000.0 x 10 mikans on his field.",
+      "Taro can harvest his Mikan 12 ÷ 3 = 12 ÷ 3 times per year",
+      "Therefore Taro can harvest 4000.0 x 10 x (12 ÷ 3) = 4000.0 x 10 x (12 ÷ 3) mikans per year.",
+      "#### 40000.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro', 'pineapples' with 'mikans' (a type of Japanese citrus fruit), and kept other entities unchanged as they are neutral."
+  }
+}

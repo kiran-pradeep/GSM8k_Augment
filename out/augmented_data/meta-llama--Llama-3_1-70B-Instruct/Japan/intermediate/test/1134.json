@@ -1,0 +1,134 @@
+{
+  "index": 1134,
+  "split": "test",
+  "original": {
+    "question": "Jane has saved $4 of her allowance every week for the past 8 weeks. If she continues to save the same amount each week, how many more weeks will it take for her to have saved a total of $60?",
+    "answer": "She has already saved 8 * $4 = $<<8*4=32>>32.\nShe needs to save an additional $60 - $32 = $<<60-32=28>>28.\nIt will take her 28 / 4 = <<28/4=7>>7 more weeks to save the rest of the money.\n#### 7"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency used is dollars, which is not specific to Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weekly_savings",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_savings_goal",
+      "value": 60,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "current_savings",
+      "value": 32,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "additional_savings_needed",
+      "value": 28,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"weekly_savings\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_savings_goal\", \"value\": 60, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"current_savings\", \"value\": 32, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"additional_savings_needed\", \"value\": 28, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weekly_savings",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 588.28,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_savings_goal",
+        "original_value": 60,
+        "original_unit": "dollar",
+        "converted_value": 8824.2,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "current_savings",
+        "original_value": 32,
+        "original_unit": "dollar",
+        "converted_value": 4706.24,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "additional_savings_needed",
+        "original_value": 28,
+        "original_unit": "dollar",
+        "converted_value": 4117.96,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jane has saved ${weekly_savings} of her allowance every week for the past {number_of_weeks} weeks. If she continues to save the same amount each week, how many more weeks will it take for her to have saved a total of ${total_savings_goal}?",
+    "templatized_answer": [
+      "She has already saved {number_of_weeks} * ${weekly_savings} = ${current_savings}.",
+      "She needs to save an additional ${total_savings_goal} - ${current_savings} = ${additional_savings_needed}.",
+      "It will take her ${additional_savings_needed} / ${weekly_savings} = {number_of_additional_weeks} more weeks to save the rest of the money.",
+      "#### {number_of_additional_weeks}"
+    ],
+    "factual_assignment": {
+      "weekly_savings": 4,
+      "total_savings_goal": 60,
+      "current_savings": 32,
+      "additional_savings_needed": 28,
+      "number_of_weeks": 8,
+      "number_of_additional_weeks": 7
+    }
+  },
+  "merged_assignment": {
+    "weekly_savings": 588.28,
+    "total_savings_goal": 8824.2,
+    "current_savings": 4706.24,
+    "additional_savings_needed": 4117.96,
+    "number_of_weeks": 8,
+    "number_of_additional_weeks": 7
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    weekly_savings = 588.28\n    total_savings_goal = 8824.2\n    number_of_weeks = 8\n\n    current_savings = number_of_weeks * weekly_savings\n    additional_savings_needed = total_savings_goal - current_savings\n    number_of_additional_weeks = round(additional_savings_needed / weekly_savings)\n\n    return {\n        \"weekly_savings\": round(weekly_savings, 2),\n        \"total_savings_goal\": round(total_savings_goal, 2),\n        \"current_savings\": round(current_savings, 2),\n        \"additional_savings_needed\": round(additional_savings_needed, 2),\n        \"number_of_weeks\": number_of_weeks,\n        \"number_of_additional_weeks\": number_of_additional_weeks\n    }\n",
+    "results": {
+      "weekly_savings": 588.28,
+      "total_savings_goal": 8824.2,
+      "current_savings": 4706.24,
+      "additional_savings_needed": 4117.96,
+      "number_of_weeks": 8,
+      "number_of_additional_weeks": 7
+    }
+  },
+  "final": {
+    "question": "Jane has saved 588.28 yen of her allowance every week for the past 8 weeks. If she continues to save the same amount each week, how many more weeks will it take for her to have saved a total of 8824.2 yen?",
+    "answer_lines": [
+      "She has already saved 8 * 588.28 = 4706.24.",
+      "She needs to save an additional 8824.2 - 4706.24 = 4117.96.",
+      "It will take her 4117.96 / 588.28 = 7 more weeks to save the rest of the money.",
+      "#### 7"
+    ],
+    "final_scalar": 7,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui has saved 588.28 yen of her allowance every week for the past 8 weeks. If she continues to save the same amount each week, how many more weeks will it take for her to have saved a total of 8824.2 yen?",
+    "adapted_answer": [
+      "She has already saved 8 * 588.28 = 4706.24.",
+      "She needs to save an additional 8824.2 - 4706.24 = 4117.96.",
+      "It will take her 4117.96 / 588.28 = 7 more weeks to save the rest of the money.",
+      "#### 7"
+    ],
+    "adaptation_notes": "Replaced 'Jane' with 'Yui' to use a Japanese name."
+  }
+}

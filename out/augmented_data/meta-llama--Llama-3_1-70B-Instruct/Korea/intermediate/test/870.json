@@ -1,0 +1,109 @@
+{
+  "index": 870,
+  "split": "test",
+  "original": {
+    "question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about $400 per month. In a four-week month, how many dollars does Keenan spend per week if Madeline pays 60% of the cost?",
+    "answer": "They spend $400/4=$<<400/4=100>>100 per week.\nKeenan pays for 100-60=<<100-60=40>>40% of the groceries.\nThus, she spends $100*(40/100)=$<<100*40/100=40>>40 per week.\n#### 40"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "monthly_grocery_cost",
+      "value": 400,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_grocery_cost",
+      "value": 100,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "keenan_weekly_grocery_cost",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"monthly_grocery_cost\", \"value\": 400, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"weekly_grocery_cost\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"keenan_weekly_grocery_cost\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "monthly_grocery_cost",
+        "original_value": 400,
+        "original_unit": "dollar",
+        "converted_value": 555800.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "weekly_grocery_cost",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 138950.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "keenan_weekly_grocery_cost",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 55580.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about ${monthly_grocery_cost} per month. In a four-week month, how many dollars does Keenan spend per week if Madeline pays 60% of the cost?",
+    "templatized_answer": [
+      "They spend ${monthly_grocery_cost}/4=${monthly_grocery_cost}/4 per week.",
+      "Keenan pays for {monthly_grocery_cost}/4-60={monthly_grocery_cost}/4-60% of the groceries.",
+      "Thus, she spends ${monthly_grocery_cost}/4*(40/100)=${monthly_grocery_cost}/4*(40/100) per week.",
+      "#### ${monthly_grocery_cost}/4*(40/100)"
+    ],
+    "factual_assignment": {
+      "monthly_grocery_cost": 400
+    }
+  },
+  "merged_assignment": {
+    "monthly_grocery_cost": 555800.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    monthly_grocery_cost = 555800.0\n\n    monthly_grocery_cost_per_week = monthly_grocery_cost / 4\n    keenan_monthly_grocery_cost_percentage = 40 / 100\n    keenan_monthly_grocery_cost = monthly_grocery_cost * keenan_monthly_grocery_cost_percentage\n    keenan_weekly_grocery_cost = keenan_monthly_grocery_cost / 4\n\n    return {\n        \"monthly_grocery_cost\": monthly_grocery_cost,\n        \"monthly_grocery_cost/4\": round(monthly_grocery_cost_per_week, 2),\n        \"monthly_grocery_cost/4-60\": round(monthly_grocery_cost * (1 - 0.6), 2),\n        \"monthly_grocery_cost/4*(40/100)\": round(keenan_weekly_grocery_cost, 2)\n    }\n",
+    "results": {
+      "monthly_grocery_cost": 555800.0,
+      "monthly_grocery_cost/4": 138950.0,
+      "monthly_grocery_cost/4-60": 222320.0,
+      "monthly_grocery_cost/4*(40/100)": 55580.0
+    }
+  },
+  "final": {
+    "question": "Madeline and her roommate, Keenan, share the cost of groceries. In total, they spend about 555800.0 won per month. In a four-week month, how many won does Keenan spend per week if Madeline pays 60% of the cost?",
+    "answer_lines": [
+      "They spend 555800.0/4=138950.0 per week.",
+      "Keenan pays for 138950.0-60=222320.0 won of the groceries is incorrect, instead Keenan pays for 40% of the groceries.",
+      "Thus, she spends 138950.0*(40/100)=55580.0 per week.",
+      "#### 55580.0"
+    ],
+    "final_scalar": 55580.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji and her roommate, Ji-hoon, share the cost of groceries. In total, they spend about 555800.0 won per month. In a four-week month, how many won does Ji-hoon spend per week if Min-ji pays 60% of the cost?",
+    "adapted_answer": [
+      "They spend 555800.0/4=138950.0 per week.",
+      "Ji-hoon pays for 40% of the groceries.",
+      "Thus, he spends 138950.0*(40/100)=55580.0 per week.",
+      "#### 55580.0"
+    ],
+    "adaptation_notes": "Replaced 'Madeline' with 'Min-ji' and 'Keenan' with 'Ji-hoon' to use Korean names."
+  }
+}

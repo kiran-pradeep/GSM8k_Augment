@@ -1,0 +1,122 @@
+{
+  "index": 131,
+  "split": "test",
+  "original": {
+    "question": "The expenditure of Joseph in May was $500. In June, his expenditure was $60 less. How much was his total expenditure for those two months?",
+    "answer": "His expenditure in June was $500 - $60 = $<<500-60=440>>440.\nHis total expenditure for May and June was $500 + $440 = $<<500+440=940>>940.\n#### 940"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Joseph",
+      "dollars"
+    ],
+    "notes": "The name 'Joseph' and the unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "may_expenditure",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "june_expenditure_decrease",
+      "value": 60.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "june_expenditure",
+      "value": 440.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_expenditure",
+      "value": 940.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"may_expenditure\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"june_expenditure_decrease\", \"value\": 60.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"june_expenditure\", \"value\": 440.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_expenditure\", \"value\": 940.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "may_expenditure",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 73535.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "june_expenditure_decrease",
+        "original_value": 60.0,
+        "original_unit": "dollar",
+        "converted_value": 8824.2,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "june_expenditure",
+        "original_value": 440.0,
+        "original_unit": "dollar",
+        "converted_value": 64710.8,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_expenditure",
+        "original_value": 940.0,
+        "original_unit": "dollar",
+        "converted_value": 138245.8,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The expenditure of Joseph in May was ${may_expenditure}. In June, his expenditure was ${june_expenditure_decrease} less. How much was his total expenditure for those two months?",
+    "templatized_answer": [
+      "His expenditure in June was ${may_expenditure} - ${june_expenditure_decrease} = ${may_expenditure - june_expenditure_decrease}.",
+      "His total expenditure for May and June was ${may_expenditure} + ${may_expenditure - june_expenditure_decrease} = ${may_expenditure + (may_expenditure - june_expenditure_decrease)}.",
+      "#### {may_expenditure + (may_expenditure - june_expenditure_decrease)}"
+    ],
+    "factual_assignment": {
+      "may_expenditure": 500.0,
+      "june_expenditure_decrease": 60.0
+    }
+  },
+  "merged_assignment": {
+    "may_expenditure": 73535.0,
+    "june_expenditure_decrease": 8824.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    may_expenditure = 73535.0\n    june_expenditure_decrease = 8824.2\n\n    june_expenditure = may_expenditure - june_expenditure_decrease\n    total_expenditure = may_expenditure + june_expenditure\n\n    return {\n        \"may_expenditure\": round(may_expenditure, 2),\n        \"june_expenditure_decrease\": round(june_expenditure_decrease, 2),\n        \"may_expenditure - june_expenditure_decrease\": round(june_expenditure, 2),\n        \"may_expenditure + (may_expenditure - june_expenditure_decrease)\": round(total_expenditure, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "may_expenditure": 73535.0,
+      "june_expenditure_decrease": 8824.2,
+      "may_expenditure - june_expenditure_decrease": 64710.8,
+      "may_expenditure + (may_expenditure - june_expenditure_decrease)": 138245.8
+    }
+  },
+  "final": {
+    "question": "The expenditure of Joseph in May was 73535.0 yen. In June, his expenditure was 8824.2 yen less. How much was his total expenditure for those two months?",
+    "answer_lines": [
+      "His expenditure in June was 73535.0 - 8824.2 = 64710.8 yen.",
+      "His total expenditure for May and June was 73535.0 + 64710.8 = 138245.8 yen.",
+      "#### 138245.8"
+    ],
+    "final_scalar": 138245.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The expenditure of Taro in May was 73535.0 yen. In June, his expenditure was 8824.2 yen less. How much was his total expenditure for those two months?",
+    "adapted_answer": [
+      "His expenditure in June was 73535.0 - 8824.2 = 64710.8 yen.",
+      "His total expenditure for May and June was 73535.0 + 64710.8 = 138245.8 yen.",
+      "#### 138245.8"
+    ],
+    "adaptation_notes": "Replaced 'Joseph' with 'Taro', a common Japanese name."
+  }
+}

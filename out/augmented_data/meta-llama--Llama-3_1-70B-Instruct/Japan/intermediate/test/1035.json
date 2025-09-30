@@ -1,0 +1,97 @@
+{
+  "index": 1035,
+  "split": "test",
+  "original": {
+    "question": "Richard wants to make a video to share online of him doing a science experiment that creates a fountain of diet soda after placing a specific branded candy inside it. Richard's driveway is 24 feet wide and he wants to put a bottle of soda every 3 feet of the driveway. After starting at the first bottle, it will take Richard 5 seconds to go from one soda bottle to the next, dropping the candy in. How many seconds total will it take Richard to set off all the soda fountains?",
+    "answer": "If Richard's driveway is 24 feet long and he puts a bottle of soda every 3 feet, then out of 24 feet total there are 24 / 3 feet between each bottle = <<24/3=8>>8 bottles.\nIf Richard starts at 0 seconds with the first bottle and it takes him 5 seconds to go onto the next bottle to drop the candy, then it will take him 5 seconds x 7 bottles = 35 seconds total.\n#### 35"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Richard",
+      "diet soda",
+      "feet"
+    ],
+    "notes": "The name 'Richard' and the use of 'feet' as a unit of measurement are culturally specific to Western regions, and 'diet soda' is a Western food item."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "driveway_width",
+      "value": 24.0,
+      "unit": "foot",
+      "context": "question"
+    },
+    {
+      "variable": "bottle_spacing",
+      "value": 3.0,
+      "unit": "foot",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"].lower()\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"unit\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"driveway_width\", \"value\": 24.0, \"unit\": \"foot\", \"context\": \"question\"},\n    {\"variable\": \"bottle_spacing\", \"value\": 3.0, \"unit\": \"foot\", \"context\": \"question\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "driveway_width",
+        "original_value": 24.0,
+        "original_unit": "foot",
+        "converted_value": 7.32,
+        "converted_unit": "meter"
+      },
+      {
+        "variable": "bottle_spacing",
+        "original_value": 3.0,
+        "original_unit": "foot",
+        "converted_value": 0.91,
+        "converted_unit": "meter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Richard wants to make a video to share online of him doing a science experiment that creates a fountain of diet soda after placing a specific branded candy inside it. Richard's driveway is {driveway_width} feet wide and he wants to put a bottle of soda every {bottle_spacing} feet of the driveway. After starting at the first bottle, it will take Richard {time_per_bottle} seconds to go from one soda bottle to the next, dropping the candy in. How many seconds total will it take Richard to set off all the soda fountains?",
+    "templatized_answer": [
+      "If Richard's driveway is {driveway_width} feet long and he puts a bottle of soda every {bottle_spacing} feet, then out of {driveway_width} feet total there are {driveway_width} / {bottle_spacing} feet between each bottle = {driveway_width}/{bottle_spacing} bottles.",
+      "If Richard starts at 0 seconds with the first bottle and it takes him {time_per_bottle} seconds to go onto the next bottle to drop the candy, then it will take him {time_per_bottle} seconds x ({driveway_width}/{bottle_spacing} - 1) bottles = {time_per_bottle} * ({driveway_width}/{bottle_spacing} - 1) seconds total.",
+      "#### {time_per_bottle} * ({driveway_width}/{bottle_spacing} - 1)"
+    ],
+    "factual_assignment": {
+      "driveway_width": 24.0,
+      "bottle_spacing": 3.0,
+      "time_per_bottle": 5.0
+    }
+  },
+  "merged_assignment": {
+    "driveway_width": 7.32,
+    "bottle_spacing": 0.91,
+    "time_per_bottle": 5.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"driveway_width\": 7.32,\n        \"bottle_spacing\": 0.91,\n        \"time_per_bottle\": 5.0\n    }\n\n    recomputed_values = {}\n\n    # Calculate number of bottles\n    num_bottles = factual_assignment[\"driveway_width\"] / factual_assignment[\"bottle_spacing\"]\n    recomputed_values[\"driveway_width/{bottle_spacing}\"] = round(num_bottles, 2)\n\n    # Calculate total time\n    total_time = factual_assignment[\"time_per_bottle\"] * (num_bottles - 1)\n    recomputed_values[\"time_per_bottle * ({driveway_width}/{bottle_spacing} - 1)\"] = round(total_time, 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "driveway_width/{bottle_spacing}": 8.04,
+      "time_per_bottle * ({driveway_width}/{bottle_spacing} - 1)": 35.22
+    }
+  },
+  "final": {
+    "question": "Richard wants to make a video to share online of him doing a science experiment that creates a fountain of diet soda after placing a specific branded candy inside it. Richard's driveway is 7.32 meters wide and he wants to put a bottle of soda every 0.91 meters of the driveway. After starting at the first bottle, it will take Richard 5 seconds to go from one soda bottle to the next, dropping the candy in. How many seconds total will it take Richard to set off all the soda fountains?",
+    "answer_lines": [
+      "If Richard's driveway is 7.32 meters long and he puts a bottle of soda every 0.91 meters, then out of 7.32 meters total there are 7.32 / 0.91 meters between each bottle = 8.04 bottles.",
+      "If Richard starts at 0 seconds with the first bottle and it takes him 5 seconds to go onto the next bottle to drop the candy, then it will take him 5 seconds x (8.04 - 1) bottles = 35.22 seconds total.",
+      "#### 35.22"
+    ],
+    "final_scalar": 35.22,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro wants to make a video to share online of him doing a science experiment that creates a fountain of Ramune after placing a specific branded candy inside it. Taro's driveway is 7.32 meters wide and he wants to put a bottle of Ramune every 0.91 meters of the driveway. After starting at the first bottle, it will take Taro 5 seconds to go from one Ramune bottle to the next, dropping the candy in. How many seconds total will it take Taro to set off all the Ramune fountains?",
+    "adapted_answer": [
+      "If Taro's driveway is 7.32 meters long and he puts a bottle of Ramune every 0.91 meters, then out of 7.32 meters total there are 7.32 / 0.91 meters between each bottle = 8.04 bottles.",
+      "If Taro starts at 0 seconds with the first bottle and it takes him 5 seconds to go onto the next bottle to drop the candy, then it will take him 5 seconds x (8.04 - 1) bottles = 35.22 seconds total.",
+      "#### 35.22"
+    ],
+    "adaptation_notes": "Replaced 'Richard' with 'Taro', 'diet soda' with 'Ramune' (a popular Japanese soft drink), and 'candy' is left as is since it's a generic term."
+  }
+}

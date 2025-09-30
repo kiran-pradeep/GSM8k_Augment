@@ -1,0 +1,129 @@
+{
+  "index": 56,
+  "split": "test",
+  "original": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for $7 and popcorn for $7. If he has 42 dollars for the week, how many times can he go to the movies?",
+    "answer": "It costs him $14 to go to the movies because 7 + 7 = <<7+7=14>>14\nHe can go to the movies 3 times because 42 / 14 = <<42/14=3>>3\n#### 3"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Peter",
+      "dollars",
+      "movies",
+      "popcorn"
+    ],
+    "notes": "The text contains a Western name, a unit of currency commonly used in the US, and food items not traditionally associated with Japanese cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "weekly_budget",
+      "value": 42.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "ticket_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "popcorn_cost",
+      "value": 7.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "movie_cost",
+      "value": 14.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"weekly_budget\", \"value\": 42.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"ticket_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"popcorn_cost\", \"value\": 7.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"movie_cost\", \"value\": 14.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "weekly_budget",
+        "original_value": 42.0,
+        "original_unit": "dollar",
+        "converted_value": 6176.94,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ticket_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "popcorn_cost",
+        "original_value": 7.0,
+        "original_unit": "dollar",
+        "converted_value": 1029.49,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "movie_cost",
+        "original_value": 14.0,
+        "original_unit": "dollar",
+        "converted_value": 2058.98,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Peter plans to go to the movies this week. He always gets a ticket for ${ticket_cost} and popcorn for ${popcorn_cost}. If he has ${weekly_budget} dollars for the week, how many times can he go to the movies?",
+    "templatized_answer": [
+      "It costs him ${movie_cost} to go to the movies because {ticket_cost} + {popcorn_cost} = {movie_cost}",
+      "He can go to the movies {weekly_budget} / {movie_cost} times",
+      "#### {weekly_budget} / {movie_cost}"
+    ],
+    "factual_assignment": {
+      "weekly_budget": 42.0,
+      "ticket_cost": 7.0,
+      "popcorn_cost": 7.0,
+      "movie_cost": 14.0
+    }
+  },
+  "merged_assignment": {
+    "weekly_budget": 6176.94,
+    "ticket_cost": 1029.49,
+    "popcorn_cost": 1029.49,
+    "movie_cost": 2058.98
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    weekly_budget = 6176.94\n    ticket_cost = 1029.49\n    popcorn_cost = 1029.49\n\n    movie_cost = ticket_cost + popcorn_cost\n    movie_cost = round(movie_cost, 2)\n\n    times_to_movies = weekly_budget / movie_cost\n    times_to_movies = round(times_to_movies, 2)\n\n    return {\n        \"weekly_budget\": weekly_budget,\n        \"ticket_cost\": ticket_cost,\n        \"popcorn_cost\": popcorn_cost,\n        \"movie_cost\": movie_cost,\n        \"times_to_movies\": times_to_movies\n    }\n",
+    "results": {
+      "weekly_budget": 6176.94,
+      "ticket_cost": 1029.49,
+      "popcorn_cost": 1029.49,
+      "movie_cost": 2058.98,
+      "times_to_movies": 3.0
+    }
+  },
+  "final": {
+    "question": "Peter plans to go to the movies this week. He always gets a ticket for 1029.49 yen and popcorn for 1029.49 yen. If he has 6176.94 yen for the week, how many times can he go to the movies?",
+    "answer_lines": [
+      "It costs him 2058.98 yen to go to the movies because 1029.49 + 1029.49 = 2058.98",
+      "He can go to the movies 6176.94 / 2058.98 times",
+      "#### 3.0"
+    ],
+    "final_scalar": 3.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro plans to go to the cinema this week. He always gets a ticket for 1029.49 yen and senbei for 1029.49 yen. If he has 6176.94 yen for the week, how many times can he go to the cinema?",
+    "adapted_answer": [
+      "It costs him 2058.98 yen to go to the cinema because 1029.49 + 1029.49 = 2058.98",
+      "He can go to the cinema 6176.94 / 2058.98 times",
+      "#### 3.0"
+    ],
+    "adaptation_notes": "Replaced 'Peter' with 'Taro', 'movies' with 'cinema', and 'popcorn' with 'senbei'."
+  }
+}

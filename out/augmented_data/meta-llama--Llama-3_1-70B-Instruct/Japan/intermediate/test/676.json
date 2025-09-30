@@ -1,0 +1,137 @@
+{
+  "index": 676,
+  "split": "test",
+  "original": {
+    "question": "Three people invested $1200 in a joint savings account.  After Dylan's investment of 2/5 of the total amount, Frances invested 2/3 of the remaining amount.  Skyler's investment accounted for the rest. How much money was Skyler's investment?",
+    "answer": "Dylan's investment was 2/5 * $1200 = $<<2/5*1200=480>>480\nFrances and Skylers' investment was $1200 - $480 = $<<1200-480=720>>720\nFrances invested 2/3 * $720 = $<<2/3*720=480>>480\nDylan's and Frances's total investments were $480 + $480 = $<<480+480=960>>960\nSkyler invested $1200 - $960 = $<<1200-960=240>>240\n#### 240"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Dylan",
+      "Frances",
+      "Skyler",
+      "dollars"
+    ],
+    "notes": "The names Dylan, Frances, and Skyler are Western names, and the unit 'dollars' is a currency commonly used in Western countries."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_investment",
+      "value": 1200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "dylan_investment",
+      "value": 480.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "frances_investment",
+      "value": 480.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "skyler_investment",
+      "value": 240.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"yen\", \"rate\": 147.07},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_investment\", \"value\": 1200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"dylan_investment\", \"value\": 480.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"frances_investment\", \"value\": 480.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"skyler_investment\", \"value\": 240.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_investment",
+        "original_value": 1200.0,
+        "original_unit": "dollar",
+        "converted_value": 176484.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "dylan_investment",
+        "original_value": 480.0,
+        "original_unit": "dollar",
+        "converted_value": 70593.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "frances_investment",
+        "original_value": 480.0,
+        "original_unit": "dollar",
+        "converted_value": 70593.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "skyler_investment",
+        "original_value": 240.0,
+        "original_unit": "dollar",
+        "converted_value": 35296.8,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Three people invested ${initial_investment} in a joint savings account.  After Dylan's investment of 2/5 of the total amount, Frances invested 2/3 of the remaining amount.  Skyler's investment accounted for the rest. How much money was Skyler's investment?",
+    "templatized_answer": [
+      "Dylan's investment was 2/5 * ${initial_investment} = ${dylan_investment}",
+      "Frances and Skylers' investment was ${initial_investment} - ${dylan_investment} = ${initial_investment} - ${dylan_investment}",
+      "Frances invested 2/3 * (${initial_investment} - ${dylan_investment}) = ${frances_investment}",
+      "Dylan's and Frances's total investments were ${dylan_investment} + ${frances_investment} = ${dylan_investment} + ${frances_investment}",
+      "Skyler invested ${initial_investment} - (${dylan_investment} + ${frances_investment}) = ${initial_investment} - (${dylan_investment} + ${frances_investment})",
+      "#### {skyler_investment}"
+    ],
+    "factual_assignment": {
+      "initial_investment": 1200.0,
+      "dylan_investment": 480.0,
+      "frances_investment": 480.0,
+      "skyler_investment": 240.0
+    }
+  },
+  "merged_assignment": {
+    "initial_investment": 176484.0,
+    "dylan_investment": 70593.6,
+    "frances_investment": 70593.6,
+    "skyler_investment": 35296.8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_investment = 176484.0\n    dylan_investment = round(2/5 * initial_investment, 2)\n    frances_investment = round(2/3 * (initial_investment - dylan_investment), 2)\n    skyler_investment = round(initial_investment - (dylan_investment + frances_investment), 2)\n\n    return {\n        \"initial_investment\": initial_investment,\n        \"dylan_investment\": dylan_investment,\n        \"frances_investment\": frances_investment,\n        \"skyler_investment\": skyler_investment\n    }\n",
+    "results": {
+      "initial_investment": 176484.0,
+      "dylan_investment": 70593.6,
+      "frances_investment": 70593.6,
+      "skyler_investment": 35296.8
+    }
+  },
+  "final": {
+    "question": "Three people invested 176484 yen in a joint savings account.  After Dylan's investment of 2/5 of the total amount, Frances invested 2/3 of the remaining amount.  Skyler's investment accounted for the rest. How much money was Skyler's investment?",
+    "answer_lines": [
+      "Dylan's investment was 2/5 * 176484 = 70593.6",
+      "Frances and Skylers' investment was 176484 - 70593.6 = 105890.4",
+      "Frances invested 2/3 * 105890.4 = 70593.6",
+      "Dylan's and Frances's total investments were 70593.6 + 70593.6 = 141187.2",
+      "Skyler invested 176484 - 141187.2 = 35296.8",
+      "#### 35296.8"
+    ],
+    "final_scalar": 35296.8,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Three people invested 176484 yen in a joint savings account.  After Taro's investment of 2/5 of the total amount, Yui invested 2/3 of the remaining amount.  Kenji's investment accounted for the rest. How much money was Kenji's investment?",
+    "adapted_answer": [
+      "Taro's investment was 2/5 * 176484 = 70593.6",
+      "Yui and Kenji's investment was 176484 - 70593.6 = 105890.4",
+      "Yui invested 2/3 * 105890.4 = 70593.6",
+      "Taro's and Yui's total investments were 70593.6 + 70593.6 = 141187.2",
+      "Kenji invested 176484 - 141187.2 = 35296.8",
+      "#### 35296.8"
+    ],
+    "adaptation_notes": "Replaced names 'Dylan', 'Frances', and 'Skyler' with Japanese names 'Taro', 'Yui', and 'Kenji'."
+  }
+}

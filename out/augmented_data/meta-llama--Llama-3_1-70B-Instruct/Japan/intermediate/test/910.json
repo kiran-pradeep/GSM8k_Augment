@@ -1,0 +1,111 @@
+{
+  "index": 910,
+  "split": "test",
+  "original": {
+    "question": "Farmer Brown's farm is 200 acres, and Farmer Smith's farm is 100 acres more than twice that. How many acres do the two farms have, together?",
+    "answer": "Farmer Smith has 2*200+100=<<2*200+100=500>>500 acres.\nThe total is 200+500=<<200+500=700>>700.\n#### 700"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Farmer Brown",
+      "Farmer Smith",
+      "acres"
+    ],
+    "notes": "Names and units are culturally specific to Western regions."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "brown_farm_acres",
+      "value": 200.0,
+      "unit": "acre",
+      "context": "question"
+    },
+    {
+      "variable": "smith_farm_acres",
+      "value": 500.0,
+      "unit": "acre",
+      "context": "answer"
+    },
+    {
+      "variable": "total_farm_acres",
+      "value": 700.0,
+      "unit": "acre",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"},\n        \"acre\": {\"factor\": 4046.856, \"unit\": \"square meter\"}\n    }\n\n    result = []\n    for metric in metrics:\n        if metric[\"unit\"] in conversions:\n            converted_value = round(metric[\"value\"] * conversions[metric[\"unit\"]][\"factor\"], 2)\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": converted_value,\n                \"converted_unit\": conversions[metric[\"unit\"]][\"unit\"]\n            })\n        else:\n            result.append({\n                \"variable\": metric[\"variable\"],\n                \"original_value\": metric[\"value\"],\n                \"original_unit\": metric[\"unit\"],\n                \"converted_value\": metric[\"value\"],\n                \"converted_unit\": metric[\"unit\"]\n            })\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"brown_farm_acres\",\n    \"value\": 200.0,\n    \"unit\": \"acre\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"smith_farm_acres\",\n    \"value\": 500.0,\n    \"unit\": \"acre\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_farm_acres\",\n    \"value\": 700.0,\n    \"unit\": \"acre\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "brown_farm_acres",
+        "original_value": 200.0,
+        "original_unit": "acre",
+        "converted_value": 809371.2,
+        "converted_unit": "square meter"
+      },
+      {
+        "variable": "smith_farm_acres",
+        "original_value": 500.0,
+        "original_unit": "acre",
+        "converted_value": 2023428.0,
+        "converted_unit": "square meter"
+      },
+      {
+        "variable": "total_farm_acres",
+        "original_value": 700.0,
+        "original_unit": "acre",
+        "converted_value": 2832799.2,
+        "converted_unit": "square meter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Farmer Brown's farm is {brown_farm_acres} acres, and Farmer Smith's farm is 100 acres more than twice that. How many acres do the two farms have, together?",
+    "templatized_answer": [
+      "Farmer Smith has 2*{brown_farm_acres}+100={smith_farm_acres} acres.",
+      "The total is {brown_farm_acres}+{smith_farm_acres}={total_farm_acres}.",
+      "#### {total_farm_acres}"
+    ],
+    "factual_assignment": {
+      "brown_farm_acres": 200.0,
+      "smith_farm_acres": 500.0,
+      "total_farm_acres": 700.0
+    }
+  },
+  "merged_assignment": {
+    "brown_farm_acres": 809371.2,
+    "smith_farm_acres": 2023428.0,
+    "total_farm_acres": 2832799.2
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    brown_farm_acres = 809371.2\n    smith_farm_acres = 2 * brown_farm_acres + 100\n    total_farm_acres = brown_farm_acres + smith_farm_acres\n\n    return {\n        \"brown_farm_acres\": round(brown_farm_acres, 2),\n        \"smith_farm_acres\": round(smith_farm_acres, 2),\n        \"total_farm_acres\": round(total_farm_acres, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "brown_farm_acres": 809371.2,
+      "smith_farm_acres": 1618842.4,
+      "total_farm_acres": 2428213.6
+    }
+  },
+  "final": {
+    "question": "Farmer Brown's farm is 809371.2 square meters, and Farmer Smith's farm is 100 square meters more than twice that. How many square meters do the two farms have, together?",
+    "answer_lines": [
+      "Farmer Smith has 2*809371.2+100=1618842.4 square meters.",
+      "The total is 809371.2+1618842.4=2428213.6 square meters.",
+      "#### 2428213.6"
+    ],
+    "final_scalar": 2428213.6,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Farmer Tanaka's farm is 809371.2 square meters, and Farmer Matsumoto's farm is 100 square meters more than twice that. How many square meters do the two farms have, together?",
+    "adapted_answer": [
+      "Farmer Matsumoto has 2*809371.2+100=1618842.4 square meters.",
+      "The total is 809371.2+1618842.4=2428213.6 square meters.",
+      "#### 2428213.6"
+    ],
+    "adaptation_notes": "Replaced 'Farmer Brown' with 'Farmer Tanaka' and 'Farmer Smith' with 'Farmer Matsumoto' to provide Japanese equivalents."
+  }
+}

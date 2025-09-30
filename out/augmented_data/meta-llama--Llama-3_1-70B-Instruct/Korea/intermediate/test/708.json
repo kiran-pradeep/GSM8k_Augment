@@ -1,0 +1,97 @@
+{
+  "index": 708,
+  "split": "test",
+  "original": {
+    "question": "Given a 7-day week, how much does Alex charge for 2 weeks of tutoring if she charges $12 per day?",
+    "answer": "A week has 7 days, therefore 2 weeks have 2*7= <<2*7=14>>14 days\nIf Alex charges $12 per day, then in $14 days she would charge $12*14 = $<<12*14=168>>168\n#### 168"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit of currency 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "daily_charge",
+      "value": 12,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_charge",
+      "value": 168,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"daily_charge\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_charge\", \"value\": 168, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "daily_charge",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 16674.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_charge",
+        "original_value": 168,
+        "original_unit": "dollar",
+        "converted_value": 233436.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Given a {days_in_week}-day week, how much does Alex charge for {number_of_weeks} weeks of tutoring if she charges ${daily_charge} per day?",
+    "templatized_answer": [
+      "A week has {days_in_week} days, therefore {number_of_weeks} weeks have {number_of_weeks}*{days_in_week}={number_of_weeks}*{days_in_week} days",
+      "If Alex charges ${daily_charge} per day, then in {number_of_weeks}*{days_in_week} days she would charge ${daily_charge}*{number_of_weeks}*{days_in_week} = ${daily_charge}*{number_of_weeks}*{days_in_week}",
+      "#### ${daily_charge}*{number_of_weeks}*{days_in_week}"
+    ],
+    "factual_assignment": {
+      "days_in_week": 7,
+      "number_of_weeks": 2,
+      "daily_charge": 12
+    }
+  },
+  "merged_assignment": {
+    "days_in_week": 7,
+    "number_of_weeks": 2,
+    "daily_charge": 16674.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    days_in_week = 7\n    number_of_weeks = 2\n    daily_charge = 16674.0\n\n    total_days = number_of_weeks * days_in_week\n    total_charge = daily_charge * total_days\n\n    return {\n        \"days_in_week\": days_in_week,\n        \"number_of_weeks\": number_of_weeks,\n        \"daily_charge\": round(daily_charge, 2),\n        \"number_of_weeks*days_in_week\": total_days,\n        \"daily_charge*number_of_weeks*days_in_week\": round(total_charge, 2)\n    }\n",
+    "results": {
+      "days_in_week": 7,
+      "number_of_weeks": 2,
+      "daily_charge": 16674.0,
+      "number_of_weeks*days_in_week": 14,
+      "daily_charge*number_of_weeks*days_in_week": 233436.0
+    }
+  },
+  "final": {
+    "question": "Given a 7-day week, how much does Alex charge for 2 weeks of tutoring if she charges 16674.0 won per day?",
+    "answer_lines": [
+      "A week has 7 days, therefore 2 weeks have 2*7=14 days",
+      "If Alex charges 16674.0 won per day, then in 14 days she would charge 16674.0*14 = 233436.0",
+      "#### 233436.0"
+    ],
+    "final_scalar": 233436.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "7일 주간이 주어졌을 때, Alex가 하루에 16674.0원을 받는다면 2주간의 과외 수업료는 얼마인가?",
+    "adapted_answer": [
+      "일주일에 7일이 있으므로, 2주에는 2*7=14일이 있습니다.",
+      "Alex가 하루에 16674.0원을 받는다면, 14일 동안 받는 금액은 16674.0*14 = 233436.0원입니다."
+    ],
+    "adaptation_notes": "No changes needed, as the original text was already neutral and did not contain any non-Korean entities that needed replacement."
+  }
+}

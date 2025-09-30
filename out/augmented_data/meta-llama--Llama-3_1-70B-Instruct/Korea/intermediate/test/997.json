@@ -1,0 +1,142 @@
+{
+  "index": 997,
+  "split": "test",
+  "original": {
+    "question": "Walter is collecting money for charity. First he collects $500 from his neighbors. Then he collects $1500 from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him $200 as well. How much is Walter's lawyer going to contribute?",
+    "answer": "Walter collects $500 + $1500 + $200 = $<<500+1500+200=2200>>2,200 he collects from everyone for charity.\nHis lawyer has offered to donate 3 times that amount, $2,200 x 3 = $<<3*2200=6600>>6,600 that Walter's lawyer is going to donate.\n#### 6,600"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Walter",
+      "dollars"
+    ],
+    "notes": "The name 'Walter' and the unit 'dollars' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "neighbor_donation",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "online_fund_donation",
+      "value": 1500.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "friend_donation",
+      "value": 200.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_donation",
+      "value": 2200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "lawyer_donation",
+      "value": 6600.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"neighbor_donation\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"online_fund_donation\", \"value\": 1500.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"friend_donation\", \"value\": 200.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_donation\", \"value\": 2200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"lawyer_donation\", \"value\": 6600.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "neighbor_donation",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 694750.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "online_fund_donation",
+        "original_value": 1500.0,
+        "original_unit": "dollar",
+        "converted_value": 2084250.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "friend_donation",
+        "original_value": 200.0,
+        "original_unit": "dollar",
+        "converted_value": 277900.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_donation",
+        "original_value": 2200.0,
+        "original_unit": "dollar",
+        "converted_value": 3056900.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "lawyer_donation",
+        "original_value": 6600.0,
+        "original_unit": "dollar",
+        "converted_value": 9170700.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Walter is collecting money for charity. First he collects ${neighbor_donation} from his neighbors. Then he collects ${online_fund_donation} from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him ${friend_donation} as well. How much is Walter's lawyer going to contribute?",
+    "templatized_answer": [
+      "Walter collects ${neighbor_donation} + ${online_fund_donation} + ${friend_donation} = ${total_donation} he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, ${total_donation} x 3 = ${lawyer_donation} that Walter's lawyer is going to donate.",
+      "#### {lawyer_donation}"
+    ],
+    "factual_assignment": {
+      "neighbor_donation": 500.0,
+      "online_fund_donation": 1500.0,
+      "friend_donation": 200.0,
+      "total_donation": 2200.0,
+      "lawyer_donation": 6600.0
+    }
+  },
+  "merged_assignment": {
+    "neighbor_donation": 694750.0,
+    "online_fund_donation": 2084250.0,
+    "friend_donation": 277900.0,
+    "total_donation": 3056900.0,
+    "lawyer_donation": 9170700.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    neighbor_donation = 694750.0\n    online_fund_donation = 2084250.0\n    friend_donation = 277900.0\n\n    total_donation = round(neighbor_donation + online_fund_donation + friend_donation, 2)\n    lawyer_donation = round(total_donation * 3, 2)\n\n    return {\n        \"neighbor_donation\": neighbor_donation,\n        \"online_fund_donation\": online_fund_donation,\n        \"friend_donation\": friend_donation,\n        \"total_donation\": total_donation,\n        \"lawyer_donation\": lawyer_donation\n    }\n",
+    "results": {
+      "neighbor_donation": 694750.0,
+      "online_fund_donation": 2084250.0,
+      "friend_donation": 277900.0,
+      "total_donation": 3056900.0,
+      "lawyer_donation": 9170700.0
+    }
+  },
+  "final": {
+    "question": "Walter is collecting money for charity. First he collects 694750 won from his neighbors. Then he collects 2084250 won from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Walter is going to tell him about his neighbors and the online fund until his friend gives him 277900 won as well. How much is Walter's lawyer going to contribute?",
+    "answer_lines": [
+      "Walter collects 694750 + 2084250 + 277900 = 3056900 he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, 3056900 x 3 = 9170700 that Walter's lawyer is going to donate.",
+      "#### 9170700"
+    ],
+    "final_scalar": 9170700,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo is collecting money for charity. First he collects 694750 won from his neighbors. Then he collects 2084250 won from a fund he set up online. His lawyer offers to donate three times as much as everyone else donates. Min-soo is going to tell him about his neighbors and the online fund until his friend gives him 277900 won as well. How much is Min-soo's lawyer going to contribute?",
+    "adapted_answer": [
+      "Min-soo collects 694750 + 2084250 + 277900 = 3056900 he collects from everyone for charity.",
+      "His lawyer has offered to donate 3 times that amount, 3056900 x 3 = 9170700 that Min-soo's lawyer is going to donate.",
+      "#### 9170700"
+    ],
+    "adaptation_notes": "Replaced 'Walter' with 'Min-soo' to give the character a Korean name."
+  }
+}

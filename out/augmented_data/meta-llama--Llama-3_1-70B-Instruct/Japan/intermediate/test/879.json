@@ -1,0 +1,146 @@
+{
+  "index": 879,
+  "split": "test",
+  "original": {
+    "question": "At a spa, Iris spent $400 to do her hair, 1/4 as much to do a manicure, and 3/4 as much money as a manicure to do a pedicure. How much money did she spend at the spa?",
+    "answer": "The total amount of money that Iris used to do a manicure is 1/4*$400 = $<<1/4*400=100>>100\nTogether, she used $400+$100 = $<<400+100=500>>500 to do her hair and manicure,\nIf Iris also spent 3/4 as much money as a manicure to do a pedicure, she used 3/4*$100 = $<<3/4*100=75>>75 to do a pedicure.\nAt the spa, Iris spent a total of $500+$75 = $<<500+75=575>>575\n#### 575"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hair_cost",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "manicure_cost",
+      "value": 100.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "hair_manicure_cost",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "pedicure_cost",
+      "value": 75.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_spa_cost",
+      "value": 575.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hair_cost\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"manicure_cost\", \"value\": 100.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"hair_manicure_cost\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"pedicure_cost\", \"value\": 75.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_spa_cost\", \"value\": 575.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hair_cost",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 58828.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "manicure_cost",
+        "original_value": 100.0,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "hair_manicure_cost",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 73535.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "pedicure_cost",
+        "original_value": 75.0,
+        "original_unit": "dollar",
+        "converted_value": 11030.25,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_spa_cost",
+        "original_value": 575.0,
+        "original_unit": "dollar",
+        "converted_value": 84565.25,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "At a spa, Iris spent ${hair_cost} to do her hair, 1/4 as much to do a manicure, and 3/4 as much money as a manicure to do a pedicure. How much money did she spend at the spa?",
+    "templatized_answer": [
+      "The total amount of money that Iris used to do a manicure is 1/4*${hair_cost} = ${manicure_cost}",
+      "Together, she used ${hair_cost}+${manicure_cost} = ${hair_manicure_cost} to do her hair and manicure,",
+      "If Iris also spent 3/4 as much money as a manicure to do a pedicure, she used 3/4*${manicure_cost} = ${pedicure_cost} to do a pedicure.",
+      "At the spa, Iris spent a total of ${hair_manicure_cost}+${pedicure_cost} = ${total_spa_cost}"
+    ],
+    "factual_assignment": {
+      "hair_cost": 400.0,
+      "manicure_cost": 100.0,
+      "hair_manicure_cost": 500.0,
+      "pedicure_cost": 75.0,
+      "total_spa_cost": 575.0
+    }
+  },
+  "merged_assignment": {
+    "hair_cost": 58828.0,
+    "manicure_cost": 14707.0,
+    "hair_manicure_cost": 73535.0,
+    "pedicure_cost": 11030.25,
+    "total_spa_cost": 84565.25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hair_cost = 58828.0\n    manicure_cost = hair_cost / 4\n    hair_manicure_cost = hair_cost + manicure_cost\n    pedicure_cost = manicure_cost * 3 / 4\n    total_spa_cost = hair_manicure_cost + pedicure_cost\n\n    return {\n        \"hair_cost\": round(hair_cost, 2),\n        \"manicure_cost\": round(manicure_cost, 2),\n        \"hair_manicure_cost\": round(hair_manicure_cost, 2),\n        \"pedicure_cost\": round(pedicure_cost, 2),\n        \"total_spa_cost\": round(total_spa_cost, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "hair_cost": 58828.0,
+      "manicure_cost": 14707.0,
+      "hair_manicure_cost": 73535.0,
+      "pedicure_cost": 11030.25,
+      "total_spa_cost": 84565.25
+    }
+  },
+  "final": {
+    "question": "At a spa, Iris spent 58828 yen to do her hair, 1/4 as much to do a manicure, and 3/4 as much money as a manicure to do a pedicure. How much money did she spend at the spa?",
+    "answer_lines": [
+      "The total amount of money that Iris used to do a manicure is 1/4*58828 = 14707",
+      "Together, she used 58828+14707 = 73535 to do her hair and manicure,",
+      "If Iris also spent 3/4 as much money as a manicure to do a pedicure, she used 3/4*14707 = 11030.25 to do a pedicure.",
+      "At the spa, Iris spent a total of 73535+11030.25 = 84565.25",
+      "#### 84565.25"
+    ],
+    "final_scalar": 84565.25,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "At an onsen, Iris spent 58828 yen to do her hair, 1/4 as much to do a manicure, and 3/4 as much money as a manicure to do a pedicure. How much money did she spend at the onsen?",
+    "adapted_answer": [
+      "The total amount of money that Iris used to do a manicure is 1/4*58828 = 14707",
+      "Together, she used 58828+14707 = 73535 to do her hair and manicure,",
+      "If Iris also spent 3/4 as much money as a manicure to do a pedicure, she used 3/4*14707 = 11030.25 to do a pedicure.",
+      "At the onsen, Iris spent a total of 73535+11030.25 = 84565.25",
+      "#### 84565.25"
+    ],
+    "adaptation_notes": "Replaced 'spa' with 'onsen', a Japanese term for a hot spring resort, to provide a more Japanese context."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "index": 819,
+  "split": "test",
+  "original": {
+    "question": "Twenty students are working together to raise money for a charity. Each earns the same amount. The charity raises a total of $175,000. $50,000 comes from organizations and the rest from the students. How much did each student raise?",
+    "answer": "Amount raised by all students was 175,000-50,000 = <<175000-50000=125000>>125,000 dollars.\nAmount raised by each student was 125,000/20 = <<125000/20=6250>>6,250 dollars.\n#### 6,250"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_charity",
+      "value": 175000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "organization_donation",
+      "value": 50000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "student_donation",
+      "value": 125000.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "student_donation_per_student",
+      "value": 6250.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_charity\", \"value\": 175000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"organization_donation\", \"value\": 50000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"student_donation\", \"value\": 125000.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"student_donation_per_student\", \"value\": 6250.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_charity",
+        "original_value": 175000.0,
+        "original_unit": "dollar",
+        "converted_value": 243162500.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "organization_donation",
+        "original_value": 50000.0,
+        "original_unit": "dollar",
+        "converted_value": 69475000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "student_donation",
+        "original_value": 125000.0,
+        "original_unit": "dollar",
+        "converted_value": 173687500.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "student_donation_per_student",
+        "original_value": 6250.0,
+        "original_unit": "dollar",
+        "converted_value": 8684375.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Twenty students are working together to raise money for a charity. Each earns the same amount. The charity raises a total of ${total_charity}. ${organization_donation} comes from organizations and the rest from the students. How much did each student raise?",
+    "templatized_answer": [
+      "Amount raised by all students was {total_charity}-{organization_donation} = {student_donation} dollars.",
+      "Amount raised by each student was {student_donation}/20 = {student_donation_per_student} dollars.",
+      "#### {student_donation_per_student}"
+    ],
+    "factual_assignment": {
+      "total_charity": 175000.0,
+      "organization_donation": 50000.0,
+      "student_donation": 125000.0,
+      "student_donation_per_student": 6250.0
+    }
+  },
+  "merged_assignment": {
+    "total_charity": 243162500.0,
+    "organization_donation": 69475000.0,
+    "student_donation": 173687500.0,
+    "student_donation_per_student": 8684375.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_charity = 243162500.0\n    organization_donation = 69475000.0\n\n    student_donation = total_charity - organization_donation\n    student_donation_per_student = student_donation / 20\n\n    return {\n        \"total_charity\": round(total_charity, 2),\n        \"organization_donation\": round(organization_donation, 2),\n        \"student_donation\": round(student_donation, 2),\n        \"student_donation_per_student\": round(student_donation_per_student, 2)\n    }\n",
+    "results": {
+      "total_charity": 243162500.0,
+      "organization_donation": 69475000.0,
+      "student_donation": 173687500.0,
+      "student_donation_per_student": 8684375.0
+    }
+  },
+  "final": {
+    "question": "Twenty students are working together to raise money for a charity. Each earns the same amount. The charity raises a total of 243162500 won. 69475000 won comes from organizations and the rest from the students. How much did each student raise?",
+    "answer_lines": [
+      "Amount raised by all students was 243162500-69475000 = 173687500 won.",
+      "Amount raised by each student was 173687500/20 = 8684375 won.",
+      "#### 8684375"
+    ],
+    "final_scalar": 8684375.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Twenty students are working together to raise money for a charity in Seoul. Each earns the same amount. The charity raises a total of 243162500 won. 69475000 won comes from organizations and the rest from the students. How much did each student raise?",
+    "adapted_answer": [
+      "Amount raised by all students was 243162500-69475000 = 173687500 won.",
+      "Amount raised by each student was 173687500/20 = 8684375 won.",
+      "#### 8684375"
+    ],
+    "adaptation_notes": "Replaced 'a charity' with 'a charity in Seoul' to give it a Korean context."
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "index": 212,
+  "split": "test",
+  "original": {
+    "question": "Gary likes to walk around the edge of the local park, which is a rectangle that measures 1.5 miles by 6 miles. If he walks at 3 miles/hour, how many hours does he spend walking?",
+    "answer": "First find the length of the two long sides of the park: 6 miles * 2 = <<6*2=12>>12 miles\nThen find the length of the two short sides of the park: 1.5 miles * 2 = <<1.5*2=3>>3 miles\nThen add those two lengthes to find the total distance around the park: 12 miles + 3 miles = <<12+3=15>>15 miles\nThen divide the total length by Gary's speed to find how long he spends walking: 15 miles / 3 miles/hour = <<15/3=5>>5 hours\n#### 5"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles",
+      "Gary"
+    ],
+    "notes": "The unit 'miles' is commonly used in the US and the name 'Gary' is of Western origin."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "park_length",
+      "value": 6.0,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "park_width",
+      "value": 1.5,
+      "unit": "mile",
+      "context": "question"
+    },
+    {
+      "variable": "gary_speed",
+      "value": 3.0,
+      "unit": "mile/hour",
+      "context": "question"
+    },
+    {
+      "variable": "total_distance",
+      "value": 15.0,
+      "unit": "mile",
+      "context": "answer"
+    },
+    {
+      "variable": "gary_time",
+      "value": 5.0,
+      "unit": "hour",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"mile/hour\": {\"unit\": \"kilometer/hour\", \"factor\": 1.60934},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = original_value * conversions[original_unit][\"factor\"]\n            converted_value = round(converted_value, 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"park_length\", \"value\": 6.0, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"park_width\", \"value\": 1.5, \"unit\": \"mile\", \"context\": \"question\"},\n    {\"variable\": \"gary_speed\", \"value\": 3.0, \"unit\": \"mile/hour\", \"context\": \"question\"},\n    {\"variable\": \"total_distance\", \"value\": 15.0, \"unit\": \"mile\", \"context\": \"answer\"},\n    {\"variable\": \"gary_time\", \"value\": 5.0, \"unit\": \"hour\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "park_length",
+        "original_value": 6.0,
+        "original_unit": "mile",
+        "converted_value": 9.66,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "park_width",
+        "original_value": 1.5,
+        "original_unit": "mile",
+        "converted_value": 2.41,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "gary_speed",
+        "original_value": 3.0,
+        "original_unit": "mile/hour",
+        "converted_value": 4.83,
+        "converted_unit": "kilometer/hour"
+      },
+      {
+        "variable": "total_distance",
+        "original_value": 15.0,
+        "original_unit": "mile",
+        "converted_value": 24.14,
+        "converted_unit": "kilometer"
+      },
+      {
+        "variable": "gary_time",
+        "original_value": 5.0,
+        "original_unit": "hour",
+        "converted_value": 5.0,
+        "converted_unit": "hour"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Gary likes to walk around the edge of the local park, which is a rectangle that measures {park_width} miles by {park_length} miles. If he walks at {gary_speed} miles/hour, how many hours does he spend walking?",
+    "templatized_answer": [
+      "First find the length of the two long sides of the park: {park_length} miles * 2 = {park_length * 2} miles",
+      "Then find the length of the two short sides of the park: {park_width} miles * 2 = {park_width * 2} miles",
+      "Then add those two lengths to find the total distance around the park: {park_length * 2} miles + {park_width * 2} miles = {total_distance} miles",
+      "Then divide the total length by Gary's speed to find how long he spends walking: {total_distance} miles / {gary_speed} miles/hour = {gary_time} hours",
+      "#### {gary_time}"
+    ],
+    "factual_assignment": {
+      "park_length": 6.0,
+      "park_width": 1.5,
+      "gary_speed": 3.0,
+      "total_distance": 15.0,
+      "gary_time": 5.0
+    }
+  },
+  "merged_assignment": {
+    "park_length": 9.66,
+    "park_width": 2.41,
+    "gary_speed": 4.83,
+    "total_distance": 24.14,
+    "gary_time": 5.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    park_length = 9.66\n    park_width = 2.41\n    gary_speed = 4.83\n\n    park_length_times_2 = round(park_length * 2, 2)\n    park_width_times_2 = round(park_width * 2, 2)\n    total_distance = round(park_length_times_2 + park_width_times_2, 2)\n    gary_time = round(total_distance / gary_speed, 2)\n\n    return {\n        \"park_length\": park_length,\n        \"park_width\": park_width,\n        \"gary_speed\": gary_speed,\n        \"park_length * 2\": park_length_times_2,\n        \"park_width * 2\": park_width_times_2,\n        \"total_distance\": total_distance,\n        \"gary_time\": gary_time\n    }\n",
+    "results": {
+      "park_length": 9.66,
+      "park_width": 2.41,
+      "gary_speed": 4.83,
+      "park_length * 2": 19.32,
+      "park_width * 2": 4.82,
+      "total_distance": 24.14,
+      "gary_time": 5.0
+    }
+  },
+  "final": {
+    "question": "Gary likes to walk around the edge of the local park, which is a rectangle that measures 2.41 kilometers by 9.66 kilometers. If he walks at 4.83 kilometers/hour, how many hours does he spend walking?",
+    "answer_lines": [
+      "First find the length of the two long sides of the park: 9.66 kilometers * 2 = 19.32 kilometers",
+      "Then find the length of the two short sides of the park: 2.41 kilometers * 2 = 4.82 kilometers",
+      "Then add those two lengths to find the total distance around the park: 19.32 kilometers + 4.82 kilometers = 24.14 kilometers",
+      "Then divide the total length by Gary's speed to find how long he spends walking: 24.14 kilometers / 4.83 kilometers/hour = 5 hours",
+      "#### 5"
+    ],
+    "final_scalar": 5.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo likes to walk around the edge of the local park, which is a rectangle that measures 2.41 kilometers by 9.66 kilometers. If he walks at 4.83 kilometers/hour, how many hours does he spend walking?",
+    "adapted_answer": [
+      "First find the length of the two long sides of the park: 9.66 kilometers * 2 = 19.32 kilometers",
+      "Then find the length of the two short sides of the park: 2.41 kilometers * 2 = 4.82 kilometers",
+      "Then add those two lengths to find the total distance around the park: 19.32 kilometers + 4.82 kilometers = 24.14 kilometers",
+      "Then divide the total length by Min-soo's speed to find how long he spends walking: 24.14 kilometers / 4.83 kilometers/hour = 5 hours",
+      "#### 5"
+    ],
+    "adaptation_notes": "Replaced 'Gary' with 'Min-soo' to provide a Korean equivalent."
+  }
+}

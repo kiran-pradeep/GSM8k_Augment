@@ -1,0 +1,143 @@
+{
+  "index": 631,
+  "split": "test",
+  "original": {
+    "question": "In a jewelers store, the price of a gold Jewell is 4/5 times as much as the price of a diamond Jewell. The cost of a silver Jewell is $400 less than the price of gold. If a diamond Jewell is $2000, find the total price for all three jewels.",
+    "answer": "If a diamond Jewellcosts $2000, the price of a gold Jewell is 4/5*$2000 = $1600\nSilver costs $400 less than gold Jewell, which means a silver Jewell costs $1600-$400 = $1200\nThe price of the three jewels combined is $1200+$1600+$2000 = $<<1200+1600+2000=4800>>4800\n#### 4800"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "diamond_jewell_price",
+      "value": 2000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "gold_jewell_price",
+      "value": 1600.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "silver_jewell_price",
+      "value": 1200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_jewell_price",
+      "value": 4800.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "gold_silver_price_difference",
+      "value": 400.0,
+      "unit": "dollar",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"diamond_jewell_price\", \"value\": 2000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"gold_jewell_price\", \"value\": 1600.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"silver_jewell_price\", \"value\": 1200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_jewell_price\", \"value\": 4800.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"gold_silver_price_difference\", \"value\": 400.0, \"unit\": \"dollar\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "diamond_jewell_price",
+        "original_value": 2000.0,
+        "original_unit": "dollar",
+        "converted_value": 294140.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gold_jewell_price",
+        "original_value": 1600.0,
+        "original_unit": "dollar",
+        "converted_value": 235312.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "silver_jewell_price",
+        "original_value": 1200.0,
+        "original_unit": "dollar",
+        "converted_value": 176484.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_jewell_price",
+        "original_value": 4800.0,
+        "original_unit": "dollar",
+        "converted_value": 705936.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "gold_silver_price_difference",
+        "original_value": 400.0,
+        "original_unit": "dollar",
+        "converted_value": 58828.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "In a jewelers store, the price of a gold Jewell is 4/5 times as much as the price of a diamond Jewell. The cost of a silver Jewell is ${gold_silver_price_difference} less than the price of gold. If a diamond Jewell is ${diamond_jewell_price}, find the total price for all three jewels.",
+    "templatized_answer": [
+      "If a diamond Jewell costs ${diamond_jewell_price}, the price of a gold Jewell is 4/5*${diamond_jewell_price} = ${gold_jewell_price}",
+      "Silver costs ${gold_silver_price_difference} less than gold Jewell, which means a silver Jewell costs ${gold_jewell_price}-${gold_silver_price_difference} = ${silver_jewell_price}",
+      "The price of the three jewels combined is ${silver_jewell_price}+${gold_jewell_price}+${diamond_jewell_price} = ${total_jewell_price}"
+    ],
+    "factual_assignment": {
+      "diamond_jewell_price": 2000.0,
+      "gold_jewell_price": 1600.0,
+      "silver_jewell_price": 1200.0,
+      "total_jewell_price": 4800.0,
+      "gold_silver_price_difference": 400.0
+    }
+  },
+  "merged_assignment": {
+    "diamond_jewell_price": 294140.0,
+    "gold_jewell_price": 235312.0,
+    "silver_jewell_price": 176484.0,
+    "total_jewell_price": 705936.0,
+    "gold_silver_price_difference": 58828.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"diamond_jewell_price\": 294140.0,\n        \"gold_jewell_price\": 235312.0,\n        \"silver_jewell_price\": 176484.0,\n        \"total_jewell_price\": 705936.0,\n        \"gold_silver_price_difference\": 58828.0\n    }\n\n    recomputed_values = {}\n\n    # Recompute diamond_jewell_price\n    recomputed_values[\"diamond_jewell_price\"] = factual_assignment[\"diamond_jewell_price\"]\n\n    # Recompute gold_jewell_price\n    recomputed_values[\"gold_jewell_price\"] = (4/5) * recomputed_values[\"diamond_jewell_price\"]\n\n    # Recompute gold_silver_price_difference\n    recomputed_values[\"gold_silver_price_difference\"] = recomputed_values[\"gold_jewell_price\"] - factual_assignment[\"silver_jewell_price\"]\n\n    # Recompute silver_jewell_price\n    recomputed_values[\"silver_jewell_price\"] = recomputed_values[\"gold_jewell_price\"] - recomputed_values[\"gold_silver_price_difference\"]\n\n    # Recompute total_jewell_price\n    recomputed_values[\"total_jewell_price\"] = recomputed_values[\"silver_jewell_price\"] + recomputed_values[\"gold_jewell_price\"] + recomputed_values[\"diamond_jewell_price\"]\n\n    # Round to 2 decimal places where appropriate\n    for key, value in recomputed_values.items():\n        recomputed_values[key] = round(value, 2)\n\n    return recomputed_values\n\nprint(recompute())\n",
+    "results": {
+      "diamond_jewell_price": 294140.0,
+      "gold_jewell_price": 235312.0,
+      "gold_silver_price_difference": 58828.0,
+      "silver_jewell_price": 176484.0,
+      "total_jewell_price": 705936.0
+    }
+  },
+  "final": {
+    "question": "In a jewelers store, the price of a gold Jewell is 4/5 times as much as the price of a diamond Jewell. The cost of a silver Jewell is 58828 yen less than the price of gold. If a diamond Jewell is 294140 yen, find the total price for all three jewels.",
+    "answer_lines": [
+      "If a diamond Jewell costs 294140 yen, the price of a gold Jewell is 4/5*294140 = 235312",
+      "Silver costs 58828 yen less than gold Jewell, which means a silver Jewell costs 235312-58828 = 176484",
+      "The price of the three jewels combined is 176484+235312+294140 = 705936",
+      "#### 705936"
+    ],
+    "final_scalar": 705936,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "In a Japanese jeweler's store, the price of a gold Kokoro is 4/5 times as much as the price of a diamond Kokoro. The cost of a silver Kokoro is 58828 yen less than the price of gold. If a diamond Kokoro is 294140 yen, find the total price for all three Kokoro.",
+    "adapted_answer": [
+      "If a diamond Kokoro costs 294140 yen, the price of a gold Kokoro is 4/5*294140 = 235312",
+      "Silver costs 58828 yen less than gold Kokoro, which means a silver Kokoro costs 235312-58828 = 176484",
+      "The price of the three Kokoro combined is 176484+235312+294140 = 705936",
+      "#### 705936"
+    ],
+    "adaptation_notes": "Replaced 'Jewell' with 'Kokoro', a Japanese term for 'heart' or 'spirit', often used in jewelry names."
+  }
+}

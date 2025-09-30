@@ -1,0 +1,127 @@
+{
+  "index": 569,
+  "split": "test",
+  "original": {
+    "question": "Liam and Mitchell own competing lemonade stands across the street from one another. When Liam bragged that he had made $63 one weekend, Mitchell laughed and told Liam he had sold 21 lemonades at $4 apiece the same weekend. How many more dollars did Mitchell make selling lemonade that weekend than Liam?",
+    "answer": "Mitchell made 21 * 4 = $<<21*4=84>>84 selling lemonade.\nThus, Mitchell made 84 - 63 = $<<84-63=21>>21 more selling lemonade that weekend than Liam.\n#### 21"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Liam",
+      "Mitchell",
+      "dollars",
+      "lemonade"
+    ],
+    "notes": "The names Liam and Mitchell are Western, dollars is a US unit of currency, and lemonade is a Western drink."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "liam_earnings",
+      "value": 63,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mitchell_price",
+      "value": 4,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "mitchell_earnings",
+      "value": 84,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "earnings_difference",
+      "value": 21,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"liam_earnings\", \"value\": 63, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"mitchell_price\", \"value\": 4, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"mitchell_earnings\", \"value\": 84, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"earnings_difference\", \"value\": 21, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "liam_earnings",
+        "original_value": 63,
+        "original_unit": "dollar",
+        "converted_value": 87538.5,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "mitchell_price",
+        "original_value": 4,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "mitchell_earnings",
+        "original_value": 84,
+        "original_unit": "dollar",
+        "converted_value": 116718.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "earnings_difference",
+        "original_value": 21,
+        "original_unit": "dollar",
+        "converted_value": 29179.5,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Liam and Mitchell own competing lemonade stands across the street from one another. When Liam bragged that he had made ${liam_earnings} one weekend, Mitchell laughed and told Liam he had sold {mitchell_lemonades} lemonades at ${mitchell_price} apiece the same weekend. How many more dollars did Mitchell make selling lemonade that weekend than Liam?",
+    "templatized_answer": [
+      "Mitchell made {mitchell_lemonades} * {mitchell_price} = ${mitchell_lemonades * mitchell_price} selling lemonade.",
+      "Thus, Mitchell made {mitchell_lemonades * mitchell_price} - {liam_earnings} = ${mitchell_lemonades * mitchell_price - liam_earnings} more selling lemonade that weekend than Liam.",
+      "#### {mitchell_lemonades * mitchell_price - liam_earnings}"
+    ],
+    "factual_assignment": {
+      "liam_earnings": 63,
+      "mitchell_price": 4,
+      "mitchell_lemonades": 21
+    }
+  },
+  "merged_assignment": {
+    "liam_earnings": 87538.5,
+    "mitchell_price": 5558.0,
+    "mitchell_lemonades": 21
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    liam_earnings = 87538.5\n    mitchell_price = 5558.0\n    mitchell_lemonades = 21\n\n    mitchell_earnings = mitchell_lemonades * mitchell_price\n    earnings_difference = mitchell_earnings - liam_earnings\n\n    return {\n        \"liam_earnings\": round(liam_earnings, 2),\n        \"mitchell_price\": round(mitchell_price, 2),\n        \"mitchell_lemonades\": mitchell_lemonades,\n        \"mitchell_earnings\": round(mitchell_earnings, 2),\n        \"earnings_difference\": round(earnings_difference, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "liam_earnings": 87538.5,
+      "mitchell_price": 5558.0,
+      "mitchell_lemonades": 21,
+      "mitchell_earnings": 116718.0,
+      "earnings_difference": 29179.5
+    }
+  },
+  "final": {
+    "question": "Liam and Mitchell own competing lemonade stands across the street from one another. When Liam bragged that he had made 87538.5 won one weekend, Mitchell laughed and told Liam he had sold 21 lemonades at 5558.0 won apiece the same weekend. How many more won did Mitchell make selling lemonade that weekend than Liam?",
+    "answer_lines": [
+      "Mitchell made 21 * 5558.0 = 116718.0 won selling lemonade.",
+      "Thus, Mitchell made 116718.0 - 87538.5 = 29179.5 won more selling lemonade that weekend than Liam.",
+      "#### 29179.5"
+    ],
+    "final_scalar": 29179.5,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "민수와 재훈은 서로 마주보는 길 건너편에 유자차 가게를 운영하고 있습니다. 민수가 주말에 87538.5원을 벌었다고 자랑을 하자 재훈은 민수가 주말에 같은 기간에 5558.0원에 유자차를 21잔 팔았다고 말했습니다. 재훈이 그 주말에 유자차를 팔아 민수보다 더 많은 돈을 얼마나 벌었나요?",
+    "adapted_answer": [
+      "재훈은 유자차를 21 * 5558.0 = 116718.0원 벌었습니다.",
+      "따라서 재훈은 116718.0 - 87538.5 = 29179.5원 더 벌었습니다.",
+      "#### 29179.5"
+    ],
+    "adaptation_notes": "Liam -> 민수, Mitchell -> 재훈, lemonade -> 유자차"
+  }
+}

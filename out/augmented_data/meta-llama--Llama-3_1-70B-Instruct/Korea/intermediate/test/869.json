@@ -1,0 +1,121 @@
+{
+  "index": 869,
+  "split": "test",
+  "original": {
+    "question": "An electronics seller bought 5 phones for $700 each and gives the seller $4000 in dollar bills. How much will the seller give back in change?",
+    "answer": "The seller bought the 5 phones for $700 * 5 = $<<700*5=3500>>3500.\nSo the seller gives back $4000-$3500 = $<<4000-3500=500>>500.\n#### 500"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "phone_cost",
+      "value": 700.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_payment",
+      "value": 4000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 3500.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "change",
+      "value": 500.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"won\", \"factor\": 1389.5},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"phone_cost\", \"value\": 700.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_payment\", \"value\": 4000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 3500.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"change\", \"value\": 500.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "phone_cost",
+        "original_value": 700.0,
+        "original_unit": "dollar",
+        "converted_value": 972650.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_payment",
+        "original_value": 4000.0,
+        "original_unit": "dollar",
+        "converted_value": 5558000.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 3500.0,
+        "original_unit": "dollar",
+        "converted_value": 4863250.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "change",
+        "original_value": 500.0,
+        "original_unit": "dollar",
+        "converted_value": 694750.0,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "An electronics seller bought 5 phones for ${phone_cost} each and gives the seller ${total_payment} in dollar bills. How much will the seller give back in change?",
+    "templatized_answer": [
+      "The seller bought the 5 phones for ${phone_cost} * 5 = ${phone_cost} * 5.",
+      "So the seller gives back ${total_payment} - (${phone_cost} * 5) = ${total_payment} - (${phone_cost} * 5).",
+      "#### {total_payment} - (${phone_cost} * 5)"
+    ],
+    "factual_assignment": {
+      "phone_cost": 700.0,
+      "total_payment": 4000.0
+    }
+  },
+  "merged_assignment": {
+    "phone_cost": 972650.0,
+    "total_payment": 5558000.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    phone_cost = 972650.0\n    total_payment = 5558000.0\n\n    phone_cost_times_5 = phone_cost * 5\n    change = total_payment - phone_cost_times_5\n\n    return {\n        \"phone_cost\": phone_cost,\n        \"phone_cost * 5\": round(phone_cost_times_5, 2),\n        \"total_payment\": total_payment,\n        \"total_payment - (phone_cost * 5)\": round(change, 2)\n    }\n",
+    "results": {
+      "phone_cost": 972650.0,
+      "phone_cost * 5": 4863250.0,
+      "total_payment": 5558000.0,
+      "total_payment - (phone_cost * 5)": 694750.0
+    }
+  },
+  "final": {
+    "question": "An electronics seller bought 5 phones for 972650 won each and gives the seller 5558000 won in won bills. How much will the seller give back in change?",
+    "answer_lines": [
+      "The seller bought the 5 phones for 972650 * 5 = 4863250.",
+      "So the seller gives back 5558000 - 4863250 = 694750.",
+      "#### 694750"
+    ],
+    "final_scalar": 694750.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "An electronics seller bought 5 phones for 972650 won each and gives the seller 5558000 won in won bills. How much will the seller give back in change?",
+    "adapted_answer": [
+      "The seller bought the 5 phones for 972650 * 5 = 4863250.",
+      "So the seller gives back 5558000 - 4863250 = 694750.",
+      "#### 694750"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}

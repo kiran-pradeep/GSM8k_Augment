@@ -1,0 +1,151 @@
+{
+  "index": 522,
+  "split": "test",
+  "original": {
+    "question": "It's strawberry-picking time on Grandma Concetta's farm.  Tony can pick 6 quarts of strawberries per hour, while Bobby picks one less quart of strawberries per hour than Tony.  Kathy can pick twice as many strawberries per hour as Bobby, and Ricky picks two fewer quarts of strawberries per hour than does Kathy.  In total, how many quarts of strawberries can Tony, Bobby, Ricky, and Kathy pick per hour on Grandma Concetta's farm?",
+    "answer": "Bobby picks one fewer quart of strawberries per hour than the 6 quarts of berries per hour that Tony can pick, for a total of 6-1=<<6-1=5>>5 quarts per hour.\nKathy can pick twice as many strawberries per hour as Bobby, for a total of 2*5=<<2*5=10>>10 quarts per hour.\nRicky picks two fewer quarts per hour than Kathy, or a total of 10-2=8 quarts per hour. Thus, in total, Tony, Bobby, Ricky, and Kathy can pick 6+5+10+8=<<6+5+10+8=29>>29 quarts of strawberries per hour.\n#### 29"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Tony",
+      "Bobby",
+      "Kathy",
+      "Ricky",
+      "Grandma Concetta",
+      "quarts",
+      "strawberries"
+    ],
+    "notes": "The text contains Western names and units (quarts), and a food item (strawberries) commonly associated with Western cuisine."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "tony_pick_rate",
+      "value": 6,
+      "unit": "quart",
+      "context": "question"
+    },
+    {
+      "variable": "bobby_pick_rate",
+      "value": 5,
+      "unit": "quart",
+      "context": "answer"
+    },
+    {
+      "variable": "kathy_pick_rate",
+      "value": 10,
+      "unit": "quart",
+      "context": "answer"
+    },
+    {
+      "variable": "ricky_pick_rate",
+      "value": 8,
+      "unit": "quart",
+      "context": "answer"
+    },
+    {
+      "variable": "total_pick_rate",
+      "value": 29,
+      "unit": "quart",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        'dollar': {'factor': 147.07, 'unit': 'yen'},\n        'pound': {'factor': 0.453592, 'unit': 'kilogram'},\n        'ounce': {'factor': 28.3495, 'unit': 'gram'},\n        'mile': {'factor': 1.60934, 'unit': 'kilometer'},\n        'foot': {'factor': 0.3048, 'unit': 'meter'},\n        'gallon': {'factor': 3.78541, 'unit': 'liter'},\n        'cup': {'factor': 236.588, 'unit': 'milliliter'},\n        'quart': {'factor': 0.946353, 'unit': 'liter'}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric['variable']\n        value = metric['value']\n        unit = metric['unit']\n\n        if unit in conversions:\n            factor = conversions[unit]['factor']\n            converted_unit = conversions[unit]['unit']\n            converted_value = round(value * factor, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            'variable': variable,\n            'original_value': value,\n            'original_unit': unit,\n            'converted_value': converted_value,\n            'converted_unit': converted_unit\n        })\n\n    return result\n\nmetrics = [\n  {\n    \"variable\": \"tony_pick_rate\",\n    \"value\": 6,\n    \"unit\": \"quart\",\n    \"context\": \"question\"\n  },\n  {\n    \"variable\": \"bobby_pick_rate\",\n    \"value\": 5,\n    \"unit\": \"quart\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"kathy_pick_rate\",\n    \"value\": 10,\n    \"unit\": \"quart\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"ricky_pick_rate\",\n    \"value\": 8,\n    \"unit\": \"quart\",\n    \"context\": \"answer\"\n  },\n  {\n    \"variable\": \"total_pick_rate\",\n    \"value\": 29,\n    \"unit\": \"quart\",\n    \"context\": \"answer\"\n  }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "tony_pick_rate",
+        "original_value": 6,
+        "original_unit": "quart",
+        "converted_value": 5.68,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "bobby_pick_rate",
+        "original_value": 5,
+        "original_unit": "quart",
+        "converted_value": 4.73,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "kathy_pick_rate",
+        "original_value": 10,
+        "original_unit": "quart",
+        "converted_value": 9.46,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "ricky_pick_rate",
+        "original_value": 8,
+        "original_unit": "quart",
+        "converted_value": 7.57,
+        "converted_unit": "liter"
+      },
+      {
+        "variable": "total_pick_rate",
+        "original_value": 29,
+        "original_unit": "quart",
+        "converted_value": 27.44,
+        "converted_unit": "liter"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "It's strawberry-picking time on Grandma Concetta's farm.  Tony can pick {tony_pick_rate} quarts of strawberries per hour, while Bobby picks one less quart of strawberries per hour than Tony.  Kathy can pick twice as many strawberries per hour as Bobby, and Ricky picks two fewer quarts of strawberries per hour than does Kathy.  In total, how many quarts of strawberries can Tony, Bobby, Ricky, and Kathy pick per hour on Grandma Concetta's farm?",
+    "templatized_answer": [
+      "Bobby picks one fewer quart of strawberries per hour than the {tony_pick_rate} quarts of berries per hour that Tony can pick, for a total of {tony_pick_rate}-1={tony_pick_rate-1} quarts per hour.",
+      "Kathy can pick twice as many strawberries per hour as Bobby, for a total of 2*{tony_pick_rate-1}={2*(tony_pick_rate-1)} quarts per hour.",
+      "Ricky picks two fewer quarts per hour than Kathy, or a total of {2*(tony_pick_rate-1)}-2={2*(tony_pick_rate-1)-2} quarts per hour.",
+      "Thus, in total, Tony, Bobby, Ricky, and Kathy can pick {tony_pick_rate}+{tony_pick_rate-1}+{2*(tony_pick_rate-1)}+{2*(tony_pick_rate-1)-2}={tony_pick_rate}+{tony_pick_rate-1}+{2*(tony_pick_rate-1)}+{2*(tony_pick_rate-1)-2} quarts of strawberries per hour.",
+      "#### {tony_pick_rate}+{tony_pick_rate-1}+{2*(tony_pick_rate-1)}+{2*(tony_pick_rate-1)-2}"
+    ],
+    "factual_assignment": {
+      "tony_pick_rate": 6,
+      "tony_pick_rate-1": 5,
+      "2*(tony_pick_rate-1)": 10,
+      "2*(tony_pick_rate-1)-2": 8
+    }
+  },
+  "merged_assignment": {
+    "tony_pick_rate": 5.68,
+    "tony_pick_rate-1": 5,
+    "2*(tony_pick_rate-1)": 10,
+    "2*(tony_pick_rate-1)-2": 8
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    tony_pick_rate = 5.68\n    tony_pick_rate_minus_1 = round(tony_pick_rate - 1, 2)\n    two_times_tony_pick_rate_minus_1 = round(2 * tony_pick_rate_minus_1, 2)\n    two_times_tony_pick_rate_minus_1_minus_2 = round(two_times_tony_pick_rate_minus_1 - 2, 2)\n    total = round(tony_pick_rate + tony_pick_rate_minus_1 + two_times_tony_pick_rate_minus_1 + two_times_tony_pick_rate_minus_1_minus_2, 2)\n\n    return {\n        \"tony_pick_rate\": tony_pick_rate,\n        \"tony_pick_rate-1\": tony_pick_rate_minus_1,\n        \"2*(tony_pick_rate-1)\": two_times_tony_pick_rate_minus_1,\n        \"2*(tony_pick_rate-1)-2\": two_times_tony_pick_rate_minus_1_minus_2,\n        \"tony_pick_rate+tony_pick_rate-1+2*(tony_pick_rate-1)+2*(tony_pick_rate-1)-2\": total\n    }\n\nprint(recompute())\n",
+    "results": {
+      "tony_pick_rate": 5.68,
+      "tony_pick_rate-1": 4.68,
+      "2*(tony_pick_rate-1)": 9.36,
+      "2*(tony_pick_rate-1)-2": 7.36,
+      "tony_pick_rate+tony_pick_rate-1+2*(tony_pick_rate-1)+2*(tony_pick_rate-1)-2": 27.08
+    }
+  },
+  "final": {
+    "question": "It's strawberry-picking time on Grandma Concetta's farm.  Tony can pick 5.68 liters of strawberries per hour, while Bobby picks one less liter of strawberries per hour than Tony.  Kathy can pick twice as many strawberries per hour as Bobby, and Ricky picks two fewer liters of strawberries per hour than does Kathy.  In total, how many liters of strawberries can Tony, Bobby, Ricky, and Kathy pick per hour on Grandma Concetta's farm?",
+    "answer_lines": [
+      "Bobby picks one fewer liter of strawberries per hour than the 5.68 liters of berries per hour that Tony can pick, for a total of 5.68-1=4.68 liters per hour.",
+      "Kathy can pick twice as many strawberries per hour as Bobby, for a total of 2*4.68=9.36 liters per hour.",
+      "Ricky picks two fewer liters per hour than Kathy, or a total of 9.36-2=7.36 liters per hour.",
+      "Thus, in total, Tony, Bobby, Ricky, and Kathy can pick 5.68+4.68+9.36+7.36=27.08 liters of strawberries per hour.",
+      "#### 27.08"
+    ],
+    "final_scalar": 27.08,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "It's strawberry-picking time on Obaachan Yumi's farm.  Taro can pick 5.68 liters of strawberries per hour, while Shinji picks one less liter of strawberries per hour than Taro.  Yui can pick twice as many strawberries per hour as Shinji, and Kaito picks two fewer liters of strawberries per hour than does Yui.  In total, how many liters of strawberries can Taro, Shinji, Kaito, and Yui pick per hour on Obaachan Yumi's farm?",
+    "adapted_answer": [
+      "Shinji picks one fewer liter of strawberries per hour than the 5.68 liters of berries per hour that Taro can pick, for a total of 5.68-1=4.68 liters per hour.",
+      "Yui can pick twice as many strawberries per hour as Shinji, for a total of 2*4.68=9.36 liters per hour.",
+      "Kaito picks two fewer liters per hour than Yui, or a total of 9.36-2=7.36 liters per hour.",
+      "Thus, in total, Taro, Shinji, Kaito, and Yui can pick 5.68+4.68+9.36+7.36=27.08 liters of strawberries per hour.",
+      "#### 27.08"
+    ],
+    "adaptation_notes": "Replaced names with Japanese equivalents: Tony -> Taro, Bobby -> Shinji, Kathy -> Yui, Ricky -> Kaito, Grandma Concetta -> Obaachan Yumi."
+  }
+}

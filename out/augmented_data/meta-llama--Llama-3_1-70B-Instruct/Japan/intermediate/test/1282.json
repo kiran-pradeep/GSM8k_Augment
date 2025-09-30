@@ -1,0 +1,114 @@
+{
+  "index": 1282,
+  "split": "test",
+  "original": {
+    "question": "John invited 20 people to a birthday party.  Each guest will eat 2 hot dogs.  He already has 4 hot dogs left over from a previous party.  If a pack of hot dogs contains 6 hot dogs and costs $2, how much does he need to spend on hot dogs?",
+    "answer": "He needs 2*20=<<2*20=40>>40 hot dogs\nSo he needs another 40-4=<<40-4=36>>36 hot dogs\nSo he needs to buy 36/6=<<36/6=6>>6 packs of hotdogs\nThat means he needs to spend 6*2=$<<6*2=12>>12\n#### 12"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "hot dogs",
+      "dollars"
+    ],
+    "notes": "The text contains a Western name, a Western food item, and a Western currency unit."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hot_dog_pack_cost",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_hot_dog_cost",
+      "value": 12,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hot_dog_pack_cost\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_hot_dog_cost\", \"value\": 12, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hot_dog_pack_cost",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_hot_dog_cost",
+        "original_value": 12,
+        "original_unit": "dollar",
+        "converted_value": 1764.84,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John invited {number_of_guests} people to a birthday party.  Each guest will eat {hot_dogs_per_guest} hot dogs.  He already has {initial_hot_dogs} hot dogs left over from a previous party.  If a pack of hot dogs contains {hot_dogs_per_pack} hot dogs and costs ${hot_dog_pack_cost}, how much does he need to spend on hot dogs?",
+    "templatized_answer": [
+      "He needs {hot_dogs_per_guest}*{number_of_guests}={hot_dogs_per_guest}*{number_of_guests} hot dogs",
+      "So he needs another {hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs}={hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs} hot dogs",
+      "So he needs to buy ({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}=({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack} packs of hotdogs",
+      "That means he needs to spend ({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}*{hot_dog_pack_cost}=$(({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}*{hot_dog_pack_cost})",
+      "#### ({hot_dogs_per_guest}*{number_of_guests}-{initial_hot_dogs})/{hot_dogs_per_pack}*{hot_dog_pack_cost}"
+    ],
+    "factual_assignment": {
+      "number_of_guests": 20,
+      "hot_dogs_per_guest": 2,
+      "initial_hot_dogs": 4,
+      "hot_dogs_per_pack": 6,
+      "hot_dog_pack_cost": 2
+    }
+  },
+  "merged_assignment": {
+    "number_of_guests": 20,
+    "hot_dogs_per_guest": 2,
+    "initial_hot_dogs": 4,
+    "hot_dogs_per_pack": 6,
+    "hot_dog_pack_cost": 294.14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    number_of_guests = 20\n    hot_dogs_per_guest = 2\n    initial_hot_dogs = 4\n    hot_dogs_per_pack = 6\n    hot_dog_pack_cost = 294.14\n\n    total_hot_dogs_needed = hot_dogs_per_guest * number_of_guests\n    additional_hot_dogs_needed = total_hot_dogs_needed - initial_hot_dogs\n    packs_of_hotdogs_needed = additional_hot_dogs_needed / hot_dogs_per_pack\n    total_cost = packs_of_hotdogs_needed * hot_dog_pack_cost\n\n    return {\n        \"number_of_guests\": number_of_guests,\n        \"hot_dogs_per_guest\": hot_dogs_per_guest,\n        \"initial_hot_dogs\": initial_hot_dogs,\n        \"hot_dogs_per_pack\": hot_dogs_per_pack,\n        \"hot_dog_pack_cost\": hot_dog_pack_cost,\n        \"total_hot_dogs_needed\": total_hot_dogs_needed,\n        \"additional_hot_dogs_needed\": additional_hot_dogs_needed,\n        \"packs_of_hotdogs_needed\": round(packs_of_hotdogs_needed, 2),\n        \"total_cost\": round(total_cost, 2)\n    }\n\nresult = recompute()\nprint(result)\n",
+    "results": {
+      "number_of_guests": 20,
+      "hot_dogs_per_guest": 2,
+      "initial_hot_dogs": 4,
+      "hot_dogs_per_pack": 6,
+      "hot_dog_pack_cost": 294.14,
+      "total_hot_dogs_needed": 40,
+      "additional_hot_dogs_needed": 36,
+      "packs_of_hotdogs_needed": 6.0,
+      "total_cost": 1764.84
+    }
+  },
+  "final": {
+    "question": "John invited 20 people to a birthday party.  Each guest will eat 2 hot dogs.  He already has 4 hot dogs left over from a previous party.  If a pack of hot dogs contains 6 hot dogs and costs 294.14 yen, how much does he need to spend on hot dogs?",
+    "answer_lines": [
+      "He needs 2*20=40 hot dogs",
+      "So he needs another 40-4=36 hot dogs",
+      "So he needs to buy 36/6=6.0 packs of hotdogs",
+      "That means he needs to spend 6.0*294.14=1764.84 yen",
+      "#### 1764.84"
+    ],
+    "final_scalar": 1764.84,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro invited 20 people to a birthday party.  Each guest will eat 2 Nikuman.  He already has 4 Nikuman left over from a previous party.  If a pack of Nikuman contains 6 Nikuman and costs 294.14 yen, how much does he need to spend on Nikuman?",
+    "adapted_answer": [
+      "He needs 2*20=40 Nikuman",
+      "So he needs another 40-4=36 Nikuman",
+      "So he needs to buy 36/6=6.0 packs of Nikuman",
+      "That means he needs to spend 6.0*294.14=1764.84 yen",
+      "#### 1764.84"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro' (Japanese name) and 'hot dogs' with 'Nikuman' (Japanese steamed buns, a common party food)."
+  }
+}

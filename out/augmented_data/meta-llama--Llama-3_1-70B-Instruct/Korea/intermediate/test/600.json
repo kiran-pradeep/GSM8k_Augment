@@ -1,0 +1,97 @@
+{
+  "index": 600,
+  "split": "test",
+  "original": {
+    "question": "Jamaal is at the gym. He has been using an 8-pound weight. He increases the weight that he uses by 50%. It turns out to be too heavy, so he uses a weight two pounds lighter than that. What is the weight, in pounds, that he now uses?",
+    "answer": "An increase of 50% of 8 is 1.5*8=12.\nHe switches to a 12-2=<<12-2=10>>10 pound weight.\n#### 10"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Jamaal",
+      "pounds"
+    ],
+    "notes": "Name 'Jamaal' and unit 'pounds' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_weight",
+      "value": 8,
+      "unit": "pound",
+      "context": "question"
+    },
+    {
+      "variable": "final_weight",
+      "value": 10,
+      "unit": "pound",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"pound\": (\"kilogram\", 0.453592),\n        \"dollar\": (\"won\", 1389.5),\n        \"mile\": (\"kilometer\", 1.60934),\n        \"foot\": (\"meter\", 0.3048),\n        \"gallon\": (\"liter\", 3.78541),\n        \"cup\": (\"milliliter\", 236.588),\n        \"ounce\": (\"gram\", 28.3495)\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_unit, conversion_rate = conversions[unit]\n            converted_value = round(value * conversion_rate, 2)\n        else:\n            converted_unit = unit\n            converted_value = value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\n        \"variable\": \"initial_weight\",\n        \"value\": 8,\n        \"unit\": \"pound\",\n        \"context\": \"question\"\n    },\n    {\n        \"variable\": \"final_weight\",\n        \"value\": 10,\n        \"unit\": \"pound\",\n        \"context\": \"answer\"\n    }\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_weight",
+        "original_value": 8,
+        "original_unit": "pound",
+        "converted_value": 3.63,
+        "converted_unit": "kilogram"
+      },
+      {
+        "variable": "final_weight",
+        "original_value": 10,
+        "original_unit": "pound",
+        "converted_value": 4.54,
+        "converted_unit": "kilogram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Jamaal is at the gym. He has been using an {initial_weight}-pound weight. He increases the weight that he uses by 50%. It turns out to be too heavy, so he uses a weight two pounds lighter than that. What is the weight, in pounds, that he now uses?",
+    "templatized_answer": [
+      "An increase of 50% of {initial_weight} is 1.5*{initial_weight}={new_weight}.",
+      "He switches to a {new_weight}-2={final_weight} pound weight.",
+      "#### {final_weight}"
+    ],
+    "factual_assignment": {
+      "initial_weight": 8,
+      "final_weight": 10,
+      "new_weight": 12
+    }
+  },
+  "merged_assignment": {
+    "initial_weight": 3.63,
+    "final_weight": 4.54,
+    "new_weight": 12
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_weight = 3.63\n    new_weight = initial_weight * 1.5\n    final_weight = new_weight - 2\n    return {\n        \"initial_weight\": round(initial_weight, 2),\n        \"new_weight\": round(new_weight, 2),\n        \"final_weight\": round(final_weight, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "initial_weight": 3.63,
+      "new_weight": 5.45,
+      "final_weight": 3.45
+    }
+  },
+  "final": {
+    "question": "Jamaal is at the gym. He has been using a 3.63-kilogram weight. He increases the weight that he uses by 50%. It turns out to be too heavy, so he uses a weight two kilograms lighter than that. What is the weight, in kilograms, that he now uses?",
+    "answer_lines": [
+      "An increase of 50% of 3.63 is 1.5*3.63=5.45.",
+      "He switches to a 5.45-2=3.45 kilogram weight.",
+      "#### 3.45"
+    ],
+    "final_scalar": 3.45,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo is at the gym. He has been using a 3.63-kilogram weight. He increases the weight that he uses by 50%. It turns out to be too heavy, so he uses a weight two kilograms lighter than that. What is the weight, in kilograms, that he now uses?",
+    "adapted_answer": [
+      "An increase of 50% of 3.63 is 1.5*3.63=5.45.",
+      "He switches to a 5.45-2=3.45 kilogram weight.",
+      "#### 3.45"
+    ],
+    "adaptation_notes": "Replaced 'Jamaal' with 'Min-soo' to provide a Korean context."
+  }
+}

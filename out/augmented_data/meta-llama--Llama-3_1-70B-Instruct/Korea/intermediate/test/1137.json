@@ -1,0 +1,119 @@
+{
+  "index": 1137,
+  "split": "test",
+  "original": {
+    "question": "Donny can only drink water if it's at least 40 degrees. He has two mugs of water. One mug is 33 degrees. The other is an unknown temperature. If he pours 4 ounces of water from the 33-degree mug into his water bottle and one ounce from the other bottle, he is now able to drink the water.  At least how many degrees is the second bottle?",
+    "answer": "There are 5 total ounces of water because 4 + 1 = <<4+1=5>>5\nThe total temperatures is >=200 because 200 / 5 =<<200/5=40>>40\nThe 33 degree water contributes 132 points towards this because 4 x 33 = <<4*33=132>>132\nThe unknown temperature is at least 68 because 200 - 132 = <<200-132=68>>68\n#### 68"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Donny",
+      "ounces"
+    ],
+    "notes": "Name 'Donny' and unit 'ounces' are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "total_water",
+      "value": 5,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "water_from_first_mug",
+      "value": 4,
+      "unit": "ounce",
+      "context": "question"
+    },
+    {
+      "variable": "water_from_second_mug",
+      "value": 1,
+      "unit": "ounce",
+      "context": "question"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"rate\"], 2)\n            converted_unit = conversions[unit][\"to\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"total_water\", \"value\": 5, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"water_from_first_mug\", \"value\": 4, \"unit\": \"ounce\", \"context\": \"question\"},\n    {\"variable\": \"water_from_second_mug\", \"value\": 1, \"unit\": \"ounce\", \"context\": \"question\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "total_water",
+        "original_value": 5,
+        "original_unit": "ounce",
+        "converted_value": 141.75,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "water_from_first_mug",
+        "original_value": 4,
+        "original_unit": "ounce",
+        "converted_value": 113.4,
+        "converted_unit": "gram"
+      },
+      {
+        "variable": "water_from_second_mug",
+        "original_value": 1,
+        "original_unit": "ounce",
+        "converted_value": 28.35,
+        "converted_unit": "gram"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Donny can only drink water if it's at least 40 degrees. He has two mugs of water. One mug is 33 degrees. The other is an unknown temperature. If he pours {water_from_first_mug} ounces of water from the 33-degree mug into his water bottle and {water_from_second_mug} ounces from the other bottle, he is now able to drink the water.  At least how many degrees is the second bottle?",
+    "templatized_answer": [
+      "There are {total_water} total ounces of water because {water_from_first_mug} + {water_from_second_mug} = {total_water}",
+      "The total temperatures is >=200 because 200 / {total_water} = 40",
+      "The 33 degree water contributes {water_from_first_mug} * 33 points towards this because {water_from_first_mug} * 33 = {water_from_first_mug} * 33",
+      "The unknown temperature is at least {min_second_mug_temp} because 200 - ({water_from_first_mug} * 33) = {min_second_mug_temp}",
+      "#### {min_second_mug_temp}"
+    ],
+    "factual_assignment": {
+      "total_water": 5,
+      "water_from_first_mug": 4,
+      "water_from_second_mug": 1,
+      "min_second_mug_temp": 68
+    }
+  },
+  "merged_assignment": {
+    "total_water": 141.75,
+    "water_from_first_mug": 113.4,
+    "water_from_second_mug": 28.35,
+    "min_second_mug_temp": 68
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    total_water = 141.75\n    water_from_first_mug = 113.4\n    water_from_second_mug = 28.35\n\n    total_water_recomputed = water_from_first_mug + water_from_second_mug\n    total_temperature = 200\n    total_temperature_recomputed = total_water * 40\n\n    water_from_first_mug_contribution = water_from_first_mug * 33\n    min_second_mug_temp = (total_temperature - water_from_first_mug_contribution) / water_from_second_mug\n\n    return {\n        \"total_water\": round(total_water_recomputed, 2),\n        \"water_from_first_mug\": round(water_from_first_mug, 2),\n        \"water_from_second_mug\": round(water_from_second_mug, 2),\n        \"min_second_mug_temp\": round(min_second_mug_temp, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "total_water": 141.75,
+      "water_from_first_mug": 113.4,
+      "water_from_second_mug": 28.35,
+      "min_second_mug_temp": -124.95
+    }
+  },
+  "final": {
+    "question": "Donny can only drink water if it's at least 40 degrees. He has two mugs of water. One mug is 33 degrees. The other is an unknown temperature. If he pours 113.4 grams of water from the 33-degree mug into his water bottle and 28.35 grams from the other bottle, he is now able to drink the water.  At least how many degrees is the second bottle?",
+    "answer_lines": [
+      "There are 141.75 total grams of water because 113.4 + 28.35 = 141.75",
+      "The total temperatures is >=200 because 200 / 141.75 = 1.412",
+      "The 33 degree water contributes 3748.2 points towards this because 113.4 * 33 = 3748.2",
+      "The unknown temperature is at least -124.95 because 200 - 3748.2 / 141.75 = -124.95",
+      "#### -124.95"
+    ],
+    "final_scalar": -124.95,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-soo can only drink water if it's at least 40 degrees. He has two mugs of water. One mug is 33 degrees. The other is an unknown temperature. If he pours 113.4 grams of water from the 33-degree mug into his water bottle and 28.35 grams from the other bottle, he is now able to drink the water.  At least how many degrees is the second bottle?",
+    "adapted_answer": [
+      "There are 141.75 total grams of water because 113.4 + 28.35 = 141.75",
+      "The total temperatures is >=200 because 200 / 141.75 = 1.412",
+      "The 33 degree water contributes 3748.2 points towards this because 113.4 * 33 = 3748.2",
+      "The unknown temperature is at least -124.95 because 200 - 3748.2 / 141.75 = -124.95",
+      "#### -124.95"
+    ],
+    "adaptation_notes": "Replaced 'Donny' with 'Min-soo' to provide a Korean context."
+  }
+}

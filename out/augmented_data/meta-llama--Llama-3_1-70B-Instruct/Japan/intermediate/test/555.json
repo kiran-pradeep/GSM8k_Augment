@@ -1,0 +1,158 @@
+{
+  "index": 555,
+  "split": "test",
+  "original": {
+    "question": "John plans to save money from working.  He gets paid $2 per hour and works 5 hours a day for 4 days a week.  If he wants to save $80 how many weeks will it take him?",
+    "answer": "He gets paid 2*5=$<<2*5=10>>10 a day.\nSo he gets paid 10*4=$<<10*4=40>>40 a week.\nThat means it would take 80/40=<<80/40=2>>2 weeks to save up the money.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "John",
+      "dollars"
+    ],
+    "notes": "Name 'John' and unit 'dollars' are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "hourly_wage",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_hours",
+      "value": 5,
+      "unit": "hour",
+      "context": "question"
+    },
+    {
+      "variable": "weekly_days",
+      "value": 4,
+      "unit": "day",
+      "context": "question"
+    },
+    {
+      "variable": "target_savings",
+      "value": 80,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "daily_earnings",
+      "value": 10,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "weekly_earnings",
+      "value": 40,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588},\n        \"hour\": {\"unit\": \"hour\", \"factor\": 1},\n        \"day\": {\"unit\": \"day\", \"factor\": 1}\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"hourly_wage\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_hours\", \"value\": 5, \"unit\": \"hour\", \"context\": \"question\"},\n    {\"variable\": \"weekly_days\", \"value\": 4, \"unit\": \"day\", \"context\": \"question\"},\n    {\"variable\": \"target_savings\", \"value\": 80, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"daily_earnings\", \"value\": 10, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"weekly_earnings\", \"value\": 40, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "hourly_wage",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "daily_hours",
+        "original_value": 5,
+        "original_unit": "hour",
+        "converted_value": 5,
+        "converted_unit": "hour"
+      },
+      {
+        "variable": "weekly_days",
+        "original_value": 4,
+        "original_unit": "day",
+        "converted_value": 4,
+        "converted_unit": "day"
+      },
+      {
+        "variable": "target_savings",
+        "original_value": 80,
+        "original_unit": "dollar",
+        "converted_value": 11765.6,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "daily_earnings",
+        "original_value": 10,
+        "original_unit": "dollar",
+        "converted_value": 1470.7,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "weekly_earnings",
+        "original_value": 40,
+        "original_unit": "dollar",
+        "converted_value": 5882.8,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "John plans to save money from working.  He gets paid ${hourly_wage} per hour and works {daily_hours} hours a day for {weekly_days} days a week.  If he wants to save ${target_savings} how many weeks will it take him?",
+    "templatized_answer": [
+      "He gets paid {hourly_wage}*{daily_hours}=${hourly_wage}*{daily_hours} a day.",
+      "So he gets paid {hourly_wage}*{daily_hours}*{weekly_days}=${hourly_wage}*{daily_hours}*{weekly_days} a week.",
+      "That means it would take {target_savings}/({hourly_wage}*{daily_hours}*{weekly_days})={target_savings}/({hourly_wage}*{daily_hours}*{weekly_days}) weeks to save up the money.",
+      "#### {target_savings}/({hourly_wage}*{daily_hours}*{weekly_days})"
+    ],
+    "factual_assignment": {
+      "hourly_wage": 2,
+      "daily_hours": 5,
+      "weekly_days": 4,
+      "target_savings": 80
+    }
+  },
+  "merged_assignment": {
+    "hourly_wage": 294.14,
+    "daily_hours": 5,
+    "weekly_days": 4,
+    "target_savings": 11765.6
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    hourly_wage = 294.14\n    daily_hours = 5\n    weekly_days = 4\n    target_savings = 11765.6\n\n    daily_wage = hourly_wage * daily_hours\n    weekly_wage = daily_wage * weekly_days\n    weeks_to_save = target_savings / weekly_wage\n\n    return {\n        \"hourly_wage\": round(hourly_wage, 2),\n        \"daily_hours\": daily_hours,\n        \"weekly_days\": weekly_days,\n        \"target_savings\": round(target_savings, 2),\n        \"hourly_wage*{daily_hours}\": round(daily_wage, 2),\n        \"hourly_wage*{daily_hours}*{weekly_days}\": round(weekly_wage, 2),\n        \"target_savings}/({hourly_wage}*{daily_hours}*{weekly_days})\": round(weeks_to_save, 2)\n    }\n",
+    "results": {
+      "hourly_wage": 294.14,
+      "daily_hours": 5,
+      "weekly_days": 4,
+      "target_savings": 11765.6,
+      "hourly_wage*{daily_hours}": 1470.7,
+      "hourly_wage*{daily_hours}*{weekly_days}": 5882.8,
+      "target_savings}/({hourly_wage}*{daily_hours}*{weekly_days})": 2.0
+    }
+  },
+  "final": {
+    "question": "John plans to save money from working.  He gets paid 294.14 yen per hour and works 5 hours a day for 4 days a week.  If he wants to save 11765.6 yen how many weeks will it take him?",
+    "answer_lines": [
+      "He gets paid 294.14*5=1470.7 yen a day.",
+      "So he gets paid 1470.7*4=5882.8 yen a week.",
+      "That means it would take 11765.6/5882.8=2.0 weeks to save up the money.",
+      "#### 2.0"
+    ],
+    "final_scalar": 2.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro plans to save money from working.  He gets paid 294.14 yen per hour and works 5 hours a day for 4 days a week.  If he wants to save 11765.6 yen how many weeks will it take him?",
+    "adapted_answer": [
+      "He gets paid 294.14*5=1470.7 yen a day.",
+      "So he gets paid 1470.7*4=5882.8 yen a week.",
+      "That means it would take 11765.6/5882.8=2.0 weeks to save up the money.",
+      "#### 2.0"
+    ],
+    "adaptation_notes": "Replaced 'John' with 'Taro', a common Japanese name."
+  }
+}

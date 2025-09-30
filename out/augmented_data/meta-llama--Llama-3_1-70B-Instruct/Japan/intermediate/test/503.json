@@ -1,0 +1,115 @@
+{
+  "index": 503,
+  "split": "test",
+  "original": {
+    "question": "The rug is 5 feet wider than the chair. The couch is 2 feet longer than twice the width of the rug. If the chair is 3 feet wide. How many feet long is the couch?",
+    "answer": "Chair = <<3=3>>3 feet\nRug = 3 + 5 = <<3+5=8>>8 feet\nCouch = 2 * 8 + 2 = <<2*8+2=18>>18 feet\nThe couch is <<18=18>>18 feet long.\n#### 18"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "feet"
+    ],
+    "notes": "The unit 'feet' is commonly used in Western countries, particularly in the United States."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "chair_width",
+      "value": 3,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "rug_width",
+      "value": 5,
+      "unit": "feet",
+      "context": "question"
+    },
+    {
+      "variable": "couch_length",
+      "value": 18,
+      "unit": "feet",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollars\": {\"factor\": 147.07, \"unit\": \"yen\"},\n        \"pounds\": {\"factor\": 0.453592, \"unit\": \"kilograms\"},\n        \"ounces\": {\"factor\": 28.3495, \"unit\": \"grams\"},\n        \"miles\": {\"factor\": 1.60934, \"unit\": \"kilometers\"},\n        \"feet\": {\"factor\": 0.3048, \"unit\": \"meters\"},\n        \"gallons\": {\"factor\": 3.78541, \"unit\": \"liters\"},\n        \"cups\": {\"factor\": 236.588, \"unit\": \"milliliters\"}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        value = metric[\"value\"]\n        unit = metric[\"unit\"]\n\n        if unit in conversions:\n            converted_value = round(value * conversions[unit][\"factor\"], 2)\n            converted_unit = conversions[unit][\"unit\"]\n        else:\n            converted_value = value\n            converted_unit = unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": value,\n            \"original_unit\": unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"chair_width\", \"value\": 3, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"rug_width\", \"value\": 5, \"unit\": \"feet\", \"context\": \"question\"},\n    {\"variable\": \"couch_length\", \"value\": 18, \"unit\": \"feet\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "chair_width",
+        "original_value": 3,
+        "original_unit": "feet",
+        "converted_value": 0.91,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "rug_width",
+        "original_value": 5,
+        "original_unit": "feet",
+        "converted_value": 1.52,
+        "converted_unit": "meters"
+      },
+      {
+        "variable": "couch_length",
+        "original_value": 18,
+        "original_unit": "feet",
+        "converted_value": 5.49,
+        "converted_unit": "meters"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "The rug is {rug_width} feet wider than the chair. The couch is 2 feet longer than twice the width of the rug. If the chair is {chair_width} feet wide. How many feet long is the couch?",
+    "templatized_answer": [
+      "Chair = {chair_width} feet",
+      "Rug = {chair_width} + {rug_width} = {chair_width} + {rug_width} feet",
+      "Couch = 2 * ({chair_width} + {rug_width}) + 2 = {couch_length} feet",
+      "The couch is {couch_length} feet long.",
+      "#### {couch_length}"
+    ],
+    "factual_assignment": {
+      "chair_width": 3,
+      "rug_width": 5,
+      "couch_length": 18
+    }
+  },
+  "merged_assignment": {
+    "chair_width": 0.91,
+    "rug_width": 1.52,
+    "couch_length": 5.49
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"chair_width\": 0.91,\n        \"rug_width\": 1.52,\n        \"couch_length\": 5.49\n    }\n\n    chair_width = factual_assignment[\"chair_width\"]\n    rug_width = factual_assignment[\"rug_width\"]\n    rug = chair_width + rug_width\n    couch_length = 2 * rug + 2\n\n    # override the given couch_length with the recomputed one\n    factual_assignment[\"couch_length\"] = round(couch_length, 2)\n\n    return factual_assignment\n\nprint(recompute())\n",
+    "results": {
+      "chair_width": 0.91,
+      "rug_width": 1.52,
+      "couch_length": 6.86
+    }
+  },
+  "final": {
+    "question": "The rug is 1.52 meters wider than the chair. The couch is 2 meters longer than twice the width of the rug. If the chair is 0.91 meters wide. How many meters long is the couch?",
+    "answer_lines": [
+      "Chair = 0.91 meters",
+      "Rug = 0.91 + 1.52 = 2.43 meters",
+      "Couch = 2 * 2.43 + 2 = 6.86 meters",
+      "The couch is 6.86 meters long.",
+      "#### 6.86"
+    ],
+    "final_scalar": 6.86,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "The tatami mat is 1.52 meters wider than the zabuton. The futon is 2 meters longer than twice the width of the tatami mat. If the zabuton is 0.91 meters wide. How many meters long is the futon?",
+    "adapted_answer": [
+      "Zabuton = 0.91 meters",
+      "Tatami mat = 0.91 + 1.52 = 2.43 meters",
+      "Futon = 2 * 2.43 + 2 = 6.86 meters",
+      "The futon is 6.86 meters long.",
+      "#### 6.86"
+    ],
+    "adaptation_notes": "Replaced 'rug' with 'tatami mat', 'chair' with 'zabuton', and 'couch' with 'futon' to give the question a Japanese context."
+  }
+}

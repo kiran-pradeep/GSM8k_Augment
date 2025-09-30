@@ -1,0 +1,136 @@
+{
+  "index": 187,
+  "split": "test",
+  "original": {
+    "question": "Mandy owes Benedict $100. They agreed to have monthly interest of 2%. If Mandy was able to pay it after 3 months, how much should she give to Benedict?",
+    "answer": "The monthly interest is $100 x 2/100 = $<<100*2/100=2>>2.\nAfter 3 months, the total interest amount to $2 x 3 = $<<2*3=6>>6.\nTherefore, Mandy should give Benedict a total of $100 + $6 = $<<100+6=106>>106.\n#### 106"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Benedict",
+      "Mandy",
+      "dollars"
+    ],
+    "notes": "Names and currency unit are culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "initial_debt",
+      "value": 100,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "monthly_interest",
+      "value": 2,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_interest",
+      "value": 6,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "total_payment",
+      "value": 106,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"initial_debt\", \"value\": 100, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"monthly_interest\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_interest\", \"value\": 6, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"total_payment\", \"value\": 106, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "initial_debt",
+        "original_value": 100,
+        "original_unit": "dollar",
+        "converted_value": 14707.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "monthly_interest",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_interest",
+        "original_value": 6,
+        "original_unit": "dollar",
+        "converted_value": 882.42,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "total_payment",
+        "original_value": 106,
+        "original_unit": "dollar",
+        "converted_value": 15589.42,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Mandy owes Benedict ${initial_debt}. They agreed to have monthly interest of {monthly_interest}%. If Mandy was able to pay it after {months} months, how much should she give to Benedict?",
+    "templatized_answer": [
+      "The monthly interest is ${initial_debt} x {monthly_interest}/100 = ${monthly_interest_amount}.",
+      "After {months} months, the total interest amount to ${monthly_interest_amount} x {months} = ${total_interest}.",
+      "Therefore, Mandy should give Benedict a total of ${initial_debt} + ${total_interest} = ${total_payment}.",
+      "#### {total_payment}"
+    ],
+    "factual_assignment": {
+      "initial_debt": 100,
+      "monthly_interest": 2,
+      "monthly_interest_amount": 2,
+      "months": 3,
+      "total_interest": 6,
+      "total_payment": 106
+    }
+  },
+  "merged_assignment": {
+    "initial_debt": 14707.0,
+    "monthly_interest": 294.14,
+    "monthly_interest_amount": 2,
+    "months": 3,
+    "total_interest": 882.42,
+    "total_payment": 15589.42
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    initial_debt = 14707.0\n    monthly_interest = 294.14\n    months = 3\n\n    monthly_interest_amount = round(initial_debt * (monthly_interest / 100), 2)\n    total_interest = round(monthly_interest_amount * months, 2)\n    total_payment = round(initial_debt + total_interest, 2)\n\n    return {\n        \"initial_debt\": initial_debt,\n        \"monthly_interest\": monthly_interest,\n        \"monthly_interest_amount\": monthly_interest_amount,\n        \"months\": months,\n        \"total_interest\": total_interest,\n        \"total_payment\": total_payment\n    }\n",
+    "results": {
+      "initial_debt": 14707.0,
+      "monthly_interest": 294.14,
+      "monthly_interest_amount": 43259.17,
+      "months": 3,
+      "total_interest": 129777.51,
+      "total_payment": 144484.51
+    }
+  },
+  "final": {
+    "question": "Mandy owes Benedict 14707.0 yen. They agreed to have monthly interest of 294.14 yen. If Mandy was able to pay it after 3 months, how much should she give to Benedict?",
+    "answer_lines": [
+      "The monthly interest is 14707.0 x 294.14/14707.0 = 43259.17/14707.0 = 294.14 yen.",
+      "After 3 months, the total interest amount to 43259.17 yen x 3 = 129777.51 yen.",
+      "Therefore, Mandy should give Benedict a total of 14707.0 + 129777.51 = 144484.51 yen.",
+      "#### 144484.51"
+    ],
+    "final_scalar": 144484.51,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Yui owes Taro 14707.0 yen. They agreed to have monthly interest of 294.14 yen. If Yui was able to pay it after 3 months, how much should she give to Taro?",
+    "adapted_answer": [
+      "The monthly interest is 14707.0 x 294.14/14707.0 = 43259.17/14707.0 = 294.14 yen.",
+      "After 3 months, the total interest amount to 43259.17 yen x 3 = 129777.51 yen.",
+      "Therefore, Yui should give Taro a total of 14707.0 + 129777.51 = 144484.51 yen.",
+      "#### 144484.51"
+    ],
+    "adaptation_notes": "Replaced 'Mandy' with 'Yui' and 'Benedict' with 'Taro' to give the names a Japanese context."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "index": 991,
+  "split": "test",
+  "original": {
+    "question": "Comet Halley orbits the sun every 75 years. Bill's dad saw the Comet when he was 30 years old. Bill saw the comet a second time when he was three times the age his father was when he saw the Comet. How old was Bill when he saw the Comet for the first time?",
+    "answer": "Bill saw the Comet for the second time when he was 30 years * 3= <<30*3=90>>90 years old.\nComet Halley can be seen every 75 years, so Bill saw the comet for the first time when he was 90 years - 75 years = <<90-75=15>>15 years old.\n#### 15"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Comet Halley",
+      "Bill"
+    ],
+    "notes": "Comet Halley is a culturally specific reference to Western astronomy and 'Bill' is a Western name."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "comet_orbit",
+      "value": 75.0,
+      "unit": "year",
+      "context": "question"
+    },
+    {
+      "variable": "bill_dad_age",
+      "value": 30.0,
+      "unit": "year",
+      "context": "question"
+    },
+    {
+      "variable": "bill_second_sight",
+      "value": 90.0,
+      "unit": "year",
+      "context": "answer"
+    },
+    {
+      "variable": "bill_first_sight",
+      "value": 15.0,
+      "unit": "year",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"year\": {\"factor\": 1, \"unit\": \"year\"},\n        \"dollar\": {\"factor\": 1389.5, \"unit\": \"won\"},\n        \"pound\": {\"factor\": 0.453592, \"unit\": \"kilogram\"},\n        \"ounce\": {\"factor\": 28.3495, \"unit\": \"gram\"},\n        \"mile\": {\"factor\": 1.60934, \"unit\": \"kilometer\"},\n        \"foot\": {\"factor\": 0.3048, \"unit\": \"meter\"},\n        \"gallon\": {\"factor\": 3.78541, \"unit\": \"liter\"},\n        \"cup\": {\"factor\": 236.588, \"unit\": \"milliliter\"},\n    }\n\n    result = []\n    for metric in metrics:\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        variable = metric[\"variable\"]\n\n        if original_unit in conversions:\n            factor = conversions[original_unit][\"factor\"]\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * factor, 2)\n        else:\n            converted_value = original_value\n            converted_unit = original_unit\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"comet_orbit\", \"value\": 75.0, \"unit\": \"year\", \"context\": \"question\"},\n    {\"variable\": \"bill_dad_age\", \"value\": 30.0, \"unit\": \"year\", \"context\": \"question\"},\n    {\"variable\": \"bill_second_sight\", \"value\": 90.0, \"unit\": \"year\", \"context\": \"answer\"},\n    {\"variable\": \"bill_first_sight\", \"value\": 15.0, \"unit\": \"year\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "comet_orbit",
+        "original_value": 75.0,
+        "original_unit": "year",
+        "converted_value": 75.0,
+        "converted_unit": "year"
+      },
+      {
+        "variable": "bill_dad_age",
+        "original_value": 30.0,
+        "original_unit": "year",
+        "converted_value": 30.0,
+        "converted_unit": "year"
+      },
+      {
+        "variable": "bill_second_sight",
+        "original_value": 90.0,
+        "original_unit": "year",
+        "converted_value": 90.0,
+        "converted_unit": "year"
+      },
+      {
+        "variable": "bill_first_sight",
+        "original_value": 15.0,
+        "original_unit": "year",
+        "converted_value": 15.0,
+        "converted_unit": "year"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Comet Halley orbits the sun every {comet_orbit} years. Bill's dad saw the Comet when he was {bill_dad_age} years old. Bill saw the comet a second time when he was three times the age his father was when he saw the Comet. How old was Bill when he saw the Comet for the first time?",
+    "templatized_answer": [
+      "Bill saw the Comet for the second time when he was {bill_dad_age} years * 3= {bill_second_sight} years old.",
+      "Comet Halley can be seen every {comet_orbit} years, so Bill saw the comet for the first time when he was {bill_second_sight} years - {comet_orbit} years = {bill_first_sight} years old."
+    ],
+    "factual_assignment": {
+      "comet_orbit": 75.0,
+      "bill_dad_age": 30.0,
+      "bill_second_sight": 90.0,
+      "bill_first_sight": 15.0
+    }
+  },
+  "merged_assignment": {
+    "comet_orbit": 75.0,
+    "bill_dad_age": 30.0,
+    "bill_second_sight": 90.0,
+    "bill_first_sight": 15.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    factual_assignment = {\n        \"comet_orbit\": 75.0,\n        \"bill_dad_age\": 30.0,\n    }\n\n    bill_second_sight = factual_assignment[\"bill_dad_age\"] * 3\n    bill_first_sight = bill_second_sight - factual_assignment[\"comet_orbit\"]\n\n    return {\n        \"comet_orbit\": factual_assignment[\"comet_orbit\"],\n        \"bill_dad_age\": factual_assignment[\"bill_dad_age\"],\n        \"bill_second_sight\": round(bill_second_sight, 2),\n        \"bill_first_sight\": round(bill_first_sight, 2),\n    }\n\nprint(recompute())\n",
+    "results": {
+      "comet_orbit": 75.0,
+      "bill_dad_age": 30.0,
+      "bill_second_sight": 90.0,
+      "bill_first_sight": 15.0
+    }
+  },
+  "final": {
+    "question": "Comet Halley orbits the sun every 75 years. Bill's dad saw the Comet when he was 30 years old. Bill saw the comet a second time when he was three times the age his father was when he saw the Comet. How old was Bill when he saw the Comet for the first time?",
+    "answer_lines": [
+      "Bill saw the Comet for the second time when he was 30 years * 3= 90 years old.",
+      "Comet Halley can be seen every 75 years, so Bill saw the comet for the first time when he was 90 years - 75 years = 15 years old.",
+      "#### 15"
+    ],
+    "final_scalar": 15.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Comet Hyakutake orbits the sun every 75 years. Min-soo's dad saw the Comet when he was 30 years old. Min-soo saw the comet a second time when he was three times the age his father was when he saw the Comet. How old was Min-soo when he saw the Comet for the first time?",
+    "adapted_answer": [
+      "Min-soo saw the Comet for the second time when he was 30 years * 3= 90 years old.",
+      "Comet Hyakutake can be seen every 75 years, so Min-soo saw the comet for the first time when he was 90 years - 75 years = 15 years old.",
+      "#### 15"
+    ],
+    "adaptation_notes": "Replaced 'Comet Halley' with 'Comet Hyakutake' (a well-known comet in Korea) and 'Bill' with 'Min-soo' (a common Korean name)."
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "index": 493,
+  "split": "test",
+  "original": {
+    "question": "Heather's razors come 4 to a pack and cost $4.00 a pack.  They are currently on sale for buy one get one free.  She also has a $2.00 coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "answer": "Buy one get one free means she gets 2 packs for the price of 1 and she has a $2.00 coupon, so the razors will cost her $4-$2 = $2.00\nEach pack has 4 razors and she buys 2 packs for a total of 4*2 = <<4*2=8>>8 razors\nThe razors cost $2.00 and she bought 8 so that means each razor costs $2.00/8 = $<<2/8=0.25>>0.25 each\n#### 25"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Heather",
+      "dollars"
+    ],
+    "notes": "The name Heather and the unit dollars are culturally specific to regions other than Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "pack_cost",
+      "value": 4.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "coupon_value",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "total_cost",
+      "value": 2.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "razor_cost",
+      "value": 0.25,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"to\": \"won\", \"rate\": 1389.5},\n        \"pound\": {\"to\": \"kilogram\", \"rate\": 0.453592},\n        \"ounce\": {\"to\": \"gram\", \"rate\": 28.3495},\n        \"mile\": {\"to\": \"kilometer\", \"rate\": 1.60934},\n        \"foot\": {\"to\": \"meter\", \"rate\": 0.3048},\n        \"gallon\": {\"to\": \"liter\", \"rate\": 3.78541},\n        \"cup\": {\"to\": \"milliliter\", \"rate\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"to\"]\n            converted_value = round(original_value * conversions[original_unit][\"rate\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"pack_cost\", \"value\": 4.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"coupon_value\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"total_cost\", \"value\": 2.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"razor_cost\", \"value\": 0.25, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "pack_cost",
+        "original_value": 4.0,
+        "original_unit": "dollar",
+        "converted_value": 5558.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "coupon_value",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "total_cost",
+        "original_value": 2.0,
+        "original_unit": "dollar",
+        "converted_value": 2779.0,
+        "converted_unit": "won"
+      },
+      {
+        "variable": "razor_cost",
+        "original_value": 0.25,
+        "original_unit": "dollar",
+        "converted_value": 347.38,
+        "converted_unit": "won"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Heather's razors come {razors_per_pack} to a pack and cost ${pack_cost} a pack.  They are currently on sale for buy one get one free.  She also has a ${coupon_value} coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "templatized_answer": [
+      "Buy one get one free means she gets 2 packs for the price of 1 and she has a ${coupon_value} coupon, so the razors will cost her ${pack_cost}-${coupon_value} = ${total_cost}",
+      "Each pack has {razors_per_pack} razors and she buys 2 packs for a total of {razors_per_pack}*2 = {razors_per_pack}*2 razors",
+      "The razors cost ${total_cost} and she bought {razors_per_pack}*2 so that means each razor costs ${total_cost}/({razors_per_pack}*2) = ${razor_cost} each",
+      "#### {razor_cost_in_cents}"
+    ],
+    "factual_assignment": {
+      "pack_cost": 4.0,
+      "coupon_value": 2.0,
+      "total_cost": 2.0,
+      "razor_cost": 0.25,
+      "razors_per_pack": 4,
+      "razor_cost_in_cents": 25
+    }
+  },
+  "merged_assignment": {
+    "pack_cost": 5558.0,
+    "coupon_value": 2779.0,
+    "total_cost": 2779.0,
+    "razor_cost": 347.38,
+    "razors_per_pack": 4,
+    "razor_cost_in_cents": 25
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    pack_cost = 5558.0\n    coupon_value = 2779.0\n    razors_per_pack = 4\n\n    total_cost = pack_cost - coupon_value\n    total_razors = razors_per_pack * 2\n    razor_cost = total_cost / total_razors\n    razor_cost_in_cents = round(razor_cost * 100)\n\n    return {\n        \"pack_cost\": pack_cost,\n        \"coupon_value\": coupon_value,\n        \"total_cost\": round(total_cost, 2),\n        \"razor_cost\": round(razor_cost, 2),\n        \"razors_per_pack\": razors_per_pack,\n        \"razor_cost_in_cents\": razor_cost_in_cents\n    }\n",
+    "results": {
+      "pack_cost": 5558.0,
+      "coupon_value": 2779.0,
+      "total_cost": 2779.0,
+      "razor_cost": 347.38,
+      "razors_per_pack": 4,
+      "razor_cost_in_cents": 34738
+    }
+  },
+  "final": {
+    "question": "Heather's razors come 4 to a pack and cost 5558 won a pack.  They are currently on sale for buy one get one free.  She also has a 2779 won coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "answer_lines": [
+      "Buy one get one free means she gets 2 packs for the price of 1 and she has a 2779 won coupon, so the razors will cost her 5558-2779 = 2779 won",
+      "Each pack has 4 razors and she buys 2 packs for a total of 4*2 = 8 razors",
+      "The razors cost 2779 won and she bought 8 so that means each razor costs 2779/8 = 347.38 won each",
+      "#### 34738"
+    ],
+    "final_scalar": 34738,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Min-ji's razors come 4 to a pack and cost 5558 won a pack.  They are currently on sale for buy one get one free.  She also has a 2779 won coupon.  How much will each individual razor cost, in cents, after the discount if she buys 2 packs of razors?",
+    "adapted_answer": [
+      "Buy one get one free means she gets 2 packs for the price of 1 and she has a 2779 won coupon, so the razors will cost her 5558-2779 = 2779 won",
+      "Each pack has 4 razors and she buys 2 packs for a total of 4*2 = 8 razors",
+      "The razors cost 2779 won and she bought 8 so that means each razor costs 2779/8 = 347.38 won each",
+      "#### 34738"
+    ],
+    "adaptation_notes": "Replaced 'Heather' with 'Min-ji' to provide a Korean context."
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "index": 582,
+  "split": "test",
+  "original": {
+    "question": "Juan asked his neighbor, Herb, how much his house was worth. Herb answered that he paid $76,000 for the house. If Juan's house is 30% less expensive than Herb's, calculate the value of the two houses combined.",
+    "answer": "Juan's house is 30% less expensive than Herb's house, meaning Juan's house is 30/100*$76000= $<<30/100*76000=22800>>22800 less expensive than Herb's house.\nJuan's house is worth $76000-$22800 = $<<76000-22800=53200>>53200\nThe combined total value of Juan's and Herb's house is $76000+$53200 = $<<76000+53200=129200>>129200\n#### 129200"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "Juan",
+      "Herb",
+      "dollars"
+    ],
+    "notes": "The names Juan and Herb are culturally specific to regions other than Japan, and the unit 'dollars' is also non-Japanese."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "herb_house_cost",
+      "value": 76000.0,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "juan_house_cost",
+      "value": 53200.0,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "combined_house_cost",
+      "value": 129200.0,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"herb_house_cost\", \"value\": 76000.0, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"juan_house_cost\", \"value\": 53200.0, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"combined_house_cost\", \"value\": 129200.0, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "herb_house_cost",
+        "original_value": 76000.0,
+        "original_unit": "dollar",
+        "converted_value": 11177320.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "juan_house_cost",
+        "original_value": 53200.0,
+        "original_unit": "dollar",
+        "converted_value": 7824124.0,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "combined_house_cost",
+        "original_value": 129200.0,
+        "original_unit": "dollar",
+        "converted_value": 19001444.0,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Juan asked his neighbor, Herb, how much his house was worth. Herb answered that he paid ${herb_house_cost} for the house. If Juan's house is 30% less expensive than Herb's, calculate the value of the two houses combined.",
+    "templatized_answer": [
+      "Juan's house is 30% less expensive than Herb's house, meaning Juan's house is 30/100*{herb_house_cost} = ${30/100*herb_house_cost} less expensive than Herb's house.",
+      "Juan's house is worth ${herb_house_cost}-{30/100*herb_house_cost} = ${herb_house_cost - 30/100*herb_house_cost}",
+      "The combined total value of Juan's and Herb's house is ${herb_house_cost}+${herb_house_cost - 30/100*herb_house_cost} = ${herb_house_cost + herb_house_cost - 30/100*herb_house_cost}",
+      "#### {herb_house_cost + herb_house_cost - 30/100*herb_house_cost}"
+    ],
+    "factual_assignment": {
+      "herb_house_cost": 76000.0,
+      "juan_house_cost": 53200.0,
+      "combined_house_cost": 129200.0
+    }
+  },
+  "merged_assignment": {
+    "herb_house_cost": 11177320.0,
+    "juan_house_cost": 7824124.0,
+    "combined_house_cost": 19001444.0
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    herb_house_cost = 11177320.0\n    juan_house_cost = herb_house_cost - (30/100 * herb_house_cost)\n    combined_house_cost = herb_house_cost + juan_house_cost\n\n    return {\n        \"herb_house_cost\": round(herb_house_cost, 2),\n        \"30/100*herb_house_cost\": round(30/100 * herb_house_cost, 2),\n        \"herb_house_cost - 30/100*herb_house_cost\": round(herb_house_cost - 30/100 * herb_house_cost, 2),\n        \"herb_house_cost + herb_house_cost - 30/100*herb_house_cost\": round(herb_house_cost + herb_house_cost - 30/100 * herb_house_cost, 2)\n    }\n",
+    "results": {
+      "herb_house_cost": 11177320.0,
+      "30/100*herb_house_cost": 3353196.0,
+      "herb_house_cost - 30/100*herb_house_cost": 7824124.0,
+      "herb_house_cost + herb_house_cost - 30/100*herb_house_cost": 19001444.0
+    }
+  },
+  "final": {
+    "question": "Juan asked his neighbor, Herb, how much his house was worth. Herb answered that he paid 11177320 yen for the house. If Juan's house is 30% less expensive than Herb's, calculate the value of the two houses combined.",
+    "answer_lines": [
+      "Juan's house is 30% less expensive than Herb's house, meaning Juan's house is 30/100*11177320 = 3353196 yen less expensive than Herb's house.",
+      "Juan's house is worth 11177320-3353196 = 7824124 yen",
+      "The combined total value of Juan's and Herb's house is 11177320+7824124 = 19001444 yen",
+      "#### 19001444"
+    ],
+    "final_scalar": 19001444.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro asked his neighbor, Hiroshi, how much his house was worth. Hiroshi answered that he paid 11177320 yen for the house. If Taro's house is 30% less expensive than Hiroshi's, calculate the value of the two houses combined.",
+    "adapted_answer": [
+      "Taro's house is 30% less expensive than Hiroshi's house, meaning Taro's house is 30/100*11177320 = 3353196 yen less expensive than Hiroshi's house.",
+      "Taro's house is worth 11177320-3353196 = 7824124 yen",
+      "The combined total value of Taro's and Hiroshi's house is 11177320+7824124 = 19001444 yen",
+      "#### 19001444"
+    ],
+    "adaptation_notes": "Replaced 'Juan' with 'Taro' and 'Herb' with 'Hiroshi' to give the names a Japanese context."
+  }
+}

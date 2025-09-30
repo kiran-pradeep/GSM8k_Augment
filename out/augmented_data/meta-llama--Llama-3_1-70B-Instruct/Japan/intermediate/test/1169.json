@@ -1,0 +1,131 @@
+{
+  "index": 1169,
+  "split": "test",
+  "original": {
+    "question": "Ronnie was given $5 while Rissa was given thrice as much. After each of them had given an equal amount of money to their little sister, Rissa is left with 4/5 of her money. How much is left in Ronnie's money?",
+    "answer": "Rissa was given $5 x 3 = $<<5*3=15>>15.\nAfter Rissa had given an amount to her sister, she has $15 x 4/5 = $<<15*4/5=12>>12 left.\nThis means she has given $15 - $12 = $<<15-12=3>>3.\nSince Ronnie had given the same amount as Rissa, then Ronnie is left with $5 - $3 = $<<5-3=2>>2.\n#### 2"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "dollars"
+    ],
+    "notes": "The unit 'dollars' is culturally specific to regions other than Japan."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "ronnie_initial",
+      "value": 5,
+      "unit": "dollar",
+      "context": "question"
+    },
+    {
+      "variable": "rissa_initial",
+      "value": 15,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "rissa_given",
+      "value": 3,
+      "unit": "dollar",
+      "context": "answer"
+    },
+    {
+      "variable": "ronnie_left",
+      "value": 2,
+      "unit": "dollar",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"dollar\": {\"unit\": \"yen\", \"factor\": 147.07},\n        \"pound\": {\"unit\": \"kilogram\", \"factor\": 0.453592},\n        \"ounce\": {\"unit\": \"gram\", \"factor\": 28.3495},\n        \"mile\": {\"unit\": \"kilometer\", \"factor\": 1.60934},\n        \"foot\": {\"unit\": \"meter\", \"factor\": 0.3048},\n        \"gallon\": {\"unit\": \"liter\", \"factor\": 3.78541},\n        \"cup\": {\"unit\": \"milliliter\", \"factor\": 236.588}\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n        context = metric[\"context\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"ronnie_initial\", \"value\": 5, \"unit\": \"dollar\", \"context\": \"question\"},\n    {\"variable\": \"rissa_initial\", \"value\": 15, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"rissa_given\", \"value\": 3, \"unit\": \"dollar\", \"context\": \"answer\"},\n    {\"variable\": \"ronnie_left\", \"value\": 2, \"unit\": \"dollar\", \"context\": \"answer\"}\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "ronnie_initial",
+        "original_value": 5,
+        "original_unit": "dollar",
+        "converted_value": 735.35,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "rissa_initial",
+        "original_value": 15,
+        "original_unit": "dollar",
+        "converted_value": 2206.05,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "rissa_given",
+        "original_value": 3,
+        "original_unit": "dollar",
+        "converted_value": 441.21,
+        "converted_unit": "yen"
+      },
+      {
+        "variable": "ronnie_left",
+        "original_value": 2,
+        "original_unit": "dollar",
+        "converted_value": 294.14,
+        "converted_unit": "yen"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "Ronnie was given ${ronnie_initial} while Rissa was given thrice as much. After each of them had given an equal amount of money to their little sister, Rissa is left with 4/5 of her money. How much is left in Ronnie's money?",
+    "templatized_answer": [
+      "Rissa was given ${ronnie_initial} x 3 = ${rissa_initial}.",
+      "After Rissa had given an amount to her sister, she has ${rissa_initial} x 4/5 = ${rissa_initial} * 4/5 left.",
+      "This means she has given ${rissa_initial} - ${rissa_initial} * 4/5.",
+      "Since Ronnie had given the same amount as Rissa, then Ronnie is left with ${ronnie_initial} - {rissa_given}.",
+      "#### {ronnie_left}"
+    ],
+    "factual_assignment": {
+      "ronnie_initial": 5,
+      "rissa_initial": 15,
+      "rissa_given": 3,
+      "ronnie_left": 2
+    }
+  },
+  "merged_assignment": {
+    "ronnie_initial": 735.35,
+    "rissa_initial": 2206.05,
+    "rissa_given": 441.21,
+    "ronnie_left": 294.14
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    ronnie_initial = 735.35\n    rissa_initial = ronnie_initial * 3\n    rissa_given = rissa_initial - (rissa_initial * 4/5)\n    ronnie_left = ronnie_initial - rissa_given\n\n    return {\n        \"ronnie_initial\": round(ronnie_initial, 2),\n        \"rissa_initial\": round(rissa_initial, 2),\n        \"rissa_given\": round(rissa_given, 2),\n        \"ronnie_left\": round(ronnie_left, 2)\n    }\n",
+    "results": {
+      "ronnie_initial": 735.35,
+      "rissa_initial": 2206.05,
+      "rissa_given": 441.21,
+      "ronnie_left": 294.14
+    }
+  },
+  "final": {
+    "question": "Ronnie was given 735.35 yen while Rissa was given thrice as much. After each of them had given an equal amount of money to their little sister, Rissa is left with 4/5 of her money. How much is left in Ronnie's money?",
+    "answer_lines": [
+      "Rissa was given 735.35 yen x 3 = 2206.05 yen.",
+      "After Rissa had given an amount to her sister, she has 2206.05 yen x 4/5 = 1764.84 yen left.",
+      "This means she has given 2206.05 yen - 1764.84 yen = 441.21 yen.",
+      "Since Ronnie had given the same amount as Rissa, then Ronnie is left with 735.35 yen - 441.21 yen = 294.14 yen.",
+      "#### 294.14"
+    ],
+    "final_scalar": 294.14,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "Taro was given 735.35 yen while Yui was given thrice as much. After each of them had given an equal amount of money to their little sister, Yui is left with 4/5 of her money. How much is left in Taro's money?",
+    "adapted_answer": [
+      "Yui was given 735.35 yen x 3 = 2206.05 yen.",
+      "After Yui had given an amount to her sister, she has 2206.05 yen x 4/5 = 1764.84 yen left.",
+      "This means she has given 2206.05 yen - 1764.84 yen = 441.21 yen.",
+      "Since Taro had given the same amount as Yui, then Taro is left with 735.35 yen - 441.21 yen = 294.14 yen.",
+      "#### 294.14"
+    ],
+    "adaptation_notes": "Replaced Ronnie with Taro and Rissa with Yui to use Japanese names."
+  }
+}

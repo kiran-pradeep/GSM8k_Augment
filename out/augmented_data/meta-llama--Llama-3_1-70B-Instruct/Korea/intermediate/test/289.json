@@ -1,0 +1,125 @@
+{
+  "index": 289,
+  "split": "test",
+  "original": {
+    "question": "A car in the fast lane is traveling at 60 miles/hour. A car in the slow lane is traveling at half that speed. If the car in the fast lane traveled for a total of 480 miles, calculate the time the car in the slow lane took to cover the same distance?",
+    "answer": "At half the speed, the car in the slow lane travels at a speed of 1/2*60 = <<1/2*60=30>>30 miles per hour.\nTo travel 480 miles, the car in the slow lane traveling at 30 miles per hour will take 480/30 = <<480/30=16>>16 hours\n#### 16"
+  },
+  "cultural_check": {
+    "is_cultural": true,
+    "matched_entities": [
+      "miles",
+      "miles/hour"
+    ],
+    "notes": "The question contains units of measurement (miles, miles/hour) that are not commonly used in Korea."
+  },
+  "metrics_extracted": [
+    {
+      "variable": "fast_lane_speed",
+      "value": 60,
+      "unit": "miles/hour",
+      "context": "question"
+    },
+    {
+      "variable": "fast_lane_distance",
+      "value": 480,
+      "unit": "miles",
+      "context": "question"
+    },
+    {
+      "variable": "slow_lane_speed",
+      "value": 30,
+      "unit": "miles/hour",
+      "context": "answer"
+    },
+    {
+      "variable": "slow_lane_time",
+      "value": 16,
+      "unit": "hours",
+      "context": "answer"
+    }
+  ],
+  "conversion": {
+    "code": "\ndef convert_units(metrics):\n    conversions = {\n        \"miles\": {\"unit\": \"kilometers\", \"factor\": 1.60934},\n        \"miles/hour\": {\"unit\": \"kilometers/hour\", \"factor\": 1.60934},\n        \"pounds\": {\"unit\": \"kilograms\", \"factor\": 0.453592},\n        \"ounces\": {\"unit\": \"grams\", \"factor\": 28.3495},\n        \"feet\": {\"unit\": \"meters\", \"factor\": 0.3048},\n        \"gallons\": {\"unit\": \"liters\", \"factor\": 3.78541},\n        \"cups\": {\"unit\": \"milliliters\", \"factor\": 236.588},\n        \"dollars\": {\"unit\": \"won\", \"factor\": 1389.5},\n    }\n\n    result = []\n    for metric in metrics:\n        variable = metric[\"variable\"]\n        original_value = metric[\"value\"]\n        original_unit = metric[\"unit\"]\n\n        if original_unit in conversions:\n            converted_unit = conversions[original_unit][\"unit\"]\n            converted_value = round(original_value * conversions[original_unit][\"factor\"], 2)\n        else:\n            converted_unit = original_unit\n            converted_value = original_value\n\n        result.append({\n            \"variable\": variable,\n            \"original_value\": original_value,\n            \"original_unit\": original_unit,\n            \"converted_value\": converted_value,\n            \"converted_unit\": converted_unit,\n        })\n\n    return result\n\nmetrics = [\n    {\"variable\": \"fast_lane_speed\", \"value\": 60, \"unit\": \"miles/hour\", \"context\": \"question\"},\n    {\"variable\": \"fast_lane_distance\", \"value\": 480, \"unit\": \"miles\", \"context\": \"question\"},\n    {\"variable\": \"slow_lane_speed\", \"value\": 30, \"unit\": \"miles/hour\", \"context\": \"answer\"},\n    {\"variable\": \"slow_lane_time\", \"value\": 16, \"unit\": \"hours\", \"context\": \"answer\"},\n]\n\nprint(convert_units(metrics))\n",
+    "results": [
+      {
+        "variable": "fast_lane_speed",
+        "original_value": 60,
+        "original_unit": "miles/hour",
+        "converted_value": 96.56,
+        "converted_unit": "kilometers/hour"
+      },
+      {
+        "variable": "fast_lane_distance",
+        "original_value": 480,
+        "original_unit": "miles",
+        "converted_value": 772.48,
+        "converted_unit": "kilometers"
+      },
+      {
+        "variable": "slow_lane_speed",
+        "original_value": 30,
+        "original_unit": "miles/hour",
+        "converted_value": 48.28,
+        "converted_unit": "kilometers/hour"
+      },
+      {
+        "variable": "slow_lane_time",
+        "original_value": 16,
+        "original_unit": "hours",
+        "converted_value": 16,
+        "converted_unit": "hours"
+      }
+    ]
+  },
+  "templatization": {
+    "templatized_question": "A car in the fast lane is traveling at {fast_lane_speed} miles/hour. A car in the slow lane is traveling at half that speed. If the car in the fast lane traveled for a total of {fast_lane_distance} miles, calculate the time the car in the slow lane took to cover the same distance?",
+    "templatized_answer": [
+      "At half the speed, the car in the slow lane travels at a speed of 1/2*{fast_lane_speed} = {slow_lane_speed} miles per hour.",
+      "To travel {fast_lane_distance} miles, the car in the slow lane traveling at {slow_lane_speed} miles per hour will take {fast_lane_distance}/{slow_lane_speed} = {slow_lane_time} hours",
+      "#### {slow_lane_time}"
+    ],
+    "factual_assignment": {
+      "fast_lane_speed": 60,
+      "fast_lane_distance": 480,
+      "slow_lane_speed": 30,
+      "slow_lane_time": 16
+    }
+  },
+  "merged_assignment": {
+    "fast_lane_speed": 96.56,
+    "fast_lane_distance": 772.48,
+    "slow_lane_speed": 48.28,
+    "slow_lane_time": 16
+  },
+  "recompute": {
+    "code": "\ndef recompute():\n    fast_lane_speed = 96.56\n    fast_lane_distance = 772.48\n\n    slow_lane_speed = fast_lane_speed / 2\n    slow_lane_time = fast_lane_distance / slow_lane_speed\n\n    return {\n        \"fast_lane_speed\": round(fast_lane_speed, 2),\n        \"fast_lane_distance\": round(fast_lane_distance, 2),\n        \"slow_lane_speed\": round(slow_lane_speed, 2),\n        \"slow_lane_time\": round(slow_lane_time, 2)\n    }\n\nprint(recompute())\n",
+    "results": {
+      "fast_lane_speed": 96.56,
+      "fast_lane_distance": 772.48,
+      "slow_lane_speed": 48.28,
+      "slow_lane_time": 16.0
+    }
+  },
+  "final": {
+    "question": "A car in the fast lane is traveling at 96.56 kilometers/hour. A car in the slow lane is traveling at half that speed. If the car in the fast lane traveled for a total of 772.48 kilometers, calculate the time the car in the slow lane took to cover the same distance?",
+    "answer_lines": [
+      "At half the speed, the car in the slow lane travels at a speed of 1/2*96.56 = 48.28 kilometers per hour.",
+      "To travel 772.48 kilometers, the car in the slow lane traveling at 48.28 kilometers per hour will take 772.48/48.28 = 16.0 hours",
+      "#### 16.0"
+    ],
+    "final_scalar": 16.0,
+    "style_meta": {
+      "unit_policies": null,
+      "notes": "LLM regenerated answer preserving original style and unit policies"
+    }
+  },
+  "cultural_adapted": {
+    "adapted_question": "A car in the fast lane is traveling at 96.56 kilometers/hour. A car in the slow lane is traveling at half that speed. If the car in the fast lane traveled for a total of 772.48 kilometers, calculate the time the car in the slow lane took to cover the same distance?",
+    "adapted_answer": [
+      "At half the speed, the car in the slow lane travels at a speed of 1/2*96.56 = 48.28 kilometers per hour.",
+      "To travel 772.48 kilometers, the car in the slow lane traveling at 48.28 kilometers per hour will take 772.48/48.28 = 16.0 hours"
+    ],
+    "adaptation_notes": "no changes needed"
+  }
+}
