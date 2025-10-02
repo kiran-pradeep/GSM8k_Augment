@@ -52,6 +52,16 @@ from src.utils.data_loader import load_gsm8k
 from src.utils.io_utils import ensure_dir, dump_json, append_jsonl, log_error
 
 
+import json
+import nltk
+import os
+from nltk.corpus import stopwords
+
+nltk.download('stopwords')
+english_stopwords = set(stopwords.words("english"))
+nltk.download('stopwords')
+
+
 # ---------------- Helper functions ---------------- #
 
 load_dotenv()
@@ -120,80 +130,109 @@ def process_item(args_tuple):
     # Init LLM client per process
     chat = get_chat_model()
 
-    intermediate_record = build_intermediate_record(
-        idx=i, split=args.split, question=question, answer=answer
-    )
+    with open(intermediate_dir / f"{i}.json", "r") as f:
+        try:
+            intermediate_record = json.load(f)
+        except:
+            print(f"[WARN] Corrupted intermediate JSON for idx={i}, rebuilding")
+            intermediate_record = build_intermediate_record(
+                idx=i, split=args.split, question=question, answer=answer
+            )
 
     try:
         # Step 0: cultural filter
-        cultural_check = check_cultural_bias(
-            chat=chat,
-            question=question,
-            answer=answer,
-            templates_dir=args.templates
-        )
-        intermediate_record["cultural_check"] = cultural_check
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        if "cultural_check" not in intermediate_record or not intermediate_record["cultural_check"]:
+            print(f"[INFO] idx={i} running cultural check")
+            cultural_check = check_cultural_bias(
+                chat=chat,
+                question=question,
+                answer=answer,
+                templates_dir=args.templates
+            )
+            intermediate_record["cultural_check"] = cultural_check
+            dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        cultural_check = intermediate_record["cultural_check"]
 
         # Step 1: metric extraction
-        metrics_extracted = extract_metrics_llm(
-            chat=chat, question=question, answer=answer, templates_dir=args.templates
-        )
-        intermediate_record["metrics_extracted"] = metrics_extracted
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        if "metrics_extracted" not in intermediate_record or not intermediate_record["metrics_extracted"]:
+            print(f"[INFO] idx={i} running metric extraction")
+            metrics_extracted = extract_metrics_llm(
+                chat=chat, question=question, answer=answer, templates_dir=args.templates
+            )
+            intermediate_record["metrics_extracted"] = metrics_extracted
+            dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        metrics_extracted = intermediate_record["metrics_extracted"]
 
         # Step 2: conversion
-
-        conversion_code = generate_conversion_code(
-            chat=chat, extracted_metrics=metrics_extracted, templates_dir=args.templates
-        )
-        conversions_result = run_conversion_code_safely(conversion_code, metrics_extracted)
-        intermediate_record["conversion"] = {"code": conversion_code, "results": conversions_result}
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        if "conversion" not in intermediate_record or not intermediate_record["conversion"]["code"]:
+            print(f"[INFO] idx={i} running conversion")
+            conversion_code = generate_conversion_code(
+                chat=chat, extracted_metrics=metrics_extracted, templates_dir=args.templates
+            )
+            conversions_result = run_conversion_code_safely(conversion_code, metrics_extracted)
+            intermediate_record["conversion"] = {"code": conversion_code, "results": conversions_result}
+            dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        conversion_code = intermediate_record["conversion"]["code"]
+        conversions_result = intermediate_record["conversion"]["results"]
 
         # Step 3: templatize
-        templated = templatize_qa(
-            chat=chat,
-            question=question,
-            answer=answer,
-            variables=metrics_extracted,
-            templates_dir=args.templates,
-        )
-        intermediate_record["templatization"] = templated
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        if "templatization" not in intermediate_record or not intermediate_record["templatization"]:
+            print(f"[INFO] idx={i} running templatization")
+            templated = templatize_qa(
+                chat=chat,
+                question=question,
+                answer=answer,
+                variables=metrics_extracted,
+                templates_dir=args.templates,
+            )
+            intermediate_record["templatization"] = templated
+            dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        templated = intermediate_record["templatization"]
 
         # Step 4: merge + recompute
+        if "merged_assignment" not in intermediate_record or not intermediate_record["merged_assignment"]:
+            print(f"[INFO] idx={i} running merging assignments")
+            factual_assignment = remove_braces_from_keys(templated.get("factual_assignment", {}))
+            merged_assignment = merge_conversions_with_assignments(factual_assignment, conversions_result)
+            intermediate_record["merged_assignment"] = merged_assignment
+            dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        
         factual_assignment = remove_braces_from_keys(templated.get("factual_assignment", {}))
         merged_assignment = merge_conversions_with_assignments(factual_assignment, conversions_result)
-        intermediate_record["merged_assignment"] = merged_assignment
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
 
-        recompute_code = generate_recompute_code(
-            chat=chat,
-            templated={
-                "templatized_question": templated["templatized_question"],
-                "templatized_answer": templated["templatized_answer"],
-            },
-            converted_assignment=merged_assignment,
-            templates_dir=args.templates,
-        )
-        recompute_result = run_recompute_code_safely(chat, recompute_code)
-        intermediate_record["recompute"] = {"code": recompute_code, "results": recompute_result}
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        if "recompute" not in intermediate_record or not intermediate_record["recompute"]["code"]:
+            print(f"[INFO] idx={i} running recomputation")
+            recompute_code = generate_recompute_code(
+                chat=chat,
+                templated={
+                    "templatized_question": templated["templatized_question"],
+                    "templatized_answer": templated["templatized_answer"],
+                },
+                converted_assignment=merged_assignment,
+                templates_dir=args.templates,
+            )
+            recompute_result = run_recompute_code_safely(chat, recompute_code)
+            intermediate_record["recompute"] = {"code": recompute_code, "results": recompute_result}
+            dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        recompute_code = intermediate_record["recompute"]["code"]
+        recompute_result = intermediate_record["recompute"]["results"]
 
         # Step 5: styling
-        final = style_cot_answer(
-            chat=chat,
-            templated=templated,
-            recompute_result=recompute_result,
-            conversions=conversions_result,
-            original_question=question,
-            original_answer=answer,
-            unit_policies=None,
-            templates_dir=args.templates,
-        )
-        intermediate_record["final"] = final
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        if "final" not in intermediate_record or not intermediate_record["final"]:
+            print(f"[INFO] idx={i} running final styling")
+            final = style_cot_answer(
+                chat=chat,
+                templated=templated,
+                recompute_result=recompute_result,
+                conversions=conversions_result,
+                original_question=question,
+                original_answer=answer,
+                unit_policies=None,
+                templates_dir=args.templates,
+            )
+            intermediate_record["final"] = final
+            dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        final = intermediate_record["final"]
 
         # Step 6: Adapting to specific cultural context
         cultural_adapted = adapt_cultural_entities(
@@ -235,6 +274,11 @@ def process_item(args_tuple):
         # log_error(intermediate_dir.parent, i, str(e), tb)
         log_error(restarted_path.parent, i, str(e), tb)
 
+
+def is_not_english(text):
+    words = text.lower().split()
+    overlap = sum(1 for w in words if w in english_stopwords)
+    return overlap / max(len(words), 1) < 0.2  # less than 20% English stopwords
 
 
 # ---------------- Main ---------------- #
@@ -280,23 +324,24 @@ def main():
     # outdir = Path("out") / "augmented_data"/ model_name / timestamp
     outdir = Path(args.output_dir)
     intermediate_dir = outdir / "intermediate" / args.split
-    augmented_path = outdir / "augmented" / f"{args.split}.jsonl"
-    restarted_path = outdir / "restarted" / f"{args.split}.jsonl"
+    augmented_path = outdir / "cultural_values" / f"{args.split}.jsonl"
+    restarted_path = outdir / "english_restarted" / f"{args.split}.jsonl"
     ensure_dir(intermediate_dir)
     ensure_dir(augmented_path.parent)
     ensure_dir(restarted_path.parent)
 
     # Create a list of already processed indices to skip from the augmented_path
-    processed_indices = set()
+    error_indices = set()
     if augmented_path.exists():
         with open(augmented_path, "r") as f:
             for line in f:
                 try:
                     record = json.loads(line)
-                    processed_indices.add(record["index"])
+                    if is_not_english(record["augmented_question"]):
+                        error_indices.add(record["index"])
                 except json.JSONDecodeError:
                     continue
-        print(f"[INFO] Found {len(processed_indices)} already processed items in {augmented_path}")
+    print(f"[INFO] Found {len(error_indices)} already processed items in {augmented_path}")
 
     # Load dataset
     ds = load_gsm8k(args.config, args.split)
@@ -305,11 +350,11 @@ def main():
         end = n
     else:
         end = min(args.start + args.limit, n)
-    print(f"[INFO] Processing total {end - args.start - len(processed_indices)} items from index {args.start} to {end-1} (out of {n})")
+    print(f"[INFO] Processing total {end - args.start - len(error_indices)} items from index {args.start} to {end-1} (out of {n})")
 
     tasks = [
         (i, ds[i], args, intermediate_dir, restarted_path)
-        for i in range(args.start, end) if i not in processed_indices
+        for i in range(args.start, end) if i in error_indices
     ]
 
     if args.workers > 1:

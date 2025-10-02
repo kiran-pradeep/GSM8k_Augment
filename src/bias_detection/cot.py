@@ -20,11 +20,23 @@ def extract_json_string(text: str) -> str:
 
 def sanitize_json_string(json_str: str) -> str:
     """
-    Remove illegal control characters that break JSON decoding.
+    Escape newlines and carriage returns inside JSON string values,
+    so that the JSON parser can successfully decode it.
+    Also removes other illegal control characters.
     """
-    # Remove ASCII control characters except \n, \t
-    # return re.sub(r'[\x00-\x08\x0b-\x1f\x7f]', '', json_str)
-    return re.sub(r'[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]', '', json_str)
+    # First remove illegal control characters except \n, \r, \t
+    json_str = re.sub(r'[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]', '', json_str)
+    
+    # Then escape newlines inside quotes
+    def escape_newlines(match):
+        inner = match.group(1)
+        inner = inner.replace('\n', '\\n').replace('\r', '\\r')
+        return f'"{inner}"'
+    
+    # This regex matches strings inside double quotes (naive, but often works)
+    json_str = re.sub(r'"([^"\\]*(?:\\.[^"\\]*)*)"', escape_newlines, json_str)
+    
+    return json_str
 
 def solve_with_cot(question: str, templates_dir: str = "templates") -> Dict[str, str]:
     """

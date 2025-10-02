@@ -38,17 +38,16 @@ import pytz
 from tqdm import tqdm
 
 # ---- Local modules ----
-from cultural_adapter import adapt_cultural_entities
-from cultural_filter import check_cultural_bias
-from utils.llm_client import get_chat_model
-from utils.data_loader import load_gsm8k
-from extractor import extract_metrics_llm
-from converter import generate_conversion_code, run_conversion_code_safely
-from templatizer import templatize_qa
-from recomputer import generate_recompute_code, run_recompute_code_safely
-from styler import style_cot_answer
-from utils.io_utils import ensure_dir, dump_json, append_jsonl, log_error
-
+from src.data_augmentation.cultural_adapter import adapt_cultural_entities
+from src.data_augmentation.cultural_filter import check_cultural_bias
+from src.data_augmentation.extractor import extract_metrics_llm
+from src.data_augmentation.converter import generate_conversion_code, run_conversion_code_safely
+from src.data_augmentation.templatizer import templatize_qa
+from src.data_augmentation.recomputer import generate_recompute_code, run_recompute_code_safely
+from src.data_augmentation.styler import style_cot_answer
+from src.utils.llm_client import get_chat_model
+from src.utils.data_loader import load_gsm8k
+from src.utils.io_utils import ensure_dir, dump_json, append_jsonl, log_error
 
 # ---------------- Helper functions ---------------- #
 
