@@ -72,9 +72,22 @@ def solve_with_cot(question: str, templates_dir: str = "templates") -> Dict[str,
         clean_json_str = sanitize_json_string(json_str)
         data = json.loads(clean_json_str)
 
+        try:
+            cot = data["chain-of-thought-reasoning"]
+        except KeyError:
+            cot = None
+
+        # In the data look for `final_answer` key. If not present, look for `answer` key. Else raise exception 
+        if "final_answer" in data:
+            final_answer = data["final_answer"]
+        elif "answer" in data:
+            final_answer = data["answer"]
+        else:
+            raise KeyError(f"Neither 'final_answer' nor 'answer' key found in JSON data: {raw_text}")
+
         return {
-            "chain-of-thought-reasoning": data["chain-of-thought-reasoning"],
-            "final_answer": str(data["final_answer"]),
+            "chain-of-thought-reasoning": cot,
+            "final_answer": final_answer,
             "raw_text": raw_text,
         }
 

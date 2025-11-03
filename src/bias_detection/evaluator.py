@@ -21,20 +21,24 @@ def evaluate_instance(pred: Dict[str, str], gold: str) -> Dict[str, any]:
         "correct": bool
       }
     """
-    pred_ans = pred.get("final_answer", "").strip()
+    try:
+        pred_ans = pred.get("final_answer", "").strip()
+    except AttributeError:
+        pred_ans = pred["final_answer"]
+    
     gold_ans = str(gold).strip()
 
     correct = False
     try:
         # Compare numerically
-        correct = float(pred_ans) == float(gold_ans)
+        correct = round(float(pred_ans), 2) == round(float(gold_ans), 2)
     except Exception:
         # Fall back to string equality
         correct = pred_ans == gold_ans
 
     return {
-        "predicted": pred_ans,
-        "gold": gold_ans,
+        "predicted": round(float(pred_ans), 2),
+        "gold": round(float(gold_ans), 2),
         "correct": correct
     }
 
