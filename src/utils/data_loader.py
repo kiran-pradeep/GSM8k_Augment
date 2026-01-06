@@ -4,8 +4,8 @@ Step 1: Load GSM8k dataset from Hugging Face.
 
 Provides a function load_gsm8k(split) -> dataset list.
 Each element is a dict with keys:
-  - "question": str
-  - "answer": str
+    - "question": str
+    - "answer": str
 """
 
 import json
@@ -19,36 +19,36 @@ def load_gsm8k(config: str="main", split: str="train", source: str="gsm8k") -> L
     Load GSM8k dataset from HuggingFace.
 
     Parameters:
-      config : str
-          Which configuration of GSM8k to load. Options include "main",
-          "socratic", "train_socratic". Default is "main".
-          NOTE: No need to pass this if using a custom JSONL file.
-      split : str
-          Which split to load. Options include "train", "test", "main",
-          "train_socratic". For most purposes, "train" or "test".
-          NOTE: No need to pass this if using a custom JSONL file.
-      source : str
-          Either "gsm8k" to load from HuggingFace, or path to a JSONL file.
+        config : str
+            Which configuration of GSM8k to load. Options include "main",
+            "socratic", "train_socratic". Default is "main".
+            NOTE: No need to pass this if using a custom JSONL file.
+        split : str
+            Which split to load. Options include "train", "test", "main",
+            "train_socratic". For most purposes, "train" or "test".
+            NOTE: No need to pass this if using a custom JSONL file.
+        source : str
+            Either "gsm8k" to load from HuggingFace, or path to a JSONL file.
 
     Returns:
-      A list of dicts with fields {"index", "question", "answer", "final_answer"}.
+        A list of dicts with fields {"index", "question", "answer", "final_answer"}.
     """
     if source == "gsm8k":
-      # HuggingFace dataset id for GSM8k
-      ds = load_dataset("openai/gsm8k", config, split=split)
+        # HuggingFace dataset id for GSM8k
+        ds = load_dataset("openai/gsm8k", config, split=split)
 
-      # Convert to list of dicts with only needed fields
-      data = [{"index": idx, "question": ex["question"], "answer": ex["answer"]} for idx, ex in enumerate(ds)]
+        # Convert to list of dicts with only needed fields
+        data = [{"index": idx, "question": ex["question"], "answer": ex["answer"]} for idx, ex in enumerate(ds)]
 
-      for instance in data:
-          answer = instance["answer"]
-          # Extract final numeric answer after "####"
-          final_answer = None
-          for line in answer.splitlines():
-              if line.strip().startswith("####"):
-                  final_answer = line.replace("####", "").strip()
-                  break
-          instance["final_answer"] = final_answer.replace(",", "")
+        for instance in data:
+            answer = instance["answer"]
+            # Extract final numeric answer after "####"
+            final_answer = None
+            for line in answer.splitlines():
+                if line.strip().startswith("####"):
+                    final_answer = line.replace("####", "").strip()
+                    break
+            instance["final_answer"] = final_answer.replace(",", "")
 
     else:
         # Else: treat source as JSONL path

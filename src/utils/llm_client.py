@@ -57,6 +57,7 @@ def render_template(templates_dir: str, filename: str, **kwargs) -> str:
     """
     path = Path(templates_dir) / filename
     if not path.exists():
+        print(f"[ERROR] Template not found: {path}")
         raise FileNotFoundError(f"Template not found: {path}")
 
     text = path.read_text(encoding="utf-8")
@@ -69,12 +70,7 @@ def render_template(templates_dir: str, filename: str, **kwargs) -> str:
     # Common variables for all templates
     # These can be set in .env file or will use the defaults below
     common_vars = {
-        "country": os.getenv("COUNTRY", "India"),
-        "demonym": os.getenv("DEMONYM", "Indian"),
-        "currency": os.getenv("CURRENCY", "rupee"),
-        "currency_symbol": os.getenv("CURRENCY_SYMBOL", "₹"),
-        "currency_conversion_rate": float(os.getenv("CURRENCY_CONVERSION_RATE", "87")),  # to 1 USD,
-        "currency_abbreviation": os.getenv("CURRENCY_ABBREVIATION", "INR"),
+        "times": os.getenv("TIMES_MULTIPLIER", 10.0)
     }
 
     for k, v in common_vars.items():

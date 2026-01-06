@@ -19,15 +19,15 @@ def generate_conversion_code(chat, extracted_metrics: List[Dict[str, Any]], temp
     Ask the LLM to generate Python code that converts extracted values into SI/Indian equivalents.
 
     The extracted_metrics list has elements like:
-      {"variable": "wallet_cost", "value": 100, "unit": "dollar", "context": "question"}
+        {"variable": "wallet_cost", "value": 100, "unit": "dollar", "context": "question"}
 
     The LLM should output only valid Python code that defines a function `convert_units()`
     which returns a list of dicts:
-      [
+        [
         {"variable": "wallet_cost", "original_value": 100, "original_unit": "dollar",
-         "converted_value": 8300, "converted_unit": "rupee"},
+            "converted_value": 8300, "converted_unit": "rupee"},
         ...
-      ]
+        ]
     """
     prompt = render_template(
         templates_dir,
@@ -43,12 +43,12 @@ def run_conversion_code_safely(code: str, metrics_list: list) -> list:
     safe_locals = {}
     try:
         exec(code, safe_globals, safe_locals)
-        if "convert_units" not in safe_locals:
+        if "convert_values" not in safe_locals:
             raise RuntimeError("LLM code did not define convert_units()")
         # Pass metrics_list to the function
-        result = safe_locals["convert_units"](metrics_list)
+        result = safe_locals["convert_values"](metrics_list)
         if not isinstance(result, list):
-            raise RuntimeError("convert_units() did not return a list")
+            raise RuntimeError("convert_values() did not return a list")
         return result
     except Exception as e:
         tb = traceback.format_exc()
