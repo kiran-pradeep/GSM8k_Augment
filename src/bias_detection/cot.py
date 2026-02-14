@@ -84,12 +84,14 @@ def solve_with_cot(question: str, templates_dir: str = "templates") -> Dict[str,
             final_answer = data["answer"]
         else:
             raise KeyError(f"Neither 'final_answer' nor 'answer' key found in JSON data: {raw_text}")
+        
+        pred = {}
+        pred["chain-of-thought-reasoning"] = cot
+        pred["final_answer"] = final_answer
+        pred["raw_text"] = raw_text
+        pred["digit_question"] = data["converted_question"] if "converted_question" in data else None
 
-        return {
-            "chain-of-thought-reasoning": cot,
-            "final_answer": final_answer,
-            "raw_text": raw_text,
-        }
+        return pred
 
     except Exception as e:
         raise RuntimeError(f"Failed to parse JSON from LLM output. Raw output:\n{text}") from e

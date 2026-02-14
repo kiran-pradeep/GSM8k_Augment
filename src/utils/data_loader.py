@@ -61,11 +61,14 @@ def load_gsm8k(config: str="main", split: str="train", source: str="gsm8k") -> L
             for line in f:
                 ex = json.loads(line)
                 # Use augmented fields if available, else fallback
-                question = ex.get("augmented_question")
-                answer = "\n".join(ex.get("augmented_answer"))
-                final_answer = ex.get("final_answer")
+                question = ex.get("augmented_question", ex.get("question"))
+                # answer = "\n".join(ex.get("augmented_answer"))
+                answer = ex.get("augmented_answer", ex.get("gold_cot"))
+                if isinstance(answer, list):
+                    answer = "\n".join(answer)
+                final_answer = ex.get("final_answer", ex.get("gold_answer"))
                 data.append({
-                    "index": ex.get("index"),
+                    "index": ex.get("index", ex.get("question_index")),
                     "question": question,
                     "answer": answer,
                     "final_answer": final_answer

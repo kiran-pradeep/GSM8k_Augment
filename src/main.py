@@ -65,7 +65,11 @@ def process_item(args_tuple: Tuple[int, Dict[str, Any], argparse.Namespace, Path
     i, instance, args, outdir, intermediate_dir = args_tuple
     idx = instance.get("index", i)
     question = (instance.get("question") or "").strip()
-    gold_cot = (instance.get("answer") or "").strip()
+    if isinstance(instance["answer"], list):
+        gold_cot = "\n".join(instance["answer"])
+    else:
+        gold_cot = (instance.get("answer") or "").strip()
+    # gold_cot = (instance.get("answer") or "").strip()
     gold_answer = instance.get("final_answer", "")
 
     intermediate_path = intermediate_dir / f"{idx}.json"
@@ -80,6 +84,8 @@ def process_item(args_tuple: Tuple[int, Dict[str, Any], argparse.Namespace, Path
 
         # Fill record
         # record["prediction"] = pred
+        if pred["digit_question"] is not None:
+            record["digit_question"] = pred["digit_question"]
         record["pred_cot"] = pred.get("chain-of-thought-reasoning")
         record["pred_answer"] = float(pred.get("final_answer"))
         record["evaluation"] = eval_result
