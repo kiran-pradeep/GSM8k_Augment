@@ -89,6 +89,7 @@ def process_item(args_tuple: Tuple[int, Dict[str, Any], argparse.Namespace, Path
         record["pred_cot"] = pred.get("chain-of-thought-reasoning")
         record["pred_answer"] = float(pred.get("final_answer"))
         record["evaluation"] = eval_result
+        record["prompt"] = pred.get("prompt")
 
         # Save per-instance result (progressive)
         dump_json(intermediate_path, record)
@@ -158,9 +159,9 @@ def main():
     parser.add_argument("--start", type=int, default=0, help="Start index (0-based).")
     parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers (LLM clients).")
     parser.add_argument("--templates", default="templates/bias_detection", help="Directory with prompt templates.")
+    parser.add_argument(("--fewshot-examples"), type=int, default=5, help="Number of few-shot examples to include in prompt (if applicable).")
     parser.add_argument("--failfast", action="store_true", help="Whether to stop on first error.")
     args = parser.parse_args()
-
 
     print(f"[INFO] Arguments: {args}")
 
@@ -189,6 +190,8 @@ def main():
 
     # Prepare output directories
     data_aug_model, country = parse_data_aug_source(args.source)
+    os.environ["COUNTRY"] = country
+    os.environ["FEWSHOT_EXAMPLES"] = str(args.fewshot_examples)
 
     if country != "unknown":
         outdir = Path("out") / "bias_detection" / country / f"data_aug_{data_aug_model}" / model_name / timestamp

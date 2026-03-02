@@ -8,15 +8,39 @@ from typing import Dict
 
 from utils.llm_client import get_chat_model, render_template
 
+# def extract_json_string(text: str) -> str:
+#     """
+#     Extract the JSON object from the given text using regex.
+#     Returns the JSON string or raises an error if not found.
+#     """
+#     match = re.search(r"\{.*\}", text, re.DOTALL)
+#     if match:
+#         return match.group(0)
+#     raise ValueError("No JSON object found in model output.")
+
 def extract_json_string(text: str) -> str:
     """
-    Extract the JSON object from the given text using regex.
-    Returns the JSON string or raises an error if not found.
+    Extract first balanced JSON object from text.
+    If closing braces are missing, auto-complete them.
     """
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if match:
-        return match.group(0)
-    raise ValueError("No JSON object found in model output.")
+    start = text.find("{")
+    if start == -1:
+        raise ValueError("No JSON object start found in model output.")
+
+    brace_count = 0
+    for i in range(start, len(text)):
+        if text[i] == "{":
+            brace_count += 1
+        elif text[i] == "}":
+            brace_count -= 1
+            if brace_count == 0:
+                return text[start:i+1]
+
+    # If we exit loop and braces are not balanced → auto-fix
+    if brace_count > 0:
+        return text[start:] + ("}" * brace_count)
+
+    raise ValueError("Could not extract JSON object.")
 
 def sanitize_json_string(json_str: str) -> str:
     """
@@ -90,9 +114,10 @@ def solve_with_cot(question: str, templates_dir: str = "templates") -> Dict[str,
         pred["final_answer"] = final_answer
         pred["raw_text"] = raw_text
         pred["digit_question"] = data["converted_question"] if "converted_question" in data else None
+        pred["prompt"] = prompt
 
         return pred
 
     except Exception as e:
-        raise RuntimeError(f"Failed to parse JSON from LLM output. Raw output:\n{text}") from e
+        raise RuntimeError(f"Failed to parse JSON from LLM output.\n\nPrompt:\n{prompt}\n\nResponse from LLM:\n{text}") from e
 
