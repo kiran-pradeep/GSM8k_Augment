@@ -6,6 +6,7 @@ import json
 import re
 from typing import Dict
 
+from bias_detection.code_generator import extract_python_code, run_generated_code
 from utils.llm_client import get_chat_model, render_template
 
 # def extract_json_string(text: str) -> str:
@@ -88,13 +89,19 @@ def solve_with_cot(question: str, templates_dir: str = "templates") -> Dict[str,
         text = raw_text
 
     # Remove markdown formatting
-    text = text.replace("```", "").replace("json", "").strip()
+    text = text.replace("```", "").replace("json", "").replace("python", "").strip()
 
     # Try extracting and sanitizing JSON
     try:
-        json_str = extract_json_string(text)
-        clean_json_str = sanitize_json_string(json_str)
-        data = json.loads(clean_json_str)
+        if "PythonGen" not in templates_dir:
+            json_str = extract_json_string(text)
+            clean_json_str = sanitize_json_string(json_str)
+            data = json.loads(clean_json_str)
+        else:
+            data = {}
+            data["chain-of-thought-reasoning"] = extract_python_code(text)
+            data["final_answer"] = run_generated_code(data["chain-of-thought-reasoning"], timeout=10)
+            pass
 
         try:
             cot = data["chain-of-thought-reasoning"]

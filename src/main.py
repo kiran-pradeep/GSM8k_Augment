@@ -172,7 +172,10 @@ def main():
             model_name = model_name.split("_snapshots")[0]
             model_name = model_name.split("_models--")[1]
         except Exception:
-            pass
+            try:
+                model_name = model_name.split("checkpoint_")[1]
+            except Exception:
+                pass
 
     ist = pytz.timezone("Asia/Kolkata")
     timestamp = datetime.now(ist).strftime("%Y%m%d_%H%M%S")

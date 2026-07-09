@@ -45,7 +45,6 @@ def get_chat_model():
             openai_api_base=base_url,
             openai_api_key=api_key,
             temperature=0,
-            max_tokens=1024,
         )
 
 
