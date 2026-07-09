@@ -65,7 +65,11 @@ def process_item(args_tuple: Tuple[int, Dict[str, Any], argparse.Namespace, Path
     i, instance, args, outdir, intermediate_dir = args_tuple
     idx = instance.get("index", i)
     question = (instance.get("question") or "").strip()
-    gold_cot = (instance.get("answer") or "").strip()
+    if isinstance(instance["answer"], list):
+        gold_cot = "\n".join(instance["answer"])
+    else:
+        gold_cot = (instance.get("answer") or "").strip()
+    # gold_cot = (instance.get("answer") or "").strip()
     gold_answer = instance.get("final_answer", "")
 
     intermediate_path = intermediate_dir / f"{idx}.json"
@@ -80,9 +84,12 @@ def process_item(args_tuple: Tuple[int, Dict[str, Any], argparse.Namespace, Path
 
         # Fill record
         # record["prediction"] = pred
+        if pred["digit_question"] is not None:
+            record["digit_question"] = pred["digit_question"]
         record["pred_cot"] = pred.get("chain-of-thought-reasoning")
         record["pred_answer"] = float(pred.get("final_answer"))
         record["evaluation"] = eval_result
+        record["prompt"] = pred.get("prompt")
 
         # Save per-instance result (progressive)
         dump_json(intermediate_path, record)
@@ -113,12 +120,23 @@ def process_item(args_tuple: Tuple[int, Dict[str, Any], argparse.Namespace, Path
 def parse_data_aug_source(source: str) -> Tuple[str, str]:
     """
     Try to parse data augmentation model identifier and country from a source path like:
-      out/augmented_data/<model>/<country>/augmented/<split>.jsonl
+        out/augmented_data/<model>/<country>/augmented/<split>.jsonl
+        out/replace_entities/India/meta-llama--Llama-3_1-70B-Instruct/20260104_184259/augmented/test.jsonl
     Returns (data_aug_model, country) or (basename_of_source, "unknown").
     """
     try:
         parts = Path(source).parts
         # look for 'augmented_data' or 'augmented' in path
+        if "OnlyCulturalEntities_Dataset" in parts:
+            i = parts.index("OnlyCulturalEntities_Dataset")
+            country = parts[i + 1] if len(parts) > i + 1 else "unknown"
+            data_aug_model = "OnlyCulturalEntities_Dataset"
+            return data_aug_model, country
+        if "replace_entities" in parts:
+            i = parts.index("replace_entities")
+            data_aug_model = parts[i + 2] if len(parts) > i + 2 else Path(source).stem
+            country = parts[i + 1] if len(parts) > i + 2 else "unknown"
+            return data_aug_model, country
         if "augmented_data" in parts:
             i = parts.index("augmented_data")
             data_aug_model = parts[i + 1] if len(parts) > i + 1 else Path(source).stem
@@ -126,7 +144,7 @@ def parse_data_aug_source(source: str) -> Tuple[str, str]:
             return data_aug_model, country
         # fallback: if path has at least two parts, try to use them
         if len(parts) >= 2:
-            return parts[-2], parts[-3] if len(parts) >= 3 else "unknown"
+            return parts[-4], parts[-3] if len(parts) >= 4 else "unknown"
     except Exception:
         pass
     return (Path(source).stem, "unknown")
@@ -141,9 +159,9 @@ def main():
     parser.add_argument("--start", type=int, default=0, help="Start index (0-based).")
     parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers (LLM clients).")
     parser.add_argument("--templates", default="templates/bias_detection", help="Directory with prompt templates.")
+    parser.add_argument(("--fewshot-examples"), type=int, default=5, help="Number of few-shot examples to include in prompt (if applicable).")
     parser.add_argument("--failfast", action="store_true", help="Whether to stop on first error.")
     args = parser.parse_args()
-
 
     print(f"[INFO] Arguments: {args}")
 
@@ -154,7 +172,10 @@ def main():
             model_name = model_name.split("_snapshots")[0]
             model_name = model_name.split("_models--")[1]
         except Exception:
-            pass
+            try:
+                model_name = model_name.split("checkpoint_")[1]
+            except Exception:
+                pass
 
     ist = pytz.timezone("Asia/Kolkata")
     timestamp = datetime.now(ist).strftime("%Y%m%d_%H%M%S")
@@ -172,6 +193,8 @@ def main():
 
     # Prepare output directories
     data_aug_model, country = parse_data_aug_source(args.source)
+    os.environ["COUNTRY"] = country
+    os.environ["FEWSHOT_EXAMPLES"] = str(args.fewshot_examples)
 
     if country != "unknown":
         outdir = Path("out") / "bias_detection" / country / f"data_aug_{data_aug_model}" / model_name / timestamp

@@ -6,17 +6,42 @@ import json
 import re
 from typing import Dict
 
+from bias_detection.code_generator import extract_python_code, run_generated_code
 from utils.llm_client import get_chat_model, render_template
+
+# def extract_json_string(text: str) -> str:
+#     """
+#     Extract the JSON object from the given text using regex.
+#     Returns the JSON string or raises an error if not found.
+#     """
+#     match = re.search(r"\{.*\}", text, re.DOTALL)
+#     if match:
+#         return match.group(0)
+#     raise ValueError("No JSON object found in model output.")
 
 def extract_json_string(text: str) -> str:
     """
-    Extract the JSON object from the given text using regex.
-    Returns the JSON string or raises an error if not found.
+    Extract first balanced JSON object from text.
+    If closing braces are missing, auto-complete them.
     """
-    match = re.search(r"\{.*\}", text, re.DOTALL)
-    if match:
-        return match.group(0)
-    raise ValueError("No JSON object found in model output.")
+    start = text.find("{")
+    if start == -1:
+        raise ValueError("No JSON object start found in model output.")
+
+    brace_count = 0
+    for i in range(start, len(text)):
+        if text[i] == "{":
+            brace_count += 1
+        elif text[i] == "}":
+            brace_count -= 1
+            if brace_count == 0:
+                return text[start:i+1]
+
+    # If we exit loop and braces are not balanced → auto-fix
+    if brace_count > 0:
+        return text[start:] + ("}" * brace_count)
+
+    raise ValueError("Could not extract JSON object.")
 
 def sanitize_json_string(json_str: str) -> str:
     """
@@ -64,13 +89,19 @@ def solve_with_cot(question: str, templates_dir: str = "templates") -> Dict[str,
         text = raw_text
 
     # Remove markdown formatting
-    text = text.replace("```", "").replace("json", "").strip()
+    text = text.replace("```", "").replace("json", "").replace("python", "").strip()
 
     # Try extracting and sanitizing JSON
     try:
-        json_str = extract_json_string(text)
-        clean_json_str = sanitize_json_string(json_str)
-        data = json.loads(clean_json_str)
+        if "PythonGen" not in templates_dir:
+            json_str = extract_json_string(text)
+            clean_json_str = sanitize_json_string(json_str)
+            data = json.loads(clean_json_str)
+        else:
+            data = {}
+            data["chain-of-thought-reasoning"] = extract_python_code(text)
+            data["final_answer"] = run_generated_code(data["chain-of-thought-reasoning"], timeout=10)
+            pass
 
         try:
             cot = data["chain-of-thought-reasoning"]
@@ -84,13 +115,16 @@ def solve_with_cot(question: str, templates_dir: str = "templates") -> Dict[str,
             final_answer = data["answer"]
         else:
             raise KeyError(f"Neither 'final_answer' nor 'answer' key found in JSON data: {raw_text}")
+        
+        pred = {}
+        pred["chain-of-thought-reasoning"] = cot
+        pred["final_answer"] = final_answer
+        pred["raw_text"] = raw_text
+        pred["digit_question"] = data["converted_question"] if "converted_question" in data else None
+        pred["prompt"] = prompt
 
-        return {
-            "chain-of-thought-reasoning": cot,
-            "final_answer": final_answer,
-            "raw_text": raw_text,
-        }
+        return pred
 
     except Exception as e:
-        raise RuntimeError(f"Failed to parse JSON from LLM output. Raw output:\n{text}") from e
+        raise RuntimeError(f"Failed to parse JSON from LLM output.\n\nPrompt:\n{prompt}\n\nResponse from LLM:\n{text}") from e
 

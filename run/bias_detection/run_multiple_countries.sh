@@ -11,7 +11,14 @@ failfast=false
 
 
 declare -a SOURCE_PATHS=(
-    "out/augmented_data/meta-llama--Llama-3_1-70B-Instruct/Somalia/final/test.jsonl"
+    "out/justCultural/OnlyCulturalEntities_Dataset/India/final.jsonl"
+    "out/justCultural/OnlyCulturalEntities_Dataset/Somalia/final.jsonl"
+    "out/justCultural/OnlyCulturalEntities_Dataset/Haiti/final.jsonl"
+    "out/justCultural/OnlyCulturalEntities_Dataset/Moldova/final.jsonl"
+    "out/justCultural/OnlyCulturalEntities_Dataset/China/final.jsonl"
+    "out/justCultural/OnlyCulturalEntities_Dataset/Japan/final.jsonl"
+    "out/justCultural/OnlyCulturalEntities_Dataset/Korea/final.jsonl"
+    # "out/augmented_data/meta-llama--Llama-3_1-70B-Instruct/Somalia/final/test.jsonl"
     # "out/augmented_data/meta-llama--Llama-3_1-70B-Instruct/Haiti/augmented/test.jsonl"
     # "out/augmented_data/meta-llama--Llama-3_1-70B-Instruct/Moldova/augmented/test.jsonl"
     # "out/augmented_data/meta-llama--Llama-3_1-70B-Instruct/Pakistan/augmented/test.jsonl"

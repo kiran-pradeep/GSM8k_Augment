@@ -73,7 +73,7 @@ def build_intermediate_record(
         "index": idx,
         "split": split,
         "original": {"question": question, "answer": answer},
-        "cultural_check": None,
+        # "cultural_check": None,
         "metrics_extracted": metrics_extracted,
         "conversion": {"code": conversion_code, "results": conversions_result},
         "templatization": templated,
@@ -119,15 +119,15 @@ def process_item(args_tuple):
     )
 
     try:
-        # Step 0: cultural filter
-        cultural_check = check_cultural_bias(
-            chat=chat,
-            question=question,
-            answer=answer,
-            templates_dir=args.templates
-        )
-        intermediate_record["cultural_check"] = cultural_check
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        # # Step 0: cultural filter
+        # cultural_check = check_cultural_bias(
+        #     chat=chat,
+        #     question=question,
+        #     answer=answer,
+        #     templates_dir=args.templates
+        # )
+        # intermediate_record["cultural_check"] = cultural_check
+        # dump_json(intermediate_dir / f"{i}.json", intermediate_record)
 
         # Step 1: metric extraction
         metrics_extracted = extract_metrics_llm(
@@ -188,25 +188,25 @@ def process_item(args_tuple):
         intermediate_record["final"] = final
         dump_json(intermediate_dir / f"{i}.json", intermediate_record)
 
-        # Step 6: Adapting to specific cultural context
-        cultural_adapted = adapt_cultural_entities(
-            chat=chat,
-            question=final["question"],
-            answer_lines=final["answer_lines"],
-            cultural_check=cultural_check["matched_entities"] if cultural_check["is_cultural"] else "None",
-            templates_dir=args.templates
-        )
-        intermediate_record["cultural_adapted"] = cultural_adapted
-        dump_json(intermediate_dir / f"{i}.json", intermediate_record)
+        # # Step 6: Adapting to specific cultural context
+        # cultural_adapted = adapt_cultural_entities(
+        #     chat=chat,
+        #     question=final["question"],
+        #     answer_lines=final["answer_lines"],
+        #     cultural_check=cultural_check["matched_entities"] if cultural_check["is_cultural"] else "None",
+        #     templates_dir=args.templates
+        # )
+        # intermediate_record["cultural_adapted"] = cultural_adapted
+        # dump_json(intermediate_dir / f"{i}.json", intermediate_record)
 
 
         # Save augmented JSONL
         augmented_record = {
             "index": i,
             "split": args.split,
-            "is_cultural": cultural_check["is_cultural"],
-            "augmented_question": cultural_adapted["adapted_question"],
-            "augmented_answer": cultural_adapted["adapted_answer"],
+            # "is_cultural": cultural_check["is_cultural"],
+            "augmented_question": final["question"],
+            "augmented_answer": final["answer_lines"],
             "final_answer": final["final_scalar"],
             # "style": final["style_meta"],
         }
@@ -237,25 +237,15 @@ def main():
     parser.add_argument("--workers", type=int, default=1, help="Number of parallel workers (LLM clients).")
     parser.add_argument("--templates", default="templates/data_augmentation", help="Directory with prompt templates.")
     parser.add_argument("--failfast", action="store_true", help="Whether to stop on first error.")
-    parser.add_argument("--country", type=str, default="India", help="Country for cultural adaptation.")
-    parser.add_argument("--demonym", type=str, default="Indian", help="Demonym for cultural adaptation.")
-    parser.add_argument("--currency", type=str, default="rupee", help="Currency name for cultural adaptation.")
-    parser.add_argument("--currency_symbol", type=str, default="₹", help="Currency symbol for cultural adaptation.")
-    parser.add_argument("--currency_conversion_rate", type=float, default=87.0, help="Conversion rate to 1 USD.")
-    parser.add_argument("--currency_abbreviation", type=str, default="INR", help="Currency abbreviation.")
-
+    parser.add_argument("--times", type=str, default="10.0", help="The multiplier for all values.")
+    
 
     args = parser.parse_args()
 
-    os.environ["COUNTRY"] = args.country
-    os.environ["DEMONYM"] = args.demonym
-    os.environ["CURRENCY"] = args.currency
-    os.environ["CURRENCY_SYMBOL"] = args.currency_symbol
-    os.environ["CURRENCY_CONVERSION_RATE"] = str(args.currency_conversion_rate)
-    os.environ["CURRENCY_ABBREVIATION"] = args.currency_abbreviation 
+    os.environ["TIMES_MULTIPLIER"] = args.times
 
     print(f"[INFO] Using config: {args.config}, split: {args.split}, start: {args.start}, limit: {args.limit}, workers: {args.workers}")
-    print(f"[INFO] Cultural context: country={args.country}, demonym={args.demonym}, currency={args.currency}, currency_symbol={args.currency_symbol}, currency_conversion_rate={args.currency_conversion_rate}, currency_abbreviation={args.currency_abbreviation}")
+    print(f"[INFO] Multiplier: times={args.times}")
     print(f"[INFO] Templates dir: {args.templates}")
     print(f"[INFO] Failfast: {args.failfast}")  
 
@@ -266,9 +256,9 @@ def main():
         model_name = model_name.split("_models--")[1]
     ist = pytz.timezone("Asia/Kolkata")
     timestamp = datetime.now(ist).strftime("%Y%m%d_%H%M%S")
-    outdir = Path("out") / "augmented_data"/ model_name / timestamp
-    intermediate_dir = outdir / str(args.country) / "intermediate" / args.split
-    augmented_path = outdir / str(args.country) / "augmented" / f"{args.split}.jsonl"
+    outdir = Path("out") / "constrained_exps_data"/ model_name / timestamp
+    intermediate_dir = outdir / str(args.times) / "intermediate" / args.split
+    augmented_path = outdir / str(args.times) / "augmented" / f"{args.split}.jsonl"
     ensure_dir(intermediate_dir)
     ensure_dir(augmented_path.parent)
 
